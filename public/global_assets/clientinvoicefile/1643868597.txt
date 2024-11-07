@@ -1,0 +1,103 @@
+ARP
+
+OPERATION:
+
+1.New Project-->wonproject instead of Won Project,after selecting the RFQ No-->Rfq No instead of RFQ No,no file chosen instead of No File Chosen.
+
+             -->able to click next without filling mandatory fields
+
+             -->after click next-->Operation New Project-->Target Table-->country instead of Country,Select country column did not fully visible,submit button did not work
+
+2.Existing Project-->Show entries box overlapped when select the count 100.
+
+                  -->when slide table contents search box and previous next buttons also slide.
+
+                  -->edit-->Operaion New Project-->able to click submit without filling mandatory fields
+
+                  -->after click submit-->popup box-->modal title "modal" spelling is incorrect.
+
+                  -->Model title-->client invoice request-->balance invoice did not work
+
+                  -->Model title-->client invoice request-->balance invoice did not work
+
+
+SALES:
+
+
+CLIENT MANAGEMENT & VENDOR MANAGEMENT:
+
+1.phone no and whatsapp no field accept dot(.)input-need to check
+
+2.vendor management-->import-->popup box heading import 'i' is not in capital
+
+VIEW RFQ:
+
+1.Rfq No instead of RFQ No,Search Rfq No instead of RFQ No.
+
+2.Table heading-->Follow up 'u' and date 'd' is not in capital.
+
+3.Edit-->Update-->popup box-->Next Follow up 'u' is not in capital.
+
+4.update-->project won-->commisioned project-->choose currency instead of Choose Currency.No file 'f' and chosen 'c' is not in capital.
+
+
+Once we click on Action icon, We get EDIT RFQ form and we click on update. Once we click on update, and we click on “Project WON ”, we get a form “ Commissioned Project” to fill like below. Feedback on the this form now-TESTING COMPLETED
+
+Please show the fields starting from RFQ No till Country Name and after that we should get followup date and Action ICON. Like below-PENDING
+
+
+1.RFQ No should remain same from previous page. Very Important. -PENDING
+
+2.Project Type - Please give a drop down menu with option Qualitative / Quantitative / Community -TESTING COMPLETED
+
+3.WE NEED A TAB OF CURRENCY HERE -TESTING COMPLETED
+
+4.Client Total Project Invoice Value - Whatever currency is selected on the page, the values for this box should automatically come in that currency. -TESTING COMPLETED
+
+5.Vendor Total Project Invoice Value - Whatever currency is selected on the page, the values for this box should automatically come in that currency. -TESTING COMPLETED
+
+6.Total Margins - Whatever currency is selected on the page, the values for this box should automatically come in that currency. -TESTING COMPLETED
+
+7.From “View RFQ page”, when we click on “update” and then click on “project won”, then that project should move from “View RFQ Page” TO “Commissioned Projects”. That particular project should not stay in “View RFQ bucket”.-pending
+
+8.From “View RFQ page”, when we click on “update” and then click on “project lost”, then that project should move from “View RFQ Page” TO “Lost Project”. That particular project should not stay in “View RFQ bucket”.-TESTING COMPLETED
+
+9.From “View RFQ page”, when we click on “update” and then click on “Next Follow up”, then that project should should stay on “View RFQ Page” -TESTING COMPLETED(Without filling the comments field the form submitted-need to check)
+
+10.PLEASE NOTE THAT ONCE WE CLICK ON SUBMIT NOTHING HAPPENS ON THIS PAGE. IDEALLY THE FORM DETAILS SHOULD BE SAVED AND THE PROJECT SHOULD MOVE FROM “VIEW RFQ TO COMMISSIONED PROJECT”.-TESTING COMPLETED
+
+VIEW SALES FIGURES:
+
+1.Bar chart name-->client invoice instead of Client Invoice,vendor invoice instead of Vendor Invoice,margin values instead of Margin Values.
+
+
+HERE WE SHOULD GET TOTAL SALES AND TOTAL MARGINS FOR LAST 12 MONTHS. USER SHOULD ALSO BE ABLE TO SEE THE SALES NUMBERS USING CALENDAR AND SELECTING A CLIENT NAME. BY DEFAULT IF SHOULD SHOW LAST 12 MONTS REVENUE AND MARGINS. WE SHOULD BE ABLE TO GET THE DATA BY USING CALENDAR AND DROP DOWN CLIENT LIST. WE SHOULD BE HAVING AN OPTION TO DOWNLOAD THE DATA FOR THE SAME. FOR EXAMPLE IN ONE MONTH - REVENUE IS 5000 , VENDOR INVOICE IS 1000 THEN WHEN WE DOWNLOAD, WE SHOULD GET ALL DETAILS FROM WHERE WE HAVE GOT THE REVEUE OF 5000 AND TO WHICH ALL VENDORS WE PAID 1000 ALONG WITH RFQ NOs.-TESTING COMPLETED
+
+OVERVIEW:
+
+1.start and end date field did not fully visible--need to increase field size
+
+2.Overview chart-->pendding follow ups 'pendding' spelling is incorrect.
+
+
+COMMISIONED PROJECT LIST:
+
+-->Search Rfq No instead of RFQ No.
+
+-->Add-->wonproject form instead of Won Project Form,Rfq No instead of RFQ No,Follow Up date 'd' is not in capital,clientname instead of Client Name,vendorname instead of Vendor Name
+
+-->Industry table-->Transcript field name 't' is not in capital
+
+LOST PROJECT:
+
+1.Rfq No instead of RFQ No,Search Rfq No instead of RFQ No.
+
+RFQ FOLLOW UP LIST:
+
+Next Follow up Date 'u' is not in capital,Without filling the comments field the form submitted-need to check
+
+
+
+
+
+

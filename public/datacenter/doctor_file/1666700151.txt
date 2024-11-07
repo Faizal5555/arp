@@ -1,0 +1,129 @@
+SALES MODULE:
+
+create new functionality=>
+        1.change create rfq :
+          1.design 
+          2.store functionalitity.
+        2.edit efq:
+          1.design 
+          2.store functionalitity.
+        3.view :
+          1.change table format.
+------------------------------------------
+  Won Project:
+      4.view Commissioned Project:
+         1.reflect :
+           change table 
+      5.create Commissioned Project:
+          cretae rfq change s reflect here 
+           1.add new functionality
+      6.edit  Commissioned Project:
+           1.view rfq change new functionality.
+           2.edit wonproject design and store new functionality.
+--------------------------------------------
+  lost Project:
+    crete rfq changes reflect here so,
+      changes=>
+       7.view lost project:
+         1.change table and add new funtionality.
+         2.view page add functiality.
+--------------------------------------------
+  rfq follow up:
+     8.view fq follow up:
+         1.change table and add new funtionality.
+         2.view page add functiality.
+---------------------------------------------
+Perfomance:
+   9.change Graph mode.
+   10.data
+---------------------------------------------
+Sales Overview:
+   11.change Graph mode.
+   12.data
+---------------------------------------------
+
+
+
+
+OPERATION MODULE:
+
+  New Projects: 
+  sales data page come new project 
+  
+   13.show new design new funcion.
+      change won project page 
+      
+
+  Exiting Project:
+
+   14.edit click to update
+     1.client invoice request
+        send invoice : new functionality add and new store table
+
+     2.vendor invoice request
+        send invoice : new functionality add and new store table
+
+     3.project completed tab:
+       also change  
+  
+
+
+FIEL TEAM MODULE:
+
+  
+  15.show new design new funcion.
+      change won project page 
+      
+
+  Exiting Project:
+
+   16.edit click to update
+     1.client invoice request
+        send invoice : new functionality add and new store table
+
+     2.vendor invoice request
+        send invoice : new functionality add and new store table
+
+     3.project completed tab:
+       also change       
+
+ACCOUNTS MODULE:
+
+   CLIENT RECEIVABLE:
+
+     client invoice request:
+       1. view invoice request has reflect so change table.
+       2. show,Add invoice request has reflect so change table.
+
+     client Payment Awited
+       1. view Payment Awited has reflect so change table.
+       2. show,Add Payment Awited has reflect so change table.
+
+     client Payment received
+        1. view Payment received has reflect so change table.
+        2. show,Add Payment received has reflect so change table.
+
+
+   VENDOR PAYABLE:
+
+     vendor invoice request:
+       1. view invoice request has reflect so change table.
+       2. show invoice request has reflect so change table.
+
+     vendor Payment Due
+       1. view Payment Due has reflect so change table.
+       2. show Payment Due has reflect so change table.
+
+     vendor Payment made
+        1. view Payment made has reflect so change table.
+        2. show Payment made has reflect so change table.
+
+   Overview:
+
+        1.change graph mode.
+        2. add new functinality.
+ 
+
+        
+           
+        

