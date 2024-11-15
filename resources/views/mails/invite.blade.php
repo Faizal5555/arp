@@ -63,21 +63,11 @@
 </style>
 <body>
     <div class="container">
-        
-         <h3>Dear Doctor / Healthcare Practitioner,</h3>
-            <p>Welcome to Online Panel Registration. We are a medical research company supporting large healthcare organisations in their global research requirements.</p>
-             <p>Today, we would like to invite you to join our growing panels and offer your valuable feedback towards medical research projects. We will send you online surveys for which you would be paid cash incentives or Amazon vouchers for your valuable feedback and time. All your responses will be kept confidential and will be used for analytical purposes only.</p>
-              <p>The cash incentives or Amazon vouchers will be dependent on the type of surveys that you will participate.</p>
-              <p>Kindly click on next button below and complete your details and become our panel member. Please ensure that you fill all the details and attach your Medical licence Certificate. The Certificate helps us to verify that you are a genuine healthcare professional.</p>
-              <p>Incase of any query please revert on the email and our representative will get back to you at the earliest.</p>
-              <p>Regards</p>
-              <p>Online Panel Team</p>
-              <!--{!!$url[1]!!}-->
-              <a type="button" href="{{url('/adminapp/newdoctorregister')}}"> <button class="button-9" style="background: #0475f5;color:white;border-radius:5px;width:90px;outline:none;border:none;height: 31px;
+        <h3>Dear Doctor / Healthcare Practitioner,</h3>
+        <p>{!! nl2br(e($emailContent)) !!}</p>
+        <p>Kindly click the link below to register:</p>
+        <a type="button" href="{{url('/adminapp/newdoctorregister')}}"> <button class="button-9" style="background: #0475f5;color:white;border-radius:5px;width:90px;outline:none;border:none;height: 31px;
                 margin-top: 10px;">Next</button></a>
-       
-           
-            
     </div>
   
 </body>

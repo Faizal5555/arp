@@ -2,211 +2,196 @@
 @section('page_title', 'Client List')
 @section('content')
 <style>
-    .header{
-        background:linear-gradient(43deg,#0b5dbb,#0b5dbb);
-        
+    .header {
+        background: linear-gradient(43deg, #0b5dbb, #0b5dbb);
     }
-      
-    .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-.badge {
-    padding: 2px 0px 0px 0px!important;
-  position: absolute;
-  top: -3px;
-  right: 6px;
-  width: 18px;
-  height: 18px;
-  border-radius: 100%!important;
-  background: red;
-  color: white;
-  font-size: 10px;
-}
-.dropdown-content-two{
-    display: none;
-}
-.dropdown-content li:hover {background-color: #4982C2;}
-.dropdown:hover .dropdown-content {display: block;}
-.btnn:hover .dropdown-content-two {display: block;}
-select.form-control {
-    padding: 0.4375rem 0.75rem;
-    border: 0;
-    outline: 1px solid #0c5ebb !important;
-    color: #c9c8c8;
-}
+    .badge {
+        padding: 2px 0px 0px 0px!important;
+        position: absolute;
+        top: -3px;
+        right: 6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 100%!important;
+        background: red;
+        color: white;
+        font-size: 10px;
+    }
 </style>
 <div class="content-wrapper">
     <div class="page-header">
-      <h3 class="page-title">
-        <span class="page-title-icon bg-gradient-primary text-white mr-2">
-          <i class="mdi mdi-home"></i>
-        </span> Data Center Dashboard
-      </h3>
-      <nav aria-label="breadcrumb">
-        <ul class="breadcrumb">
-          <li class="breadcrumb-item active" aria-current="page">
-            <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-          </li>
-        </ul>
-      </nav>
+        <h3 class="page-title">
+            <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                <i class="mdi mdi-home"></i>
+            </span> Data Center Dashboard
+        </h3>
     </div>
-    <div id="won_noti">
-              <div class="col-md-11 container d-flex justify-content-end mb-3" >
-      
-                  <div class="dropdown">
-                      <a class="nav-link " href="#"><i class="fas fa-bell fa-lg"></i><span class="badge">{{$doctornotification}}</span></a>
-                      <div class="dropdown-content  " style="width: 200px;margin-left:-100px">
-                          <div class="btnn">
-                         
-                          <h6 class="text-center" style="color:rgb(183,110,255)"><button class="btn1" style="all:unset"> New Message</button></h6>
-                          
-                          <input type="hidden" name="status" id="status" value="3">
-                              <div class="dropdown-content-two"  id="ui-notification">
-                                  <ul class="nav flex-column  sub-menu1">
-                                          <li class="text-center" id="notify-movo">Receive Money/voucher</a><p> {{$doctornotificationmv}}message</p></li>
-                                          <li class="text-center" id="notify-reg" val="1">New Doctor Registration</a><p> {{$doctornotification2}}message</p></li>
-                                  </ul> 
-                              </div>
-                          </div>
-          
-                      </div>
-                  </div>
-              </div>
-    </div>
+
     <div class="row">
         <div class="col-md-4">
-             <div class="form-group">
-                 <label style="font-size: larger;">Country</label> 
-                 <select name="country" id="country" class="form-control">
-                      <option class="label-gray-3" value="">Select Country<i class="fas fa-globe-asia"></i></option>
-                           @if(isset($country) && count($country) > 0)
-                            @foreach($country as $v)
-                                <option value="{{$v->name}}">{{$v->name}}</option>
-                            @endforeach
-                            @endif
-                 </select>
+            <div class="form-group">
+                <label style="font-size: larger;">Country</label>
+                <select name="country" id="country" class="form-control">
+                    <option class="label-gray-3" value="">Select Country</option>
+                    @foreach($country as $v)
+                        <option value="{{$v->name}}">{{$v->name}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="col-md-4">
-             <div class="form-group">
-                 <label style="font-size: larger;">Speciality</label>
-                 <select name="speciality" id="speciality" class="form-control">
-                     <option value="" disabled selected>Select Speciality</option>
-                         @if(isset($speciality) && count($speciality) > 0)
-                         @foreach($speciality as $s)
-                                 <option value="{{$s->speciality}}">{{$s->speciality}}</option>
-                         @endforeach
-                         @endif
-                 </select>
-             </div>
+            <div class="form-group">
+                <label style="font-size: larger;">Speciality</label>
+                <select name="speciality" id="speciality" class="form-control">
+                    <option value="" disabled selected>Select Speciality</option>
+                    @foreach($speciality as $s)
+                        <option value="{{$s->speciality}}">{{$s->speciality}}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
     </div>
-    
-    
+
     <div class="row">
-        
-      <div class="col-md-4 stretch-card grid-margin">
-        <div class="card bg-gradient-danger card-img-holder text-white">
-          <div class="card-body">
-           
-            <h4 class="font-weight-normal mb-3">Total Doctor<i class="mdi mdi-chart-line mdi-24px float-right"></i>
-            </h4>
-            <h2 class="mb-5 doctor_count">{{$doctor}}</h2>
-          </div>
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card bg-gradient-danger card-img-holder text-white">
+                <div class="card-body">
+                    <h4 class="font-weight-normal mb-3">Total Doctors Registered<i class="mdi mdi-chart-line mdi-24px float-right"></i></h4>
+                    <h2 class="mb-5 doctor_count">{{$doctor}}</h2>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-md-4 stretch-card grid-margin">
-        <div class="card bg-gradient-info card-img-holder text-white">
-          <div class="card-body">
-           
-            <h4 class="font-weight-normal mb-3">Redeem Accept List<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-            </h4>
-            <h2 class="mb-5">{{$doctorRedeemAcceptList}}</h2>
-          </div>
+        <div class="col-md-4">
+            <h4 class="font-weight-normal mb-3">Total Doctors Registered</h4>
+            <canvas id="doctorPieChart"></canvas>
         </div>
-      </div>
-   </div>
+        {{-- <div class="col-md-4">
+            <h4 class="font-weight-normal mb-3">Total Consumer Registered</h4>
+            <canvas id="userPieChart"></canvas>
+        </div> --}}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  $(document).ready(function(){
-    $('#notify-movo').click(function(){
-            $.ajaxSetup({
-             headers: {
-                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                 },
-            });
-            $.ajax({
-                url: "{{ route('adminconcept')}}",
-                method: 'post',
-                data: {
-                  status: $('#status').val(),
-                 },
-                success: function(result){
-                    if(result.success == 1)
-                       {
-                        location.reload(true);
-                        window.location="{{route('reddemAcept')}}";
+  $(document).ready(function() {
+      var doctorPieChart;
+      var userPieChart;
+      
+      // Function to create or update the doctor pie chart
+      function updateDoctorPieChart(data) {
+          const labels = data.map(item => item.label);
+          const counts = data.map(item => item.count);
 
-                       }
-                }
-            });
-        });
-        $('#notify-reg').click(function(){
-       
-            $.ajaxSetup({
-             headers: {
-                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                 },
-            });
-            $.ajax({
-                url: "{{route('adminreg1')}}",
-                method: 'post',
-                data: {
-                  status:1,
-                 },
-                success: function(result){
-                    if(result.success == 1)
-                       {
-                        location.reload(true);
-                        window.location="{{route('adminactivedview')}}";
+          if (counts.length === 0) {
+              labels.push("No Data");
+              counts.push(0);
+          }
 
-                       }
-                }
-            });
-        });
-   });
- 
- $(document).on('change','#country,#speciality',function(){
-    var country = $('#country').val();
-    var speciality = $('#speciality').val();
-     $.ajax({
-         url:"{{route('adminfillter')}}",
-         method:'get',
-         data: {
-             country,speciality
-         },
-         success: function(data){
-            //  console.log(data.datacenter);
-             $('.doctor_count').html(data.datacenter);
-         }
-     })
- })
-//  $(document).on('change','#speciality',function(){
-//      console.log($(this).val());
-//      $.ajax({
-//          url:"{{route('adminfillter')}}",
-//          method:'get',
-//          data: {
-//              speciality:$(this).val(),
-//          },
-//          success: function(data){
-//             $('.doctor_count').html(data.datacenter);
-//          }
-//      })
-//  })
-   </script>
+          if (doctorPieChart) {
+              doctorPieChart.destroy();
+          }
+          
+          const ctx = document.getElementById('doctorPieChart').getContext('2d');
+          doctorPieChart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      data: counts,
+                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: {
+                      legend: {
+                          position: 'top',
+                      }
+                  }
+              }
+          });
+      }
+
+      // Function to create or update the user pie chart
+      function updateUserPieChart(data) {
+          const labels = data.map(item => item.label);
+          const counts = data.map(item => item.count);
+
+          if (counts.length === 0) {
+              labels.push("No Data");
+              counts.push(0);
+          }
+
+          if (userPieChart) {
+              userPieChart.destroy();
+          }
+
+          const ctx = document.getElementById('userPieChart').getContext('2d');
+          userPieChart = new Chart(ctx, {
+              type: 'pie',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      data: counts,
+                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  plugins: {
+                      legend: {
+                          position: 'top',
+                      }
+                  }
+              }
+          });
+      }
+
+      // Fetch initial data and update both charts
+      fetchDoctorData();
+      fetchUserData();
+
+      $('#country, #speciality').change(function() {
+          fetchDoctorData();
+          fetchUserData();
+      });
+
+      function fetchDoctorData() {
+          var country = $('#country').val();
+          var speciality = $('#speciality').val();
+          
+          $.ajax({
+              url: "{{ route('adminfillter') }}",
+              method: 'get',
+              data: { country, speciality },
+              success: function(data) {
+                  $('.doctor_count').html(data.datacenter || 0);
+                  updateDoctorPieChart(data.chartData);
+              },
+              error: function() {
+                  $('.doctor_count').html(0);
+                  updateDoctorPieChart([]);
+              }
+          });
+      }
+
+    //   function fetchUserData() {
+    //       var country = $('#country').val();
+          
+    //       $.ajax({
+    //           url: "{{ route('userCountryFilter') }}",  // Add a new route for this function in your controller
+    //           method: 'get',
+    //           data: { country },
+    //           success: function(data) {
+    //               updateUserPieChart(data.userChartData);  // Assuming this returns data formatted for the user chart
+    //           },
+    //           error: function() {
+    //               updateUserPieChart([]);
+    //           }
+    //       });
+    //   }
+  });
+</script>
 @endsection

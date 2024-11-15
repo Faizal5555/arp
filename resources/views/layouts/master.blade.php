@@ -759,9 +759,9 @@ table tfoot th {
             @elseif(auth()->user()->user_type == 'data_center')
             
             <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
-            <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Invite</a></li>
-            <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('popinvite')}}" >PopInvite</a></li>
-            
+            <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Panel Registration Invite</a></li>
+            <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('popinvite')}}" >Consumer Registration Invite</a></li>
+            <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>
              <!--<li class="nav-item {{ (Route::is('adminactivedview')) ? 'active' : '' }}"  ><a class="nav-link"  href="{{route('adminactivedview')}}"> View Registration</a></li>-->
              
                      <!--<li class="nav-item {{ (Route::is('Money.send')) ? 'active' : '' }}"   ><a class="nav-link"  href="{{route('Money.send')}}"> Send Money/Voucher </a></li>-->

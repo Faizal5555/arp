@@ -290,7 +290,9 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
     
     Route::get('Data/popinvite', 'App\Http\Controllers\dataCenterController@popinvite')->name('popinvite');
     Route::post('Data/popinvite1', 'App\Http\Controllers\dataCenterController@popinvite1')->name('popinvite1');
-
+    Route::get('Data/panelist', 'App\Http\Controllers\dataCenterController@panelist')->name('panelist');
+    Route::get('/filter-doctors', 'App\Http\Controllers\dataCenterController@filterDoctors')->name('filterDoctors');
+    Route::post('/send-email-panelists', 'App\Http\Controllers\dataCenterController@sendEmailToPanelists')->name('sendEmailToPanelists');
     // Route::get('mail', 'App\Http\Controllers\dataCenterController@mailexample')->name('mailexample');
 
     Route::get('website/user/actived/link','App\Http\Controllers\dataCenterController@userReturnview');
@@ -362,7 +364,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
    Route::post('Data/center/adminreg1', 'App\Http\Controllers\dataCenterController@adminreg1')->name('adminreg1');
    Route::get('admin/datacenter/overview','App\Http\Controllers\dataCenterController@adminoverview')->name('admincenterverview');
    Route::get('admin/datacenter/adminfillter','App\Http\Controllers\dataCenterController@adminfillter')->name('adminfillter');
-   
+   Route::get('admin/datacenter/userCountryFilter','App\Http\Controllers\dataCenterController@userCountryFilter')->name('userCountryFilter');
    //user module route 
    Route::get('view/profile','App\Http\Controllers\dataCenterController@viewProfile')->name('user.profile');
   // view Question And Answer

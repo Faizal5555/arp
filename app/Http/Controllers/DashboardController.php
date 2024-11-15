@@ -261,7 +261,8 @@ class DashboardController extends Controller
                  $totalmargin=Wonproject::sum('total_margin');
             return view('salesdashboard',compact('bid','bidrfq','vendor','client','won_project','lost' ,'next','won','TotalRFQsBid','won_project_1','TotalClientvalue','TotalVendorValue',"TotalMarginValue","totalNoOfprojects","TotalLostProjects","pendingFollow","totalrevenue","totalmargin","operation1","closed1","field_team","total_supplier","total_cost_request","datacenter1"));
         }elseif($user->user_type == ('user')){
-            return view ('user.userDashboard');
+            $countries =Country::get();
+            return view ('user.userDashboard',compact('countries'));
         }
         // $dashboard = '';
         // return view('index',compact('dashboard'));

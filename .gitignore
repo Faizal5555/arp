@@ -1,2 +1,5 @@
 /vendor
 /backup
+composer.lock
+bootstrap/cache/packages.php
+bootstrap/cache/services.php

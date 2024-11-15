@@ -66,42 +66,161 @@ class dataCenterController extends Controller
     public function invite(Request $req){
         return view('DataCenter.invite');
     }
-    public function invite1(Request $req){
-        
+    public function invite1(Request $req)
+    {
+        // Validate the attachment, email file, and email content
         $validator = Validator::make(
             $req->all(),
             [
-                'email'=>'required|email',
-                ]
+                'emailFile' => 'nullable|file|mimes:csv,txt|max:2048', // Validate email file if present
+                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048', // Validate attachment if present
+                'emailContent' => 'required|string'
+            ]
         );
-        $link='arp.stagingzar.com/newdoctorregister';
-        event(new SendInviteMail ([$req->email,$link]));
-
+    
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+    
+        $emails = [];
+    
+        // Get emails from uploaded file if provided
+        if ($req->hasFile('emailFile')) {
+            $file = $req->file('emailFile');
+            $filePath = $file->getRealPath();
+            
+            // Read each line for TXT files, or parse as CSV for CSV files
+            $fileExtension = $file->getClientOriginalExtension();
+            if ($fileExtension === 'txt') {
+                // Get emails from each line in TXT file
+                $emails = array_merge($emails, file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+            } elseif ($fileExtension === 'csv') {
+                // Get emails from CSV file
+                $file = fopen($filePath, 'r');
+                while (($line = fgetcsv($file)) !== false) {
+                    $emails = array_merge($emails, $line);
+                }
+                fclose($file);
+            }
+        }
+    
+        // Validate and separate valid and invalid emails
+        $validEmails = [];
+        $invalidEmails = [];
+    
+        foreach ($emails as $email) {
+            $email = trim($email); // Remove whitespace
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $validEmails[] = $email;
+            } else {
+                $invalidEmails[] = $email;
+            }
+        }
+    
+        if (!empty($invalidEmails)) {
+            return response()->json(['error' => 'Invalid email addresses: ' . implode(', ', $invalidEmails)], 400);
+        }
+    
+        // Prepare email content and attachment
+        $emailContent = $req->emailContent;
+        $attachment = $req->file('attachment');
+        $link = 'arp.stagingzar.com/newdoctorregister';
+    
+        // Send email to each valid email address
+        foreach ($validEmails as $email) {
+            Mail::send('mails.invite', ['url' => $link, 'emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
+                $mail->from('registrations@healthcarepanelsindia.com');
+                $mail->to($email);
+                $mail->subject('Doctor Notification');
+                
+                if ($attachment) {
+                    $mail->attach($attachment->getRealPath(), [
+                        'as' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getMimeType()
+                    ]);
+                }
+            });
+        }
+    
+        return response()->json(['message' => 'Emails sent successfully.']);
     }
+    
+    
 
     public function popinvite(Request $req){
         return view('DataCenter.popinvite');
     }
-      public function popinvite1(Request $req){
-        
+    public function popinvite1(Request $req)
+    {
+        // Validate request input, making sure emailContent is required and email/attachment have correct formats.
         $validator = Validator::make(
             $req->all(),
             [
-                'email'=>'required|email',
-                ]
+                'email' => 'nullable|string', // Optional for manual input
+                'emailFile' => 'nullable|file|mimes:csv,txt|max:2048', // CSV or TXT file
+                'attachment' => 'file|mimes:pdf,jpg,jpeg,png|max:2048', // Optional attachment
+                'emailContent' => 'required|string' // Required email content
+            ]
         );
-        $user_id = Auth::user()->id;
-       
-        
-
-        // dd($link);
-       
-
-
-        event(new SendpopinviteMail ([$req->email,$user_id]));
-        $response_data=["success"=>1,"message"=>"Mail Send Successfully" ];
-        return response()->json($response_data);
+    
+        // If validation fails, return the first error message
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+    
+        $emails = [];
+    
+        // Collect emails from text input if provided
+        if ($req->email) {
+            $emails = array_merge($emails, explode(',', $req->email));
+        }
+    
+        // Collect emails from uploaded file if provided
+        if ($req->hasFile('emailFile')) {
+            $file = $req->file('emailFile');
+            $filePath = $file->getRealPath();
+            $fileExtension = $file->getClientOriginalExtension();
+    
+            // Process based on file type (TXT or CSV)
+            if ($fileExtension === 'txt') {
+                $emails = array_merge($emails, file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+            } elseif ($fileExtension === 'csv') {
+                $file = fopen($filePath, 'r');
+                while (($line = fgetcsv($file)) !== false) {
+                    $emails = array_merge($emails, $line);
+                }
+                fclose($file);
+            }
+        }
+    
+        // Remove duplicate emails and trim whitespace
+        $emails = array_unique(array_map('trim', $emails));
+    
+        // Check if there are any valid emails to send to
+        if (empty($emails)) {
+            return response()->json(['error' => 'No valid emails provided. Please check your input.'], 400);
+        }
+    
+        // Prepare data for sending emails
+        $emailContent = $req->emailContent;
+        $attachment = $req->file('attachment');
+        $userId = Auth::user()->id;
+    
+        $data = [
+            'emails' => $emails,
+            'link' => url('/adminapp/lang/home/' . $userId),
+            'emailContent' => $emailContent,
+            'attachment' => $attachment
+        ];
+    
+        // Fire the event to send emails
+        event(new SendpopinviteMail($data));
+    
+        return response()->json(['message' => 'Emails sent successfully.']);
     }
+    
+    
+
     public function OutsideDataNew(Request $req)
     {
         $speciality=Speciality::get();
@@ -964,24 +1083,114 @@ class dataCenterController extends Controller
 
             }
             
-    public function adminfillter(Request $req){
-        // dd($req->all());
-        // dd($req->speciality);
-        if($req->country !='' && $req->speciality !=''){
-            // dd('hi');
-            $datacenter=datacenternew::where('country1',$req->country)->where('docterSpeciality',$req->speciality)->count();
-        }
-        elseif($req->speciality){
-            $datacenter=datacenternew::where('docterSpeciality',$req->speciality)->count();
-        }
-        elseif($req->country){
-            $datacenter=datacenternew::where('country1',$req->country)->count();
-        }
-        else{
+            public function adminfillter(Request $req)
+            {
+                $datacenter = 0;
+                $chartData = [];
             
-        }
-        return response()->json(["datacenter"=>$datacenter]);
-    }
+                // Calculate the total doctor count based on filters
+                if ($req->country && $req->speciality) {
+                    $datacenter = datacenternew::where('country1', $req->country)
+                        ->where('docterSpeciality', $req->speciality)
+                        ->count();
+                } elseif ($req->speciality) {
+                    $datacenter = datacenternew::where('docterSpeciality', $req->speciality)
+                        ->count();
+                } elseif ($req->country) {
+                    $datacenter = datacenternew::where('country1', $req->country)
+                        ->count();
+                } else {
+                    $datacenter = datacenternew::count(); // Count all doctors if no filter is applied
+                }
+            
+                // Prepare data for the pie chart
+                if ($req->country) {
+                    // Chart data based on specialties within the selected country
+                    $chartDataQuery = datacenternew::select('docterSpeciality as label', DB::raw('count(*) as count'))
+                        ->where('country1', $req->country)
+                        ->groupBy('docterSpeciality')
+                        ->get();
+                } elseif ($req->speciality) {
+                    // Chart data based on countries within the selected specialty
+                    $chartDataQuery = datacenternew::select('country1 as label', DB::raw('count(*) as count'))
+                        ->where('docterSpeciality', $req->speciality)
+                        ->groupBy('country1')
+                        ->get();
+                } else {
+                    // Default chart data: distribution by country
+                    $chartDataQuery = datacenternew::select('country1 as label', DB::raw('count(*) as count'))
+                        ->groupBy('country1')
+                        ->get();
+                }
+            
+                // Format chart data as an array of label and count
+                $chartData = $chartDataQuery->map(function ($item) {
+                    return [
+                        'label' => $item->label,
+                        'count' => $item->count,
+                    ];
+                })->toArray();
+            
+                return response()->json([
+                    "datacenter" => $datacenter,
+                    "chartData" => $chartData
+                ]);
+            }
+
+            public function userCountryFilter(Request $req) {
+                $country = $req->country;
+
+                // Get total registrations for the pie chart from the `ques` table
+                $userChartDataQuery = DB::table('ques')
+                    ->select('country as label', DB::raw('count(*) as count'))
+                    ->whereNotNull('country')
+                    ->when($country, function ($query) use ($country) {
+                        return $query->where('country', $country);
+                    })
+                    ->groupBy('country')
+                    ->get();
+
+                $userChartData = $userChartDataQuery->map(function ($item) {
+                    return [
+                        'label' => $item->label,
+                        'count' => $item->count,
+                    ];
+                })->toArray();
+                        
+                // Get question 26 (Occupation) and question 27 (Organization Industry) data for the selected country
+                $occupationData = DB::table('ques')
+                    ->select('que_26 as occupation', DB::raw('count(*) as count'))
+                    ->where('country', $country)
+                    ->groupBy('que_26')
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => config("answer_key.answers.twentysix.{$item->occupation}", 'Unknown'),
+                            'count' => $item->count,
+                        ];
+                    });
+            
+                $industryData = DB::table('ques')
+                    ->select('que_27 as industry', DB::raw('count(*) as count'))
+                    ->where('country', $country)
+                    ->groupBy('que_27')
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => config("answer_key.answers.twentyseven.{$item->industry}", 'Unknown'),
+                            'count' => $item->count,
+                        ];
+                    });
+            
+                return response()->json([
+                    "userChartData" => $userChartData,
+                    "occupationData" => $occupationData,
+                    "industryData" => $industryData,
+                ]);
+            }
+            
+            
+            
     
     public function import(Request $request){
         DB::beginTransaction();
@@ -1269,6 +1478,7 @@ class dataCenterController extends Controller
                     
                     $create->name = "$questions->fname$questions->lname";
                     $create->email = $questions->email;
+                    $create->country = $questions->country;
                     $create->user_type = 'user';
                     $create->user_role = 'user';
                     $create->password = Hash::make($random_no);
@@ -1297,7 +1507,7 @@ class dataCenterController extends Controller
         }
         catch(Exception $e)
         {
-            dd($e);
+            $response_data = ["validation" => 0, "message" => $e->getMessage()];
         }
             return response()->json($response_data);
 
@@ -1395,4 +1605,61 @@ class dataCenterController extends Controller
         $pdf = PDF::loadView('DataCenter.userPdf',compact('country','data','logo','questions','answers_9','answers_11','answers_16','answers_17','answers_18','answers_20','answers_27','answers_30','answers_31','answers_33','pdf1'))->setOptions(['defaultFont' => 'sans-serif']);      
         return $pdf->download('pdf_file.pdf');
     }
+
+    public function panelist()
+{
+    $countries = Country::get();
+    $specialities = Speciality::get();
+    return view('DataCenter.panelist', compact('countries', 'specialities'));
+}
+
+public function filterDoctors(Request $request)
+{
+    $doctors = datacenternew::query();
+
+    if ($request->country) {
+        $doctors->where('country1', $request->country); // Assuming 'country1' is the column for country
+    }
+
+    if ($request->speciality) {
+        $doctors->where('docterSpeciality', $request->speciality); // Assuming 'docterSpeciality' is the column for specialty
+    }
+    
+
+    $filteredDoctors = $doctors->get();
+
+    return view('DataCenter.doctor_list', compact('filteredDoctors'))->render();
+}
+
+public function sendEmailToPanelists(Request $request)
+{
+    $request->validate([
+        'doctors' => 'required|array',
+        'emailAttachment' => 'file|mimes:pdf|max:2048' // Validate file as a PDF with max size of 2MB
+    ]);
+
+    $doctorIds = $request->input('doctors');
+    $emailContent = $request->input('emailContent');
+    $emailAttachment = $request->file('emailAttachment');
+
+    // Fetch doctors based on validated IDs
+    $doctors = datacenternew::whereIn('id', $doctorIds)->get();
+  
+    //dd($doctors);
+    foreach ($doctors as $doctor) {
+        Mail::send('mails.panelist_notification', ['doctor' => $doctor, 'emailContent' => $emailContent], function ($message) use ($doctor, $emailAttachment) {
+            $message->to($doctor->email)
+                    ->subject('Doctor Notification');
+
+            if ($emailAttachment) {
+                $message->attach($emailAttachment->getPathname(), [
+                    'as' => $emailAttachment->getClientOriginalName(),
+                    'mime' => $emailAttachment->getMimeType(),
+                ]);
+            }
+        });
+    }
+
+    return response()->json(['message' => 'Emails sent successfully.']);
+}
 }

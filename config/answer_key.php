@@ -246,6 +246,21 @@ return[
             "21" => "Other",
             "22" => "Prefer not to say",
         ],
+        "twentysix"=>[
+            "1" => "Unskilled Worker",
+                "2" => "Skilled Worked",
+                "3" => "Petty Trader",
+                "4" => "Shop Owner",
+                "5" => "Businessman / Industrialist - No employees",
+                "6" => "Businessman / Industrialist - 1-9 employees",
+                "7" => "Businessman / Industrialist - 10+ employees",
+                "8" => "Self Employed Professional",
+                "9" => "Clerical / Salesman",
+                "10" => "Supervisory Level",
+                "11" => "Officers / Executives - Junior",
+                "12" => "Officers / Executives - Middle / Senior",
+              
+        ],
         "twentyseven"=>[
             "1" => "Agriculture/Fishing",
                 "2" => "Military",

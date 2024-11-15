@@ -19,10 +19,11 @@ class SendpopinviteMail
      *
      * @return void
      */
-    public function __construct($url)
+    public $data;
+    public function __construct($data)
     {  
         //  dd($url);
-        $this->url=$url;
+        $this->data = $data;
     }
 
     /**

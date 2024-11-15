@@ -27,13 +27,25 @@ class SendpopinviteMailFired
      */
     public function handle(SendpopinviteMail $event)
     {
-        $user=$event->url;
-        // dd($user);
-        Mail::send('mails.genpop_send_link', ['url' =>  $user],
-        function ($mail) use ( $user) {
-            $mail->from('registration@universalresearchpanels.com');
-            $mail->to( $user[0]);
-            $mail->subject('General User Notification');
-        });
+        $data = $event->data;
+        $emails = $data['emails'];
+        $link = $data['link'];
+        $emailContent = $data['emailContent'];
+        $attachment = $data['attachment'];
+
+        foreach ($emails as $email) {
+            Mail::send('mails.genpop_send_link', ['link' => $link, 'emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
+                $mail->from('registration@universalresearchpanels.com');
+                $mail->to(trim($email));
+                $mail->subject('General User Notification');
+
+                if ($attachment) {
+                    $mail->attach($attachment->getRealPath(), [
+                        'as' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getMimeType()
+                    ]);
+                }
+            });
+        }
     }
 }
