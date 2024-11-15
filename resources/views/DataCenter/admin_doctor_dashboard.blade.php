@@ -43,7 +43,7 @@
             <div class="form-group">
                 <label style="font-size: larger;">Speciality</label>
                 <select name="speciality" id="speciality" class="form-control">
-                    <option value="" disabled selected>Select Speciality</option>
+                    <option value=""  selected>Select Speciality</option>
                     @foreach($speciality as $s)
                         <option value="{{$s->speciality}}">{{$s->speciality}}</option>
                     @endforeach
@@ -177,21 +177,21 @@
           });
       }
 
-    //   function fetchUserData() {
-    //       var country = $('#country').val();
+      function fetchUserData() {
+          var country = $('#country').val();
           
-    //       $.ajax({
-    //           url: "{{ route('userCountryFilter') }}",  // Add a new route for this function in your controller
-    //           method: 'get',
-    //           data: { country },
-    //           success: function(data) {
-    //               updateUserPieChart(data.userChartData);  // Assuming this returns data formatted for the user chart
-    //           },
-    //           error: function() {
-    //               updateUserPieChart([]);
-    //           }
-    //       });
-    //   }
+          $.ajax({
+              url: "{{ route('userCountryFilter') }}",  // Add a new route for this function in your controller
+              method: 'get',
+              data: { country },
+              success: function(data) {
+                  updateUserPieChart(data.userChartData);  // Assuming this returns data formatted for the user chart
+              },
+              error: function() {
+                  updateUserPieChart([]);
+              }
+          });
+      }
   });
 </script>
 @endsection
