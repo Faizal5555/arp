@@ -365,6 +365,27 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
    Route::get('admin/datacenter/overview','App\Http\Controllers\dataCenterController@adminoverview')->name('admincenterverview');
    Route::get('admin/datacenter/adminfillter','App\Http\Controllers\dataCenterController@adminfillter')->name('adminfillter');
    Route::get('admin/datacenter/userCountryFilter','App\Http\Controllers\dataCenterController@userCountryFilter')->name('userCountryFilter');
+   Route::get('/hcp-panel/invite', 'App\Http\Controllers\dataCenterController@hcpPanelInvite')->name('hcpPanelInvite');
+   Route::get('/hcp-panel/invite-data', 'App\Http\Controllers\dataCenterController@hcpPanelInviteData')->name('hcpPanelInviteData');
+   Route::get('/consumer-registration', 'App\Http\Controllers\dataCenterController@consumerRegistration')->name('consumerRegistration');
+   Route::get('/consumer-registration-data', 'App\Http\Controllers\dataCenterController@consumerRegistrationData')->name('consumerRegistrationData');
+   Route::get('/hcp/edit/{id}', 'App\Http\Controllers\dataCenterController@editHcp')->name('hcp.edit');
+   Route::post('/hcp/update/{id}', 'App\Http\Controllers\dataCenterController@updateHcp')->name('hcp.update');
+   Route::delete('/hcp/delete/{id}', 'App\Http\Controllers\dataCenterController@deleteHcp')->name('hcp.delete');
+   Route::get('/consumer/edit/{id}', 'App\Http\Controllers\DataCenterController@editConsumer')->name('consumer.edit');
+   Route::post('/consumer/update/{id}', 'App\Http\Controllers\DataCenterController@updateConsumer')->name('consumer.update');
+   Route::delete('/consumer/delete/{id}', 'App\Http\Controllers\DataCenterController@deleteConsumer')->name('consumer.delete');
+   Route::get('/email-panel', 'App\Http\Controllers\DataCenterController@consumerEmail')->name('emailPanel');
+   Route::get('/filter-users', 'App\Http\Controllers\DataCenterController@filterUsers')->name('filterUsers');
+   Route::post('/send-email', 'App\Http\Controllers\DataCenterController@sendEmailToUsers')->name('sendEmailToUsers');
+   Route::get('/user-hcp-list', 'App\Http\Controllers\DataCenterController@userHcpList')->name('userHcpList');
+   Route::get('/user-hcp-list-data', 'App\Http\Controllers\DataCenterController@userHcpListData')->name('userHcpListData');
+   Route::get('/user-consumer-list', 'App\Http\Controllers\dataCenterController@userconsumerlist')->name('user.consumer.list');
+   Route::get('/user-consumer-list-data', 'App\Http\Controllers\dataCenterController@userconsumerlistData')->name('user.consumer.list.data');
+   Route::get('hcp-pie-chart', 'App\Http\Controllers\dataCenterController@hcpPieChart')->name('hcp.pieChart');
+   Route::get('hcp-country-data', 'App\Http\Controllers\dataCenterController@hcpCountryFilter')->name('hcp.countryData');
+
+   
    //user module route 
    Route::get('view/profile','App\Http\Controllers\dataCenterController@viewProfile')->name('user.profile');
   // view Question And Answer
@@ -382,10 +403,11 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
  Route::get('/newdoctorregister','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
- Route::get('lang/home/{id}', 'App\Http\Controllers\dataCenterController@language');
+ Route::get('lang/home/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
  Route::get('lang/change', 'App\Http\Controllers\dataCenterController@change')->name('changeLang');
  Route::post('new/register', 'App\Http\Controllers\dataCenterController@new_register')->name('new_register');
-// Route::get('/dashboard', function () {
+ Route::post('/datacenter/import-doctors', 'App\Http\Controllers\dataCenterController@importDoctors')->name('datacenter.importDoctors');
+ // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 

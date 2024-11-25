@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Que extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'fname', 
+        'lname', 
+        'email', 
+        'phone', 
+        'country'
+    ]; 
 }

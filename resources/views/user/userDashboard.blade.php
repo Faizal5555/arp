@@ -8,15 +8,21 @@
     </div> --}}
 
     <!-- Dropdown to select country -->
-    <div class="col-md-4">
-        <label for="countrySelect">Select Country</label>
-        <select id="countrySelect" class="form-control">
-            <option value="">Select the country</option>
-            <!-- Assuming $countries is passed to this view with a list of all countries -->
-            @foreach($countries as $country)
-            <option value="{{ $country->name }}">{{ $country->name }}</option>
-            @endforeach
-        </select>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="countrySelect">Select Country</label>
+            <select id="countrySelect" class="form-control">
+                <option value="">Select the country</option>
+                <!-- Assuming $countries is passed to this view with a list of all countries -->
+                @foreach($countries as $country)
+                <option value="{{ $country->name }}">{{ $country->name }}</option>
+                @endforeach
+            </select>
+        </div>
+            <div class="col-md-4">
+                <label for="countrySelect">Total Hcp Registered Click to see</label>
+                <button class="btn btn-primary" id="hcpRegisteredButton">HCP Dashboard</button>
+            </div>
     </div>
     
     <div class="row">
@@ -45,6 +51,7 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initial fetch for chart data
     fetchUserChartData();
@@ -253,6 +260,9 @@ function getRandomColor() {
     });
 }
 
+document.getElementById('hcpRegisteredButton').addEventListener('click', function() {
+    window.location.href = "{{ route('hcp.pieChart') }}";
+});
 
 });
 

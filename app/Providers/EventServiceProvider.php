@@ -45,6 +45,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\question_email' => [
             'App\Listeners\question_email',
         ],
+        'App\Events\SendBulkRegistrationMail' => [
+            'App\Listeners\SendBulkRegistrationMail',
+        ],
+        
     ];
 
     /**

@@ -1,3 +1,6 @@
+@php
+$user_id = auth()->id();
+@endphp
 <!DOCTYPE html >
 <html lang="en">
   <head>
@@ -265,6 +268,11 @@ table tfoot th {
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile .nav-link.dropdown-toggle:after {
     margin-top:5px;
 }
+.sidebar .nav .nav-item
+{
+  padding-left: 10px;
+}
+
     </style>
   </head>
   <body id="top-body" class=""> 
@@ -711,11 +719,11 @@ table tfoot th {
                   @if(auth()->user()->user_type == 'admin')
                   <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
                   <li class="nav-item {{ (Route::is('adminactivedview')) ? 'active' : '' }}"  ><a class="nav-link"  href="{{route('adminactivedview')}}"> View Registration</a></li>
-                  <li class="nav-item {{ (Route::is('Money.send')) ? 'active' : '' }}"   ><a class="nav-link"  href="{{route('Money.send')}}"> Send Money/Voucher </a></li>
+                  {{-- <li class="nav-item {{ (Route::is('Money.send')) ? 'active' : '' }}"   ><a class="nav-link"  href="{{route('Money.send')}}"> Send Money/Voucher </a></li>
                   
                   <li class="nav-item {{ (Route::is('Money.bulksend')) ? 'active' : '' }}"   ><a class="nav-link"  href="{{route('Money.bulksend')}}"> Bulk Send Money</a></li>
                  
-                  <li class="nav-item  {{ (Route::is('reddemAcept')) ? 'active' : '' }}" ><a class="nav-link" href="{{route('reddemAcept')}}">Redeem Accepted List</a></li> 
+                  <li class="nav-item  {{ (Route::is('reddemAcept')) ? 'active' : '' }}" ><a class="nav-link" href="{{route('reddemAcept')}}">Redeem Accepted List</a></li>  --}}
                   <li class="nav-item {{ (Route::is('account.datafillter')) ? 'active' : '' }}" > <a class="nav-link" href="{{route('account.datafillter')}}">Inbox</a></li>
                   <li class="nav-item {{ (Route::is('doctorlist')) ? 'active' : '' }}" ><a class="nav-link" href="{{route('doctorlist')}}">Doctor Document</a></li> 
                   <li class="nav-item {{ (Route::is('viewQus')) ? 'active' : '' }}"><a class="nav-link" href="{{route('viewQus')}}">View User</a></li>
@@ -726,6 +734,42 @@ table tfoot th {
                  </ul>
               </div>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic7" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Hcp Registration</span>
+                <i class="menu-arrow"></i>
+               <i class="fas fa-user-nurse"></i>
+              </a>
+              <div class="collapse" id="ui-basic7">
+                <ul class="nav flex-column sub-menu1">
+                  @if(auth()->user()->user_type == 'admin')
+                  <li class="nav-item" ><a class="nav-link" href="{{route('dataCenternew')}}">New Registrations</a></li>
+                  <li class="nav-item" ><a class="nav-link" href="{{route('hcpPanelInvite')}}">View  Registration</a></li>
+
+                  @endif
+                 </ul>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic8" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Consumer Registration</span>
+                <i class="menu-arrow"></i>
+               <i class="fas fa-user-nurse"></i>
+              </a>
+              <div class="collapse" id="ui-basic8">
+                <ul class="nav flex-column sub-menu1">
+                  @if(auth()->user()->user_type == 'admin')
+                  <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">New Registrations</a></li>
+                  <li class="nav-item" ><a class="nav-link" href="{{route('consumerRegistration')}}">View  Registration</a></li>
+                  @endif
+                 </ul>
+              </div>
+            </li>
+
+
+
             @elseif(auth()->user()->user_type == 'doctor')
              <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic11" aria-expanded="false" aria-controls="ui-basic">
@@ -746,13 +790,31 @@ table tfoot th {
             @elseif(auth()->user()->user_type == 'user')
              <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic12" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title">User</span>
+                <span class="menu-title">Hcp Registration</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
               </a>
               <div class="collapse" id="ui-basic12">
                 <ul class="nav flex-column sub-menu1">
-                   <li class="nav-item {{(Route::is('user.profile')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('user.profile')}}">View Profile</a></li>
+                  <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
+                  <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Bulk Registration Invite</a></li>
+                   <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>
+                  <li class="nav-item {{(Route::is('user.userhcplist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('userHcpList')}}">View Registration</a></li>
+                  </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic13" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Consumer Registration</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic13">
+                <ul class="nav flex-column sub-menu1">
+                  <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">New Registrations</a></li>
+                  <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('popinvite')}}" >Consumer bulk Registration</a></li>
+                   <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('emailPanel')}}" >Send Email to Consumer</a></li>
+                  <li class="nav-item {{(Route::is('user.userconsumerlist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('user.consumer.list')}}">View Registration</a></li>
                   </ul>
               </div>
             </li>

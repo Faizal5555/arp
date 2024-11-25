@@ -175,6 +175,11 @@ select.custom-select.custom-select-sm.form-control.form-control-sm {
     visibility: hidden;
 }
    </style>
+   <a href="{{asset('global_assets/demoexample/datacenter_example_file.csv')}}" download="datacenter_example_file.csv">
+    {{asset('global_assets/demoexample/datacenter_example_file.csv')}} <br>
+    {{asset('assets/docter_document/1646046099.jpg')}}
+    {{-- <img src="{{asset('assets/docter_document/1646046099.jpg')}}" alt="Click to download" width="200"> --}}
+</a>
    <div class="row">
         <div class="col-md-12">
             <div class="card " id="header-title">  

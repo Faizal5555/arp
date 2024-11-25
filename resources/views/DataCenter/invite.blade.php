@@ -22,7 +22,7 @@
 <div class="col-md-12">
     <div class="card" id="header-title">
         <div class="card-header header-elements-inline header">
-            <div class="card-title" style="color:whitesmoke;">Hcp Panel Registration Invite</div>
+            <div class="card-title" style="color:whitesmoke;">Hcp Panel Bulk Registration Invite</div>
         </div>
 
         <div class="card-body" id="cardbody">

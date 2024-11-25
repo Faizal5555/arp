@@ -17,6 +17,31 @@
      justify-content:space-between;
  }
 </style>
+@if (session('validationErrors'))
+    <div class="alert alert-danger">
+        <h4>Validation Errors:</h4>
+        <ul>
+            @foreach (session('validationErrors') as $row => $errors)
+                <li>
+                    <strong>Row {{ $row }}:</strong>
+                    <ul>
+                        @foreach ($errors as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="col-md-12">
     <div class="card " id="header-title">  
 
@@ -61,9 +86,12 @@
                     
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row" >
-                          
+                            <label class="col-lg-3 col-form-label">Import Files</label>
                             <div class="col-lg-9">
-                                
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                    Import Data
+                                  </button>
+                                  
 
                             </div>
                         </div>
@@ -236,7 +264,7 @@
         <div class="modal-body">
 
             
-
+            
 
            
             <form action="{{ route('datacenter.import') }}" method="POST" enctype="multipart/form-data">
@@ -255,6 +283,32 @@
       </div>
     </div>
   </div>
+
+  {{-- <!-- Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">Import Doctor Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('datacenter.importDoctors') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <input type="file" name="file" class="form-control" required>
+                    <small>Upload a CSV file only.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Import</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> --}}
+
 
 <script>
     $("#country").change(function(){
@@ -402,8 +456,8 @@
             } 
 
         });
-    });
 
+});
 </script>
 @endsection
 

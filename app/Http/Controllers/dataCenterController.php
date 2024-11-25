@@ -37,6 +37,7 @@ use App\Models\Que;
 use Exception;
 use Config;
 use App\Events\SendpopinviteMail;
+use App\Events\BulkRegistrationMail;
 // use Barryvdh\DomPDF\Facade\PDF;
 use PDF;
 
@@ -1192,28 +1193,29 @@ class dataCenterController extends Controller
             
             
     
-    public function import(Request $request){
-        DB::beginTransaction();
-        try{
-            $import = new UsersImport();
-            Excel::import($import, $request->file('file'));
-            DB::commit();
-              return back()->with('success', 'Imported Successfully');
-        }
-        // return $response_data;
-        catch (\Maatwebsite\Excel\Validators\ValidationException $e){
-            DB::rollback();
-            $failures=$e->failures();
-            $failer_array = [];
-            foreach ($failures as $failure) {
-                $failer_array[] = $failure->errors()[0]."at row".$failure->row();
+            public function import(Request $request)
+            {
+                DB::beginTransaction();
+                try {
+                    $import = new UsersImport();
+                    Excel::import($import, $request->file('file'));
+                    DB::commit();
+                    return back()->with('success', 'Imported Successfully');
+                } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+                    DB::rollback();
+                    $failures = $e->failures();
+                    $validationErrors = [];
+            
+                    foreach ($failures as $failure) {
+                        $row = $failure->row(); // Row number where error occurred
+                        $errors = $failure->errors(); // Array of error messages for that row
+                        $validationErrors[$row] = $errors; // Store errors indexed by row number
+                    }
+            
+                    return back()->with('validationErrors', $validationErrors); // Pass errors to the session
+                }
             }
-            $errors=$failer_array;
-           return back()->with('fail', [$errors]);  
-        }
-       
-
-    }
+            
     
        public function datcenter_performace(Request $req){
        
@@ -1662,4 +1664,424 @@ public function sendEmailToPanelists(Request $request)
 
     return response()->json(['message' => 'Emails sent successfully.']);
 }
+
+public function hcpPanelInvite(Request $request)
+{
+    $speciality = Speciality::get();
+    $countries = Country::get(); // Assuming you have a `Country` model
+    return view('DataCenter.hcplist', compact('speciality', 'countries'));
+}
+
+public function hcpPanelInviteData(Request $request)
+{
+    $data = $request->all();
+    $hcpInvite = datacenternew::query(); // Adjust the model to your actual one
+
+    if (!empty($data['speciality'])) {
+        $hcpInvite->where('docterSpeciality', 'like', '%' . $data['speciality'] . '%');
+    }
+
+    if (!empty($data['country'])) {
+        $hcpInvite->where('country1', 'like', '%' . $data['country'] . '%');
+    }
+
+    return Datatables::of($hcpInvite)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+            return '
+                <button class="btn btn-sm btn-warning edit-btn" data-id="' . $row->id . '">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="' . $row->id . '">Delete</button>
+            ';
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+}
+
+public function editHcp($id)
+{
+    $hcp = datacenternew::find($id);
+    if ($hcp) {
+        $countries = Country::all();
+        $specialities = Speciality::all();
+        return response()->json(['success' => true, 'data' => $hcp, 'countries' => $countries, 'specialities' => $specialities]);
+    }
+    return response()->json(['success' => false, 'message' => 'HCP not found']);
+}
+
+
+public function updateHcp(Request $request, $id)
+{
+    $hcp = datacenternew::find($id); // Replace with your actual model
+    if ($hcp) {
+        $hcp->update($request->all()); // Update HCP details
+        return response()->json(['success' => true, 'message' => 'HCP updated successfully']);
+    }
+    return response()->json(['success' => false, 'message' => 'HCP not found']);
+}
+
+
+public function deleteHcp($id)
+{
+    $hcp = datacenternew::find($id); // Replace with your actual model
+    if ($hcp) {
+        $hcp->delete();
+        return response()->json(['success' => true, 'message' => 'HCP record deleted successfully']);
+    }
+    return response()->json(['success' => false, 'message' => 'HCP not found']);
+}
+
+
+    public function consumerRegistration(Request $request)
+    {
+        $countries = Country::get(); // Assuming you have a Country model to fetch countries
+        return view('DataCenter.consumerlist', compact('countries'));
+    }
+
+    public function consumerRegistrationData(Request $request)
+    {
+        $data = $request->all();
+        //dd($data);
+        $consumers = Que::query(); // 
+
+        if (isset($data['country']) && $data['country'] != '') {
+            $consumers->where('country', 'like', '%' . $data['country'] . '%');
+        }
+
+        if ($request->ajax()) {
+            return Datatables::of($consumers->get())
+                ->addIndexColumn()
+                ->make(true);
+        }
+    }
+
+    public function editConsumer($id)
+{
+    $consumer = Que::findOrFail($id); // Replace `Que` with your consumer model
+    $countries = Country::get(); // Fetch all countries
+    return response()->json([
+        'success' => true,
+        'data' => $consumer,
+        'countries' => $countries,
+    ]);
+}
+
+
+public function updateConsumer(Request $request, $id)
+{
+    $consumer = Que::find($id); // Find the record in the `que` table
+    if ($consumer) {
+        $consumer->update($request->only(['fname', 'lname', 'email', 'phone', 'country'])); // Update specific fields
+        return response()->json(['success' => true, 'message' => 'Consumer updated successfully']);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Consumer not found']);
+}
+
+
+
+
+public function deleteConsumer($id)
+{
+    $consumer = Que::findOrFail($id); // Replace `Que` with your consumer model
+    $consumer->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Consumer deleted successfully.',
+    ]);
+}
+
+
+    
+public function consumerEmail()
+{
+    $countries = Country::all(); // Fetch countries
+    return view('user.emailpanel', compact('countries'));
+}
+
+public function filterUsers(Request $request)
+{
+    $query = Que::query();
+
+    if ($request->has('country') && $request->country != '') {
+        $query->where('country', 'like', '%' . $request->country . '%');
+    }
+
+    if ($request->has('que_26') && $request->que_26 != '') {
+        $query->where('que_26', $request->que_26);
+    }
+
+    if ($request->has('que_27') && $request->que_27 != '') {
+        $query->where('que_27', $request->que_27);
+    }
+
+    $filteredUsers = $query->get();
+
+    return view('user.userlist', compact('filteredUsers'));
+}
+
+public function sendEmailToUsers(Request $request)
+{
+    $request->validate([
+        'users' => 'required|array',
+        'emailAttachment' => 'nullable|file|mimes:pdf|max:2048',
+    ]);
+
+    $userIds = $request->input('users');
+    $emailContent = $request->input('emailContent');
+    $emailAttachment = $request->file('emailAttachment');
+
+    $users = Que::whereIn('id', $userIds)->get();
+
+    foreach ($users as $user) {
+        Mail::send('mails.user_notification', ['user' => $user, 'emailContent' => $emailContent], function ($message) use ($user, $emailAttachment) {
+            $message->to($user->email)
+                    ->subject('Consumer Notification');
+
+            if ($emailAttachment) {
+                $message->attach($emailAttachment->getPathname(), [
+                    'as' => $emailAttachment->getClientOriginalName(),
+                    'mime' => $emailAttachment->getMimeType(),
+                ]);
+            }
+        });
+    }
+
+    return response()->json(['message' => 'Emails sent successfully.']);
+}
+
+
+    public function userHcpList(Request $request)
+    {
+        $speciality = Speciality::get(); // Assuming the model for specialities exists
+        $countries = Country::get(); // Assuming the model for countries exists
+        return view('user.userhcplist', compact('speciality', 'countries'));
+    }
+
+    public function userHcpListData(Request $request)
+    {
+        $data = $request->all();
+        $hcpInvite = datacenternew::query(); // Replace with your actual model
+
+        // Apply filters
+        if (!empty($data['speciality'])) {
+            $hcpInvite->where('docterSpeciality', 'like', '%' . $data['speciality'] . '%');
+        }
+
+        if (!empty($data['country'])) {
+            $hcpInvite->where('country1', 'like', '%' . $data['country'] . '%');
+        }
+
+        return Datatables::of($hcpInvite)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    
+    
+    public function userconsumerlist(Request $request)
+{
+    $countries = Country::get(); // Assuming a `Country` model exists
+    $occupations = config('answer_key.answers.twentysix'); // Fetch occupation from config
+    $industries = config('answer_key.answers.twentyseven'); // Fetch industry from config
+    return view('user.userconsumerlist', compact('countries', 'occupations', 'industries'));
+}
+
+public function userconsumerlistData(Request $request)
+{
+    $data = $request->all();
+    $consumers = Que::query(); // Replace `Que` with your actual model for consumers
+
+    // Apply filters
+    if (!empty($data['country'])) {
+        $consumers->where('country', 'like', '%' . $data['country'] . '%');
+    }
+
+    if (!empty($data['occupation'])) {
+        $consumers->where('que_26', $data['occupation']);
+    }
+
+    if (!empty($data['industry'])) {
+        $consumers->where('que_27', $data['industry']);
+    }
+
+    return Datatables::of($consumers)
+        ->addIndexColumn()
+        ->editColumn('que_26', function ($row) {
+            return config('answer_key.answers.twentysix')[$row->que_26] ?? 'Unknown';
+        })
+        ->editColumn('que_27', function ($row) {
+            return config('answer_key.answers.twentyseven')[$row->que_27] ?? 'Unknown';
+        })
+        ->make(true);
+}
+   
+
+    public function hcpPieChart()
+    {
+        $countries = Country::get(); // Assuming you have a Country model for dropdowns
+        return view('user.hcp_pie_chart', compact('countries'));
+    }
+
+    public function hcpCountryFilter(Request $request)
+    {
+        $country = $request->country;
+    
+        // Fetch total HCP registrations grouped by country
+        $countryChartData = datacenternew::select('country1 as label', DB::raw('count(*) as count'))
+            ->when($country, function ($query) use ($country) {
+                $query->where('country1', $country);
+            })
+            ->groupBy('country1')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->label,
+                    'count' => $item->count,
+                ];
+            });
+    
+        // Fetch specialties grouped by country
+        $specialityChartData = datacenternew::select('docterSpeciality as label', DB::raw('count(*) as count'))
+            ->when($country, function ($query) use ($country) {
+                $query->where('country1', $country);
+            })
+            ->groupBy('docterSpeciality')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->label,
+                    'count' => $item->count,
+                ];
+            });
+    
+        return response()->json([
+            'countryChartData' => $countryChartData,
+            'specialityChartData' => $specialityChartData,
+        ]);
+    }
+    
+
+
+    // public function importDoctors(Request $request)
+    // {   
+    //     //dd($request->all());
+    //     $usersToSendMail = []; // Array to collect user details for bulk emails
+    //     $validationErrors = []; // To track validation errors
+    //     $successfulRows = 0; // To count successful imports
+    
+    //     if ($request->hasFile('file')) {
+    //         $file = $request->file('file');
+    //         $extension = $file->getClientOriginalExtension();
+    
+    //         if ($extension !== 'csv') {
+    //             return redirect()->back()->withErrors(['file' => 'Invalid file format. Only CSV files are allowed.']);
+    //         }
+    
+    //         $data = array_map('str_getcsv', file($file->getRealPath()));
+    //         $header = $data[0];
+    //         unset($data[0]); // Remove header row
+    
+    //         foreach ($data as $index => $row) {
+    //             $rowData = array_combine($header, $row); // Combine header with row data
+    
+    //             // Validate row data
+    //             $validator = Validator::make($rowData, [
+    //                 'email' => 'required|email|unique:datacenternews,email',
+    //                 'firstname' => 'required',
+    //                 'lastname' => 'required',
+    //                 'cityname' => 'required',
+    //                 'citycode' => 'required',
+    //                 'phone_number' => 'required|numeric|min:10',
+    //                 'whatsappnumber' => 'required|numeric|min:10',
+    //                 'speciality' => 'required',
+    //                 'totalexperience' => 'required|numeric',
+    //                 'practice' => 'required',
+    //                 'licence' => 'required',
+    //                 'patientsmonth' => 'required|numeric',
+    //                 'attachment' => 'nullable',
+    //             ]);
+    
+    //             if ($validator->fails()) {
+    //                 $validationErrors[$index + 1] = $validator->errors()->all(); // Store errors with row index
+    //                 continue;
+    //             }
+    
+    //             try {
+    //                 // Create User
+    //                 $random_no = uniqid();
+    //                 $user = new User();
+    //                 $user->name = $rowData['firstname'];
+    //                 $user->email = $rowData['email'];
+    //                 $user->user_type = 'doctor';
+    //                 $user->user_role = 'doctor';
+    //                 $user->password = Hash::make($random_no);
+    //                 $user->save();
+    
+    //                 // Create Doctor Registration Entry
+    //                 $datacenter = new datacenternew();
+    //                 $datacenter->pno = uniqid('RNOD');
+    //                 $datacenter->firstname = $rowData['firstname'];
+    //                 $datacenter->lastname = $rowData['lastname'];
+    //                 $datacenter->cityname = $rowData['cityname'];
+    //                 $datacenter->citycode = $rowData['citycode'];
+    //                 $datacenter->PhNumber = $rowData['phone_number'];
+    //                 $datacenter->email = $rowData['email'];
+    //                 $datacenter->whatdsappNumber = $rowData['whatsappnumber'];
+    //                 $datacenter->docterSpeciality = $rowData['speciality'];
+    //                 $datacenter->totalExperience = $rowData['totalexperience'];
+    //                 $datacenter->practice = $rowData['practice'];
+    //                 $datacenter->licence = $rowData['licence'];
+    //                 $datacenter->PatientsMonth = $rowData['patientsmonth'];
+    //                 $datacenter->country1 = $rowData['country'];
+    //                 $datacenter->password =$random_no;
+    //                 $datacenter->user_id = $user->id;
+    
+    //                 // Handle Attachment
+    //                 if (isset($rowData['attachment']) && !empty($rowData['attachment'])) {
+    //                     $attachmentPath = $rowData['attachment'];
+    
+    //                     if (filter_var($attachmentPath, FILTER_VALIDATE_URL)) {
+    //                         $fileContents = file_get_contents($attachmentPath);
+    //                         $fileName = time() . '_' . basename($attachmentPath);
+    //                         $savePath = public_path('datacenter/doctor_file/' . $fileName);
+    //                         file_put_contents($savePath, $fileContents);
+    //                         $datacenter->document = 'datacenter/doctor_file/' . $fileName;
+    //                     }
+    //                 }
+    
+    //                 $datacenter->save();
+    //                 $successfulRows++; // Increment successful row count
+    
+    //                 // Collect details for bulk email
+    //                 $usersToSendMail[] = [
+    //                     'email' => $rowData['email'],
+    //                     'encryptedEmail' => Crypt::encryptString($rowData['email']),
+    //                     'password' => $random_no,
+    //                 ];
+    //             } catch (\Exception $e) {
+    //                 // Log error if saving fails
+    //                 $validationErrors[$index + 1] = [$e->getMessage()];
+    //             }
+    //         }
+    
+    //         // Store validation errors in session if any
+    //         if (!empty($validationErrors)) {
+    //             session()->flash('validationErrors', $validationErrors);
+    //         }
+    
+    //         // Trigger BulkRegistrationMail event after processing valid rows
+    //         if (!empty($usersToSendMail)) {
+    //             event(new BulkRegistrationMail($usersToSendMail));
+    //         }
+    
+    //         return redirect()->back()->with('success', "$successfulRows rows imported successfully.");
+    //     }
+    
+    //     return redirect()->back()->withErrors(['file' => 'No file uploaded.']);
+    // }
+    
+    
+    
+
 }
