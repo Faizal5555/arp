@@ -66,7 +66,7 @@ label {
     min-height: 460px;
     height: 100%;
     color: #fff;
-    background-color: #c8f9fd;
+    background-color: #76b9ff;
     text-align: center;
     padding: 105px 28px 28px 28px;
     box-sizing: border-box;
@@ -102,7 +102,7 @@ label {
     margin-top: 15px;
 }
 #qbox-container {
-    background: url('{{asset("assets/images/bg3.jpg")}}');
+    background: url('{{asset("adminapp/assets/images/bg4.jpg")}}');
     background-repeat: no-repeat;
     background-size:cover;
     position: relative;
@@ -512,7 +512,7 @@ p.lang-p {
       <div class="col-lg-4 offset-lg-1 mx-0 px-0">
          <div id="title-container">
            <h3>Self Checker Form</h3>
-           <img class="covid-image" src="{{asset('assets/images/logo-3.png')}}" alt="logo">
+           <img class="covid-image" src="{{asset('adminapp/assets/images/logo-3.png')}}" alt="logo">
             <p class="lang-p">A clinical assessment multi-step form that will assist individuals on deciding when to seek testing or medical care if they suspect they or someone they know has contracted COVID-19 or has come into close contact with someone who has COVID-19</p>
          </div>
       </div>
