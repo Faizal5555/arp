@@ -27,7 +27,7 @@ class CreateIncentivesTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('datacenter_id')->references('id')->on('datacenternews')->onDelete('cascade');
-            $table->foreign('que_id')->references('id')->on('ques')->onDelete('cascade');
+            //$table->foreign('que_id')->references('id')->on('ques')->onDelete('cascade');
         });
     }
 
