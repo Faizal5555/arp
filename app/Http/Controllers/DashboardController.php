@@ -708,7 +708,7 @@ class DashboardController extends Controller
     }
 
     // Pass the data to the view
-    return view('Datacenter.employeelist', compact('consumerEmployees', 'hcpEmployees', 'filter'));
+    return view('DataCenter.employeelist', compact('consumerEmployees', 'hcpEmployees', 'filter'));
 }
 
 public function viewDashboard($user_id, $type)
