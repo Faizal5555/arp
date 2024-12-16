@@ -23,6 +23,7 @@ use App\Models\adminvoucher;
 use App\Models\adminMoneysend;
 use App\Models\accountregister;
 use App\Models\Doctornotification;
+use App\Models\Incentive;
 use Carbon\Carbon;
 use App\Models\doctor_pno;
 use App\Exports\DoctorExport;
@@ -1368,6 +1369,26 @@ class dataCenterController extends Controller
 
         return view('DataCenter.new_que_ans' ,compact('country','questions','answers_9','answers_11','answers_16','answers_17','answers_18','answers_20','answers_27','answers_30','answers_31','answers_33','user_id'));
     }
+
+    // public function languages()
+    // {
+    // $user_id = null; // No user_id since it's not provided
+    // $country = Country::get();
+    // $questions = config('site_questions.questions');
+    // $answers_9 = config('answer_key.answers.nine');
+    // $answers_11 = config('answer_key.answers.eleven');
+    // $answers_16 = config('answer_key.answers.sixteen');
+    // $answers_17 = config('answer_key.answers.seventeen');
+    // $answers_18 = config('answer_key.answers.eighteen');
+    // $answers_20 = config('answer_key.answers.twenty');
+    // $answers_27 = config('answer_key.answers.twentyseven');
+    // $answers_30 = config('answer_key.answers.thirty');
+    // $answers_31 = config('answer_key.answers.thirtyone');
+    // $answers_33 = config('answer_key.answers.thirtythree');
+
+    // return view('DataCenter.new_que_ans', compact('country', 'questions', 'answers_9', 'answers_11', 'answers_16', 'answers_17', 'answers_18', 'answers_20', 'answers_27', 'answers_30', 'answers_31', 'answers_33', 'user_id'));
+    // }
+
   
     public function change(Request $request)
     {
@@ -1960,7 +1981,416 @@ public function userconsumerlistData(Request $request)
             'specialityChartData' => $specialityChartData,
         ]);
     }
+
+        public function globalManagerList(Request $request)
+        {
+        $specialities = Speciality::all(); // Fetching all specialities
+        $countries = Country::all(); // Fetching all countries
+        $userType = $request->get('user_type', 'user');
+
+        return view('DataCenter.global_list', compact('specialities', 'countries','userType'));
+        }
+
+        public function globalManagerListData(Request $request)
+        {
+            $userType = $request->user_type;
+        
+            if ($userType === 'doctor') {
+                // Fetch doctors from the datacenternews table
+                $query = DB::table('datacenternews')
+                    ->select(
+                        'docterSpeciality', // Ensure the column name matches your database
+                        'firstname',
+                        'email',
+                        'country1 as country' // Alias to standardize column name
+                    );
+        
+                if ($request->filled('country')) {
+                    $query->where('country1', 'like', '%' . $request->country . '%');
+                }
+            } elseif ($userType === 'user') {
+                // Fetch consumers (users with user_type = 'user') from the que table
+                $query = DB::table('ques')
+                    ->select(
+                        'id as user_id',
+                        'fname as name',
+                        'lname as name', // Use fname as name
+                        'email',
+                        'country'
+                    );
+        
+                if ($request->filled('country')) {
+                    $query->where('country', 'like', '%' . $request->country . '%');
+                }
+            } else {
+                // Handle other cases (e.g., invalid user_type) if necessary
+                return response()->json(['error' => 'Invalid user type'], 400);
+            }
+        
+            return Datatables::of($query)
+                ->addIndexColumn()
+                ->editColumn('name', function ($row) {
+                    return $row->name ?? 'N/A';
+                })
+                ->editColumn('email', function ($row) {
+                    return $row->email ?? 'N/A';
+                })
+                ->editColumn('country', function ($row) {
+                    return $row->country ?? 'N/A';
+                })
+                ->addColumn('speciality', function ($row) use ($userType) {
+                    return $userType === 'doctor' 
+                        ? ($row->docterSpeciality ?? 'N/A') 
+                        : 'N/A'; // Consumers don't have a speciality
+                })
+                ->make(true);
+        }
+        
+        
+        public function globalEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'recipientEmail' => 'required|email',
+            'emailContent' => 'required|string',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()->first()], 400);
+        }
+
+        $email = $request->recipientEmail;
+        $emailContent = $request->emailContent;
+        $attachment = $request->file('attachment');
+
+        Mail::send('mails.global', ['emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
+            $mail->from('registrations@asiaresearchpartners.com');
+            $mail->to($email);
+            $mail->subject('Global Panel Notification');
+
+            if ($attachment) {
+                $mail->attach($attachment->getRealPath(), [
+                    'as' => $attachment->getClientOriginalName(),
+                    'mime' => $attachment->getMimeType()
+                ]);
+            }
+        });
+
+        return response()->json(['message' => 'Email sent successfully.']);
+    }
     
+
+    public function getRecruitment()
+    {
+        $specialities = Speciality::all(); // Fetching all specialities
+        $countries = Country::all(); // Fetching all countries
+        return view('DataCenter.global_team', compact('specialities', 'countries'));
+    }
+
+    public function getRecruitmentData(Request $request)
+    {
+        $country = $request->get('country');
+    
+        // Fetch country data
+        $countryChartData = DB::table('datacenternews')
+        ->select('country1 as label', DB::raw('COUNT(*) as count'))
+        ->when($country, function ($query) use ($country) {
+            return $query->where('country1', $country);
+        })
+        ->groupBy('country1')
+        ->get();
+    
+        // Fetch speciality data (filter by country if selected)
+        $specialityChartData = DB::table('datacenternews')
+            ->select('docterSpeciality as label', DB::raw('COUNT(*) as count'))
+            ->when($country, function ($query) use ($country) {
+                return $query->where('country1', $country);
+            })
+            ->groupBy('docterSpeciality')
+            ->get();
+    
+        // Return response with empty data if nothing exists
+        return response()->json([
+            'countryChartData' => $countryChartData->isEmpty() ? [] : $countryChartData,
+            'specialityChartData' => $specialityChartData->isEmpty() ? [] : $specialityChartData,
+        ]);
+    }
+
+    public function getRecruitmentList(Request $request)
+{
+    $data = DB::table('datacenternews')
+        ->select('country1 as country', 'docterSpeciality as speciality', DB::raw('COUNT(*) as count'))
+        ->groupBy('country', 'speciality')
+        ->get();
+
+    $formattedData = [];
+    $specialities = [];
+    $countries = [];
+
+    foreach ($data as $item) {
+        $formattedData[$item->speciality][$item->country] = $item->count;
+        if (!in_array($item->speciality, $specialities)) {
+            $specialities[] = $item->speciality;
+        }
+        if (!in_array($item->country, $countries)) {
+            $countries[] = $item->country;
+        }
+    }
+
+    return response()->json([
+        'countries' => $countries,
+        'specialities' => $specialities,
+        'data' => $formattedData,
+    ]);
+}
+    
+
+    
+    
+    
+
+    public function panelmemberList(Request $request)
+    {
+    $specialities = Speciality::all(); // Fetching all specialities
+    $countries = Country::all(); // Fetching all countries
+    $userType = $request->get('user_type', 'user');
+
+    return view('DataCenter.panelmember', compact('specialities', 'countries','userType'));
+    }
+
+    public function panelmemberListData(Request $request)
+    {
+        $userType = $request->user_type;
+        if ($userType === 'doctor') {
+            // Fetch doctors from the datacenternews table
+            $query = DB::table('datacenternews')
+                ->select(
+                    'id',
+                    'docterSpeciality as speciality',
+                    'firstname',
+                    'email',
+                    'country1 as country',
+                    DB::raw('(SELECT COUNT(*) FROM incentives WHERE datacenternews.id = incentives.datacenter_id) as is_saved') // Check if a record is saved
+                );
+    
+            if ($request->filled('country')) {
+                $query->where('country1', 'like', '%' . $request->country . '%');
+            }
+            if ($request->filled('speciality')) {
+                $query->where('docterSpeciality', 'like', '%' . $request->speciality . '%');
+            }
+            if ($request->filled('name')) {
+                $query->where('firstname', 'like', '%' . $request->name . '%');
+            }
+        
+            if ($request->filled('lastname')) {
+                $query->where('lastname', 'like', '%' . $request->lastname . '%');
+            }
+        
+            if ($request->filled('email')) {
+                $query->where('email', 'like', '%' . $request->email . '%');
+            }
+            
+        } else {
+            // Fetch consumers (users with user_type = 'user') from the que table
+                $query = DB::table('ques')
+            ->select(
+                'id',
+                'fname as name',
+                'lname as name',
+                'country',
+                'email',
+                DB::raw('(SELECT COUNT(*) FROM incentives WHERE ques.id = incentives.que_id) as is_saved')
+            );
+    
+            if ($request->filled('country')) {
+                $query->where('country', 'like', '%' . $request->country . '%');
+            }
+            if ($request->filled('name')) {
+                $query->where('fname', 'like', '%' . $request->name . '%');
+            }
+        
+            if ($request->filled('lastname')) {
+                $query->where('lname', 'like', '%' . $request->lastname . '%');
+            }
+        
+            if ($request->filled('email')) {
+                $query->where('email', 'like', '%' . $request->email . '%');
+            }
+        }
+    
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->editColumn('name', function ($row) {
+                return $row->name ?? 'N/A';
+            })
+            ->editColumn('email', function ($row) {
+                return $row->email ?? 'N/A';
+            })
+            ->editColumn('country', function ($row) {
+                return $row->country ?? 'N/A';
+            })
+            ->addColumn('speciality', function ($row) use ($userType) {
+                return $userType === 'doctor'
+                    ? ($row->speciality ?? 'N/A')
+                    : 'N/A'; // Consumers don't have a speciality
+            })
+            ->make(true);
+    }
+    
+        
+        
+    public function saveIncentive(Request $request)
+    {
+        // Determine the user type dynamically (HCP or Consumer)
+        $userType = $request->input('user_type'); // Pass 'user_type' from the frontend
+    
+        // Validation
+        $request->validate([
+            'pn_number' => 'required',
+            'incentive_promised' => 'required',
+            'total_incentive_paid' => 'required',
+            'incentive_paid_date' => 'required|date',
+            'mode_of_payment' => 'required',
+            'datacenter_id' => $userType === 'doctor' ? 'required' : 'nullable', // Validate only if HCP
+            'que_id' => $userType === 'user' ? 'required' : 'nullable', // Validate only if Consumer
+        ]);
+    
+        // Save the incentive data
+        $incentive = new Incentive();
+        $incentive->user_id = Auth::user()->id; // Use Auth facade for user authentication
+    
+        // Dynamically set datacenter_id or que_id based on user type
+        if ($userType === 'doctor') {
+            $incentive->datacenter_id = $request->datacenter_id; // For HCP
+            $incentive->que_id = null; // Set que_id to null
+        } elseif ($userType === 'user') {
+            $incentive->que_id = $request->que_id; // For Consumer
+            $incentive->datacenter_id = null; // Set datacenter_id to null
+        }
+    
+        $incentive->pn_number = $request->pn_number;
+        $incentive->incentive_promised = $request->incentive_promised;
+        $incentive->total_incentive_paid = $request->total_incentive_paid;
+        $incentive->incentive_paid_date = $request->incentive_paid_date;
+        $incentive->mode_of_payment = $request->mode_of_payment;
+        $incentive->save(); // Save the incentive to the database
+    
+        return response()->json(['message' => 'Incentive data saved successfully!'], 200); // Success response
+    }
+    
+    
+        
+        public function fetchIncentive($datacenterId)
+        {
+            
+            $incentive = Incentive::where('datacenter_id', $datacenterId)->first();
+            if ($incentive) {
+                return response()->json($incentive, 200);
+            } else {
+                return response()->json(['error' => 'Record not found'], 404);
+            }
+        }
+
+        public function fetchIncentiveConsumer($queId)
+        {
+            $incentive = Incentive::where('que_id', $queId)->first();
+            if ($incentive) {
+                return response()->json($incentive, 200);
+            } else {
+                return response()->json(['error' => 'Record not found'], 404);
+            }
+        }
+
+
+        public function PaymentsView()
+        {
+            return view('DataCenter.paymentview');
+        }
+
+        public function fetchPayments(Request $request)
+{
+    // Validate date inputs
+    $request->validate([
+        'from_date' => 'nullable|date',
+        'to_date' => 'nullable|date',
+    ]);
+
+    $fromDate = $request->from_date;
+    $toDate = $request->to_date;
+
+    // Fetch HCP records
+    $hcpQuery = Incentive::with(['datacenternews:id,firstname,country1,docterSpeciality,email'])
+        ->select(
+            'datacenter_id',
+            'pn_number',
+            'incentive_promised',
+            'total_incentive_paid',
+            'incentive_paid_date',
+            'mode_of_payment'
+        )
+        ->whereNotNull('datacenter_id');
+
+    // Fetch Consumer records
+    $consumerQuery = Incentive::with(['ques:id,fname,country,email'])
+        ->select(
+            'que_id',
+            'pn_number',
+            'incentive_promised',
+            'total_incentive_paid',
+            'incentive_paid_date',
+            'mode_of_payment'
+        )
+        ->whereNotNull('que_id');
+
+    // Apply date filter if provided
+    if ($fromDate) {
+        $hcpQuery->whereDate('incentive_paid_date', '>=', $fromDate);
+        $consumerQuery->whereDate('incentive_paid_date', '>=', $fromDate);
+    }
+    if ($toDate) {
+        $hcpQuery->whereDate('incentive_paid_date', '<=', $toDate);
+        $consumerQuery->whereDate('incentive_paid_date', '<=', $toDate);
+    }
+
+    // Fetch and combine results
+    $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
+        return [
+            'name' => $hcp->datacenternews->firstname ?? '',
+            'country' => $hcp->datacenternews->country1 ?? '',
+            'speciality' => $hcp->datacenternews->docterSpeciality ?? '-',
+            'email' => $hcp->datacenternews->email ?? '',
+            'pn_number' => $hcp->pn_number,
+            'incentive_promised' => $hcp->incentive_promised,
+            'total_incentive_paid' => $hcp->total_incentive_paid,
+            'incentive_paid_date' => $hcp->incentive_paid_date,
+            'mode_of_payment' => $hcp->mode_of_payment,
+        ];
+    });
+
+    $consumerRecords = $consumerQuery->get()->map(function ($consumer) {
+        return [
+            'name' => $consumer->ques->fname ?? '',
+            'country' => $consumer->ques->country ?? '',
+            'speciality' => '-', // Consumers don't have a speciality
+            'email' => $consumer->ques->email ?? '',
+            'pn_number' => $consumer->pn_number,
+            'incentive_promised' => $consumer->incentive_promised,
+            'total_incentive_paid' => $consumer->total_incentive_paid,
+            'incentive_paid_date' => $consumer->incentive_paid_date,
+            'mode_of_payment' => $consumer->mode_of_payment,
+        ];
+    });
+
+    // Combine both HCP and Consumer records
+    $combinedRecords = $hcpRecords->merge($consumerRecords);
+
+    return response()->json($combinedRecords, 200);
+}
+
+        
+
+
 
 
     // public function importDoctors(Request $request)

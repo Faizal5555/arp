@@ -303,11 +303,13 @@ table tfoot th {
                     <option name= "user_type" value="operation">Operation</option>
                     <option name= "user_type" value="field_team">Field Team</option>
                     <option name= "user_type" value="data_center">Data Center</option>
+                    <option name= "user_type" value="global_manager">Global Manager</option>
+                    <option name= "user_type" value="global_field_team">Global Field Team</option>
                 </select>
                 </div>
                 <div class="form-group mt-4">
                      <label style="font-weight:bold;font-size:15px;margin-left:4px;">User Role</label> 
-                    <select name="user_role" class="form-control">
+                    <select name= "user_role" class="form-control">
                     <option name= "user_role" value="admin">Admin</option>
                     <option name= "user_role" value="subadmin">Sub Admin</option>
                     <option name= "user_role" value="sales">Sales</option>
@@ -318,6 +320,8 @@ table tfoot th {
                     <option name= "user_role" value="project_manager">Project Manager</option>
                     <option name= "user_role" value="quality_analyst">Quality Analyst</option>
                     <option name= "user_role" value="data_center">Data Center</option>
+                    <option name= "user_role" value="global_manager">Global Manager</option>
+                    <option name= "user_role" value="global_field_team">Global Field Team</option>
                 </select>
                   </div>
                   <div class="row">

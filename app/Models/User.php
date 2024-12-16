@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Traits\LaratrustUserTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\DataCenterNew;
 
 
 class User extends Authenticatable
@@ -47,4 +48,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function datacenternews()
+    {
+        return $this->hasOne(DataCenterNew::class, 'user_id', 'id'); // Adjust if the foreign key differs
+    }
+
+    public function que()
+    {
+        return $this->hasOne(Que::class, 'user_id', 'id');
+    }
 }

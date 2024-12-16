@@ -26,6 +26,7 @@ use App\Models\Fieldteam;
 use App\Models\Doctornotification;
 use Carbon\Carbon;
 use App\Models\Que;
+use DB;
 
 class DashboardController extends Controller
 {
@@ -263,6 +264,9 @@ class DashboardController extends Controller
         }elseif($user->user_type == ('user')){
             $countries =Country::get();
             return view ('user.userDashboard',compact('countries'));
+        }elseif($user->user_type == ('global_manager')){
+            $countries =Country::get();
+            return view ('DataCenter.global_dashboard',compact('countries'));
         }
         // $dashboard = '';
         // return view('index',compact('dashboard'));
@@ -679,5 +683,149 @@ class DashboardController extends Controller
         
           return view('fielddashboard',compact('team_leader','quality_analyst_name','project_manager_name','fieldteam','total_close','total_open'));
     }
+
+    public function employeeList(Request $request)
+{
+    // Default filter is 'all' to show both consumer and hcp
+    $filter = $request->input('filter', 'hcp'); 
+
+    // Arrays to store employee data for Consumer and HCP
+    $consumerEmployees = [];
+    $hcpEmployees = [];
+
+    // Fetch Consumer employees if 'consumer' or 'all' filter is applied
+    if ($filter == 'consumer' || $filter == 'all') {
+        $consumerEmployees = DB::table('ques')
+            ->select('id as user_id', 'fname as name', 'lname as name', 'email', 'country')
+            ->get();
+    }
+
+    // Fetch HCP employees if 'hcp' or 'all' filter is applied
+    if ($filter == 'hcp' || $filter == 'all') {
+        $hcpEmployees = DB::table('datacenternews')
+            ->select('id as user_id', 'docterSpeciality', 'firstname', 'email', 'country1 as country')
+            ->get();
+    }
+
+    // Pass the data to the view
+    return view('Datacenter.employeeList', compact('consumerEmployees', 'hcpEmployees', 'filter'));
+}
+
+public function viewDashboard($user_id, $type)
+{
+    if ($type === 'hcp') {
+        // Fetch data for HCP
+        $doctornotification = Doctornotification::where('user_id', $user_id)->where('status', '0')->count();
+        $doctornotificationmoney = Doctornotification::where('user_id', $user_id)->where('status', '0')->where('message_type', 'money')->count();
+        $doctornotification1 = Doctornotification::where('user_id', $user_id)->where('status', '0')->where('message_type', 'voucher')->count();
+        $money_count = adminMoneysend::where('User_id', $user_id)->where('status', 'Money Sent')->count();
+        $voucher_count = adminvoucher::where('user_id', $user_id)->where('status', 'Pending')->count();
+
+        // Redirect to the HCP dashboard
+        return view('DataCenter.docter_dashboard', compact('money_count', 'voucher_count', 'doctornotification', 'doctornotificationmoney', 'doctornotification1'));
+    } elseif ($type === 'consumer') {
+        // Fetch countries for the consumer view
+        $countries = Country::all();
+
+        // Redirect to the Consumer dashboard
+        return view('user.userDashboard', compact('countries', 'user_id'));
+    } else {
+        // Invalid type - Show 404 error
+        abort(404, 'Invalid user type');
+    }
+
+
+    
+}
+
+    // Controller
+    // Controller
+    // public function globalDashboard(Request $request)
+    // {
+    //     $country = $request->input('country'); // Check for selected country
+    //     $query = DB::table('ques')
+    //         ->join('users', 'ques.user_id', '=', 'users.id')
+    //         ->where('users.user_type', 'global_manager')
+    //         ->select(
+    //             DB::raw('COALESCE(ques.country, "Unknown") as label'),
+    //             DB::raw('COUNT(ques.id) as count')
+    //         );
+    
+    //     if ($country) {
+    //         $query->where('ques.country', $country);
+    //     }
+    
+    //     $countryChartData = $query->groupBy('ques.country')->get();
+    
+    //     return response()->json(['countryChartData' => $countryChartData]);
+    // }
+
+    public function globalDashboard(Request $request)
+{
+    $country = $request->input('country'); // Check for selected country
+
+    // Country Distribution Data
+    $countryQuery = DB::table('ques')
+        ->join('users', 'ques.user_id', '=', 'users.id')
+        ->where('users.user_type', 'global_manager')
+        ->select(
+            DB::raw('COALESCE(ques.country, "Unknown") as label'),
+            DB::raw('COUNT(ques.id) as count')
+        );
+
+    if ($country) {
+        $countryQuery->where('ques.country', $country);
+    }
+
+    $countryChartData = $countryQuery->groupBy('ques.country')->get();
+
+    // Question 26 Data (Occupation)
+    $occupationData = DB::table('ques')
+        ->join('users', 'ques.user_id', '=', 'users.id')
+        ->where('users.user_type', 'global_manager')
+        ->select('ques.que_26 as occupation', DB::raw('COUNT(*) as count'));
+
+    if ($country) {
+        $occupationData->where('ques.country', $country);
+    }
+
+    $occupationChartData = $occupationData->groupBy('ques.que_26')->get()
+        ->map(function ($item) {
+            return [
+                'label' => config("answer_key.answers.twentysix.{$item->occupation}", 'Unknown'),
+                'count' => $item->count,
+            ];
+        });
+
+    // Question 27 Data (Industry)
+    $industryData = DB::table('ques')
+        ->join('users', 'ques.user_id', '=', 'users.id')
+        ->where('users.user_type', 'global_manager')
+        ->select('ques.que_27 as industry', DB::raw('COUNT(*) as count'));
+
+    if ($country) {
+        $industryData->where('ques.country', $country);
+    }
+
+    $industryChartData = $industryData->groupBy('ques.que_27')->get()
+        ->map(function ($item) {
+            return [
+                'label' => config("answer_key.answers.twentyseven.{$item->industry}", 'Unknown'),
+                'count' => $item->count,
+            ];
+        });
+
+    return response()->json([
+        'countryChartData' => $countryChartData,
+        'occupationChartData' => $occupationChartData,
+        'industryChartData' => $industryChartData,
+    ]);
+}
+
+
+    
+
+
+
     
 }

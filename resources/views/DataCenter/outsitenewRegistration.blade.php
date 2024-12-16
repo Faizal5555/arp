@@ -61,50 +61,95 @@
 
 <style>
  
- .header{
-     background:linear-gradient(43deg,#0b5dbb,#0b5dbb);
-     
- }
- .error{
-     color:red;
-     margin-top:3px;
- }
+ body {
+      background: url('{{asset("assets/images/back.png")}}') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    .card {
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      width: 200px;
+    }
+
+    .header {
+      background: linear-gradient(43deg, #0b5dbb, #0b5dbb);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      background: #0b5dbb;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #094a96;
+    }
+
+    .form-control {
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #0b5dbb;
+      box-shadow: 0 0 5px rgba(11, 93, 187, 0.5);
+    }
+
+    .error {
+      color: red;
+      margin-top: 3px;
+    }
+
+    #otherFieldDiv {
+  display: none;
+  opacity: 0;
+  animation: fadeInSlow 1s ease-in-out forwards;
+}
+
+@keyframes fadeInSlow {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
 <div class="row">
 <div class="col-md-2">
 
 </div>
 <div class="col-md-8 ">
-    <br><br>
-    <div class="card " id="header-title">  
-
-        <div class="card-header header-elements-inline header">
-          <div class="card-title " style="color:whitesmoke;">New Registration</div>
-        </div>
+    <img class="logo mt-2" src="{{asset('assets/images/logo-3.png')}}" alt="logo">
+    <div class="" id="header-title">  
+        <div class="text-center">
+            <h4 class="mb-0">New Registration</h4>
+          </div>
 
         <div class="card-body"  id="cardbody">
             <div class="row mb-2" id="wondiv">
-                <div class="col-md-12">
-                    <!--<div class="main-content">-->
-                    <!--        <h6>Dear Doctor / Healthcare Practitioner,</h6>-->
-        
-                    <!--        <p>Welcome to Online Panel Registration. We are a medical research company supporting large healthcare organisations in their global research requirements.</p>-->
-        
-                    <!--         <p>Today, we would like to invite you to join our growing panels and offer your valuable feedback towards medical research projects. We will send you online surveys for which you would be paid cash incentives or Amazon vouchers for your valuable feedback and time. All your responses will be kept confidential and will be used for analytical purposes only.</p>-->
-                             
-                             
-                    <!--          <p>The cash incentives or Amazon vouchers will be dependent on the type of surveys that you will participate.</p>-->
-                              
-                              
-                    <!--          <p>Kindly click on next button below and complete your details and become our panel member. Please ensure that you fill all the details and attach your Medical licence Certificate. The Certificate helps us to verify that you are a genuine healthcare professional.</p>-->
-                    <!--          <p>Incase of any query please revert on the email and our representative will get back to you at the earliest.</p>-->
-                    <!--          <p>Regards</p>-->
-                    <!--          <p>Online Panel Team</p>-->
-                    <!--         <button class="btn btn-success" id="main-btn">Next</button>-->
-                    <!--        </div>-->
-                    <div class="form-group row" >
-                        
-                        
+                <div class="col-md-12 d-flex justify-content-center">
+                    <div class="form-group row mt-5" >  
                         <div class="main-country ">
                             <div class="main-sub-country d-flex">
                         <label class="col-lg-3 col-form-label  mt-1">COUNTRY<span class="text-danger">*</span></label>
@@ -483,7 +528,20 @@
        
 });
     
-    
+$(document).ready(function () {
+      // When country is selected
+      $('#country').change(function () {
+        const selectedCountry = $(this).val();
+        if (selectedCountry) {
+          $('#countrySelection').hide();
+          $('#country1').val(selectedCountry);
+          $('#otherFieldDiv').css('display', 'block').addClass('fadeIn');
+        } else {
+          $('#otherFieldDiv').hide().removeClass('fadeIn');
+          $('#countrySelection').show();
+        }
+      });
+    });
 
 </script>
 

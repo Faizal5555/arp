@@ -27,8 +27,13 @@ Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::post('DashBoard/chart','App\Http\Controllers\DashboardController@ChartjS')->name('DashBoardChart');
     Route::get('/operationDashboard','App\Http\Controllers\DashboardController@operationindex')->name('operationdashboard');
     Route::get('/fieldteamDashboard','App\Http\Controllers\DashboardController@fieldindex')->name('fieldteamDashboard');
-    
-   
+    Route::get('/employee-list', 'App\Http\Controllers\DashboardController@employeeList')->name('employee.list');
+    Route::get('/dashboard/view/{user_id}/{type}', 'App\Http\Controllers\DashboardController@viewDashboard')->name('dashboard.view');
+    Route::get('/global-dashboard', 'App\Http\Controllers\DashboardController@globalDashboard')->name('global.dashboard');
+    Route::get('/project-feasibility/create', 'App\Http\Controllers\ProjectFeasibilityController@create')->name('ProjectFeasibility');
+    Route::post('/project-feasibility/store', 'App\Http\Controllers\ProjectFeasibilityController@store')->name('ProjectFeasibility.store');
+    Route::get('/project-feasibility', 'App\Http\Controllers\ProjectFeasibilityController@index')->name('projectFeasibility.list');
+    Route::get('/project-feasibility-data', 'App\Http\Controllers\ProjectFeasibilityController@ListData')->name('projectFeasibility.Data');
     //users
     Route::get('/adminapp/usersview', 'App\Http\Controllers\OperationNewController@usersview')->name('usersview');
     Route::get('/user/delete/{id}', 'App\Http\Controllers\OperationNewController@usersdelete')->name('usersdelete');
@@ -287,7 +292,11 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
     Route::get('Data/invite', 'App\Http\Controllers\dataCenterController@invite')->name('invite');
     Route::post('Data/invite1', 'App\Http\Controllers\dataCenterController@invite1')->name('invite1');
-    
+    Route::post('/global-email', 'App\Http\Controllers\dataCenterController@globalEmail')->name('global.email');
+    Route::get('/get-recruitment-data', 'App\Http\Controllers\dataCenterController@getRecruitmentData')->name('get.recruitment.data');
+    Route::get('/get-recruitment', 'App\Http\Controllers\dataCenterController@getRecruitment')->name('get.recruitment');
+    Route::get('/get-recruitment-list', 'App\Http\Controllers\dataCenterController@getRecruitmentList')->name('get.recruitment.list');
+
     Route::get('Data/popinvite', 'App\Http\Controllers\dataCenterController@popinvite')->name('popinvite');
     Route::post('Data/popinvite1', 'App\Http\Controllers\dataCenterController@popinvite1')->name('popinvite1');
     Route::get('Data/panelist', 'App\Http\Controllers\dataCenterController@panelist')->name('panelist');
@@ -384,8 +393,17 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
    Route::get('/user-consumer-list-data', 'App\Http\Controllers\dataCenterController@userconsumerlistData')->name('user.consumer.list.data');
    Route::get('hcp-pie-chart', 'App\Http\Controllers\dataCenterController@hcpPieChart')->name('hcp.pieChart');
    Route::get('hcp-country-data', 'App\Http\Controllers\dataCenterController@hcpCountryFilter')->name('hcp.countryData');
-
+   Route::get('/global-registration', 'App\Http\Controllers\dataCenterController@globalManagerList')->name('globalManagerList');
+   Route::get('/global-manager/data', 'App\Http\Controllers\dataCenterController@globalManagerListData')->name('globalManagerListData');
+   Route::get('/panel-member', 'App\Http\Controllers\dataCenterController@panelmemberList')->name('panelMemberList');
+   Route::get('/panel-member/data', 'App\Http\Controllers\dataCenterController@panelmemberListData')->name('panelMemberListData');
+   Route::post('/save-incentive', 'App\Http\Controllers\dataCenterController@saveIncentive')->name('saveIncentive');
+   Route::get('/fetchIncentive/{datacenterId}', 'App\Http\Controllers\dataCenterController@fetchIncentive')->name('fetchIncentive');
+   Route::get('/fetchIncentiveConsumer/{queId}', 'App\Http\Controllers\dataCenterController@fetchIncentiveConsumer')->name('fetchIncentiveConsumer');
+   Route::get('/payment-view', 'App\Http\Controllers\dataCenterController@PaymentsView')->name('PaymentsView');
+   Route::get('/fetchPayments', 'App\Http\Controllers\dataCenterController@fetchPayments')->name('fetchPayments');
    
+  
    //user module route 
    Route::get('view/profile','App\Http\Controllers\dataCenterController@viewProfile')->name('user.profile');
   // view Question And Answer
@@ -403,7 +421,8 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
  Route::get('/newdoctorregister','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
- Route::get('lang/home/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
+ Route::get('/b2cregisration/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
+ //Route::get('/b2cregisration', 'App\Http\Controllers\dataCenterController@languages')->name('consumerform');
  Route::get('lang/change', 'App\Http\Controllers\dataCenterController@change')->name('changeLang');
  Route::post('new/register', 'App\Http\Controllers\dataCenterController@new_register')->name('new_register');
  Route::post('/datacenter/import-doctors', 'App\Http\Controllers\dataCenterController@importDoctors')->name('datacenter.importDoctors');

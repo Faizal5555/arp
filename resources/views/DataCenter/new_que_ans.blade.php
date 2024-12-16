@@ -66,7 +66,7 @@ label {
     min-height: 460px;
     height: 100%;
     color: #fff;
-    background-color: #0b5dbb;
+    background-color: #c8f9fd;
     text-align: center;
     padding: 105px 28px 28px 28px;
     box-sizing: border-box;
@@ -87,7 +87,7 @@ label {
 #title-container h3 {
     font-size: 25px;
     font-weight: 600;
-    color: #82000a;
+    color: #82000a !important;
     padding: 0;
 }
  
@@ -97,13 +97,14 @@ label {
     line-height: 20px;
 }
  
-/* .covid-image {
+.covid-image {
     width: 214px;
-    margin-bottom: 15px;
-} */
+    margin-top: 15px;
+}
 #qbox-container {
-    background: url(../assets/images/corona.png);
-    background-repeat: repeat;
+    background: url('{{asset("assets/images/bg3.jpg")}}');
+    background-repeat: no-repeat;
+    background-size:cover;
     position: relative;
     padding: 62px;
     min-height: 630px;
@@ -142,7 +143,7 @@ button#submit-btn {
     font-weight: bold;
     position: relative;
     width: 130px;
-    height: 50px;
+    height: 40px;
     background: #DC3545;
     margin: 0 auto;
     margin-top: 40px;
@@ -159,6 +160,7 @@ button#submit-btn {
     -moz-border-radius-bottomleft: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    border-radius:10px;
 }
  
 button#prev-btn:after,
@@ -184,6 +186,7 @@ button#submit-btn:hover::after {
  
 .progress {
     border-radius: 0px !important;
+    height:unset !important
 }
  
 .q__question {
@@ -508,8 +511,8 @@ p.lang-p {
       <!-- TITLE -->
       <div class="col-lg-4 offset-lg-1 mx-0 px-0">
          <div id="title-container">
-            <img class="covid-image"  >
-            <h3>Self Checker Form</h3>
+           <h3>Self Checker Form</h3>
+           <img class="covid-image" src="{{asset('assets/images/logo-3.png')}}" alt="logo">
             <p class="lang-p">A clinical assessment multi-step form that will assist individuals on deciding when to seek testing or medical care if they suspect they or someone they know has contracted COVID-19 or has come into close contact with someone who has COVID-19</p>
          </div>
       </div>
