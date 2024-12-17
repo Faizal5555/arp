@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,19 @@ Route::get('/', function () {
         return redirect('/login');
     });
 
+    Route::prefix('adminapp')->group(function () {
+      // Admin login
+      Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
+      Route::post('/login', [AuthenticatedSessionController::class, 'storeAdmin']);
+  
+      // Global Manager login
+      Route::get('/global-manager/login', [AuthenticatedSessionController::class, 'createGlobalManager'])->name('globalManager.login');
+      Route::post('/global-manager/login', [AuthenticatedSessionController::class, 'storeGlobalManager']);
+  
+      // Employee login
+      Route::get('/employee/login', [AuthenticatedSessionController::class, 'createEmployee'])->name('employee.login');
+      Route::post('/employee/login', [AuthenticatedSessionController::class, 'storeEmployee']);
+  });
 
 Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::get('/dashboard','App\Http\Controllers\DashboardController@index')->name('dashboard');

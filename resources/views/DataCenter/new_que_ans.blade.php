@@ -66,7 +66,7 @@ label {
     min-height: 460px;
     height: 100%;
     color: #fff;
-    background-color: #76b9ff;
+    background-color: #c8f9fd;
     text-align: center;
     padding: 105px 28px 28px 28px;
     box-sizing: border-box;
