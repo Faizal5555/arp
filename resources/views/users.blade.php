@@ -304,7 +304,7 @@ table tfoot th {
                     <option name= "user_type" value="field_team">Field Team</option>
                     <option name= "user_type" value="data_center">Data Center</option>
                     <option name= "user_type" value="global_manager">Global Manager</option>
-                    <option name= "user_type" value="global_field_team">Global Field Team</option>
+                    <option name= "user_type" value="user">Panel Requirements Team</option>
                 </select>
                 </div>
                 <div class="form-group mt-4">
@@ -321,7 +321,7 @@ table tfoot th {
                     <option name= "user_role" value="quality_analyst">Quality Analyst</option>
                     <option name= "user_role" value="data_center">Data Center</option>
                     <option name= "user_role" value="global_manager">Global Manager</option>
-                    <option name= "user_role" value="global_field_team">Global Field Team</option>
+                    <option name= "user_role" value="user">Panel Requirements Team</option>
                 </select>
                   </div>
                   <div class="row">
