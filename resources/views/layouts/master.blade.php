@@ -813,7 +813,7 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Project/ Feasbility Checked</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Checked</a>
                         </li>
                       </ul>
                     </div>
