@@ -51,7 +51,7 @@
               <div class="auth-form-light text-left p-5">
                 <div class="brand-logo d-flex justify-content-center">
                    <a href="/login">
-                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="www.asiaresearchpartners.com/adminapp/assets/images/logo-3.png" alt="Asia Research Partners LLP">
+                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="https://www.asiaresearchpartners.com/adminapp/assets/images/logo-3.png" alt="Asia Research Partners LLP">
             </a>
                 </div>
                 <h4>Hello! let's get started</h4>
