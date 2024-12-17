@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>arp</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="../../adminapp/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="../../adminapp/assets/vendors/css/vendor.bundle.base.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../adminapp/assets/css/style.css">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="../../assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="../../adminapp/assets/images/favicon.ico" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
 
@@ -42,7 +42,7 @@
   </head>
   <body>
     <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper" style="background-image: url('assets/images/login_1.jpg'); background-size: cover;">
+      <div class="container-fluid page-body-wrapper full-page-wrapper" style="background-image: url('adminapp/assets/images/login_1.jpg'); background-size: cover;">
 
 
         <div class="content-wrapper d-flex align-items-center auth " >
@@ -51,7 +51,7 @@
               <div class="auth-form-light text-left p-5">
                 <div class="brand-logo d-flex justify-content-center">
                    <a href="/login">
-                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="https://www.universalresearchpanels.com/wp-content/uploads/2021/06/logo.png" alt="Asia Research Partners LLP">
+                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="www.asiaresearchpartners.com/adminapp/assets/images/logo-3.png" alt="Asia Research Partners LLP">
             </a>
                 </div>
                 <h4>Hello! let's get started</h4>
@@ -114,14 +114,14 @@
        });
     </script>
     <!-- plugins:js -->
-    <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="../../adminapp/assets/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <!-- End plugin js for this page -->
     <!-- inject:js -->
-    <script src="../../assets/js/off-canvas.js"></script>
-    <script src="../../assets/js/hoverable-collapse.js"></script>
-    <script src="../../assets/js/misc.js"></script>
+    <script src="../../adminapp/assets/js/off-canvas.js"></script>
+    <script src="../../adminapp/assets/js/hoverable-collapse.js"></script>
+    <script src="../../adminapp/assets/js/misc.js"></script>
     <!-- endinject -->
   </body>
 </html>
