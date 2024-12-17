@@ -813,7 +813,7 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Excecuted/ Feasbility Checked</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Project/ Feasbility Checked</a>
                         </li>
                       </ul>
                     </div>
@@ -873,8 +873,16 @@ table tfoot th {
                   </ul>
               </div>
             </li>
-            @elseif(auth()->user()->user_type == 'global_manager')
+
             <li class="nav-item">
+              <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
+            </li>
+            <li class="nav-item">
+              <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Checked</a>
+            </li>
+            
+            @elseif(auth()->user()->user_type == 'global_manager')
+            {{-- <li class="nav-item">
              <a class="nav-link" data-toggle="collapse" href="#ui-basic14" aria-expanded="false" aria-controls="ui-basic">
                <span class="menu-title">Global Panel Team</span>
                <i class="menu-arrow"></i>
@@ -886,8 +894,40 @@ table tfoot th {
                  <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">Consumer Registrations</a></li>
                  <li class="nav-item" > <a class="nav-link"   href="#">View Global Registrations</a></li> 
                 </ul>
-             </div>
-           </li>
+                
+              </div>
+            </li> --}}
+             <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#ui-global-panel-manager" aria-expanded="false" aria-controls="ui-global-panel-manager">
+                      Global Panel Manager
+                      <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="ui-global-panel-manager">
+                      <ul class="nav flex-column sub-menu1">
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('get.recruitment') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{route('employee.list')}}">Panel Team Employee</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('globalManagerList') }}">View Global Registration</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('panelMemberList') }}">Panel Member Participation</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('PaymentsView') }}">Payment to panel Member</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Request</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
             @elseif(auth()->user()->user_type == 'data_center')
             <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
             <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Panel Registration Invite</a></li>
