@@ -42,7 +42,7 @@
   </head>
   <body>
     <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper" style="background-image: url('adminapp/assets/images/login_1.jpg'); background-size: cover;">
+      <div class="container-fluid page-body-wrapper full-page-wrapper" style="background-image: url('assets/images/login_1.jpg'); background-size: cover;">
 
 
         <div class="content-wrapper d-flex align-items-center auth " >
