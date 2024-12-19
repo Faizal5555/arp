@@ -52,8 +52,13 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group">
-                    <label for="responded_title">Responded Title</label>
-                    <input type="text" name="responded_title" id="responded_title" class="form-control" required>
+                    <label for="responded_title">Responded Titles</label>
+                    <div id="titles-container">
+                        <div class="d-flex">
+                            <input type="text" name="responded_titles[]" class="form-control mb-2" required>
+                            <button type="button" class="btn btn-info ml-2 add-title" style="height:38px;">+</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-5 form-group">
                     <label for="no_of_sample_required">No. of Samples Required</label>
@@ -200,6 +205,23 @@
             }
         });
     });
+    document.querySelector('.add-title').addEventListener('click', function () {
+    const container = document.getElementById('titles-container');
+    const div = document.createElement('div');
+    div.classList.add('d-flex', 'mt-2');
+    div.innerHTML = `
+        <input type="text" name="responded_titles[]" class="form-control mb-2" required>
+        <button type="button" class="btn btn-danger ml-2 remove-title" style="height:38px;">-</button>
+    `;
+    container.appendChild(div);
+});
+
+// Remove responded title dynamically
+document.getElementById('titles-container').addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-title')) {
+        e.target.parentElement.remove();
+    }
+});
 </script>
 
 @endsection

@@ -35,8 +35,8 @@
                 </div>
                 <!-- Responded Title Filter -->
                 <div class="col-md-3">
-                    <label for="responded_title">Responded Title</label>
-                    <input type="text" name="responded_title" id="responded_title" class="form-control" placeholder="Enter Responded Title">
+                    <label for="responded_titles">Responded Title</label>
+                    <input type="text" name="responded_titles" id="responded_titles" class="form-control" placeholder="Enter Responded Title">
                 </div>
             </div>
             <div class="mt-3 d-flex justify-content-center">
@@ -108,36 +108,37 @@
 
         // Function to render table data
         function renderTable(data) {
-            const tableBody = $('#feasibility-table tbody');
-            tableBody.empty();
+    const tableBody = $('#feasibility-table tbody');
+    tableBody.empty();
 
-            if (data.length === 0) {
-                tableBody.append('<tr><td colspan="11" class="text-center">No records found.</td></tr>');
-                return;
-            }
+    if (data.length === 0) {
+        tableBody.append('<tr><td colspan="11" class="text-center">No records found.</td></tr>');
+        return;
+    }
 
-            let index = 1;
-            data.forEach(row => {
-                const countries = JSON.parse(row.target_countries || '[]').map(c => `<span class="badge badge-secondary">${c}</span>`).join(' ');
-                const emails = JSON.parse(row.responded_emails || '[]').map(e => `<span class="badge badge-secondary">${e}</span>`).join(' ');
+    let index = 1;
+    data.forEach(row => {
+        const countries = JSON.parse(row.target_countries || '[]').join(', '); // Join countries with commas
+        const emails = JSON.parse(row.responded_emails || '[]').join(', '); // Join emails with commas
+        const titles = JSON.parse(row.responded_titles || '[]').join(', '); // Join responded_titles with commas
 
-                tableBody.append(`
-                    <tr>
-                        <td>${index++}</td>
-                        <td>${row.date}</td>
-                        <td>${row.pn_number}</td>
-                        <td>${row.email_subject_line}</td>
-                        <td>${row.project_launch_date}</td>
-                        <td>${countries}</td>
-                        <td>${row.responded_title}</td>
-                        <td>${emails}</td>
-                        <td>${row.no_of_sample_required}</td>
-                        <td>${row.no_of_sample_delivered}</td>
-                        <td>${row.incentive_promised}</td>
-                    </tr>
-                `);
-            });
-        }
+        tableBody.append(`
+            <tr>
+                <td>${index++}</td>
+                <td>${row.date}</td>
+                <td>${row.pn_number}</td>
+                <td>${row.email_subject_line}</td>
+                <td>${row.project_launch_date}</td>
+                <td>${countries}</td>
+                <td>${titles}</td>
+                <td>${emails}</td>
+                <td>${row.no_of_sample_required}</td>
+                <td>${row.no_of_sample_delivered}</td>
+                <td>${row.incentive_promised}</td>
+            </tr>
+        `);
+    });
+}
     });
 </script>
 @endpush

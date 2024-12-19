@@ -16,7 +16,7 @@ class ProjectFeasibility extends Model
         'email_subject_line',
         'project_launch_date',
         'target_countries',
-        'responded_title',
+        'responded_titles',
         'no_of_sample_required',
         'no_of_sample_delivered',
         'incentive_promised',

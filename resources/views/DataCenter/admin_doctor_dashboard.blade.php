@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h4 class="font-weight-normal mb-3">Total Doctors Registered</h4>
             <canvas id="doctorPieChart"></canvas>
         </div>

@@ -23,7 +23,8 @@ class ProjectFeasibilityController extends Controller
         'project_launch_date' => 'required|date',
         'target_countries' => 'required|array',
         'target_countries.*' => 'required|string|max:255',
-        'responded_title' => 'required|string|max:255',
+        'responded_titles' => 'required|array',
+        'responded_titles.*' => 'required|string|max:255',
         'no_of_sample_required' => 'required|integer',
         'no_of_sample_delivered' => 'required|integer',
         'incentive_promised' => 'required|numeric',
@@ -31,19 +32,21 @@ class ProjectFeasibilityController extends Controller
         'responded_email.*' => 'required|email|max:255',
     ]);
 
+    //dd($request->all());
+
     // Save the data
-    ProjectFeasibility::create([
-        'date' => $validated['date'],
-        'pn_number' => $validated['pn_number'],
-        'email_subject_line' => $validated['email_subject_line'],
-        'project_launch_date' => $validated['project_launch_date'],
-        'target_countries' => json_encode($validated['target_countries']),
-        'responded_title' => $validated['responded_title'],
-        'no_of_sample_required' => $validated['no_of_sample_required'],
-        'no_of_sample_delivered' => $validated['no_of_sample_delivered'],
-        'incentive_promised' => $validated['incentive_promised'],
-        'responded_emails' => json_encode($validated['responded_email']),
-    ]);
+   ProjectFeasibility::create([
+    'date' => $validated['date'],
+    'pn_number' => $validated['pn_number'],
+    'email_subject_line' => $validated['email_subject_line'],
+    'project_launch_date' => $validated['project_launch_date'],
+    'target_countries' => json_encode($validated['target_countries']),
+    'responded_titles' => json_encode($validated['responded_titles']), // Store as JSON
+    'no_of_sample_required' => $validated['no_of_sample_required'],
+    'no_of_sample_delivered' => $validated['no_of_sample_delivered'],
+    'incentive_promised' => $validated['incentive_promised'],
+    'responded_emails' => json_encode($validated['responded_email']),
+]);
 
     // Check if the request is AJAX
     if ($request->ajax()) {
@@ -81,8 +84,8 @@ class ProjectFeasibilityController extends Controller
             $query->whereJsonContains('target_countries', $request->country);
         }
     
-        if ($request->has('responded_title') && !empty($request->responded_title)) {
-            $query->where('responded_title', 'LIKE', '%' . $request->responded_title . '%');
+        if ($request->has('responded_titles') && !empty($request->responded_titles)) {
+            $query->where('responded_titles', 'LIKE', '%' . $request->responded_titles . '%');
         }
     
         // Fetch data
