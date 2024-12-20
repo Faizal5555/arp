@@ -131,7 +131,7 @@ class dataCenterController extends Controller
         // Send email to each valid email address
         foreach ($validEmails as $email) {
             Mail::send('mails.invite', ['url' => $link, 'emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
-                $mail->from('registrations@healthcarepanelsindia.com');
+                $mail->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com');
                 $mail->to($email);
                 $mail->subject('Doctor Notification');
                 
@@ -1672,7 +1672,8 @@ public function sendEmailToPanelists(Request $request)
     foreach ($doctors as $doctor) {
         Mail::send('mails.panelist_notification', ['doctor' => $doctor, 'emailContent' => $emailContent], function ($message) use ($doctor, $emailAttachment) {
             $message->to($doctor->email)
-                    ->subject('Doctor Notification');
+                    ->subject('Doctor Notification')
+                    ->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com'); 
 
             if ($emailAttachment) {
                 $message->attach($emailAttachment->getPathname(), [
@@ -2013,8 +2014,8 @@ public function userconsumerlistData(Request $request)
                 $query = DB::table('ques')
                     ->select(
                         'id as user_id',
-                        'fname as name',
-                        'lname as name', // Use fname as name
+                        'fname as fname',
+                        'lname as lname', // Use fname as name
                         'email',
                         'country'
                     );
@@ -2064,7 +2065,7 @@ public function userconsumerlistData(Request $request)
         $attachment = $request->file('attachment');
 
         Mail::send('mails.global', ['emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
-            $mail->from('registrations@asiaresearchpartners.com');
+            $mail->from('researchaccountmanager@asiaresearchpartners.com');
             $mail->to($email);
             $mail->subject('Global Panel Notification');
 

@@ -318,7 +318,7 @@ table tfoot th {
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
-                    <img src="{{asset('adminapp/assets/images/faces/face4.jpg')}}" alt="image" class="profile-pic">
+                    <img src="{{asset('assets/images/faces/face4.jpg')}}" alt="image" class="profile-pic">
                   </div>
                   <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                     <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message</h6>
@@ -328,7 +328,7 @@ table tfoot th {
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
-                    <img src="{{asset('adminapp/assets/images/faces/face2.jpg')}}" alt="image" class="profile-pic">
+                    <img src="{{asset('assets/images/faces/face2.jpg')}}" alt="image" class="profile-pic">
                   </div>
                   <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                     <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a message</h6>
@@ -338,7 +338,7 @@ table tfoot th {
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item preview-item">
                   <div class="preview-thumbnail">
-                    <img src="{{asset('adminapp/assets/images/faces/face3.jpg')}}" alt="image" class="profile-pic">
+                    <img src="{{asset('assets/images/faces/face3.jpg')}}" alt="image" class="profile-pic">
                   </div>
                   <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
                     <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated</h6>
@@ -465,11 +465,12 @@ table tfoot th {
             </li>-->
 
             <li class=" nav-item ">
-
+              @if(auth()->user()->user_type != 'global_manager')
               <a class="nav-link " href="{{route('dashboard')}}">
                 <span class="menu-title">Dashboard</span>
                 <i class="fas fa-home"  id="home-icon"></i>
               </a>
+              @endif
 
             </li>
             @if(auth()->user()->user_type == 'sales' )
@@ -798,13 +799,13 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('get.recruitment') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{route('employee.list')}}">Panel Team Employee</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{route('employee.list')}}">Panel Team Employee Dashboard</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('globalManagerList') }}">View Global Registration</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('globalManagerList') }}">Total Registered Panelists</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('panelMemberList') }}">Panel Member Participation</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('panelMemberList') }}">Panel Participation Incentive</a>
                         </li>
                         <li class="nav-item">
                           <li class="nav-item" > <a class="nav-link" href="{{ route('PaymentsView') }}">Payment to panel Member</a>
@@ -813,7 +814,7 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Checked</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
                         </li>
                       </ul>
                     </div>
@@ -878,10 +879,11 @@ table tfoot th {
               <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
             </li>
             <li class="nav-item">
-              <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Checked</a>
+              <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
             </li>
             
             @elseif(auth()->user()->user_type == 'global_manager')
+            
             {{-- <li class="nav-item">
              <a class="nav-link" data-toggle="collapse" href="#ui-basic14" aria-expanded="false" aria-controls="ui-basic">
                <span class="menu-title">Global Panel Team</span>
@@ -899,7 +901,7 @@ table tfoot th {
             </li> --}}
              <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-global-panel-manager" aria-expanded="false" aria-controls="ui-global-panel-manager">
-                      Global Panel Manager
+                      <span class="menu-title">Global Panel Team</span>
                       <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-global-panel-manager">
@@ -908,13 +910,13 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('get.recruitment') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{route('employee.list')}}">Panel Team Employee</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{route('employee.list')}}">Panel Team Employee Dashboard</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('globalManagerList') }}">View Global Registration</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('globalManagerList') }}">Total Registered Panelists</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('panelMemberList') }}">Panel Member Participation</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('panelMemberList') }}">Panel Participation Incentive</a>
                         </li>
                         <li class="nav-item">
                           <li class="nav-item" > <a class="nav-link" href="{{ route('PaymentsView') }}">Payment to panel Member</a>
@@ -923,7 +925,7 @@ table tfoot th {
                           <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
                         </li>
                         <li class="nav-item">
-                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">New Executed/ Feasbility Request</a>
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
                         </li>
                       </ul>
                     </div>

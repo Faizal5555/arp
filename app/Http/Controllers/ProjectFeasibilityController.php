@@ -72,8 +72,12 @@ class ProjectFeasibilityController extends Controller
         $query = ProjectFeasibility::query();
 
         // Apply filters
-        if ($request->has('date') && !empty($request->date)) {
-            $query->where('date', $request->date);
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $query->where('date', '>=', $request->from_date);
+        }
+    
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $query->where('date', '<=', $request->to_date);
         }
     
         if ($request->has('pn_number') && !empty($request->pn_number)) {

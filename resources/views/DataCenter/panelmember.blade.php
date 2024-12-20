@@ -259,7 +259,7 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
     <div class="col-md-12">
         <div class="card" id="header-title">
             <div class="card-header header">
-                <div class="card-title" style="color:whitesmoke;">Global Manager List</div>
+                <div class="card-title" style="color:whitesmoke;">Panel Participation Incentive</div>
             </div>
             <div class="card-body">
                 <div class="mb-4">

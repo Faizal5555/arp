@@ -51,7 +51,7 @@ class AuthenticatedSessionController extends Controller
 
         if (Auth::attempt(array_merge($credentials, ['user_type' => 'global_manager']))) {
             $request->session()->regenerate();
-            return redirect()->intended('/adminapp/dashboard');
+            return redirect()->intended('/adminapp/get-recruitment');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials for Global Manager.']);

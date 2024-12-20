@@ -11,7 +11,7 @@
 
 <div class="card">
     <div class="card-header header">
-        <h4>Project Feasibility Table</h4>
+        <h4>Search Feasibility Projects</h4>
     </div>
 
     <!-- Filters Section -->
@@ -20,8 +20,13 @@
             <div class="row">
                 <!-- Date Filter -->
                 <div class="col-md-3">
-                    <label for="date">Date</label>
-                    <input type="date" name="date" id="date" class="form-control">
+                    <label for="from_date">From Date</label>
+                    <input type="date" name="from_date" id="from_date" class="form-control">
+                </div>
+                <!-- To Date Filter -->
+                <div class="col-md-3">
+                    <label for="to_date">To Date</label>
+                    <input type="date" name="to_date" id="to_date" class="form-control">
                 </div>
                 <!-- PN Number Filter -->
                 <div class="col-md-3">
@@ -34,7 +39,7 @@
                     <input type="text" name="country" id="country" class="form-control" placeholder="Enter Country">
                 </div>
                 <!-- Responded Title Filter -->
-                <div class="col-md-3">
+                <div class="col-md-3 mt-3">
                     <label for="responded_titles">Responded Title</label>
                     <input type="text" name="responded_titles" id="responded_titles" class="form-control" placeholder="Enter Responded Title">
                 </div>

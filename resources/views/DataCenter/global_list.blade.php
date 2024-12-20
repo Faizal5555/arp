@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('page_title', 'Global Manager List')
+@section('page_title', 'Total Registered PanelList')
 @section('content')
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -80,8 +80,8 @@ $(function () {
                 }
             ] : [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'name', name: 'name' },
-                { data: 'name', name: 'name' }, // Last Name column for Consumer
+                { data: 'fname', name: 'fname' },
+                { data: 'lname', name: 'lname' }, // Last Name column for Consumer
                 { data: 'country', name: 'country' },
                 // { data: 'email', name: 'email' },
                 {
@@ -184,7 +184,7 @@ $(document).ready(function () {
     <div class="col-md-12">
         <div class="card" id="header-title">
             <div class="card-header header">
-                <div class="card-title" style="color:whitesmoke;">Global Manager List</div>
+                <div class="card-title" style="color:whitesmoke;">Total Registered PaneList</div>
             </div>
             <div class="card-body">
                 <div class="mb-4">
