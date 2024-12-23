@@ -3,45 +3,38 @@
 @section('content')
 
 <div class="content-wrapper">
-    {{-- <div class="page-header">
-        <h3 class="page-title"> Consumer Registration by Country </h3>
-    </div> --}}
-
     <!-- Dropdown to select country -->
     <div class="row">
         <div class="col-md-4">
             <label for="countrySelect">Select Country</label>
             <select id="countrySelect" class="form-control">
                 <option value="">Select the country</option>
-                <!-- Assuming $countries is passed to this view with a list of all countries -->
                 @foreach($countries as $country)
                 <option value="{{ $country->name }}">{{ $country->name }}</option>
                 @endforeach
             </select>
         </div>
-            <div class="col-md-4">
-                <label for="countrySelect">Total Hcp Registered Click to see</label>
-                <button class="btn btn-primary" id="hcpRegisteredButton">HCP Dashboard</button>
-            </div>
+        <div class="col-md-4">
+            <label for="countrySelect">Total Hcp Registered Click to see</label>
+            <button class="btn btn-primary" id="hcpRegisteredButton">HCP Dashboard</button>
+        </div>
     </div>
     
     <div class="row">
         <div class="col-md-6 mt-4 ml-3">
             <h4 class="font-weight-normal mb-3">Total Consumer Registered</h4>
-            <canvas id="consumerChart"></canvas>
+            <div id="consumerChart" style="width: 100%; height: 400px;"></div>
         </div>
-       
     </div>
+    
     <div class="row">
         <div class="col-md-6 mt-4">
-            <h4 class="font-weight-normal mb-3">Occupations</h4>
-            <canvas id="occupationChart"></canvas>
+            {{-- <h4 class="font-weight-normal mb-3">Occupations</h4> --}}
+            <div id="occupationChart" style="width: 100%; height: 400px;"></div>
         </div>
-
-        <!-- Bar chart for industry question (27) -->
         <div class="col-md-6 mt-4">
-            <h4 class="font-weight-normal mb-3">Organization Primary Industry</h4>
-            <canvas id="industryChart"></canvas>
+            {{-- <h4 class="font-weight-normal mb-3">Organization Primary Industry</h4> --}}
+            <div id="industryChart" style="width: 100%; height: 400px;"></div>
         </div>
     </div>
 </div>
@@ -49,224 +42,193 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initial fetch for chart data
-    fetchUserChartData();
-
-    // Listen for changes in the country dropdown and fetch data accordingly
-    $('#countrySelect').change(function() {
-        const selectedCountry = $(this).val();
-        fetchUserChartData(selectedCountry);
-    });
-
-    // Function to fetch user chart data based on selected country
-    function fetchUserChartData(country = null) {
-        $.ajax({
-            url: "{{ route('userCountryFilter') }}",
-            method: 'GET',
-            data: { country: country },
-            success: function(response) {
-                updateUserChart(response.userChartData); // Update the pie chart with registration data
-                updateBarCharts(response.occupationData, response.industryData); // Update bar charts for occupation and industry
-            },
-            error: function() {
-                // Use a more user-friendly alert for errors
-                Swal.fire({
-                    title: "Error",
-                    text: "Error fetching user data.",
-                    icon: "error",
-                    confirmButtonText: "OK"
-                });
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        const consumerChart = echarts.init(document.getElementById('consumerChart'));
+        const occupationChart = echarts.init(document.getElementById('occupationChart'));
+        const industryChart = echarts.init(document.getElementById('industryChart'));
+    
+        fetchUserChartData();
+    
+        document.getElementById('countrySelect').addEventListener('change', function () {
+            const selectedCountry = this.value;
+            fetchUserChartData(selectedCountry);
         });
-    }
-
-    // Function to update the pie chart with total user registrations by country
-    function updateUserChart(data) {
-    let labels, counts;
-
-    if (data.length === 0) {
-        // Display "No Data" if there is no data
-        labels = ["No Data"];
-        counts = [0];
-    } else {
-        // Populate labels and counts with actual data
-        labels = data.map(item => item.label);
-        counts = data.map(item => item.count);
-    }
-
-    // Generate random colors for each label
-    const backgroundColors = labels.map(() => getRandomColor());
-
-    // Check if the chart instance exists before attempting to destroy it
-    if (window.consumerChart instanceof Chart) {
-        window.consumerChart.destroy();
-    }
-
-    const ctx = document.getElementById('consumerChart').getContext('2d');
-    window.consumerChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: counts,
-                backgroundColor: backgroundColors,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        generateLabels: function(chart) {
-                            const data = chart.data;
-                            return data.labels.map((label, index) => ({
-                                text: `${label} (${data.datasets[0].data[index]})`,
-                                fillStyle: data.datasets[0].backgroundColor[index],
-                                hidden: chart.getDataVisibility(index),
-                                index: index
-                            }));
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-// Function to generate a random color in hex format
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
-
-
-    // Function to update bar charts for Occupation and Industry
-    function updateBarCharts(occupationData, industryData) {
-    const occupationLabels = occupationData.map(item => item.label);
-    const occupationCounts = occupationData.map(item => item.count);
-
-    const industryLabels = industryData.map(item => item.label);
-    const industryCounts = industryData.map(item => item.count);
-
-    // Destroy existing bar charts if they exist
-    if (window.occupationChart instanceof Chart) {
-        window.occupationChart.destroy();
-    }
-    if (window.industryChart instanceof Chart) {
-        window.industryChart.destroy();
-    }
-
-    // Occupation Bar Chart
-    const ctxOccupation = document.getElementById('occupationChart').getContext('2d');
-    window.occupationChart = new Chart(ctxOccupation, {
-        type: 'bar',
-        data: {
-            labels: occupationLabels,
-            datasets: [{
-                label: 'Occupation',
-                data: occupationCounts,
-                backgroundColor: '#36A2EB',
-            }]
-        },
-        options: {
-            responsive: true,
-            layout: {
-                padding: {
-                    bottom: 30 // Increase space at the bottom for long labels
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        maxRotation: 0,   // Set rotation to horizontal for better wrapping
-                        minRotation: 0,
-                        callback: function(value) {
-                            const maxLabelLength = 10; // Adjust this as needed
-                            if (value.length > maxLabelLength) {
-                                return value.substring(0, maxLabelLength) + '...'; // Truncate with ellipsis
-                            }
-                            return value;
-                        }
-                    }
+    
+        function fetchUserChartData(country = null) {
+            $.ajax({
+                url: "{{ route('userCountryFilter') }}",
+                method: 'GET',
+                data: { country: country },
+                success: function (response) {
+                    updateUserChart(response.userChartData);
+                    updateOccupationChart(response.occupationData);
+                    updateIndustryChart(response.industryData);
                 },
-                y: { beginAtZero: true }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItem) {
-                            return occupationLabels[tooltipItem[0].dataIndex]; // Show full label in tooltip
-                        }
-                    }
+                error: function () {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Error fetching user data.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
                 }
-            }
+            });
         }
-    });
+    
+        // PIE CHART: Total Consumer Registered
+        function updateUserChart(data) {
+    const labels = data.length ? data.map(item => item.label) : ['No Data'];
+    const counts = data.length ? data.map(item => item.count) : [0];
 
-    // Industry Bar Chart
-    const ctxIndustry = document.getElementById('industryChart').getContext('2d');
-    window.industryChart = new Chart(ctxIndustry, {
-        type: 'bar',
-        data: {
-            labels: industryLabels,
-            datasets: [{
-                label: 'Industry',
-                data: industryCounts,
-                backgroundColor: '#FF6384',
-            }]
+    consumerChart.setOption({
+        title: {
+            left: 'center',
         },
-        options: {
-            responsive: true,
-            layout: {
-                padding: {
-                    bottom: 30 // Increase space at the bottom for long labels
-                }
+        tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+                return `${params.name}: ${params.value}`; // Tooltip shows country name and count
             },
-            scales: {
-                x: {
-                    ticks: {
-                        maxRotation: 0,   // Set rotation to horizontal for better wrapping
-                        minRotation: 0,
-                        callback: function(value) {
-                            const maxLabelLength = 10; // Adjust this as needed
-                            if (value.length > maxLabelLength) {
-                                return value.substring(0, maxLabelLength) + '...'; // Truncate with ellipsis
-                            }
-                            return value;
-                        }
-                    }
+        },
+        legend: {
+            orient: 'horizontal',
+            left: 'left',
+            data: labels,
+            formatter: function (name) {
+                const countryIndex = labels.indexOf(name);
+                const count = countryIndex !== -1 ? counts[countryIndex] : 0;
+                return `${name}`; // Add count next to country name
+            },
+        },
+        series: [{
+            type: 'pie',
+            radius: '50%',
+            data: labels.map((label, index) => ({
+                name: label,
+                value: counts[index],
+            })),
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
                 },
-                y: { beginAtZero: true }
             },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItem) {
-                            return industryLabels[tooltipItem[0].dataIndex]; // Show full label in tooltip
-                        }
-                    }
-                }
-            }
-        }
+            label: {
+                show: true,
+                formatter: '{b}: {c}', // Show country name and count in pie chart labels
+            },
+        }],
     });
 }
 
-document.getElementById('hcpRegisteredButton').addEventListener('click', function() {
-    window.location.href = "{{ route('hcp.pieChart') }}";
-});
+function updateOccupationChart(data) {
+    const labels = data.length ? data.map(item => item.label) : ['No Data'];
+    const counts = data.length ? data.map(item => item.count) : [0];
 
-});
+    occupationChart.setOption({
+        title: {
+            text: 'Occupations',
+            left: 'center',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                const value = params[0].data;
+                return `${params[0].axisValueLabel}: ${value}`;
+            },
+            axisPointer: {
+                type: 'shadow',
+            },
+        },
+        grid: {
+            bottom: 100, // Increased bottom space for label visibility
+        },
+        xAxis: {
+            type: 'category',
+            data: labels,
+            axisLabel: {
+                interval: 0, // Show all labels
+                rotate: 45, // Rotate for better visibility
+                padding: [10, 0, 0, 0], // Add padding to avoid truncation
+                formatter: function (value) {
+                    return value.length > 20 ? value.substring(0, 20) + '...' : value;
+                },
+            },
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+        },
+        series: [{
+            type: 'bar',
+            data: counts,
+            barWidth: '50%',
+            itemStyle: {
+                color: '#36A2EB',
+            },
+        }],
+    });
+}
 
-</script>
+// Industry Bar Chart
+function updateIndustryChart(data) {
+    const labels = data.length ? data.map(item => item.label) : ['No Data'];
+    const counts = data.length ? data.map(item => item.count) : [0];
+
+    industryChart.setOption({
+        title: {
+            text: 'Organization Primary Industry',
+            left: 'center',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                const value = params[0].data;
+                return `${params[0].axisValueLabel}: ${value}`;
+            },
+            axisPointer: {
+                type: 'shadow',
+            },
+        },
+        grid: {
+            bottom: 100, // Increased bottom space for label visibility
+        },
+        xAxis: {
+            type: 'category',
+            data: labels,
+            axisLabel: {
+                interval: 0, // Show all labels
+                rotate: 45, // Rotate for better visibility
+                padding: [10, 0, 0, 0], // Add padding to avoid truncation
+                formatter: function (value) {
+                    return value.length > 20 ? value.substring(0, 20) + '...' : value;
+                },
+            },
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+        },
+        series: [{
+            type: 'bar',
+            data: counts,
+            barWidth: '50%',
+            itemStyle: {
+                color: '#FF6384',
+            },
+        }],
+    });
+}
 
 
+        document.getElementById('hcpRegisteredButton').addEventListener('click', function() {
+        window.location.href = "{{ route('hcp.pieChart') }}";
+    });
+    });
+   
+    </script>
+    
 @endpush

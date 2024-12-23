@@ -54,7 +54,7 @@
 
     <div class="row">
         <div class="col-md-4 stretch-card grid-margin">
-            <div class="card bg-gradient-danger card-img-holder text-white">
+            <div class="card bg-gradient-danger card-img-holder text-white" style="height:200px;">
                 <div class="card-body">
                     <h4 class="font-weight-normal mb-3">Total Doctors Registered<i class="mdi mdi-chart-line mdi-24px float-right"></i></h4>
                     <h2 class="mb-5 doctor_count">{{$doctor}}</h2>
@@ -63,7 +63,9 @@
         </div>
         <div class="col-md-6">
             <h4 class="font-weight-normal mb-3">Total Doctors Registered</h4>
-            <canvas id="doctorPieChart"></canvas>
+            <div id="doctorPieChart" style="width: 100%; height:300px;">
+
+            </div>
         </div>
         {{-- <div class="col-md-4">
             <h4 class="font-weight-normal mb-3">Total Consumer Registered</h4>
@@ -73,44 +75,67 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script>
   $(document).ready(function() {
       var doctorPieChart;
       var userPieChart;
-      
+
       // Function to create or update the doctor pie chart
       function updateDoctorPieChart(data) {
           const labels = data.map(item => item.label);
           const counts = data.map(item => item.count);
 
-          if (counts.length === 0) {
-              labels.push("No Data");
-              counts.push(0);
+          const hasData = data && data.length > 0;
+
+          // Initialize or update the chart
+          if (!doctorPieChart) {
+              doctorPieChart = echarts.init(document.getElementById('doctorPieChart'));
           }
 
-          if (doctorPieChart) {
-              doctorPieChart.destroy();
-          }
-          
-          const ctx = document.getElementById('doctorPieChart').getContext('2d');
-          doctorPieChart = new Chart(ctx, {
-              type: 'pie',
-              data: {
-                  labels: labels,
-                  datasets: [{
-                      data: counts,
-                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                  }]
+          doctorPieChart.setOption({
+              title: {
+                //   text: 'Doctor Distribution',
+                  left: 'center'
               },
-              options: {
-                  responsive: true,
-                  plugins: {
-                      legend: {
-                          position: 'top',
-                      }
-                  }
-              }
+              tooltip: {
+                  trigger: 'item',
+                  formatter: '{b}: {c}'
+              },
+              legend: {
+                  orient: 'horizontal',
+                  data: labels,
+              },
+              series: [
+                {
+                    name: 'Doctors',
+                    type: 'pie',
+                    radius: '50%',
+                    data: hasData
+                        ? labels.map((label, index) => ({ name: label, value: counts[index] }))
+                        : [{ name: 'No Data', value: 0 }],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    label: {
+                        show: true,
+                        formatter: '{b}: {c}', // Show label and count in the pie chart
+                        position: 'outside', // Place labels outside the pie chart
+                    },
+                    labelLine: {
+                        show: true, // Display lines connecting labels to slices
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c} ({d}%)' // Tooltip includes name, count, and percentage
+                    }
+                }
+            ]
+
           });
       }
 
@@ -119,33 +144,44 @@
           const labels = data.map(item => item.label);
           const counts = data.map(item => item.count);
 
-          if (counts.length === 0) {
-              labels.push("No Data");
-              counts.push(0);
+          const hasData = data && data.length > 0;
+
+          // Initialize or update the chart
+          if (!userPieChart) {
+              userPieChart = echarts.init(document.getElementById('userPieChart'));
           }
 
-          if (userPieChart) {
-              userPieChart.destroy();
-          }
-
-          const ctx = document.getElementById('userPieChart').getContext('2d');
-          userPieChart = new Chart(ctx, {
-              type: 'pie',
-              data: {
-                  labels: labels,
-                  datasets: [{
-                      data: counts,
-                      backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                  }]
+          userPieChart.setOption({
+              title: {
+                  text: 'User Distribution',
+                  left: 'center'
               },
-              options: {
-                  responsive: true,
-                  plugins: {
-                      legend: {
-                          position: 'top',
+              tooltip: {
+                  trigger: 'item',
+                  formatter: '{b}: {c}'
+              },
+              legend: {
+                  orient: 'horizontal',
+                  bottom: '10%',
+                  data: hasData ? labels : ['No Data']
+              },
+              series: [
+                  {
+                      name: 'Users',
+                      type: 'pie',
+                      radius: '50%',
+                      data: hasData
+                          ? labels.map((label, index) => ({ name: label, value: counts[index] }))
+                          : [{ name: 'No Data', value: 0 }],
+                      emphasis: {
+                          itemStyle: {
+                              shadowBlur: 10,
+                              shadowOffsetX: 0,
+                              shadowColor: 'rgba(0, 0, 0, 0.5)'
+                          }
                       }
                   }
-              }
+              ]
           });
       }
 
@@ -161,14 +197,14 @@
       function fetchDoctorData() {
           var country = $('#country').val();
           var speciality = $('#speciality').val();
-          
+
           $.ajax({
               url: "{{ route('adminfillter') }}",
               method: 'get',
               data: { country, speciality },
               success: function(data) {
                   $('.doctor_count').html(data.datacenter || 0);
-                  updateDoctorPieChart(data.chartData);
+                  updateDoctorPieChart(data.chartData || []);
               },
               error: function() {
                   $('.doctor_count').html(0);
@@ -179,13 +215,13 @@
 
       function fetchUserData() {
           var country = $('#country').val();
-          
+
           $.ajax({
-              url: "{{ route('userCountryFilter') }}",  // Add a new route for this function in your controller
+              url: "{{ route('userCountryFilter') }}", // Add a new route for this function in your controller
               method: 'get',
               data: { country },
               success: function(data) {
-                  updateUserPieChart(data.userChartData);  // Assuming this returns data formatted for the user chart
+                  updateUserPieChart(data.userChartData || []);
               },
               error: function() {
                   updateUserPieChart([]);
@@ -194,4 +230,5 @@
       }
   });
 </script>
+
 @endsection

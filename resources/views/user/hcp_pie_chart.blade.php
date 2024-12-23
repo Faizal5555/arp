@@ -3,7 +3,6 @@
 @section('content')
 
 <div class="content-wrapper">
-
     <div class="row">
         <div class="col-md-4">
             <label for="countrySelect">Select Country</label>
@@ -19,50 +18,51 @@
     <div class="row">
         <div class="col-md-6 mt-4">
             <h4 class="font-weight-normal mb-3">Total HCP Registered by Country</h4>
-            <canvas id="countryChart"></canvas>
+            <div id="countryChart" style="width: 100%; height: 400px;"></div>
         </div>
 
         <div class="col-md-6 mt-4">
-            <h4 class="font-weight-normal mb-3">Specialities</h4>
-            <canvas id="specialityChart"></canvas>
+            <h4 class="font-weight-normal mb-3 d-flex justify-content-center">Specialities</h4>
+            <div id="specialityChart" style="width: 100%; height: 400px;"></div>
         </div>
     </div>
-
 </div>
 
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Fetch and display country chart data on page load
+    // Initialize charts
+    const countryChart = echarts.init(document.getElementById('countryChart'));
+    const specialityChart = echarts.init(document.getElementById('specialityChart'));
+
+    // Fetch and display data on page load
     fetchHcpChartData();
 
     // Handle country selection changes
-    $('#countrySelect').change(function () {
-        const selectedCountry = $(this).val();
+    document.getElementById('countrySelect').addEventListener('change', function () {
+        const selectedCountry = this.value;
         if (selectedCountry) {
             fetchHcpChartData(selectedCountry); // Fetch data for the selected country
         } else {
-            clearSpecialityChart(); // Clear speciality chart when no country is selected
+            fetchHcpChartData(); // Fetch all data when no country is selected
         }
     });
 
-    // Function to fetch chart data based on selected country
+    // Function to fetch chart data
     function fetchHcpChartData(country = null) {
         $.ajax({
             url: "{{ route('hcp.countryData') }}",
             method: 'GET',
             data: { country: country },
             success: function (response) {
-                updateCountryChart(response.countryChartData); // Update pie chart for countries
-
-                // Show speciality bar chart only if a country is selected
+                updateCountryChart(response.countryChartData); // Update pie chart
                 if (country) {
-                    updateSpecialityChart(response.specialityChartData);
+                    updateSpecialityChart(response.specialityChartData); // Update bar chart
                 } else {
-                    clearSpecialityChart();
+                    clearSpecialityChart(); // Clear speciality chart when no specific country is selected
                 }
             },
             error: function () {
@@ -76,134 +76,140 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Function to update the country pie chart
+    // Update pie chart for countries
     function updateCountryChart(data) {
-        let labels, counts, colors;
+        if (data && data.length > 0) {
+            const labels = data.map(item => item.label);
+            const counts = data.map(item => item.count);
 
-        if (!data || data.length === 0) {
-            labels = ['No Data'];
-            counts = [1];
-            colors = ['#D3D3D3']; // Light gray for "No Data"
-        } else {
-            labels = data.map(item => item.label);
-            counts = data.map(item => item.count);
-            colors = labels.map(() => getRandomColor());
-        }
+            // Ensure the chart container is cleared before updating
+            document.getElementById('countryChart').innerHTML = '<div id="countryChartContainer" style="width: 100%; height: 400px;"></div>';
+            const chartDom = document.getElementById('countryChartContainer');
+            const countryChart = echarts.init(chartDom);
 
-        if (window.countryChart instanceof Chart) {
-            window.countryChart.destroy();
-        }
-
-        const ctx = document.getElementById('countryChart').getContext('2d');
-        window.countryChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: counts,
-                    backgroundColor: colors,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        enabled: data && data.length > 0, // Disable tooltips if no data
+            countryChart.setOption({
+                title: {
+                    // text: 'Total HCP Registered by Country',
+                    left: 'center',
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        return `${params.name}: ${params.value}`; // Tooltip format
                     },
                 },
-            },
-        });
+                legend: {
+                    orient: 'horizontal',
+                    left: 'left',
+                    data: labels,
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '50%',
+                        data: labels.map((label, index) => ({
+                            name: label,
+                            value: counts[index],
+                        })),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)',
+                            },
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{b}: {c}',
+                        },
+                    },
+                ],
+            });
+        } else {
+            // Clear the chart and display a placeholder message
+            document.getElementById('countryChart').innerHTML = `
+                <div style="text-align: center; color: gray; font-size: 14px;">
+                    No Data Available
+                </div>`;
+        }
     }
 
-    // Function to update the speciality bar chart
+    // Update bar chart for specialties
     function updateSpecialityChart(data) {
-        let labels, counts;
+        const labels = data && data.length ? data.map(item => item.label) : ['No Data'];
+        const counts = data && data.length ? data.map(item => item.count) : [0];
 
-        if (!data || data.length === 0) {
-            labels = ['No Data'];
-            counts = [1];
-        } else {
-            labels = data.map(item => item.label);
-            counts = data.map(item => item.count);
-        }
-
-        if (window.specialityChart instanceof Chart) {
-            window.specialityChart.destroy();
-        }
-
-        const ctx = document.getElementById('specialityChart').getContext('2d');
-        window.specialityChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Specialties',
-                    data: counts,
-                    backgroundColor: data && data.length > 0 ? '#36A2EB' : '#D3D3D3', // Light gray for "No Data"
-                }],
+        specialityChart.setOption({
+            title: {
+                // text: 'Specialities by Count',
+                left: 'center',
             },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { ticks: { maxRotation: 0, minRotation: 0 } },
-                    y: { beginAtZero: true },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
                 },
-                plugins: {
-                    legend: { display: data && data.length > 0 }, // Hide legend if no data
-                    tooltip: {
-                        enabled: data && data.length > 0, // Disable tooltips if no data
+            },
+            grid: {
+                bottom: 150,
+            },
+            xAxis: {
+                type: 'category',
+                data: labels,
+                axisLabel: {
+                    interval: 0,
+                    rotate: 45,
+                    padding: [10, 0, 0, 0],
+                    formatter: function (value) {
+                        return value.length > 20 ? value.substring(0, 20) + '...' : value;
                     },
                 },
             },
+            yAxis: {
+                type: 'value',
+                min: 0,
+            },
+            series: [
+                {
+                    type: 'bar',
+                    data: counts,
+                    barWidth: '50%',
+                    itemStyle: {
+                        color: '#36A2EB',
+                    },
+                },
+            ],
         });
     }
 
-    // Function to clear the speciality bar chart
+    // Clear speciality bar chart
     function clearSpecialityChart() {
-        if (window.specialityChart instanceof Chart) {
-            window.specialityChart.destroy();
-        }
-
-        // Optionally display a placeholder or empty chart
-        const ctx = document.getElementById('specialityChart').getContext('2d');
-        window.specialityChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['No Data'],
-                datasets: [{
-                    label: 'Specialties',
+        specialityChart.setOption({
+            title: {
+                // text: 'Specialities by Count',
+                left: 'center',
+            },
+            xAxis: {
+                type: 'category',
+                data: ['No Data'],
+            },
+            yAxis: {
+                type: 'value',
+                min: 0,
+            },
+            series: [
+                {
+                    type: 'bar',
                     data: [0],
-                    backgroundColor: '#D3D3D3', // Light gray for "No Data"
-                }],
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: { display: false }, // Hide x-axis when no data
-                    y: { display: false }, // Hide y-axis when no data
+                    barWidth: '50%',
+                    itemStyle: {
+                        color: '#D3D3D3',
+                    },
                 },
-                plugins: {
-                    legend: { display: false }, // Hide legend when no data
-                    tooltip: { enabled: false }, // Disable tooltips when no data
-                },
-            },
+            ],
         });
-    }
-
-    // Function to generate random colors
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     }
 });
-
 
 </script>
 @endpush
