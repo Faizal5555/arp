@@ -141,6 +141,9 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
+            beforeSend: function() {
+                $('#sendEmail').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+            },
             success: function(response) {
                 swal.fire({
                     title: "Success",
@@ -158,6 +161,9 @@ $(document).ready(function() {
                     icon: "error",
                     button: "OK"
                 });
+            },
+            complete: function() {
+                $('#sendEmail').prop('disabled', false).text('Send Email');
             }
         });
     });

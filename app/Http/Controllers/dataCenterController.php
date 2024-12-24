@@ -1858,7 +1858,8 @@ public function sendEmailToUsers(Request $request)
     foreach ($users as $user) {
         Mail::send('mails.user_notification', ['user' => $user, 'emailContent' => $emailContent], function ($message) use ($user, $emailAttachment) {
             $message->to($user->email)
-                    ->subject('Consumer Notification');
+                    ->subject('Consumer Notification')
+                    ->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com'); 
 
             if ($emailAttachment) {
                 $message->attach($emailAttachment->getPathname(), [
