@@ -94,9 +94,11 @@ class ProjectFeasibilityController extends Controller
     
         // Fetch data
         $projects = $query->get();
+        $userType = auth()->user()->user_type;
     
         return response()->json([
-            'data' => $projects
+            'data' => $projects,
+            'user_type' => $userType,
         ]);
 
     }

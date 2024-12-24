@@ -14,123 +14,51 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 <div class="container">
-    <h4>Employee List</h4>
+    <h4>Employee/Dashboard</h4>
 
-    <!-- Filter Tab for Consumer and HCP -->
-    <ul class="nav nav-tabs" id="employeeTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <!-- Link to reload page with Consumer filter -->
-            <a 
-                class="nav-link {{ $filter == 'consumer' ? 'active' : '' }}" 
-                href="{{ url()->current() }}?filter=consumer"
-                id="consumer-tab"
-            >
-                Consumer
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <!-- Link to reload page with HCP filter -->
-            <a 
-                class="nav-link {{ $filter == 'hcp' ? 'active' : '' }}" 
-                href="{{ url()->current() }}?filter=hcp"
-                id="hcp-tab"
-            >
-                HCP
-            </a>
-        </li>
-    </ul>
-
-    <div class="tab-content" id="employeeTabContent">
-        <!-- Consumer Tab -->
-        <div class="tab-pane fade {{ $filter == 'consumer' ? 'show active' : '' }}" id="consumer" role="tabpanel" aria-labelledby="consumer-tab">
-            <h4>Consumers</h4>
-            <table id="consumerTable" class="table">
-                <thead>
+    <div class="table-responsive">
+        <table id="consumerTable" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Country</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($consumerEmployees as $employee)
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Country</th>
-                        <th>Action</th>
+                        <td>{{ $employee->name }}</td>
+                        <td>{{ $employee->email }}</td>
+                        <td>{{ $employee->country }}</td>
+                        <td>
+                            <a href="{{ route('dashboard.view', ['user_id' => $employee->user_id, 'type' => 'consumer']) }}" class="btn btn-primary">View</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse ($consumerEmployees as $employee)
-                        <tr>
-                            <td>{{ $employee->name }}</td>
-                            <td>{{ $employee->email }}</td>
-                            <td>{{ $employee->country }}</td>
-                            <td>
-                                <a href="{{ route('dashboard.view', ['user_id' => $employee->user_id, 'type' => $filter]) }}" class="btn btn-primary">View</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4">No consumers found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <!-- HCP Tab -->
-        <div class="tab-pane fade {{ $filter == 'hcp' ? 'show active' : '' }}" id="hcp" role="tabpanel" aria-labelledby="hcp-tab">
-            <h5>HCP Employee</h5>
-            <table id="hcpTable" class="table">
-                <thead>
+                @empty
                     <tr>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th>Speciality</th>
-                        <th>Action</th>
+                        <td colspan="4">No consumers found.</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse ($hcpEmployees as $employee)
-                        <tr>
-                            <td>{{ $employee->firstname }}</td>
-                            <td>{{ $employee->country }}</td>
-                            <td>{{ $employee->docterSpeciality }}</td>
-                            <td>
-                               --
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4">No HCPs found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 
 <!-- DataTables Initialization -->
 <script>
    $(document).ready(function () {
-    // Initialize DataTable for Consumer Table
-    $('#consumerTable').DataTable({
-        "paging": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "responsive": true,
-        "lengthMenu": [10, 20, 50],
-    });
-
-    // Initialize DataTable for HCP Table
-    $('#hcpTable').DataTable({
-        "paging": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "responsive": true,
-        "lengthMenu": [10, 20, 50],
-    });
-
-    
-});
-
+       // Initialize DataTable for Consumer Table
+       $('#consumerTable').DataTable({
+           "paging": true,
+           "searching": true,
+           "ordering": true,
+           "info": true,
+           "responsive": true,
+           "lengthMenu": [10, 20, 50],
+       });
+   });
 </script>
 <style>
     /* Apply border only to the header (thead) and footer (tfoot) */

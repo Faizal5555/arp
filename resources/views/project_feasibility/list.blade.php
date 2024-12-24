@@ -63,7 +63,9 @@
                     <th>Project Launch Date</th>
                     <th>Countries</th>
                     <th>Responded Title</th>
+                    @if(auth()->user()->user_type === 'admin') <!-- Check if the user type is admin -->
                     <th>Responded Emails</th>
+                @endif
                     <th>Samples Required</th>
                     <th>Samples Delivered</th>
                     <th>Incentive Promised</th>
@@ -103,7 +105,7 @@
                 method: "GET",
                 data: $('#filter-form').serialize(),
                 success: function (response) {
-                    renderTable(response.data);
+                    renderTable(response.data, response.user_type);
                 },
                 error: function () {
                     alert("Error fetching table data. Please try again.");
@@ -112,7 +114,7 @@
         }
 
         // Function to render table data
-        function renderTable(data) {
+        function renderTable(data, userType) {
     const tableBody = $('#feasibility-table tbody');
     tableBody.empty();
 
@@ -123,9 +125,9 @@
 
     let index = 1;
     data.forEach(row => {
-        const countries = JSON.parse(row.target_countries || '[]').join(', '); // Join countries with commas
-        const emails = JSON.parse(row.responded_emails || '[]').join(', '); // Join emails with commas
-        const titles = JSON.parse(row.responded_titles || '[]').join(', '); // Join responded_titles with commas
+        const countries = JSON.parse(row.target_countries || '[]').join(', ');
+        const emails = JSON.parse(row.responded_emails || '[]').join(', ');
+        const titles = JSON.parse(row.responded_titles || '[]').join(', ');
 
         tableBody.append(`
             <tr>
@@ -136,7 +138,7 @@
                 <td>${row.project_launch_date}</td>
                 <td>${countries}</td>
                 <td>${titles}</td>
-                <td>${emails}</td>
+                 ${userType === 'admin' ? `<td>${emails}</td>` : ''}
                 <td>${row.no_of_sample_required}</td>
                 <td>${row.no_of_sample_delivered}</td>
                 <td>${row.incentive_promised}</td>

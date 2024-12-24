@@ -685,31 +685,15 @@ class DashboardController extends Controller
     }
 
     public function employeeList(Request $request)
-{
-    // Default filter is 'all' to show both consumer and hcp
-    $filter = $request->input('filter', 'hcp'); 
-
-    // Arrays to store employee data for Consumer and HCP
-    $consumerEmployees = [];
-    $hcpEmployees = [];
-
-    // Fetch Consumer employees if 'consumer' or 'all' filter is applied
-    if ($filter == 'consumer' || $filter == 'all') {
+    {
+        // Only fetch Consumer employees
         $consumerEmployees = DB::table('ques')
             ->select('id as user_id', 'fname as name', 'lname as name', 'email', 'country')
             ->get();
+    
+        // Pass only Consumer employees to the view
+        return view('DataCenter.employeelist', compact('consumerEmployees'));
     }
-
-    // Fetch HCP employees if 'hcp' or 'all' filter is applied
-    if ($filter == 'hcp' || $filter == 'all') {
-        $hcpEmployees = DB::table('datacenternews')
-            ->select('id as user_id', 'docterSpeciality', 'firstname', 'email', 'country1 as country')
-            ->get();
-    }
-
-    // Pass the data to the view
-    return view('DataCenter.employeelist', compact('consumerEmployees', 'hcpEmployees', 'filter'));
-}
 
 public function viewDashboard($user_id, $type)
 {
