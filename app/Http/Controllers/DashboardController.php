@@ -267,6 +267,9 @@ class DashboardController extends Controller
         }elseif($user->user_type == ('global_manager')){
             $countries =Country::get();
             return view ('DataCenter.global_dashboard',compact('countries'));
+        }elseif($user->user_type == ('global_team')){
+            $countries =Country::get();
+            return view ('user.userDashboard',compact('countries'));
         }
         // $dashboard = '';
         // return view('index',compact('dashboard'));
@@ -685,42 +688,226 @@ class DashboardController extends Controller
     }
 
     public function employeeList(Request $request)
-    {
-        // Only fetch Consumer employees
-        $consumerEmployees = DB::table('ques')
-            ->select('id as user_id', 'fname as name', 'lname as name', 'email', 'country')
-            ->get();
-    
-        // Pass only Consumer employees to the view
-        return view('DataCenter.employeelist', compact('consumerEmployees'));
-    }
+   {
+    $quesRecords = DB::table('ques')
+    ->select(
+        'id as user_id',
+        DB::raw("CONCAT(fname, ' ', lname) as name"),
+        'email',
+        'country'
+    )
+    ->get();
 
-public function viewDashboard($user_id, $type)
+    $userRecords = DB::table('users')
+        ->select(
+            'id as user_id',
+            'name',
+            'email',
+            'country'
+        )
+        ->where('user_type', 'global_team')
+        ->get();
+
+    $consumerEmployees = $quesRecords->concat($userRecords);
+
+
+    // $consumerEmployees = DB::table('users')
+    // ->select(
+    //     'id as user_id', // The ID of the user
+    //     'name', // The name of the user
+    //     'email', // The email of the user
+    //     'country' // The country of the user
+    // )
+    // ->where('user_type', 'global_team') // Filter for user_type = 'global_team'
+    // ->get();
+
+    // Pass only the filtered employees to the view
+    return view('DataCenter.employeelist', compact('consumerEmployees'));
+   }
+
+   public function consumerCountryfilter(Request $req)
 {
-    if ($type === 'hcp') {
-        // Fetch data for HCP
-        $doctornotification = Doctornotification::where('user_id', $user_id)->where('status', '0')->count();
-        $doctornotificationmoney = Doctornotification::where('user_id', $user_id)->where('status', '0')->where('message_type', 'money')->count();
-        $doctornotification1 = Doctornotification::where('user_id', $user_id)->where('status', '0')->where('message_type', 'voucher')->count();
-        $money_count = adminMoneysend::where('User_id', $user_id)->where('status', 'Money Sent')->count();
-        $voucher_count = adminvoucher::where('user_id', $user_id)->where('status', 'Pending')->count();
+    $country = $req->country;
+    // Get the authenticated user
+   // $authUser = auth()->user();
+    $globalTeamQues = Que::where('user_id',$req->user_id);
 
-        // Redirect to the HCP dashboard
-        return view('DataCenter.docter_dashboard', compact('money_count', 'voucher_count', 'doctornotification', 'doctornotificationmoney', 'doctornotification1'));
-    } elseif ($type === 'consumer') {
-        // Fetch countries for the consumer view
-        $countries = Country::all();
+    // Fetch the global team ques records associated with the authenticated user
+    // $globalTeamQues = Que::whereHas('user', function ($query) use ($authUser) {
+    //     $query->where('id', $authUser->id)
+    //           ->where('user_type', 'global_team');
+    // });
 
-        // Redirect to the Consumer dashboard
-        return view('user.userDashboard', compact('countries', 'user_id'));
-    } else {
-        // Invalid type - Show 404 error
-        abort(404, 'Invalid user type');
+
+    // Apply country filter if provided
+    if ($country) {
+        $globalTeamQues->where('country', $country);
     }
+
+    // Fetch the records
+    $quesRecords = $globalTeamQues->get();
+
+    // Step 1: Prepare data for the pie chart (country distribution)
+    $userChartData = $quesRecords
+        ->groupBy('country')
+        ->map(function ($group) {
+            return [
+                'label' => $group->first()->country,
+                'count' => $group->count(),
+            ];
+        })
+        ->values();
+
+    // Step 2: Prepare data for occupations (question 26)
+    $occupationData = $quesRecords
+        ->groupBy('que_26')
+        ->map(function ($group, $key) {
+            return [
+                'label' => config("answer_key.answers.twentysix.{$key}", 'Unknown'),
+                'count' => $group->count(),
+            ];
+        })
+        ->values();
+
+    // Step 3: Prepare data for industries (question 27)
+    $industryData = $quesRecords
+        ->groupBy('que_27')
+        ->map(function ($group, $key) {
+            return [
+                'label' => config("answer_key.answers.twentyseven.{$key}", 'Unknown'),
+                'count' => $group->count(),
+            ];
+        })
+        ->values();
+
+    // Step 4: Return the data as JSON response
+    return response()->json([
+        "userChartData" => $userChartData,
+        "occupationData" => $occupationData,
+        "industryData" => $industryData,
+    ]);
+}
+   
+
+
+   
+   
+   
+
+   
+
+
+
+   public function viewDashboard($user_id, $type)
+   {
+       if ($type === 'consumer') {
+           // Fetch countries for the consumer dashboard
+           $countries = Country::all();
+   
+           // Fetch global_team users associated with the given user_id
+           
+           $globalTeamUserIds = DB::table('ques') // Assuming `ques` table links users
+               ->where('user_id', $user_id) // Filter for the specified user_id
+               ->pluck('id'); // Fetch global_team user IDs
+   
+           // Prepare data for the charts
+           $userChartData = DB::table('ques')
+               ->select('country as label', DB::raw('count(*) as count'))
+               ->whereIn('id', $globalTeamUserIds) // Filter for associated users
+               ->groupBy('country')
+               ->get();
+   
+           $occupationData = DB::table('ques')
+               ->select('que_26 as occupation', DB::raw('count(*) as count'))
+               ->whereIn('id', $globalTeamUserIds) // Filter for associated users
+               ->groupBy('que_26')
+               ->get();
+   
+           $industryData = DB::table('ques')
+               ->select('que_27 as industry', DB::raw('count(*) as count'))
+               ->whereIn('id', $globalTeamUserIds) // Filter for associated users
+               ->groupBy('que_27')
+               ->get();
+   
+           // Redirect to the consumer dashboard with global team users and chart data
+           return view('user.consumer_dashboard', compact('countries', 'user_id', 'userChartData', 'occupationData', 'industryData'));
+       } elseif ($type === 'hcp') {
+        // Fetch countries for the HCP dashboard
+            $countries = Country::all();
+
+            // Fetch HCP records for the pie chart
+            $countryChartData = datacenternew::select('country1 as label', DB::raw('count(*) as count'))
+                ->groupBy('country1')
+                ->get();
+
+            // Fetch HCP specialties for the bar chart
+            $specialityChartData = datacenternew::select('docterSpeciality as label', DB::raw('count(*) as count'))
+                ->groupBy('docterSpeciality')
+                ->get();
+
+            return view('user.hcp_dashboard', compact('countries', 'user_id', 'countryChartData', 'specialityChartData'));
+        } else {
+            // Invalid type - Show 404 error
+            abort(404, 'Invalid user type');
+        }
+   }
+
+
+   public function hcpCountry(Request $request)
+   {
+       $country = $request->country;
+   
+       // Fetch `datacenternew` records associated with the given user_id
+       $hcpRecords = datacenternew::where('datacenter_id', $request->user_id);
+   
+       // Apply country filter if provided
+       if ($country) {
+           $hcpRecords->where('country1', $country);
+       }
+   
+       // Fetch the records
+       $hcpData = $hcpRecords->get();
+   
+       // Step 1: Prepare data for the pie chart (country distribution)
+       $countryChartData = $hcpData
+           ->groupBy(function ($item) {
+               // Normalize country names to title case
+               return ucfirst(strtolower($item->country1));
+           })
+           ->map(function ($group, $key) {
+               return [
+                   'label' => $key, // The normalized country name
+                   'count' => $group->count(),
+               ];
+           })
+           ->values();
+   
+       // Step 2: Prepare data for specialties (doctorSpeciality)
+       $specialityChartData = $hcpData
+           ->groupBy(function ($item) {
+               // Use a default label if speciality is null
+               return $item->docterSpeciality ?: 'Unknown';
+           })
+           ->map(function ($group, $key) {
+               return [
+                   'label' => $key,
+                   'count' => $group->count(),
+               ];
+           })
+           ->values();
+   
+       // Step 3: Return the data as JSON response
+       return response()->json([
+           'countryChartData' => $countryChartData,
+           'specialityChartData' => $specialityChartData,
+       ]);
+   }
+   
+
 
 
     
-}
+
 
     // Controller
     // Controller

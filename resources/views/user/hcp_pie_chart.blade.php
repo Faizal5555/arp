@@ -26,10 +26,82 @@
             <div id="specialityChart" style="width: 100%; height: 400px;"></div>
         </div>
     </div>
+
+    <div class="row">
+        @if(auth()->user()->user_type == 'admin' || (auth()->user()->user_type == 'global_manager'))
+        <div class="col-md-12 mt-4">
+            <div class="table-container"> 
+            <h4 class="font-weight-normal mb-3">Doctors by Specialty and Country</h4>
+            <table class="table table-bordered text-center" id="recruitmentTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Specialty</th>
+                        <th colspan="{{ count($countries) + 1 }}">Countries</th>
+                    </tr>
+                    <tr id="countryHeaders">
+                        <!-- Country headers will be dynamically populated -->
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Rows will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+        </div>
+        @endif
+    </div>
 </div>
 
 @endsection
+<style>
 
+.table-container {
+    max-width: 100%; /* Constrains container width */
+    overflow-x: auto; /* Enables horizontal scrolling */
+    margin-top: 20px; /* Adds some spacing above the table */
+    border: 1px solid #ddd; /* Optional: Add a subtle border for clarity */
+    border-radius: 5px; /* Optional: Smooth corners */
+}
+
+.table {
+    width: 100%; /* Allow the table to stretch fully */
+    min-width: 800px; /* Adjust this based on your minimum column needs */
+    border-collapse: collapse;
+}
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    
+    .table th {
+        background-color: #f8f9fa; /* Light background for header */
+    }
+
+    .table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa; /* Light background for the sticky header */
+    z-index: 1; /* Ensure header stays above the table body */
+}
+
+    .table td:first-child, .table th:first-child {
+    position: sticky;
+    left: 0;
+    background-color: #fff; /* White background for the sticky column */
+    z-index: 2; /* Ensure the sticky column is above other content */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for visual separation */
+}
+
+.table td:first-child{
+    font-weight: bold;
+}
+    
+    .table td:last-child {
+        font-weight: bold;
+        background-color: #e9ecef; /* Light gray for total count */
+    }
+    
+    </style>
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 <script>
@@ -207,6 +279,79 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                 },
             ],
+        });
+    }
+});
+document.addEventListener('DOMContentLoaded', function () {
+    fetchRecruitmentData();
+
+    function fetchRecruitmentData() {
+        $.ajax({
+            url: "{{ route('get.recruitment.list') }}", // Adjust route to match your backend
+            method: 'GET',
+            success: function (response) {
+                renderTable(response.countries, response.specialities, response.data);
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Error fetching table data.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
+
+    function renderTable(countries, specialities, data) {
+        const tableBody = document.getElementById('tableBody');
+        const countryHeaders = document.getElementById('countryHeaders');
+
+        // Clear existing table headers and rows
+        countryHeaders.innerHTML = '';
+        tableBody.innerHTML = '';
+
+        // Populate country headers
+        countries.forEach(country => {
+            const th = document.createElement('th');
+            th.textContent = country;
+            countryHeaders.appendChild(th);
+        });
+
+        // Add "Total Count" header
+        const totalHeader = document.createElement('th');
+        totalHeader.textContent = "Total Count";
+        totalHeader.style.backgroundColor = "#f8f9fa"; // Light gray for distinction
+        countryHeaders.appendChild(totalHeader);
+
+        // Add rows for each specialty
+        specialities.forEach(speciality => {
+            const row = document.createElement('tr');
+            
+            // Specialty name column
+            const specialityCell = document.createElement('td');
+            specialityCell.textContent = speciality;
+            row.appendChild(specialityCell);
+
+            // Country count columns
+            let total = 0;
+            countries.forEach(country => {
+                const cell = document.createElement('td');
+                const count = data[speciality] && data[speciality][country] ? data[speciality][country] : 0;
+                cell.textContent = count === 0 ? '-' : count; 
+                row.appendChild(cell);
+                total += count;
+            });
+
+            // Total count column
+            const totalCell = document.createElement('td');
+            totalCell.textContent = total;
+            totalCell.style.fontWeight = "bold"; // Highlight total
+            totalCell.style.backgroundColor = "#e9ecef"; // Light gray for distinction
+            row.appendChild(totalCell);
+
+            // Append row to the table body
+            tableBody.appendChild(row);
         });
     }
 });

@@ -48,6 +48,9 @@ Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::post('/project-feasibility/store', 'App\Http\Controllers\ProjectFeasibilityController@store')->name('ProjectFeasibility.store');
     Route::get('/project-feasibility', 'App\Http\Controllers\ProjectFeasibilityController@index')->name('projectFeasibility.list');
     Route::get('/project-feasibility-data', 'App\Http\Controllers\ProjectFeasibilityController@ListData')->name('projectFeasibility.Data');
+    Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
+    Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
+    
     //users
     Route::get('/adminapp/usersview', 'App\Http\Controllers\OperationNewController@usersview')->name('usersview');
     Route::get('/user/delete/{id}', 'App\Http\Controllers\OperationNewController@usersdelete')->name('usersdelete');
@@ -298,7 +301,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
   // Data center
 
-    Route::get('Data/center', 'App\Http\Controllers\dataCenterController@DataNew')->name('dataCenternew');
+    Route::get('Data/center/{id}', 'App\Http\Controllers\dataCenterController@DataNew')->name('dataCenternew');
     Route::post('Data/Newform', 'App\Http\Controllers\dataCenterController@NewForm')->name('NewForm');
     
     // import

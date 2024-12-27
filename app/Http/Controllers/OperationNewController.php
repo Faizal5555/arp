@@ -1287,6 +1287,7 @@ class OperationNewController extends Controller
         public function usersview(Request $request){
             $user = Auth()->user();
             $users=User::latest()->get();
+            $country=Country::get();
             if($request->ajax()){
                 return Datatables::of($users)
                  ->addIndexColumn()
@@ -1296,7 +1297,8 @@ class OperationNewController extends Controller
                 ->rawColumns(['action'])
                  ->make(true);
             }
-            return view('users',compact('users'));
+            
+            return view('users',compact('users','country'));
            }
            public function usersdelete($id){
             
@@ -1345,7 +1347,6 @@ class OperationNewController extends Controller
            } 
            public function register(Request $req){
               
-              
            $validator=Validator::make($req->all(),[
               'name' =>'required',
               'email' =>'required|email|unique:users,email,',
@@ -1359,6 +1360,7 @@ class OperationNewController extends Controller
                $create = new User();
                $create->name = $req->name;
                $create->email = $req->email;
+               $create->country = $req->country;
                $create->password = Hash::make($req->password);
                $create->user_type =$req->user_type;
                $create->user_role=$req->user_role;

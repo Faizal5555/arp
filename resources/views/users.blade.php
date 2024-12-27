@@ -62,6 +62,9 @@ table tfoot th {
                     required:true,
                     email: true
                 },
+                countrySelect: { // Updated to match the `id` in the form
+                 required: true
+                },
                 password:{
                     required:true
                 },
@@ -276,6 +279,15 @@ table tfoot th {
                       <label style="font-weight:bold;font-size:15px;margin-left:4px;">Email</label>
                     <input type="email" class="form-control " id="email" placeholder="Email" name="email" :value="old('email')" required pattern="[a-z0-9._]+@[a-z]+\.[com]{3,6}" />
                 </div>
+                <div class="form-group mt-4">
+                    <label for="countrySelect" style="font-weight:bold;font-size:15px;margin-left:4px;">Select Country</label>
+                    <select id="countrySelect" class="form-control" name="country">
+                        <option value="">Select the country</option>
+                        @foreach($country as $c)
+                        <option value="{{ $c->name }}">{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
                   <div class="form-group mt-4">
                      <label style="font-weight:bold;font-size:15px;margin-left:4px;">Password</label> 
@@ -304,7 +316,7 @@ table tfoot th {
                     <option name= "user_type" value="field_team">Field Team</option>
                     <option name= "user_type" value="data_center">Data Center</option>
                     <option name= "user_type" value="global_manager">Global Manager</option>
-                    <option name= "user_type" value="user">Panel Requirements Team</option>
+                    <option name= "user_type" value="global_team">Panel Requirements Team</option>
                 </select>
                 </div>
                 <div class="form-group mt-4">
@@ -321,7 +333,7 @@ table tfoot th {
                     <option name= "user_role" value="quality_analyst">Quality Analyst</option>
                     <option name= "user_role" value="data_center">Data Center</option>
                     <option name= "user_role" value="global_manager">Global Manager</option>
-                    <option name= "user_role" value="user">Panel Requirements Team</option>
+                    <option name= "user_role" value="global_team">Panel Requirements Team</option>
                 </select>
                   </div>
                   <div class="row">

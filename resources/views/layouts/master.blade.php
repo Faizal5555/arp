@@ -713,7 +713,7 @@ table tfoot th {
               <div class="collapse" id="ui-basic6">
                 <ul class="nav flex-column sub-menu1">
                     @if(auth()->user()->user_type == 'datacenter')
-                    <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
+                    <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
                     
                     
                     @endif
@@ -722,7 +722,7 @@ table tfoot th {
                   <!--{{-- <li class="nav-item {{ (Route::is('mailexample')) ? 'active' : '' }}" > <a class="nav-link" href="{{route('mailexample')}}">Mail blade example</a></li> --}}-->
                   <!--@endif-->
                   @if(auth()->user()->user_type == 'admin')
-                  <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
+                  <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
                   <li class="nav-item {{ (Route::is('adminactivedview')) ? 'active' : '' }}"  ><a class="nav-link"  href="{{route('adminactivedview')}}"> View Registration</a></li>
                   {{-- <li class="nav-item {{ (Route::is('Money.send')) ? 'active' : '' }}"   ><a class="nav-link"  href="{{route('Money.send')}}"> Send Money/Voucher </a></li>
                   
@@ -749,7 +749,7 @@ table tfoot th {
               <div class="collapse" id="ui-basic7">
                 <ul class="nav flex-column sub-menu1">
                   @if(auth()->user()->user_type == 'admin')
-                  <li class="nav-item" ><a class="nav-link" href="{{route('dataCenternew')}}">New Registrations</a></li>
+                  <li class="nav-item" ><a class="nav-link" href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
                   <li class="nav-item" ><a class="nav-link" href="{{route('hcpPanelInvite')}}">View  Registration</a></li>
 
                   @endif
@@ -783,7 +783,7 @@ table tfoot th {
                 <ul class="nav flex-column sub-menu1">
                   @if(auth()->user()->user_type == 'admin')
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ route('dataCenternew') }}">HCP Registrations</a>
+                    <a class="nav-link" href="{{ route('dataCenternew', ['id' => $user_id]) }}">HCP Registrations</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{{ route('consumerform', ['id' => $user_id]) }}">Consumer Registrations</a>
@@ -852,7 +852,7 @@ table tfoot th {
               </a>
               <div class="collapse" id="ui-basic12">
                 <ul class="nav flex-column sub-menu1">
-                  <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
+                  <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
                   <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Bulk Registration Invite</a></li>
                    <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>
                   <li class="nav-item {{(Route::is('user.userhcplist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('userHcpList')}}">View Registration</a></li>
@@ -875,12 +875,51 @@ table tfoot th {
               </div>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
             </li>
             <li class="nav-item">
               <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
-            </li>
+            </li> --}}
+
+            @elseif(auth()->user()->user_type == 'global_team')
+            <li class="nav-item">
+             <a class="nav-link" data-toggle="collapse" href="#ui-basic12" aria-expanded="false" aria-controls="ui-basic">
+               <span class="menu-title">Hcp Registration</span>
+               <i class="menu-arrow"></i>
+               <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+             </a>
+             <div class="collapse" id="ui-basic12">
+               <ul class="nav flex-column sub-menu1">
+                 <li class="nav-item" > <a class="nav-link"   href="{{ route('dataCenternew', ['id' => $user_id]) }}">New Registrations</a></li>
+                 <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Bulk Registration Invite</a></li>
+                  <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>
+                 <li class="nav-item {{(Route::is('user.userhcplist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('userHcpList')}}">View Registration</a></li>
+                 </ul>
+             </div>
+           </li>
+           <li class="nav-item">
+             <a class="nav-link" data-toggle="collapse" href="#ui-basic13" aria-expanded="false" aria-controls="ui-basic">
+               <span class="menu-title">Consumer Registration</span>
+               <i class="menu-arrow"></i>
+               <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+             </a>
+             <div class="collapse" id="ui-basic13">
+               <ul class="nav flex-column sub-menu1">
+                 <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">New Registrations</a></li>
+                 <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('popinvite')}}" >Consumer bulk Registration</a></li>
+                  <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('emailPanel')}}" >Send Email to Consumer</a></li>
+                 <li class="nav-item {{(Route::is('user.userconsumerlist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('user.consumer.list')}}">View Registration</a></li>
+                 </ul>
+             </div>
+           </li>
+
+           <li class="nav-item">
+             <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
+           </li>
+           <li class="nav-item">
+             <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
+           </li>
             
             @elseif(auth()->user()->user_type == 'global_manager')
             
@@ -892,7 +931,7 @@ table tfoot th {
              </a>
              <div class="collapse" id="ui-basic14">
                <ul class="nav flex-column sub-menu1">
-                 <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">Hcp Registrations</a></li>
+                 <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">Hcp Registrations</a></li>
                  <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">Consumer Registrations</a></li>
                  <li class="nav-item" > <a class="nav-link"   href="#">View Global Registrations</a></li> 
                 </ul>
@@ -931,7 +970,7 @@ table tfoot th {
                     </div>
                   </li>
             @elseif(auth()->user()->user_type == 'data_center')
-            <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew')}}">New Registrations</a></li>
+            <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
             <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Panel Registration Invite</a></li>
             <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('popinvite')}}" >Consumer Registration Invite</a></li>
             <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>

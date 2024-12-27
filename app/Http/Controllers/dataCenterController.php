@@ -44,10 +44,10 @@ use PDF;
 
 class dataCenterController extends Controller
 {
-    public function DataNew(Request $req)
-    {
+    public function DataNew(Request $req, $id)
+    {  
         $country=Country::get();
-      
+        $user_id=$id;
         $speciality=Speciality::get();
          $unique_no = datacenternew::orderBy('id', 'DESC')->with('pno_no','pno_no')->pluck('id')->first();
          if($unique_no == null or $unique_no == ""){
@@ -63,7 +63,7 @@ class dataCenterController extends Controller
             // var_dump($dt->year);
         }
          $pno_no = 'RNOD'.$unique_no. '-' .$dt->year;
-        return view('DataCenter.newRegistration', compact('country','pno_no','speciality'));
+        return view('DataCenter.newRegistration', compact('country','pno_no','speciality','user_id'));
     }
     public function invite(Request $req){
         return view('DataCenter.invite');
@@ -295,7 +295,7 @@ class dataCenterController extends Controller
                 $new->PatientsMonth = $req->permonth;
                 $new->country1=$req->country1;
                 
-                $new->datacenter_id=Auth()->user()->id;
+                $new->datacenter_id= $req->userid?$req->userid:null;;
 
                 if ($req->hasFile('file'))
                 {
@@ -2119,32 +2119,38 @@ public function userconsumerlistData(Request $request)
     }
 
     public function getRecruitmentList(Request $request)
-{
-    $data = DB::table('datacenternews')
-        ->select('country1 as country', 'docterSpeciality as speciality', DB::raw('COUNT(*) as count'))
-        ->groupBy('country', 'speciality')
-        ->get();
-
-    $formattedData = [];
-    $specialities = [];
-    $countries = [];
-
-    foreach ($data as $item) {
-        $formattedData[$item->speciality][$item->country] = $item->count;
-        if (!in_array($item->speciality, $specialities)) {
-            $specialities[] = $item->speciality;
+    {
+        $data = DB::table('datacenternews')
+            ->select(
+                DB::raw('LOWER(TRIM(country1)) as normalized_country'), // Normalize country names
+                'docterSpeciality as speciality',
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy('normalized_country', 'speciality') // Group by normalized country names
+            ->get();
+    
+        $formattedData = [];
+        $specialities = [];
+        $countries = [];
+    
+        foreach ($data as $item) {
+            $country = ucfirst($item->normalized_country); // Convert to title case for display
+            $formattedData[$item->speciality][$country] = $item->count;
+    
+            if (!in_array($item->speciality, $specialities)) {
+                $specialities[] = $item->speciality;
+            }
+            if (!in_array($country, $countries)) {
+                $countries[] = $country;
+            }
         }
-        if (!in_array($item->country, $countries)) {
-            $countries[] = $item->country;
-        }
+    
+        return response()->json([
+            'countries' => $countries,
+            'specialities' => $specialities,
+            'data' => $formattedData,
+        ]);
     }
-
-    return response()->json([
-        'countries' => $countries,
-        'specialities' => $specialities,
-        'data' => $formattedData,
-    ]);
-}
     
 
     

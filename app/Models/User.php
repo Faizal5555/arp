@@ -58,4 +58,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Que::class, 'user_id', 'id');
     }
+
+    public function ques()
+    {
+        return $this->hasMany(Que::class, 'user_id', 'id');
+    }
+    public function globalTeamQues()
+    {
+        return $this->hasMany(Que::class, 'user_id', 'id')
+            ->where('user_type', 'global_team');
+    }
 }

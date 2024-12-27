@@ -60,7 +60,7 @@ class AuthenticatedSessionController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt(array_merge($credentials, ['user_type' => 'user']))) {
+        if (Auth::attempt(array_merge($credentials, ['user_type' => 'global_team']))) {
             $request->session()->regenerate();
             return redirect()->intended('adminapp/dashboard');
         }
