@@ -23,8 +23,8 @@ Route::get('/', function () {
 
     Route::prefix('adminapp')->group(function () {
       // Admin login
-      Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
-      Route::post('/login', [AuthenticatedSessionController::class, 'storeAdmin']);
+      Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+      //Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])->name('admin.login.store');
   
       // Global Manager login
       Route::get('/global-manager/login', [AuthenticatedSessionController::class, 'createGlobalManager'])->name('globalManager.login');
@@ -42,7 +42,7 @@ Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::get('/operationDashboard','App\Http\Controllers\DashboardController@operationindex')->name('operationdashboard');
     Route::get('/fieldteamDashboard','App\Http\Controllers\DashboardController@fieldindex')->name('fieldteamDashboard');
     Route::get('/employee-list', 'App\Http\Controllers\DashboardController@employeeList')->name('employee.list');
-    Route::get('/dashboard/view/{user_id}/{type}', 'App\Http\Controllers\DashboardController@viewDashboard')->name('dashboard.view');
+    Route::get('/dashboard/view/{user_id?}/{type?}', 'App\Http\Controllers\DashboardController@viewDashboard')->name('dashboard.view');
     Route::get('/global-dashboard', 'App\Http\Controllers\DashboardController@globalDashboard')->name('global.dashboard');
     Route::get('/project-feasibility/create', 'App\Http\Controllers\ProjectFeasibilityController@create')->name('ProjectFeasibility');
     Route::post('/project-feasibility/store', 'App\Http\Controllers\ProjectFeasibilityController@store')->name('ProjectFeasibility.store');
@@ -313,7 +313,6 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
     Route::get('/get-recruitment-data', 'App\Http\Controllers\dataCenterController@getRecruitmentData')->name('get.recruitment.data');
     Route::get('/get-recruitment', 'App\Http\Controllers\dataCenterController@getRecruitment')->name('get.recruitment');
     Route::get('/get-recruitment-list', 'App\Http\Controllers\dataCenterController@getRecruitmentList')->name('get.recruitment.list');
-
     Route::get('Data/popinvite', 'App\Http\Controllers\dataCenterController@popinvite')->name('popinvite');
     Route::post('Data/popinvite1', 'App\Http\Controllers\dataCenterController@popinvite1')->name('popinvite1');
     Route::get('Data/panelist', 'App\Http\Controllers\dataCenterController@panelist')->name('panelist');
@@ -436,7 +435,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
  Route::get('/user/activation/{id}','App\Http\Controllers\dataCenterController@useractived');
  Route::get('/user/activation_user/{id}','App\Http\Controllers\dataCenterController@user_actived1');
 
- Route::get('/newdoctorregister','App\Http\Controllers\dataCenterController@OutsideDataNew');
+ Route::get('/newdoctorregister/{id}','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
  Route::get('/b2cregisration/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
  //Route::get('/b2cregisration', 'App\Http\Controllers\dataCenterController@languages')->name('consumerform');

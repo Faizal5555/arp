@@ -66,7 +66,7 @@
         <h3>Dear Doctor / Healthcare Practitioner,</h3>
         <p>{!! nl2br(e($emailContent)) !!}</p>
         <p>Kindly click the link below to register:</p>
-        <a type="button" href="{{url('/adminapp/newdoctorregister')}}"> <button class="button-9" style="background: #0475f5;color:white;border-radius:5px;width:90px;outline:none;border:none;height: 31px;
+        <a type="button" href="{{ $url }}"> <button class="button-9" style="background: #0475f5;color:white;border-radius:5px;width:90px;outline:none;border:none;height: 31px;
                 margin-top: 10px;">Next</button></a>
     </div>
   

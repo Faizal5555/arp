@@ -39,10 +39,23 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
-        $request->session()->regenerate();
+        $credentials = $request->only('email', 'password');
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+    // Authenticate user
+    if (Auth::attempt($credentials)) {
+        // Check if the user_type is 'admin'
+        if (Auth::user()->user_type === 'admin') {
+            $request->session()->regenerate();
+            return redirect()->intended(RouteServiceProvider::HOME);
+        } else {
+            // Logout if user_type is not admin
+            Auth::logout();
+            return back()->withErrors(['email' => 'You do not have permission to access the admin login.']);
+        }
+    }
+
+    // Return error for invalid credentials
+    return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
     public function storeGlobalManager(LoginRequest $request)
@@ -60,12 +73,21 @@ class AuthenticatedSessionController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt(array_merge($credentials, ['user_type' => 'global_team']))) {
+    // Authenticate user
+    if (Auth::attempt($credentials)) {
+        // Check user_type
+        if (in_array(Auth::user()->user_type, ['global_team', 'user'])) {
             $request->session()->regenerate();
-            return redirect()->intended('adminapp/dashboard');
+            return redirect()->intended('adminapp/dashboard/view');
+        } else {
+            // Logout if user_type does not match
+            Auth::logout();
+            return back()->withErrors(['email' => 'Invalid credentials for Employee.']);
         }
+    }
 
-        return back()->withErrors(['email' => 'Invalid credentials for Employee.']);
+    // Return error for invalid credentials
+    return back()->withErrors(['email' => 'Invalid credentials.']);
     }
 
     public function destroy(Request $request)

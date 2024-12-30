@@ -82,9 +82,19 @@
     const labels = data.length ? data.map(item => item.label) : ['No Data'];
     const counts = data.length ? data.map(item => item.count) : [0];
 
+    const totalCount = counts.reduce((total, num) => total + num, 0);
+    const legendItemCount = labels.length; // Number of items in the legend
+    const adjustedTop = legendItemCount > 10 ? `${legendItemCount * 2}%` : '14%';
+
     consumerChart.setOption({
         title: {
-            left: 'center',
+            text: `Total: ${totalCount}`,
+            left: 'right',
+            top: adjustedTop, // Position the total at the bottom
+            textStyle: {
+                fontSize: 16,
+                fontWeight: 'bold',
+            },
         },
         tooltip: {
             trigger: 'item',
@@ -101,6 +111,7 @@
                 const count = countryIndex !== -1 ? counts[countryIndex] : 0;
                 return `${name}`; // Add count next to country name
             },
+            
         },
         series: [{
             type: 'pie',

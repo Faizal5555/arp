@@ -875,12 +875,12 @@ table tfoot th {
               </div>
             </li>
 
-            {{-- <li class="nav-item">
+            <li class="nav-item">
               <li class="nav-item" > <a class="nav-link" href="{{ route('ProjectFeasibility') }}">New Project/ Feasbility Request</a>
             </li>
             <li class="nav-item">
               <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
-            </li> --}}
+            </li>
 
             @elseif(auth()->user()->user_type == 'global_team')
             <li class="nav-item">

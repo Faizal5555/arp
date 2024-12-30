@@ -126,7 +126,8 @@ class dataCenterController extends Controller
         // Prepare email content and attachment
         $emailContent = $req->emailContent;
         $attachment = $req->file('attachment');
-        $link = 'arp.stagingzar.com/newdoctorregister';
+        $authUserId = auth()->user()->id;
+        $link = url("/adminapp/newdoctorregister/{$authUserId}");
     
         // Send email to each valid email address
         foreach ($validEmails as $email) {
@@ -210,7 +211,7 @@ class dataCenterController extends Controller
     
         $data = [
             'emails' => $emails,
-            'link' => url('/adminapp/lang/home/' . $userId),
+            'link' => url('/adminapp/b2cregisration/' . $userId),
             'emailContent' => $emailContent,
             'attachment' => $attachment
         ];
@@ -223,11 +224,11 @@ class dataCenterController extends Controller
     
     
 
-    public function OutsideDataNew(Request $req)
+    public function OutsideDataNew(Request $req ,$id)
     {
         $speciality=Speciality::get();
         $country_loop_1=Country::get();
-        $unique_no = datacenternew::orderBy('id', 'Desc')->pluck('id')->first();
+        $user_id = $id;        $unique_no = datacenternew::orderBy('id', 'Desc')->pluck('id')->first();
          if($unique_no == null or $unique_no == ""){
             #If Table is Empty
             $unique_no = 1;
@@ -241,13 +242,13 @@ class dataCenterController extends Controller
             // var_dump($dt->year);
         }
          $pno_no = 'RNOD'.$unique_no. '-' .$dt->year;
-        return view('DataCenter.outsitenewRegistration', compact('country_loop_1','speciality','pno_no'));
+        return view('DataCenter.outsitenewRegistration', compact('country_loop_1','speciality','pno_no','user_id'));
     }
     
     public function NewForm(Request $req)
     {
         $v = $req->all();
-        // dd($v);
+         //dd($v);
         $response_data = [];
         $validator = Validator::make(
             $v,
@@ -295,7 +296,7 @@ class dataCenterController extends Controller
                 $new->PatientsMonth = $req->permonth;
                 $new->country1=$req->country1;
                 
-                $new->datacenter_id= $req->userid?$req->userid:null;;
+                $new->datacenter_id= $req->userid?$req->userid:null;
 
                 if ($req->hasFile('file'))
                 {
@@ -1638,7 +1639,7 @@ class dataCenterController extends Controller
 
 public function filterDoctors(Request $request)
 {
-    $doctors = datacenternew::query();
+    $doctors = datacenternew::where('datacenter_id', auth()->user()->id);
 
     if ($request->country) {
         $doctors->where('country1', $request->country); // Assuming 'country1' is the column for country
@@ -1823,7 +1824,7 @@ public function consumerEmail()
 
 public function filterUsers(Request $request)
 {
-    $query = Que::query();
+    $query = Que::where('user_id',auth()->user()->id);
 
     if ($request->has('country') && $request->country != '') {
         $query->where('country', 'like', '%' . $request->country . '%');
@@ -1884,8 +1885,7 @@ public function sendEmailToUsers(Request $request)
     public function userHcpListData(Request $request)
     {
         $data = $request->all();
-        $hcpInvite = datacenternew::query(); // Replace with your actual model
-
+        $hcpInvite =  datacenternew::where('datacenter_id', auth()->user()->id); // Replace with your actual model
         // Apply filters
         if (!empty($data['speciality'])) {
             $hcpInvite->where('docterSpeciality', 'like', '%' . $data['speciality'] . '%');
@@ -1913,7 +1913,7 @@ public function sendEmailToUsers(Request $request)
 public function userconsumerlistData(Request $request)
 {
     $data = $request->all();
-    $consumers = Que::query(); // Replace `Que` with your actual model for consumers
+    $consumers = Que::where('user_id', auth()->user()->id); // Replace `Que` with your actual model for consumers
 
     // Apply filters
     if (!empty($data['country'])) {

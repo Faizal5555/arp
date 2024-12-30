@@ -5,7 +5,7 @@
 <div class="content-wrapper">
     <!-- Dropdown to select country -->
     <div class="row">
-        <input type="hidden" name="" id="user_id" value="{{ $user_id }}"> 
+        <input type="hidden" name="" id="user_id" value="{{ $user_id ?? '' }}"> 
         <div class="col-md-4">
             <label for="countrySelect">Select Country</label>
             <select id="countrySelect" class="form-control">
@@ -16,7 +16,7 @@
             </select>
         </div>
         <div class="col-md-4 mt-4">
-            <a href="{{ route('dashboard.view', ['user_id' => $user_id, 'type' => 'hcp']) }}" class="btn btn-primary">
+            <a href="{{ route('dashboard.view',  ['user_id' => $user_id ?? auth()->user()->id,  'type' => 'hcp']) }}" class="btn btn-primary">
                 HCP Dashboard
             </a>
         </div>
@@ -62,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchChartData(country = null) {
         var user_id = $('#user_id').val();
+
+        
         $.ajax({
             url: "{{ route('consumer.country') }}", // Replace with your route
             method: 'POST',

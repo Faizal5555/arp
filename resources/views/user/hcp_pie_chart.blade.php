@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data && data.length > 0) {
             const labels = data.map(item => item.label);
             const counts = data.map(item => item.count);
-
+            const totalCount = counts.reduce((sum, count) => sum + count, 0);
             // Ensure the chart container is cleared before updating
             document.getElementById('countryChart').innerHTML = '<div id="countryChartContainer" style="width: 100%; height: 400px;"></div>';
             const chartDom = document.getElementById('countryChartContainer');
@@ -161,8 +161,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             countryChart.setOption({
                 title: {
-                    // text: 'Total HCP Registered by Country',
-                    left: 'center',
+                text: `Total: ${totalCount}`, // Display total count
+                left: 'right', // Position on the top right
+                top: '10%', // Adjust position as needed
+                textStyle: {
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                },
                 },
                 tooltip: {
                     trigger: 'item',
@@ -170,10 +175,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         return `${params.name}: ${params.value}`; // Tooltip format
                     },
                 },
-                legend: {
-                    orient: 'horizontal',
-                    left: 'left',
+               legend: {
+                    orient: data.length > 12 ? 'vertical' : 'horizontal', // Switch layout based on legend count
+                    left: data.length > 12 ? 'right' : 'center',
+                    top: data.length > 12 ? 'middle' : 'top',
                     data: labels,
+                    type: data.length > 12 ? 'scroll' : 'plain', // Enable scroll if items are more than 12
                 },
                 series: [
                     {

@@ -173,6 +173,7 @@
                 
             <div class=" d-none" id="otherFieldDiv">
                 <form class="row" id="form_id" autocomplete="off" enctype='multipart/form-data'>
+                    <input type="hidden" class="form-control" name="userid"  value="{{$user_id ? $user_id :''}}">
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row" >
                             <label class="col-lg-3 col-form-label">Country<span class="text-danger">*</span></label>
