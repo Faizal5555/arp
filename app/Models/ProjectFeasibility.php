@@ -21,5 +21,6 @@ class ProjectFeasibility extends Model
         'no_of_sample_delivered',
         'incentive_promised',
         'responded_emails',
+        'user_id'
     ];
 }

@@ -17,7 +17,9 @@
             <div class="card-title" style="color:whitesmoke;">New Project/Feasibility Request</div>
         </div>
         <form id="project-feasibility-form">
+            
             @csrf
+            <input type="hidden" class="form-control" name="userid"  value="{{$user_id}}">
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group mt-3">
                     <label for="date">Date</label>

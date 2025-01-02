@@ -9,12 +9,16 @@ class ProjectFeasibilityController extends Controller
 {
     //
     public function create()
-    {
-        return view('project_feasibility.create');
+    
+    {    
+        $user_id = auth()->user()->id;
+        return view('project_feasibility.create',compact('user_id'));
     }
 
     public function store(Request $request)
-{
+{    
+
+     //dd($request->all());
     // Validate the request
     $validated = $request->validate([
         'date' => 'required|date',
@@ -30,6 +34,7 @@ class ProjectFeasibilityController extends Controller
         'incentive_promised' => 'required|numeric',
         'responded_email' => 'required|array',
         'responded_email.*' => 'required|email|max:255',
+        'userid' => 'required|exists:users,id', 
     ]);
 
     //dd($request->all());
@@ -46,6 +51,7 @@ class ProjectFeasibilityController extends Controller
     'no_of_sample_delivered' => $validated['no_of_sample_delivered'],
     'incentive_promised' => $validated['incentive_promised'],
     'responded_emails' => json_encode($validated['responded_email']),
+    'user_id' => $validated['userid'],
 ]);
 
     // Check if the request is AJAX
@@ -69,7 +75,7 @@ class ProjectFeasibilityController extends Controller
 
     public function ListData(Request $request)
     {
-        $query = ProjectFeasibility::query();
+        $query = ProjectFeasibility::query()->where('user_id', auth()->id());
 
         // Apply filters
         if ($request->has('from_date') && !empty($request->from_date)) {
