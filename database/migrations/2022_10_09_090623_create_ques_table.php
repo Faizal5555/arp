@@ -66,7 +66,7 @@ class CreateQuesTable extends Migration
             $table->string('que_35')->nullable();
             $table->string('que_36')->nullable();
             $table->string('que_37')->nullable();
-            $table->unsignedBigInteger('user_id');      
+            $table->unsignedBigInteger('user_id')->nullable();      
             $table->timestamps();
         });
     }

@@ -1352,7 +1352,7 @@ class dataCenterController extends Controller
 
     //     return view('DataCenter.lang' ,compact('country','questions','answers_9','answers_11','answers_16','answers_17','answers_18','answers_20','answers_27','answers_30','answers_31','answers_33'));
     // }
-    public function language($id)
+    public function language($id = null)
     {
         $user_id=$id;
         $country=Country::get();

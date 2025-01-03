@@ -287,7 +287,7 @@ Route::get('/supplier/supplier_performance_view/{id}', 'App\Http\Controllers\Sup
 Route::get('/Supplieroverview', 'App\Http\Controllers\SupplierController@suppplier_overview')->name('supplier.overview');
 Route::post('/Supplieroverview1', 'App\Http\Controllers\SupplierController@suppplier_overview1')->name('supplier.overview1');
 Route::post('/supplier/import', 'App\Http\Controllers\SupplierController@import')->name('supplier.import');
-//Route::get('/supplier-dashboard', 'App\Http\Controllers\SupplierController@supplier_dashboard')->name('supplier.dashboard');
+// Route::get('/supplier-dashboard', 'App\Http\Controllers\SupplierController@supplier_dashboard')->name('supplier.dashboard');
 
 //manager
 Route::get('/manager/index', 'App\Http\Controllers\ManagerController@index')->name('manager.index');
@@ -439,7 +439,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
  Route::get('/newdoctorregister/{id}','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
- Route::get('/b2cregistration/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
+ Route::get('/b2cregistration/{id?}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
  //Route::get('/b2cregisration', 'App\Http\Controllers\dataCenterController@languages')->name('consumerform');
  Route::get('lang/change', 'App\Http\Controllers\dataCenterController@change')->name('changeLang');
  Route::post('new/register', 'App\Http\Controllers\dataCenterController@new_register')->name('new_register');
