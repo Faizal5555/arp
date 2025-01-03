@@ -437,7 +437,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
  Route::get('/user/activation/{id}','App\Http\Controllers\dataCenterController@useractived');
  Route::get('/user/activation_user/{id}','App\Http\Controllers\dataCenterController@user_actived1');
 
- Route::get('/newdoctorregister/{id}','App\Http\Controllers\dataCenterController@OutsideDataNew');
+ Route::get('/newdoctorregister/{id?}','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
  Route::get('/b2cregistration/{id?}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
  //Route::get('/b2cregisration', 'App\Http\Controllers\dataCenterController@languages')->name('consumerform');

@@ -224,7 +224,7 @@ class dataCenterController extends Controller
     
     
 
-    public function OutsideDataNew(Request $req ,$id)
+    public function OutsideDataNew(Request $req ,$id = null)
     {
         $speciality=Speciality::get();
         $country_loop_1=Country::get();
