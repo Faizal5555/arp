@@ -140,7 +140,7 @@
 
 </div>
 <div class="col-md-8 ">
-    <img class="logo mt-2" src="{{asset('assets/images/logo-3.png')}}" alt="logo">
+    <img class="logo mt-2" src="{{asset('adminapp/assets/images/logo-3.png')}}" alt="logo">
     <div class="" id="header-title">  
         <div class="text-center">
             <h4 class="mb-0">New Registration</h4>

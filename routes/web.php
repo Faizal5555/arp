@@ -265,6 +265,7 @@ Route::get('/Supplier/edit/{id}', 'App\Http\Controllers\SupplierController@edit'
 Route::post('/Supplier/update', 'App\Http\Controllers\SupplierController@update')->name('Supplier.update');
 Route::get('/Supplier/delete/{id}', 'App\Http\Controllers\SupplierController@delete')->name('Supplier/delete');
 
+
 Route::get('/Supplier/cost', 'App\Http\Controllers\SupplierController@cost')->name('SuperLiner.cost');
 Route::get('/Supplier/costRequest', 'App\Http\Controllers\SupplierController@costRequest')->name('supplier.CostRequest');
 Route::get('supplier/Country','App\Http\Controllers\SupplierController@suppliercountry')->name('supplierCountry');
@@ -286,7 +287,7 @@ Route::get('/supplier/supplier_performance_view/{id}', 'App\Http\Controllers\Sup
 Route::get('/Supplieroverview', 'App\Http\Controllers\SupplierController@suppplier_overview')->name('supplier.overview');
 Route::post('/Supplieroverview1', 'App\Http\Controllers\SupplierController@suppplier_overview1')->name('supplier.overview1');
 Route::post('/supplier/import', 'App\Http\Controllers\SupplierController@import')->name('supplier.import');
-
+//Route::get('/supplier-dashboard', 'App\Http\Controllers\SupplierController@supplier_dashboard')->name('supplier.dashboard');
 
 //manager
 Route::get('/manager/index', 'App\Http\Controllers\ManagerController@index')->name('manager.index');
@@ -313,6 +314,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
     Route::get('/get-recruitment-data', 'App\Http\Controllers\dataCenterController@getRecruitmentData')->name('get.recruitment.data');
     Route::get('/get-recruitment', 'App\Http\Controllers\dataCenterController@getRecruitment')->name('get.recruitment');
     Route::get('/get-recruitment-list', 'App\Http\Controllers\dataCenterController@getRecruitmentList')->name('get.recruitment.list');
+    Route::get('/get-global-managers', 'App\Http\Controllers\dataCenterController@getGlobalManagers')->name('get.global.managers');
     Route::get('Data/popinvite', 'App\Http\Controllers\dataCenterController@popinvite')->name('popinvite');
     Route::post('Data/popinvite1', 'App\Http\Controllers\dataCenterController@popinvite1')->name('popinvite1');
     Route::get('Data/panelist', 'App\Http\Controllers\dataCenterController@panelist')->name('panelist');
@@ -437,7 +439,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
 
  Route::get('/newdoctorregister/{id}','App\Http\Controllers\dataCenterController@OutsideDataNew');
  Route::post('Data/outsideNewform', 'App\Http\Controllers\dataCenterController@NewForm')->name('outsideNewForm');
- Route::get('/b2cregisration/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
+ Route::get('/b2cregistration/{id}', 'App\Http\Controllers\dataCenterController@language')->name('consumerform');
  //Route::get('/b2cregisration', 'App\Http\Controllers\dataCenterController@languages')->name('consumerform');
  Route::get('lang/change', 'App\Http\Controllers\dataCenterController@change')->name('changeLang');
  Route::post('new/register', 'App\Http\Controllers\dataCenterController@new_register')->name('new_register');
