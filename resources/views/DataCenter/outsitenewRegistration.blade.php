@@ -62,7 +62,7 @@
 <style>
  
  body {
-      background: url('{{asset("assets/images/back.png")}}') no-repeat center center fixed;
+      background: url('{{asset("adminapp/assets/images/back.png")}}') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Roboto', sans-serif;
       color: #333;
