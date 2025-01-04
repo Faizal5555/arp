@@ -49,86 +49,105 @@ select.form-control {
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script type="text/javascript">
-          var startdate=moment(new Date()).format('YYYY-MM-DD');
-          var enddate=moment(new Date()).format('YYYY-MM-DD');
-    $(function(){
-        // var startdate='';
-        // var enddate='';
+    var startdate = ''; // Initialize with empty value for the first load
+    var enddate = '';   // Initialize with empty value for the first load
+
+    $(function() {
+        // Set up CSRF token for AJAX requests
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-      });
+        });
 
-      var table = $('.data-table').DataTable({
-          scrollX: true,
-          processing: true,
-          serverSide: true,
-          ajax:{
-              "url":"{{route('supplier.costRequestView1')}}",
-              'data':function(data){
-                data.supplier_company=$('#supplier_company').val();
-                data.supplier_country=$('#supplier_country').val();
-                data.supplier_manager=$('#supplier_manager').val();
-                data.startdate=startdate,
-                data.enddate=enddate
-              
-              }
+        // Initialize DataTable
+        var table = $('.data-table').DataTable({
+            scrollX: true, // Enable horizontal scrolling
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('supplier.costRequestView1') }}", // Route to fetch data
+                data: function(data) {
+                    data.supplier_company = $('#supplier_company').val(); // Supplier company filter
+                    data.supplier_country = $('#supplier_country').val(); // Supplier country filter
+                    data.supplier_manager = $('#supplier_manager').val(); // Supplier manager filter
+                    data.startdate = startdate; // Start date for filtering
+                    data.enddate = enddate;     // End date for filtering
+                }
+            },
+            columns: [
+                { data: 'rfq_no', name: 'rfq_no' },
+                { data: 'supplier_company', name: 'supplier_company' },
+                { data: 'supplier_manager', name: 'supplier_manager' },
+                { data: 'supplier_email', name: 'supplier_email' },
+                { data: 'supplier_phone', name: 'supplier_phone' },
+                { data: 'supplier_country', name: 'supplier_country' },
+                {
+                    data: '',
+                    render: (data, type, row) => {
+                        return `
+                            <div class="text-center">
+                                <div class="list-icons">
+                                    <a href='/adminapp/supplier/cost_request_view/${row.id}'><i class="fas fa-eye"></i></a>
+                                </div>
+                            </div>`;
+                    }
+                }
+            ]
+        });
 
-          }, 
-          columns: [
-            {data:'rfq_no',name:'rfq_no'},
-            {data:'supplier_company',name:'supplier_company'},
-            {data:'supplier_manager',name:'supplier_manager'},
-            {data:'supplier_email',name:'supplier_email'},
-            {data:'supplier_phone',name:'supplier_phone'},
-            {data:'supplier_country',name:'supplier_country'},
-            {data:'',
-                render: (data,type,row) => {
-                        return `<div class="text-center">
-                                    <div class="list-icons ">
-                                        
-                                       
-                                        <a href='/adminapp/supplier/cost_request_view/${row.id}' ><i class="fas fa-eye"></i></a>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }},
+        // Event to redraw table when date range changes
+        $(document).on('change', '#daterange', function() {
+            table.draw();
+        });
 
-          ]
-      });
-    
-      $(document).on('change','#daterange',function(){
-          table.draw();
-      });
-      $(document).on('keyup','#supplier_company',function(){
-          table.draw();
-      });
-       $(document).on('keyup','#supplier_manager',function(){
-          table.draw();
-      });
-      $(document).on('change','#supplier_country',function(){
-          table.draw();
-      });
-    
+        // Event to redraw table when supplier company filter changes
+        $(document).on('keyup', '#supplier_company', function() {
+            table.draw();
+        });
 
-      $('input[name="daterange"]').daterangepicker({
-    ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'Last 45 Days': [moment().subtract(44, 'days'), moment()],
-        'Last 60 Days': [moment().subtract(59, 'days'), moment()],
-        'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-        'Last year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-    },
-         }, function(start, end, label) {
-       startdate =start.format('YYYY-MM-DD');
-       enddate=end.format('YYYY-MM-DD');
-     });
-      
+        // Event to redraw table when supplier manager filter changes
+        $(document).on('keyup', '#supplier_manager', function() {
+            table.draw();
+        });
 
+        // Event to redraw table when supplier country filter changes
+        $(document).on('change', '#supplier_country', function() {
+            table.draw();
+        });
+
+        // Initialize daterangepicker
+        $('input[name="daterange"]').daterangepicker({
+            autoUpdateInput: false, // Prevent input from being pre-filled
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'Last 45 Days': [moment().subtract(44, 'days'), moment()],
+                'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+            }
+        }, function(start, end, label) {
+            // Update start and end dates when a range is selected
+            startdate = start.format('YYYY-MM-DD');
+            enddate = end.format('YYYY-MM-DD');
+            table.draw(); // Redraw the table with the updated dates
+        });
+
+        // Handle apply button in daterangepicker
+        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        // Handle cancel button in daterangepicker
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val(''); // Clear the input field
+            startdate = '';  // Reset start date
+            enddate = '';    // Reset end date
+            table.draw();    // Redraw the table to show all data
+        });
     });
 </script>
 <div class="container">
