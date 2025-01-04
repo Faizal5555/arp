@@ -156,137 +156,134 @@ button.dt-button.buttons-excel.buttons-html5:hover {
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        // Initialize variables for startdate and enddate
+        var startdate = ''; // Empty by default to show all data
+        var enddate = '';   // Empty by default to show all data
 
- $(document).ready(function(){
-     $("#export").click(function(){
-          $('.dt-button.buttons-excel.buttons-html5').trigger('click');
-     })
- })
-        var startdate=moment(new Date()).format('YYYY-MM-DD');
-        var enddate=moment(new Date()).format('YYYY-MM-DD');
-        $(function () {
-    var startdate = '';
-    var enddate = '';
+        // Trigger export button programmatically
+        $("#export").click(function () {
+            $('.dt-button.buttons-excel.buttons-html5').trigger('click');
+        });
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-        },
-    });
+        // Set up AJAX headers
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+        });
 
-    var table = $('#supplier-table').DataTable({
-        dom: 'Blfrtip',
-        dom: " lft'<'row pl-3 pr-3 dt_head'<'col-md-8 pl-0'<'table_head'>><'p-0'f><'col-md-4 d-flex flex-row-reverse p-0'B>>" +
-             "<'row pl-3 pr-3 table-responsive'<'col-sm-12 p-0'tr>>" +
-             "<'row footer_padding'<'col-md-12'>>" +
-             "<'row pl-3 pr-3'<'col-sm-5'i><'col-sm-7'p>>",
-        language: {
-            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> ',
-        },
-        buttons: [
-            {
-                text: 'Export',
-                extend: 'excelHtml5',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+        // Initialize DataTable
+        var table = $('#supplier-table').DataTable({
+            dom: 'Blfrtip',
+            dom: " lft'<'row pl-3 pr-3 dt_head'<'col-md-8 pl-0'<'table_head'>><'p-0'f><'col-md-4 d-flex flex-row-reverse p-0'B>>" +
+                 "<'row pl-3 pr-3 table-responsive'<'col-sm-12 p-0'tr>>" +
+                 "<'row footer_padding'<'col-md-12'>>" +
+                 "<'row pl-3 pr-3'<'col-sm-5'i><'col-sm-7'p>>",
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>',
+            },
+            buttons: [
+                {
+                    text: 'Export',
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7],
+                    },
+                },
+            ],
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: "{{ route('Supplier.index') }}",
+                data: function (data) {
+                    data.supplier_company = $('#supplier_company').val();
+                    data.supplier_country = $('#supplier_country').val();
+                    data.supplier_manager = $('#supplier_manager').val();
+                    data.startdate = startdate; // Pass startdate to the server
+                    data.enddate = enddate;     // Pass enddate to the server
                 },
             },
-        ],
-        processing: true,
-        serverSide: true,
-        paging: true,
-        ajax: {
-            url: "{{ route('Supplier.index') }}",
-            data: function (data) {
-                data.supplier_company = $('#supplier_company').val();
-                data.supplier_country = $('#supplier_country').val();
-                data.supplier_manager = $('#supplier_manager').val();
-                data.startdate = startdate;
-                data.enddate = enddate;
-            },
-        },
-        columns: [
-            { data: 'rfq_no', name: 'rfq_no' },
-            { data: 'supplier_company', name: 'supplier_company' },
-            { data: 'supplier_manager', name: 'supplier_manager' },
-            @if(auth()->user()->user_type == 'admin')
-            { data: 'supplier_email', name: 'supplier_email' },
-            { data: 'supplier_phone', name: 'supplier_phone' },
-            { data: 'supplier_whatsapp', name: 'supplier_whatsapp' },
-            @endif
-            { data: 'supplier_country', name: 'supplier_country' },
-            { data: 'other_detail', name: 'other_detail' },
-            {
-                data: '',
-                render: (data, type, row) => {
-                    return `<div class="text-center">
-                                <div class="list-icons">
-                                    <a href='/adminapp/supplier/supplier_view/${row.id}' class="mdi mdi-eye"></a>
-                                    <a href='/adminapp/Supplier/edit/${row.id}' class='mdi mdi-table-edit'></a>
-                                    @if(auth()->user()->user_type == 'admin')
-                                    <a href='/adminapp/Supplier/delete/${row.id}' class='mdi mdi-delete'></a>
-                                    @endif
-                                </div>
-                            </div>`;
+            columns: [
+                { data: 'rfq_no', name: 'rfq_no' },
+                { data: 'supplier_company', name: 'supplier_company' },
+                { data: 'supplier_manager', name: 'supplier_manager' },
+                @if(auth()->user()->user_type == 'admin')
+                { data: 'supplier_email', name: 'supplier_email' },
+                { data: 'supplier_phone', name: 'supplier_phone' },
+                { data: 'supplier_whatsapp', name: 'supplier_whatsapp' },
+                @endif
+                { data: 'supplier_country', name: 'supplier_country' },
+                { data: 'other_detail', name: 'other_detail' },
+                {
+                    data: '',
+                    render: (data, type, row) => {
+                        return `<div class="text-center">
+                                    <div class="list-icons">
+                                        <a href='/adminapp/supplier/supplier_view/${row.id}' class="mdi mdi-eye"></a>
+                                        <a href='/adminapp/Supplier/edit/${row.id}' class='mdi mdi-table-edit'></a>
+                                        @if(auth()->user()->user_type == 'admin')
+                                        <a href='/adminapp/Supplier/delete/${row.id}' class='mdi mdi-delete'></a>
+                                        @endif
+                                    </div>
+                                </div>`;
+                    },
                 },
-            },
-        ],
-        lengthMenu: [
-            [5, 25, 50, -1],
-            [5, 10, 15, "All"],
-        ],
-    });
+            ],
+            lengthMenu: [
+                [5, 25, 50, -1],
+                [5, 10, 15, "All"],
+            ],
+        });
 
-    $(document).on('change', '#daterange', function () {
-        var dateRange = $(this).val();
-        if (dateRange === '') {
-            startdate = '';
-            enddate = '';
-        } else {
-            var dates = dateRange.split(' - ');
-            startdate = dates[0];
-            enddate = dates[1];
-        }
-        table.draw();
-    });
-
-    $(document).on('keyup', '#supplier_company', function () {
-        table.draw();
-    });
-
-    $(document).on('keyup', '#supplier_manager', function () {
-        table.draw();
-    });
-
-    $(document).on('change', '#supplier_country', function () {
-        table.draw();
-    });
-
-    $('input[name="daterange"]').daterangepicker(
-        {
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'Last 45 Days': [moment().subtract(44, 'days'), moment()],
-                'Last 60 Days': [moment().subtract(59, 'days'), moment()],
-                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-            },
-            autoUpdateInput: false,
-        },
-        function (start, end, label) {
-            startdate = start.format('YYYY-MM-DD');
-            enddate = end.format('YYYY-MM-DD');
+        // Event to redraw table when filters change
+        $(document).on('keyup change', '#supplier_company, #supplier_manager, #supplier_country', function () {
             table.draw();
-        }
-    );
-});
+        });
 
+        // Initialize daterangepicker
+        $('input[name="daterange"]').daterangepicker(
+            {
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 45 Days': [moment().subtract(44, 'days'), moment()],
+                    'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                },
+                autoUpdateInput: false, // Prevent input from being pre-filled
+            },
+            function (start, end, label) {
+                // Update startdate and enddate
+                startdate = start.format('YYYY-MM-DD');
+                enddate = end.format('YYYY-MM-DD');
+                table.draw(); // Redraw the table with the updated dates
+            }
+        );
 
+        // Handle apply button in daterangepicker
+        $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            startdate = picker.startDate.format('YYYY-MM-DD');
+            enddate = picker.endDate.format('YYYY-MM-DD');
+            table.draw(); // Redraw the table
+        });
 
+        // Handle cancel button in daterangepicker
+        $('input[name="daterange"]').on('cancel.daterangepicker', function () {
+            $(this).val(''); // Clear the input field
+            startdate = '';  // Reset startdate to empty
+            enddate = '';    // Reset enddate to empty
+            table.draw();    // Redraw the table to show all data
+        });
+    });
 </script>
+
+
 
 <div class="container">
     <div class="row">

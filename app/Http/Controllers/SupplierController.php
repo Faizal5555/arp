@@ -263,51 +263,58 @@ class SupplierController extends Controller
     ]);
     }
     
-     public function supplierMail(Request $req)
-{
-    if ($req->has('data')) {
-        foreach ($req->data as $data) {
-            if (isset($data['id']) && !empty($data['id'])) {
-                $supplier = Supplier::find($data['id']);
-                if (!$supplier) {
-                    continue; // Skip if supplier not found
-                }
+    public function supplierMail(Request $req)
+    {
+        if ($req->has('data')) {
+            foreach ($req->data as $data) {
+                if (isset($data['id']) && !empty($data['id'])) {
+                    $supplier = Supplier::find($data['id']);
+                    if (!$supplier) {
+                        continue; // Skip if supplier not found
+                    }
     
-                $supplierEmailContent = new SupplierEmailContent();
-                $supplierEmailContent->supplier_id = $data['id'];
-                $supplierEmailContent->user_id = auth()->user()->id;
-                $supplierEmailContent->content = $data['content'] ?? '';
+                    $supplierEmailContent = new SupplierEmailContent();
+                    $supplierEmailContent->supplier_id = $data['id'];
+                    $supplierEmailContent->user_id = auth()->user()->id;
+                    $supplierEmailContent->content = $data['content'] ?? '';
     
-                $fileContent = '';
+                    $fileContent = '';
     
-                // Handle file upload
-                if (isset($data['file']) && $data['file'] instanceof \Illuminate\Http\UploadedFile) {
-                    $file = $data['file'];
-                    $extension = $file->getClientOriginalExtension();
-                    $filename = time() . '_email_document.' . $extension;
-                    $file->move(public_path('supplier'), $filename);
-                    $fileContent = 'supplier/' . $filename;
-                    $supplierEmailContent->file_content = $fileContent;
-                }
+                    // Handle file upload
+                    if (isset($data['file']) && $data['file'] instanceof \Illuminate\Http\UploadedFile) {
+                        $file = $data['file'];
+                        $extension = $file->getClientOriginalExtension();
+                        $filename = time() . '_email_document.' . $extension;
+                        $file->move(public_path('supplier'), $filename);
+                        $fileContent = 'supplier/' . $filename;
+                        $supplierEmailContent->file_content = $fileContent;
+                    }
     
-                // Save and trigger email
-                if ($supplierEmailContent->save()) {
-                    event(new SendSupplierMail([$supplier->supplier_email, $data['content'] ?? '', $fileContent]));
+                    // Save email content to supplier table
+                    $supplier->email_content = $data['content'] ?? '';
+                    if (!empty($fileContent)) {
+                        $supplier->file_content = $fileContent;
+                    }
+    
+                    // Save and trigger email
+                    if ($supplier->save() && $supplierEmailContent->save()) {
+                        event(new SendSupplierMail([$supplier->supplier_email, $data['content'] ?? '', $fileContent]));
+                    }
                 }
             }
+    
+            return response()->json([
+                "success" => 1,
+                "message" => "Emails processed and saved successfully",
+            ]);
         }
     
         return response()->json([
-            "success" => 1,
-            "message" => "Emails processed successfully",
+            "success" => 0,
+            "message" => "Invalid or missing data",
         ]);
     }
     
-    return response()->json([
-        "success" => 2,
-        "message" => "Invalid or missing data",
-    ], 400);
-}
 
 
 

@@ -1,4 +1,6 @@
 @extends('layouts.master')
+
+@section('content')
 <style>
     a.ml-2.card-title {
     color: #fff;
@@ -44,7 +46,6 @@ select.form-control {
     color: #c9c8c8;
 }
 </style>
-@section('content')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -52,7 +53,7 @@ select.form-control {
     var startdate = ''; // Initialize with empty value for the first load
     var enddate = '';   // Initialize with empty value for the first load
 
-    $(function() {
+    $(function () {
         // Set up CSRF token for AJAX requests
         $.ajaxSetup({
             headers: {
@@ -67,7 +68,7 @@ select.form-control {
             serverSide: true,
             ajax: {
                 url: "{{ route('supplier.costRequestView1') }}", // Route to fetch data
-                data: function(data) {
+                data: function (data) {
                     data.supplier_company = $('#supplier_company').val(); // Supplier company filter
                     data.supplier_country = $('#supplier_country').val(); // Supplier country filter
                     data.supplier_manager = $('#supplier_manager').val(); // Supplier manager filter
@@ -97,22 +98,22 @@ select.form-control {
         });
 
         // Event to redraw table when date range changes
-        $(document).on('change', '#daterange', function() {
+        $(document).on('change', '#daterange', function () {
             table.draw();
         });
 
         // Event to redraw table when supplier company filter changes
-        $(document).on('keyup', '#supplier_company', function() {
+        $(document).on('keyup', '#supplier_company', function () {
             table.draw();
         });
 
         // Event to redraw table when supplier manager filter changes
-        $(document).on('keyup', '#supplier_manager', function() {
+        $(document).on('keyup', '#supplier_manager', function () {
             table.draw();
         });
 
         // Event to redraw table when supplier country filter changes
-        $(document).on('change', '#supplier_country', function() {
+        $(document).on('change', '#supplier_country', function () {
             table.draw();
         });
 
@@ -129,7 +130,7 @@ select.form-control {
                 'Last 90 Days': [moment().subtract(89, 'days'), moment()],
                 'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
             }
-        }, function(start, end, label) {
+        }, function (start, end, label) {
             // Update start and end dates when a range is selected
             startdate = start.format('YYYY-MM-DD');
             enddate = end.format('YYYY-MM-DD');
@@ -137,18 +138,30 @@ select.form-control {
         });
 
         // Handle apply button in daterangepicker
-        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+        $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            startdate = picker.startDate.format('YYYY-MM-DD');
+            enddate = picker.endDate.format('YYYY-MM-DD');
+            table.draw(); // Redraw the table
         });
 
         // Handle cancel button in daterangepicker
-        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+        $('input[name="daterange"]').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val(''); // Clear the input field
             startdate = '';  // Reset start date
             enddate = '';    // Reset end date
             table.draw();    // Redraw the table to show all data
         });
+
+        // Force redraw table when range presets (e.g., Today, Yesterday) are clicked multiple times
+        $('ul.daterangepicker li').on('click', function () {
+            setTimeout(function () {
+                table.draw();
+            }, 200);
+        });
     });
+</script>
+
 </script>
 <div class="container">
     <div class="row">
