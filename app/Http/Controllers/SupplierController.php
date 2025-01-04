@@ -22,7 +22,7 @@ class SupplierController extends Controller
        
         $user = Auth::user();
         $data=$request->all();
-        $supplier = Supplier::latest();
+        $supplier = Supplier::query();
 
         if(isset($data['supplier_company']) && $data['supplier_company']!=''){
             $supplier->where('supplier_company','like','%'.$data['supplier_company'].'%');
