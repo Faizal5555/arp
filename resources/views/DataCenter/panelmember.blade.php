@@ -94,8 +94,8 @@ $(document).ready(function () {
             }
         ] : [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'name', name: 'name' },
-            { data: 'name', name: 'name' },
+            { data: 'fname', name: 'fname' },
+            { data: 'lname', name: 'lname' },
             { data: 'country', name: 'country' },
             // { data: 'email', name: 'email' },
             {

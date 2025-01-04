@@ -306,7 +306,7 @@ table tfoot th {
                    <div class="form-group mt-4">
                     <label style="font-weight:bold;font-size:15px;margin-left:4px;">User Type</label> 
 
-                    <select name="user_type" class="form-control">
+                    <select name="user_type" id="user_type" class="form-control">
 
                     <option name= "user_type" value="admin">Admin</option>
                     <option name= "user_type" value="sales">Sales</option>
@@ -319,6 +319,13 @@ table tfoot th {
                     <option name= "user_type" value="global_team">Panel Requirements Team</option>
                 </select>
                 </div>
+                {{-- <div class="form-group mt-4 d-none" id="globalManagerDropdown">
+                    <label style="font-weight:bold;font-size:15px;margin-left:4px;">Assign to Global Manager</label>
+                    <select name="global_manager_id" id="global_manager_id" class="form-control">
+                        <option value="">Select a Global Manager</option>
+                        <!-- This will be populated dynamically -->
+                    </select>
+                </div> --}}
                 <div class="form-group mt-4">
                      <label style="font-weight:bold;font-size:15px;margin-left:4px;">User Role</label> 
                     <select name= "user_role" class="form-control">
@@ -353,10 +360,43 @@ table tfoot th {
 </div>
     </div>
 
-
-
-
-    
-    
-    
     @endsection
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @push('scripts')
+    <script>
+    $(document).ready(function () {
+        $('#user_type').on('change', function () {
+            const selectedType = $(this).val();
+
+            if (selectedType === 'global_team') {
+                // Show Global Manager dropdown
+                $('#globalManagerDropdown').removeClass('d-none');
+
+                // Fetch Global Managers via AJAX
+                $.ajax({
+                    url: "{{ route('get.global.managers') }}", // Define this route in your web.php
+                    method: 'GET',
+                    success: function (response) {
+                        const managerDropdown = $('#global_manager_id');
+                        managerDropdown.empty(); // Clear existing options
+                        managerDropdown.append('<option value="">Select a Global Manager</option>');
+                        response.forEach(manager => {
+                            managerDropdown.append(
+                                `<option value="${manager.id}">${manager.name} (${manager.email})</option>`
+                            );
+                        });
+                    },
+                    error: function () {
+                        alert('Error fetching Global Managers.');
+                    }
+                });
+            } else {
+                // Hide Global Manager dropdown
+                $('#globalManagerDropdown').addClass('d-none');
+            }
+        });
+    });
+</script>
+@endpush

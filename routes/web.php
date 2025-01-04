@@ -33,9 +33,17 @@ Route::get('/', function () {
       // Employee login
       Route::get('/employee/login', [AuthenticatedSessionController::class, 'createEmployee'])->name('employee.login');
       Route::post('/employee/login', [AuthenticatedSessionController::class, 'storeEmployee']);
-  });
+  
+      Route::get('/supplier/login', [AuthenticatedSessionController::class, 'createSupplier'])->name('supplier.login');
+      Route::post('/supplier/login', [AuthenticatedSessionController::class, 'storeSupplier'])->name('supplier.store');
+  
+    });
 
-Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
+    Route::get('adminapp/data', 'App\Http\Controllers\dataCenterController@index');
+    Route::get('adminapp/data/export', 'App\Http\Controllers\dataCenterController@exportHCPData')->name('adminapp.data.export');
+
+
+    Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::get('/dashboard','App\Http\Controllers\DashboardController@index')->name('dashboard');
     Route::get('/salesdashboard','App\Http\Controllers\DashboardController@sales')->name('salesdashboard');
     Route::post('DashBoard/chart','App\Http\Controllers\DashboardController@ChartjS')->name('DashBoardChart');
@@ -287,7 +295,7 @@ Route::get('/supplier/supplier_performance_view/{id}', 'App\Http\Controllers\Sup
 Route::get('/Supplieroverview', 'App\Http\Controllers\SupplierController@suppplier_overview')->name('supplier.overview');
 Route::post('/Supplieroverview1', 'App\Http\Controllers\SupplierController@suppplier_overview1')->name('supplier.overview1');
 Route::post('/supplier/import', 'App\Http\Controllers\SupplierController@import')->name('supplier.import');
-// Route::get('/supplier-dashboard', 'App\Http\Controllers\SupplierController@supplier_dashboard')->name('supplier.dashboard');
+Route::get('/supplier-dashboard', 'App\Http\Controllers\SupplierController@supplier_dashboard')->name('supplier.dashboard');
 
 //manager
 Route::get('/manager/index', 'App\Http\Controllers\ManagerController@index')->name('manager.index');

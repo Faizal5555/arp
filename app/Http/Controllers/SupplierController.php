@@ -466,38 +466,30 @@ class SupplierController extends Controller
         return view('supplier.supplierView',compact('supplier'));
 
     }
-    public function import(Request $request ) 
+    public function import(Request $request)
     {
-
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv,xlsx,xls',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
+        // Proceed with import logic...
         DB::beginTransaction();
         try {
             $import = new SupplierImport();
             Excel::import($import, $request->file('file'));
             DB::commit();
-            return back()->with('success', 'Imported Successfully');
-            // $response_data = response()->json(['msg' => "success", 'ok' => TRUE]);
-            // if($result['success'] == 1)
-            // {
-            //     DB::commit();
-            //     $response_data = response()->json(['msg' => 'Category Imported Successfully', 'ok' => TRUE,'type' => 1]);
-            // }else{
-            //     DB::rollback();
-            //     $response_data = response()->json(['msg' => 'ID '.$result['error'].' in row '.$result['row'].' id already used', 'ok' => FALSE,'type' => 2]);
-            // }
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+    
+            return response()->json(['success' => true, 'message' => 'Imported successfully!']);
+        } catch (\Exception $e) {
             DB::rollback();
-            // $response_data = response()->json(['msg' => $e->failures(), 'ok' => FALSE]);
-            $failures=$e->failures();
-            $failer_array = [];
-            foreach ($failures as $failure) {
-                $failer_array[] = $failure->errors()[0]."at row".$failure->row();
-            }
-            $errors=$failer_array;
-            return back()->with('fail', [$errors]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        // return $response_data;
-
     }
+    
     
     public function performance(Request $req){
         // dd('hi');
@@ -593,6 +585,46 @@ class SupplierController extends Controller
       
         $supplier=Supplier::find($id);
         return view('supplier.supplier_performanece_view',compact('supplier'));
+  }
+
+  public function supplier_dashboard(Request $request)
+  {
+    
+    $countryFilter = $request->get('country');
+    $countries = Country::all(); // Fetch all countries from the `countries` table
+
+    if ($request->ajax()) {
+        // Filter suppliers by the selected country for AJAX requests
+        $suppliersByCountry = Supplier::select('supplier_country', \DB::raw('count(*) as count'))
+            ->when($countryFilter, function ($query) use ($countryFilter) {
+                $query->where('supplier_country', $countryFilter);
+            })
+            ->groupBy('supplier_country')
+            ->get();
+
+        $suppliersData = Supplier::select('supplier_company', \DB::raw('count(*) as count'))
+            ->when($countryFilter, function ($query) use ($countryFilter) {
+                $query->where('supplier_country', $countryFilter);
+            })
+            ->groupBy('supplier_company')
+            ->get();
+
+        return response()->json([
+            'suppliersByCountry' => $suppliersByCountry,
+            'suppliersData' => $suppliersData,
+        ]);
+    }
+
+    // Default rendering for the blade view
+    $suppliersByCountry = Supplier::select('supplier_country', \DB::raw('count(*) as count'))
+        ->groupBy('supplier_country')
+        ->get();
+
+    $suppliersData = Supplier::select('supplier_company', \DB::raw('count(*) as count'))
+        ->groupBy('supplier_company')
+        ->get();
+
+    return view('supplier.supplier_dashboard', compact('countries', 'suppliersByCountry', 'suppliersData', 'countryFilter'));
   }
     
 }

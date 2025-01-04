@@ -1143,53 +1143,65 @@ class dataCenterController extends Controller
             public function userCountryFilter(Request $req) {
                 $country = $req->country;
 
-                // Get total registrations for the pie chart from the `ques` table
-                $userChartDataQuery = DB::table('ques')
-                    ->select('country as label', DB::raw('count(*) as count'))
-                    ->whereNotNull('country')
-                    ->when($country, function ($query) use ($country) {
-                        return $query->where('country', $country);
-                    })
-                    ->groupBy('country')
-                    ->get();
+    // Get the IDs of users with user_type 'global_team'
+    $globalTeamUserIds = DB::table('users')
+        ->where('user_type', 'global_team')
+        ->pluck('id');
 
-                $userChartData = $userChartDataQuery->map(function ($item) {
-                    return [
-                        'label' => $item->label,
-                        'count' => $item->count,
-                    ];
-                })->toArray();
-                        
-                // Get question 26 (Occupation) and question 27 (Organization Industry) data for the selected country
-                $occupationData = DB::table('ques')
-                    ->select('que_26 as occupation', DB::raw('count(*) as count'))
-                    ->where('country', $country)
-                    ->groupBy('que_26')
-                    ->get()
-                    ->map(function ($item) {
-                        return [
-                            'label' => config("answer_key.answers.twentysix.{$item->occupation}", 'Unknown'),
-                            'count' => $item->count,
-                        ];
-                    });
-            
-                $industryData = DB::table('ques')
-                    ->select('que_27 as industry', DB::raw('count(*) as count'))
-                    ->where('country', $country)
-                    ->groupBy('que_27')
-                    ->get()
-                    ->map(function ($item) {
-                        return [
-                            'label' => config("answer_key.answers.twentyseven.{$item->industry}", 'Unknown'),
-                            'count' => $item->count,
-                        ];
-                    });
-            
-                return response()->json([
-                    "userChartData" => $userChartData,
-                    "occupationData" => $occupationData,
-                    "industryData" => $industryData,
-                ]);
+    // Get total registrations for the pie chart from the `ques` table
+    $userChartDataQuery = DB::table('ques')
+        ->select('country as label', DB::raw('count(*) as count'))
+        ->whereIn('user_id', $globalTeamUserIds) // Filter by user_id
+        ->whereNotNull('country')
+        ->when($country, function ($query) use ($country) {
+            return $query->where('country', $country);
+        })
+        ->groupBy('country')
+        ->get();
+
+    $userChartData = $userChartDataQuery->map(function ($item) {
+        return [
+            'label' => $item->label,
+            'count' => $item->count,
+        ];
+    })->toArray();
+
+    // Get question 26 (Occupation) and question 27 (Organization Industry) data for the selected country
+    $occupationData = DB::table('ques')
+        ->select('que_26 as occupation', DB::raw('count(*) as count'))
+        ->whereIn('user_id', $globalTeamUserIds) // Filter by user_id
+        ->when($country, function ($query) use ($country) {
+            return $query->where('country', $country);
+        })
+        ->groupBy('que_26')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'label' => config("answer_key.answers.twentysix.{$item->occupation}", 'Unknown'),
+                'count' => $item->count,
+            ];
+        });
+
+    $industryData = DB::table('ques')
+        ->select('que_27 as industry', DB::raw('count(*) as count'))
+        ->whereIn('user_id', $globalTeamUserIds) // Filter by user_id
+        ->when($country, function ($query) use ($country) {
+            return $query->where('country', $country);
+        })
+        ->groupBy('que_27')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'label' => config("answer_key.answers.twentyseven.{$item->industry}", 'Unknown'),
+                'count' => $item->count,
+            ];
+        });
+
+    return response()->json([
+        "userChartData" => $userChartData,
+        "occupationData" => $occupationData,
+        "industryData" => $industryData,
+    ]);
             }
             
             
@@ -1949,11 +1961,17 @@ public function userconsumerlistData(Request $request)
     public function hcpCountryFilter(Request $request)
     {
         $country = $request->country;
+
+        // Get the IDs of users with user_type 'global_team'
+        $globalTeamUserIds = DB::table('users')
+            ->where('user_type', 'global_team')
+            ->pluck('id');
     
-        // Fetch total HCP registrations grouped by country
+        // Fetch total HCP registrations grouped by country (filtered by datacenter_id)
         $countryChartData = datacenternew::select('country1 as label', DB::raw('count(*) as count'))
+            ->whereIn('datacenter_id', $globalTeamUserIds) // Filter by datacenter_id matching global_team users
             ->when($country, function ($query) use ($country) {
-                $query->where('country1', $country);
+                return $query->where('country1', $country);
             })
             ->groupBy('country1')
             ->get()
@@ -1964,10 +1982,11 @@ public function userconsumerlistData(Request $request)
                 ];
             });
     
-        // Fetch specialties grouped by country
+        // Fetch specialties grouped by country (filtered by datacenter_id)
         $specialityChartData = datacenternew::select('docterSpeciality as label', DB::raw('count(*) as count'))
+            ->whereIn('datacenter_id', $globalTeamUserIds) // Filter by datacenter_id matching global_team users
             ->when($country, function ($query) use ($country) {
-                $query->where('country1', $country);
+                return $query->where('country1', $country);
             })
             ->groupBy('docterSpeciality')
             ->get()
@@ -2120,13 +2139,20 @@ public function userconsumerlistData(Request $request)
 
     public function getRecruitmentList(Request $request)
     {
+        // Get IDs of users with user_type 'global_team'
+        $globalTeamUserIds = DB::table('users')
+            ->where('user_type', 'global_team')
+            ->pluck('id');
+    
+        // Fetch data from `datacenternews` filtered by `datacenter_id`
         $data = DB::table('datacenternews')
             ->select(
                 DB::raw('LOWER(TRIM(country1)) as normalized_country'), // Normalize country names
                 'docterSpeciality as speciality',
                 DB::raw('COUNT(*) as count')
             )
-            ->groupBy('normalized_country', 'speciality') // Group by normalized country names
+            ->whereIn('datacenter_id', $globalTeamUserIds) // Filter by `datacenter_id` for `global_team`
+            ->groupBy('normalized_country', 'speciality') // Group by normalized country names and specialties
             ->get();
     
         $formattedData = [];
@@ -2204,8 +2230,8 @@ public function userconsumerlistData(Request $request)
                 $query = DB::table('ques')
             ->select(
                 'id',
-                'fname as name',
-                'lname as name',
+                'fname as fname',
+                'lname as lname',
                 'country',
                 'email',
                 DB::raw('(SELECT COUNT(*) FROM incentives WHERE ques.id = incentives.que_id) as is_saved')
@@ -2505,6 +2531,66 @@ public function userconsumerlistData(Request $request)
 //     $globalManagers = User::where('user_type', 'global_manager')->select('id', 'name', 'email')->get();
 //     return response()->json($globalManagers);
 // }
+
+
+public function index(Request $request)
+{
+    if ($request->ajax()) {
+        // Check which tab is being requested (hcp or consumer)
+        if ($request->get('type') === 'hcp') {
+            $hcpData = datacenternew::select('*'); // Fetch all columns
+            return DataTables::of($hcpData)->make(true);
+        }
+
+        if ($request->get('type') === 'consumer') {
+            $consumerData = Que::select('*'); // Fetch all columns
+            return DataTables::of($consumerData)->make(true);
+        }
+    }
+
+    // Return view with no authentication
+    return view('data.index');
+}
+
+public function exportHCPData(Request $request)
+{
+    $type = $request->get('type'); // Get type from the request
+
+    if ($type === 'hcp') {
+        $data = datacenternew::select(
+            'firstname',
+            'email',
+            'country1',
+            'cityname',
+            'citycode',
+            'PhNumber',
+            'whatdsappNumber',
+            'docterSpeciality',
+            'totalExperience',
+            'practice',
+            'licence',
+            'PatientsMonth'
+            // 'created_at'
+        )->get();
+    } elseif ($type === 'consumer') {
+        $data = Que::select(
+            'fname',
+            'lname',
+            'email',
+            'phone',
+            'country',
+            'address',
+            'zipcode'
+            // 'created_at'
+        )->get();
+    } else {
+        return response()->json(['error' => 'Invalid data type'], 400);
+    }
+
+    return response()->json(['data' => $data], 200);
+}
+
+
     
     
 

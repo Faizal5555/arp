@@ -69,6 +69,41 @@ button#addRegisterButton:hover {
 </style>
 @section('page_title')
 @section('content')
+@if (session('validationErrors'))
+    <div class="alert alert-danger">
+        <h4>Validation Errors:</h4>
+        <ul>
+            @foreach (session('validationErrors') as $row => $errors)
+                <li>
+                    <strong>Row {{ $row }}:</strong>
+                    <ul>
+                        @foreach ($errors as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 <script>
     $(document).ready(function(){
         $("#register").validate({
@@ -157,7 +192,85 @@ button#addRegisterButton:hover {
              
          })
 
-  
+         $('#exampleModal').on('hidden.bs.modal', function () {
+    $(this).find('form')[0].reset();
+    $('.alert').remove(); // Remove any alert messages
+});
+
+$(document).ready(function () {
+    $('form[action="{{ route('supplier.import') }}"]').submit(function (e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    $.ajax({
+        url: "{{ route('supplier.import') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            swal({
+                title: 'Success',
+                text: response.message,
+                icon: 'success',
+                buttons: false,
+            });
+            setTimeout(() => location.reload(), 3000);
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+                let errorMessage = 'Validation failed:\n';
+                for (const [key, value] of Object.entries(errors)) {
+                    errorMessage += `${key}: ${value}\n`;
+                }
+                swal({
+                    title: 'Validation Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    buttons: true,
+                });
+            } else if (xhr.status === 401) {
+                swal({
+                    title: 'Authentication Error',
+                    text: 'You are not authenticated!',
+                    icon: 'error',
+                    buttons: true,
+                });
+            } else {
+                swal({
+                    title: 'Error',
+                    text: xhr.responseJSON.error || 'Something went wrong!',
+                    icon: 'error',
+                    buttons: true,
+                });
+            }
+        },
+    });
+});
+});
+
+document.querySelector('form').addEventListener('submit', function (e) {
+    const fileInput = document.querySelector('input[name="file"]');
+    const file = fileInput.files[0];
+
+    // Validate file type
+    const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
+    if (!validTypes.includes(file.type)) {
+        e.preventDefault();
+        alert('Invalid file type. Please upload a CSV, XLSX, or XLS file.');
+        return;
+    }
+
+    // Validate file size (optional)
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+        e.preventDefault();
+        alert('File size exceeds the 2MB limit.');
+        return;
+    }
+});
 
 </script>
 
@@ -257,7 +370,21 @@ button#addRegisterButton:hover {
                                        <input type="text" name="other_detail" class="form-control" placeholder="Enter Other Detail">
                                     </div>
                                 </div>
+                                
                             </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group row" >
+                                    <label class="col-lg-3 col-form-label">Import Files</label>
+                                    <div class="col-lg-9">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                            Import Data
+                                          </button>
+                                          
+        
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                
                                 <button type="submit" id="addRegisterButton"
@@ -265,6 +392,7 @@ button#addRegisterButton:hover {
                             </div>
                         </form>
                     </div>
+                    
                 </div>
 
 
@@ -273,6 +401,33 @@ button#addRegisterButton:hover {
     </div>
 </div>
 
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Import</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+            
+            
+
+           
+            <form action="{{ route('supplier.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="file" class="form-control" required>
+                <button class="btn btn-success mt-2">Import Supplier Data</button>
+                <a href="{{ url('global_assets/demoexample/supplier_example_file.csv') }}">Example Template</a>
+            </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
 
 
 @endsection
@@ -289,5 +444,4 @@ button#addRegisterButton:hover {
 @endsection
 
 @section('scripts')
-
 @endsection

@@ -164,139 +164,127 @@ button.dt-button.buttons-excel.buttons-html5:hover {
  })
         var startdate=moment(new Date()).format('YYYY-MM-DD');
         var enddate=moment(new Date()).format('YYYY-MM-DD');
- $(function () {
-        
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-      });
+        $(function () {
+    var startdate = '';
+    var enddate = '';
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+    });
 
-      var table = $('#supplier-table').DataTable({
-         dom: 'Blfrtip',
-         dom: " lft'<'row pl-3 pr-3 dt_head'<'col-md-8 pl-0'<'table_head'>><'p-0'f><'col-md-4 d-flex flex-row-reverse p-0'B>>" +"<'row pl-3 pr-3 table-responsive'<'col-sm-12 p-0'tr>>" +"<'row footer_padding'<'col-md-12'>>"+"<'row pl-3 pr-3'<'col-sm-5'i><'col-sm-7'p>>",
-        "language": {
-         processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '},
-         buttons: [
-                 {
+    var table = $('#supplier-table').DataTable({
+        dom: 'Blfrtip',
+        dom: " lft'<'row pl-3 pr-3 dt_head'<'col-md-8 pl-0'<'table_head'>><'p-0'f><'col-md-4 d-flex flex-row-reverse p-0'B>>" +
+             "<'row pl-3 pr-3 table-responsive'<'col-sm-12 p-0'tr>>" +
+             "<'row footer_padding'<'col-md-12'>>" +
+             "<'row pl-3 pr-3'<'col-sm-5'i><'col-sm-7'p>>",
+        language: {
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> ',
+        },
+        buttons: [
+            {
                 text: 'Export',
                 extend: 'excelHtml5',
                 exportOptions: {
-                  columns: [0,1,2,3,4,5,6,7]
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7],
                 },
             },
-            
-            ],
-         processing: true,
-         serverSide: true,
-         paging: true,
-         
-         
-           
-          ajax: {
-              
-              "url":"{{ route('Supplier.index') }}",
-               'data': function(data){
-                data.supplier_company=$('#supplier_company').val();
-                data.supplier_country=$('#supplier_country').val();
-                data.supplier_manager=$('#supplier_manager').val();
-                
-                 data.startdate=startdate,
-                data.enddate=enddate
-                  // Read values
-                  var option = '';
-
-                  if($('input[name="filter"]')){
-                    var col = $('#includes').val();
-                    data.column = col;
-                  }
-
-                  $("th[id^='includes']").css({'display':'none;'});
-
-                //   $('.table_head td input,.table_head td select').each(function(){
-                //         data[$(this).attr('id')] = $('#'+$(this).attr('id')).val();
-                //     });
-                }
+        ],
+        processing: true,
+        serverSide: true,
+        paging: true,
+        ajax: {
+            url: "{{ route('Supplier.index') }}",
+            data: function (data) {
+                data.supplier_company = $('#supplier_company').val();
+                data.supplier_country = $('#supplier_country').val();
+                data.supplier_manager = $('#supplier_manager').val();
+                data.startdate = startdate;
+                data.enddate = enddate;
             },
-          
-          columns: [
+        },
+        columns: [
+            { data: 'rfq_no', name: 'rfq_no' },
+            { data: 'supplier_company', name: 'supplier_company' },
+            { data: 'supplier_manager', name: 'supplier_manager' },
+            @if(auth()->user()->user_type == 'admin')
+            { data: 'supplier_email', name: 'supplier_email' },
+            { data: 'supplier_phone', name: 'supplier_phone' },
+            { data: 'supplier_whatsapp', name: 'supplier_whatsapp' },
+            @endif
+            { data: 'supplier_country', name: 'supplier_country' },
+            { data: 'other_detail', name: 'other_detail' },
+            {
+                data: '',
+                render: (data, type, row) => {
+                    return `<div class="text-center">
+                                <div class="list-icons">
+                                    <a href='/adminapp/supplier/supplier_view/${row.id}' class="mdi mdi-eye"></a>
+                                    <a href='/adminapp/Supplier/edit/${row.id}' class='mdi mdi-table-edit'></a>
+                                    @if(auth()->user()->user_type == 'admin')
+                                    <a href='/adminapp/Supplier/delete/${row.id}' class='mdi mdi-delete'></a>
+                                    @endif
+                                </div>
+                            </div>`;
+                },
+            },
+        ],
+        lengthMenu: [
+            [5, 25, 50, -1],
+            [5, 10, 15, "All"],
+        ],
+    });
 
+    $(document).on('change', '#daterange', function () {
+        var dateRange = $(this).val();
+        if (dateRange === '') {
+            startdate = '';
+            enddate = '';
+        } else {
+            var dates = dateRange.split(' - ');
+            startdate = dates[0];
+            enddate = dates[1];
+        }
+        table.draw();
+    });
 
-           
+    $(document).on('keyup', '#supplier_company', function () {
+        table.draw();
+    });
 
-              
-              
-             {data: 'rfq_no', name: 'rfq_no'},
-              {data: 'supplier_company', name: 'supplier_company'},
-              {data: 'supplier_manager', name: 'supplier_manager'},
-              @if(auth()->user()->user_type == 'admin')
-              {data: 'supplier_email', name: 'supplier_email'},
-              {data: 'supplier_phone', name: 'supplier_phone'},
-              {data: 'supplier_whatsapp', name: 'supplier_whatsapp'},
-              @endif
-              {data: 'supplier_country', name: 'supplier_country'},
-              {data: 'other_detail', name: 'other_detail'},
-              
-              {data: '', 
-                    render: (data,type,row) => {
-                        return `<div class="text-center">
-                                    <div class="list-icons ">
-                                        <a href='/adminapp/supplier/supplier_view/${row.id}'  class="mdi mdi-eye"></a>
-                                        <a href='/adminapp/Supplier/edit/${row.id}' class='mdi mdi-table-edit'></a>
-                                        
-                                        @if(auth()->user()->user_type == 'admin')
-                                        <a href='/adminapp/Supplier/delete/${row.id}' class='mdi mdi-delete'></a>
-                                        @endif
-                                      
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }},
-            ],
-            "lengthMenu":[
-                [5,25,50,-1],
-                [5,10,15,"All"]
-            ],
-          
-      });
-    //   $('.table_head').html("<table><tr><td><input type='text' id='supplier_company' placeholder='Search Supplier Company' name='supplier_company' autocomplete='off'> <td><input type='text' id='supplier_manager' placeholder='Search Supplier Manager' name='supplier_manager' autocomplete='off'></td> <td><input type='text' id='supplier_country' placeholder='Search Supplier Country' name='supplier_country' autocomplete='off'></td> </tr></table>"); 
-      
-      $(document).on('click', 'input[name="filter"]', function(){
+    $(document).on('keyup', '#supplier_manager', function () {
+        table.draw();
+    });
+
+    $(document).on('change', '#supplier_country', function () {
+        table.draw();
+    });
+
+    $('input[name="daterange"]').daterangepicker(
+        {
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'Last 45 Days': [moment().subtract(44, 'days'), moment()],
+                'Last 60 Days': [moment().subtract(59, 'days'), moment()],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+            },
+            autoUpdateInput: false,
+        },
+        function (start, end, label) {
+            startdate = start.format('YYYY-MM-DD');
+            enddate = end.format('YYYY-MM-DD');
             table.draw();
-        });
-        // $(document).on('keyup','.table_head td',function(){
-        //     table.draw();
-        // });
+        }
+    );
+});
 
-    $(document).on('change','#daterange',function(){
-          table.draw();
-      });
-      $(document).on('keyup','#supplier_company',function(){
-          table.draw();
-      });
-       $(document).on('keyup','#supplier_manager',function(){
-          table.draw();
-      });
-      $(document).on('change','#supplier_country',function(){
-          table.draw();
-      });
-      $('input[name="daterange"]').daterangepicker({
-    ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'Last 45 Days': [moment().subtract(44, 'days'), moment()],
-        'Last 60 Days': [moment().subtract(59, 'days'), moment()],
-        'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-        'Last year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-    },
-         }, function(start, end, label) {
-       startdate =start.format('YYYY-MM-DD');
-       enddate=end.format('YYYY-MM-DD');
-     });
- });
+
 
 </script>
 

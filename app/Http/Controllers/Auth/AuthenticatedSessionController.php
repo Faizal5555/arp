@@ -34,6 +34,11 @@ class AuthenticatedSessionController extends Controller
         return view('auth.employee-login', ['userType' => 'employee']);
     }
 
+    public function createSupplier()
+    {
+        return view('auth.supplier-login', ['userType' => 'supplier']);
+    }
+
     /**
      * Handle login for all user types.
      */
@@ -43,15 +48,19 @@ class AuthenticatedSessionController extends Controller
 
     // Authenticate user
     if (Auth::attempt($credentials)) {
-        // Check if the user_type is 'admin'
-        if (Auth::user()->user_type === 'admin') {
-            $request->session()->regenerate();
-            return redirect()->intended(RouteServiceProvider::HOME);
-        } else {
-            // Logout if user_type is not admin
+        // Define restricted user types
+        $restrictedUserTypes = ['global_team', 'global_manager', 'user','supplier'];
+
+        // Check if the authenticated user's user_type is in the restricted list
+        if (in_array(Auth::user()->user_type, $restrictedUserTypes)) {
+            // Logout the user
             Auth::logout();
             return back()->withErrors(['email' => 'You do not have permission to access the admin login.']);
         }
+
+        // Allow login for other user types
+        $request->session()->regenerate();
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     // Return error for invalid credentials
@@ -89,6 +98,19 @@ class AuthenticatedSessionController extends Controller
     // Return error for invalid credentials
     return back()->withErrors(['email' => 'Invalid credentials.']);
     }
+
+    public function storeSupplier(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt(array_merge($credentials, ['user_type' => 'supplier']))) {
+            $request->session()->regenerate();
+            return redirect()->intended('adminapp/dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials for Supplier.']);
+    }
+
 
     public function destroy(Request $request)
     {

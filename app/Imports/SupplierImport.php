@@ -24,19 +24,20 @@ class SupplierImport implements  ToModel, WithHeadingRow, WithValidation
     }
     public function rules(): array
     {
-        return [
-             'supplier_company' => 'required',
-             'supplier_manager' => 'required',
-             'supplier_country' => 'required',
-             'supplier_email' => 'required|email|max:100|unique:supplier',
-             'supplier_phone' => 'required|numeric|max:9',
-             'supplier_whatsapp' => 'required|numeric|max:9',
-             'other_detail'=>'required',
+        return [    
+            'supplier_company'=>'required',
+            'supplier_manager'=>'required',
+            'supplier_email'=>'required|email|unique:supplier,supplier_email',
+            'supplier_phone'=>'required',
+            'supplier_whatsapp'=>'required',
+            'supplier_country'=>'required',
+            'other_detail'=>'required'
         ];
     }
 
     public function model(array $row)
-    {
+    {     
+        //dd('hi');
         $unique_no = Supplier::orderBy('id', 'DESC')->pluck('id')->first();
         if($unique_no == null or $unique_no == ""){
             

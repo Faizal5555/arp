@@ -30,7 +30,7 @@ use DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
     //   sales
@@ -212,10 +212,41 @@ class DashboardController extends Controller
         }elseif($user->user_type == ('accounts')){
            return view('accountdashboard',compact('total_client_invoice_pendig','total_vendor_invoice_pending','total_client_invoice_awaited','total_vendor_invoice_awaited'));
         }elseif($user->user_type == ('supplier')){
-            $total_supplier= Supplier :: count();
-            $total_cost_request=Supplier::where('email_content','!=','')->count();
-            $country= Country::get();
-            return view('supplierdashboard',compact('total_supplier','total_cost_request','country'));
+            $countryFilter = $request->get('country');
+    $countries = Country::all(); // Fetch all countries from the `countries` table
+
+    if ($request->ajax()) {
+        // Filter suppliers by the selected country for AJAX requests
+        $suppliersByCountry = Supplier::select('supplier_country', \DB::raw('count(*) as count'))
+            ->when($countryFilter, function ($query) use ($countryFilter) {
+                $query->where('supplier_country', $countryFilter);
+            })
+            ->groupBy('supplier_country')
+            ->get();
+
+        $suppliersData = Supplier::select('supplier_company', \DB::raw('count(*) as count'))
+            ->when($countryFilter, function ($query) use ($countryFilter) {
+                $query->where('supplier_country', $countryFilter);
+            })
+            ->groupBy('supplier_company')
+            ->get();
+
+        return response()->json([
+            'suppliersByCountry' => $suppliersByCountry,
+            'suppliersData' => $suppliersData,
+        ]);
+    }
+
+    // Default rendering for the blade view
+    $suppliersByCountry = Supplier::select('supplier_country', \DB::raw('count(*) as count'))
+        ->groupBy('supplier_country')
+        ->get();
+
+    $suppliersData = Supplier::select('supplier_company', \DB::raw('count(*) as count'))
+        ->groupBy('supplier_company')
+        ->get();
+
+    return view('supplier.supplier_dashboard', compact('countries', 'suppliersByCountry', 'suppliersData', 'countryFilter'));
         }elseif($user->user_type == ('data_center')){
                 $country =Country::get();
                    
@@ -689,14 +720,24 @@ class DashboardController extends Controller
 
     public function employeeList(Request $request)
    {
+    // $quesRecords = DB::table('ques')
+    // ->select(
+    //     'link_id as user_id',
+    //     DB::raw("CONCAT(fname, ' ', lname) as name"),
+    //     'email',
+    //     'country'
+    // )
+    // ->get();
     $quesRecords = DB::table('ques')
-    ->select(
-        'link_id as user_id',
-        DB::raw("CONCAT(fname, ' ', lname) as name"),
-        'email',
-        'country'
-    )
-    ->get();
+        ->join('users', 'ques.link_id', '=', 'users.id') // Join with `users` table
+        ->select(
+            'ques.link_id as user_id', // Use `link_id` as `user_id`
+            DB::raw("CONCAT(ques.fname, ' ', ques.lname) as name"), // Concatenate first and last names
+            'ques.email',
+            'ques.country'
+        )
+        ->where('users.user_type', 'global_team') // Filter for `global_team` user type
+        ->get();
 
     $userRecords = DB::table('users')
         ->select(
@@ -711,19 +752,54 @@ class DashboardController extends Controller
     $consumerEmployees = $quesRecords->concat($userRecords);
 
 
-    // $consumerEmployees = DB::table('users')
-    // ->select(
-    //     'id as user_id', // The ID of the user
-    //     'name', // The name of the user
-    //     'email', // The email of the user
-    //     'country' // The country of the user
-    // )
-    // ->where('user_type', 'global_team') // Filter for user_type = 'global_team'
-    // ->get();
-
-    // Pass only the filtered employees to the view
-    // dd($consumerEmployees);
     return view('DataCenter.employeelist', compact('consumerEmployees'));
+
+// if (auth()->user()->user_type === 'global_manager') {
+//     // Fetch the global team IDs assigned to the logged-in global manager
+//     $globalTeamIds = DB::table('global_manager_team')
+//         ->where('global_manager_id', auth()->user()->id)
+//         ->pluck('global_team_id');
+
+//     // Fetch the user records for the global teams assigned to this manager
+//     $consumerEmployees = DB::table('users')
+//         ->select(
+//             'id as user_id',
+//             'name',
+//             'email',
+//             'country'
+//         )
+//         ->where('user_type', 'global_team')
+//         ->whereIn('id', $globalTeamIds) // Filter by global team IDs
+//         ->get();
+
+//     return view('DataCenter.employeelist', compact('consumerEmployees'));
+// }
+
+// // If the logged-in user is an admin, show all employees
+// $quesRecords = DB::table('ques')
+//     ->select(
+//         'link_id as user_id',
+//         DB::raw("CONCAT(fname, ' ', lname) as name"),
+//         'email',
+//         'country'
+//     )
+//     ->get();
+
+// $userRecords = DB::table('users')
+//     ->select(
+//         'id as user_id',
+//         'name',
+//         'email',
+//         'country'
+//     )
+//     ->where('user_type', 'global_team')
+//     ->get();
+
+// // Merge the data
+// $consumerEmployees = $quesRecords->concat($userRecords);
+
+// // Return the view with the data
+// return view('DataCenter.employeelist', compact('consumerEmployees'));
    }
 
    public function consumerCountryfilter(Request $req)

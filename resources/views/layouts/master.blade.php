@@ -696,10 +696,10 @@ table tfoot th {
                   <li class="nav-item {{(Route::is('Supplier.index')) ? 'active' : ''}}"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('Supplier.index')}}">View Supplier </a></li>
                   <li class="nav-item {{(Route::is('SuperLiner.cost')) ? 'active' : ''}}"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('SuperLiner.cost')}}">Cost Request (RFQ) </a></li>
                   <li class="nav-item {{(Route::is('supplier.costRequestView')) ? 'active' : ''}}"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;"  href="{{route('supplier.costRequestView')}}">Total Cost Requests (RFQ) </a></li>
-                   <li class="nav-item {{(Route::is('supplier.performance')) ? 'active' : ''}}"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('supplier.performance')}}">Performance</a></li>
+                   {{-- <li class="nav-item {{(Route::is('supplier.performance')) ? 'active' : ''}}"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('supplier.performance')}}">Performance</a></li>
                   <!--<li class="nav-item"> <a class="nav-link"  href="{{route('supplier.view')}}">View Supplier</a></li>-->
-                  <li class="nav-item {{(Route::is('supplier.overview')) ? 'active' : ''}}"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('supplier.overview')}}">Overview</a></li>  <!--style="font-size: 0.73rem !important;"-->
-                  
+                  <li class="nav-item {{(Route::is('supplier.overview')) ? 'active' : ''}}"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('supplier.overview')}}">Overview</a></li>  <!--style="font-size: 0.73rem !important;"--> --}}
+                  <li class="nav-item {{(Route::is('supplier.dashboard')) ? 'active' : ''}}"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;"  href="{{route('supplier.dashboard')}}">Dashboard </a></li>
                   
                 </ul>
               </div>
@@ -855,8 +855,8 @@ table tfoot th {
                   <li class="nav-item" > <a class="nav-link"   href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
                   <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('invite')}}" >Hcp Bulk Registration Invite</a></li>
                    <li class="nav-item" id="invite"> <a class="nav-link" href="{{route('panelist')}}" >Send Email to Panelist</a></li>
-                  <li class="nav-item {{(Route::is('user.userhcplist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('userHcpList')}}">View Registration</a></li>
-                  </ul>
+                  <li class="nav-item {{(Route::is('user.userhcplist')) ? 'active' : ''}}" ><a class="nav-link" href="{{route('userHcpList')}}">View Registration</a></li>      
+                </ul>
               </div>
             </li>
             <li class="nav-item">
@@ -1070,7 +1070,7 @@ table tfoot th {
               </div>
             </li>
             
-             @elseif((auth()->user()->user_type == 'supplier') || (auth()->user()->user_type == 'admin'))
+             @elseif(auth()->user()->user_type == 'admin')
              <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic4" aria-expanded="false" aria-controls="ui-basic">
                 <span class="menu-title">Supplier Management</span>
@@ -1088,6 +1088,21 @@ table tfoot th {
                   <li class="nav-item d-none"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('supplier.overview')}}">Overview</a></li>  <!--style="font-size: 0.73rem !important;"-->
                   @endif
                   
+                </ul>
+              </div>
+            </li>
+            @elseif(auth()->user()->user_type == 'supplier')
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic4" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Supplier Management</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic4">
+                <ul class="nav flex-column sub-menu1">
+                  <li class="nav-item"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('Supplier.create')}}">Add Supplier</a></li>
+                  <li class="nav-item"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;"  href="{{route('SuperLiner.cost')}}">Cost Request (RFQ) </a></li>
+                  <!--<li class="nav-item"> <a class="nav-link"  href="{{route('supplier.view')}}">View Supplier</a></li>-->
                 </ul>
               </div>
             </li>
