@@ -229,94 +229,85 @@ class SupplierController extends Controller
         return view('supplier.costRequest',compact('suppliercost'));
     }
     public function suppliercountry(Request $req){
-       
-          $supplierManagement = [];
-          $country_name= [];
-       
-        foreach($req->supplierdata as $key => $s)
-        {
-            $supplier =Supplier::select('id','supplier_country','supplier_email','supplier_company')->where('supplier_country',$s)->get()->toArray();
-            $country =Supplier::select('id','supplier_country','supplier_email')->where('supplier_country',$s)->get()->toArray();
-           if(count($supplier) > 0)
-            array_push($supplierManagement,$supplier);
+      
+    if (!isset($req->supplierdata) || !is_array($req->supplierdata)) {
+        return response()->json(['error' => 'Invalid data format.'], 400);
+    }
 
+    $supplierManagement = [];
+    $country_name = [];
 
-            if(count($country) > 0)
-            array_push($country_name,$country);
+    foreach ($req->supplierdata as $s) {
+        $suppliers = Supplier::select('id', 'supplier_country', 'supplier_email', 'supplier_company')
+            ->where('supplier_country', $s)
+            ->get()
+            ->toArray();
+
+        if (count($suppliers) > 0) {
+            $supplierManagement = array_merge($supplierManagement, $suppliers); // Flatten the array
         }
-        
-        return response()->json(['supplierManagement'=>$supplierManagement,'supplier_details'=>$country_name]);
+
+        $countries = Supplier::select('id', 'supplier_country', 'supplier_email')
+            ->where('supplier_country', $s)
+            ->get()
+            ->toArray();
+
+        if (count($countries) > 0) {
+            $country_name = array_merge($country_name, $countries); // Flatten the array
+        }
+    }
+
+    return response()->json([
+        'supplierManagement' => $supplierManagement,
+        'supplier_details' => $country_name,
+    ]);
     }
     
-       public function supplierMail(Request $req){
-        //  dd($req->all());
-        // $supplier_details = $req->supplier_details;
-        // $contents = $req->email_cont;
-        // dd($contents,$supplier_details);
-        
-
-        // foreach($contents as $key => $content)
-        // {
-            // dd($req->data);
-            if($req->data !=""){
-                
-            foreach($req->data as $k=>  $data)
-            {
-                $supplier = Supplier::where('id',$data['id'])->first();
-                $supplieremailcontent = new supplieremailcontent(); 
-                $supplieremailcontent->supplier_id=$data['id'];
-                $supplieremailcontent->user_id=auth()->user()->id;
-                 if($data['content'] !="" && $data['file'] != ""){
-                  $supplier->email_content = $data['content'];
-                
+     public function supplierMail(Request $req)
+{
+    if ($req->has('data')) {
+        foreach ($req->data as $data) {
+            if (isset($data['id']) && !empty($data['id'])) {
+                $supplier = Supplier::find($data['id']);
+                if (!$supplier) {
+                    continue; // Skip if supplier not found
+                }
+    
+                $supplierEmailContent = new SupplierEmailContent();
+                $supplierEmailContent->supplier_id = $data['id'];
+                $supplierEmailContent->user_id = auth()->user()->id;
+                $supplierEmailContent->content = $data['content'] ?? '';
+    
+                $fileContent = '';
+    
+                // Handle file upload
+                if (isset($data['file']) && $data['file'] instanceof \Illuminate\Http\UploadedFile) {
                     $file = $data['file'];
                     $extension = $file->getClientOriginalExtension();
-                    $filename = time() . 'email_document.' .$extension;
-                    $file->move('supplier', $filename);
-                    $supplier->file_content = 'supplier/' . $filename;
-                    $file_content = 'supplier/' . $filename;
-                    
-                    $supplieremailcontent->content=$data['content'];
-                    $supplieremailcontent->file_content = 'supplier/' . $filename;
-                    
-                    
-                    
-                 }else if($data['content'] !=""){
-                      $supplier->email_content = $data['content'];
-                      $supplieremailcontent->content=$data['content'];
-                      $file_content = '';
-                       
-                 }else if($data['file'] !=""){
-                    $file = $data['file'];
-                    
-                    $extension = $file->getClientOriginalExtension();
-                    $filename = time() . 'email_document.' .$extension;
-                    $file->move('supplier', $filename);
-                    $supplier->file_content = 'supplier/' . $filename;
-                    $file_content = 'supplier/' . $filename;
-                    $supplieremailcontent->file_content = 'supplier/' . $filename;
-                 }
-            
-                 if ($supplier->save() && $supplieremailcontent->save()) {
-                     
-                // dd("hi");
-                   event(new SendSupplierMail([$supplier->supplier_email,$data['content'],$file_content]));
-                   $response_data=["success"=>1,"message"=>"register Success"];
-                 }
-                 else{
-                      $response_data=["success"=>0,"message"=>"register fail"];
-                 }
-                
+                    $filename = time() . '_email_document.' . $extension;
+                    $file->move(public_path('supplier'), $filename);
+                    $fileContent = 'supplier/' . $filename;
+                    $supplierEmailContent->file_content = $fileContent;
+                }
+    
+                // Save and trigger email
+                if ($supplierEmailContent->save()) {
+                    event(new SendSupplierMail([$supplier->supplier_email, $data['content'] ?? '', $fileContent]));
+                }
             }
-            
-            }else{
-                 $response_data=["success"=>2,"message"=>"Mail Not Send" ];
-            }
-        
-        return response()->json($response_data);   
-
-        
+        }
+    
+        return response()->json([
+            "success" => 1,
+            "message" => "Emails processed successfully",
+        ]);
     }
+    
+    return response()->json([
+        "success" => 2,
+        "message" => "Invalid or missing data",
+    ], 400);
+}
 
 
 

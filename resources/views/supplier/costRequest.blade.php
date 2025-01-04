@@ -2,268 +2,251 @@
 @section('page_title')
 @section('content')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/js/bootstrap-multiselect.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/js/bootstrap-multiselect.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/css/bootstrap-multiselect.css" />
+
 <style>
- .header{
-     background:linear-gradient(43deg,#0b5dbb,#0b5dbb);
-     
- }
-span div.btn-group{
-    border: 1px solid gray;
-    border-radius: 5px;
- }
- .multiselect.dropdown-toggle {
+.header {
+    background: linear-gradient(43deg, #0b5dbb, #0b5dbb);
+}
+
+.multiselect.dropdown-toggle {
     justify-content: space-between;
     display: flex;
-    width: 390px;
+    width: 100%;
     align-items: center;
- }
- .multiselect-container.dropdown-menu{
-    width: 390px;
-    padding-top: 10px;
+}
+
+.multiselect-container.dropdown-menu {
+    width: 100%;
     height: 300px;
-    overflow: auto;
- }
- div.dataTables_wrapper div.dataTables_length select {
-    width: 58px !important;
-    display: inline-block;
+    overflow-y: auto;
+}
+
+#supplier-table {
+    margin-top: 20px;
+}
+
+#loader {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }
 </style>
-<div class="col-md-12 show_hide">
-    <div class="card " id="header-title"> 
-        <div class="card-header header-elements-inline header">
-            <div class="card-title " style="color:whitesmoke;">Cost Request</div>
-        </div>
-        <div class="card-body"  id="cardbody">
-            <div class="row mb-2 " id="wondiv">
-                <div class="col-lg-6 col-md-12 " >
-                    <div class="form-group row" >
-                        <label class="col-lg-3 col-form-label  mt-1">Country<span class="text-danger">*</span></label>
-                        <div class="col-lg-9 form-group">
-                            <select class="form-control border border-secondary label-gray-3" name="country[]" id="country" multiple="multiple"> 
-                                @if(isset ($country) && count($country) > 0)
-                                @foreach($country as $v)
-                            <option value="{{$v->name}}">{{$v->name}}</option>
-                                @endforeach
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-success float-right" id='Next'>Next</button>
-                </div>
-            </div>
-            <div class="col-lg-12 mb-2" style="overflow-x: auto;">
-              <div class="d-flex  d-none" id="supplier-table">
-                  
-              </div>
-            </div>
-            <div class="col-md-12">
-                    <button class="btn btn-info col-md-12 form-submit d-none"> Send Email</button>
-                </div>
-        </div>
+
+<div id="loader">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
     </div>
 </div>
 
-<div class="loading_gif d-none">
-    <img src="{{ asset('adminapp/public/global_assets/giphy.gif') }}" alt="Gamil load gif" style="width:300px;height:300px; border-radius:50px;  position:fixed;top: 31%;left: 42%;">
-</div>
+<div class="col-md-12 show_hide">
+    <div class="card">
+        <div class="card-header header text-white">
+            <h5>Cost Request</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="country" class="font-weight-bold">Country <span class="text-danger">*</span></label>
+                    <select class="form-control" name="country[]" id="country" multiple="multiple">
+                        @foreach($country as $v)
+                            <option value="{{ $v->name }}">{{ $v->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button class="btn btn-sm btn-success" id="next">Next</button>
+                </div>
+            </div>
 
+            <div class="row d-none" id="supplier-section">
+                <div class="col-md-6">
+                    <table class="table table-bordered" id="supplier-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all">
+                                    Select All
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-3">
+                        <label for="email-content" class="font-weight-bold">Email Content</label>
+                        <textarea id="email-content" class="form-control" rows="5" required></textarea>
+                    </div>
+                    <div class="col-md-12 mt-3">
+                        <label for="upload-file" class="font-weight-bold">Upload File</label>
+                        <input type="file" id="upload-file" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-12 mt-3">
+                    <button class="btn btn-sm btn-info form-submit">Send Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $('#country').multiselect({
         includeSelectAllOption: true,
+        buttonWidth: '100%',
     });
 
-    var supplier_details = [];
-
-    $(document).ready(function () {
-        $("#Next").click(function () {});
-    });
-
-    $("#Next").click(function () {
-
-        var supplierdata = $("#country").val();
-        $.ajax({
-            url: "{{ route('supplierCountry') }}",
-            type: "get",
-            data: {
-                supplierdata: supplierdata,
-            },
-            success: function (data) {
-                supplier_details = data.supplier_details;
-                console.log(data);
-                $("#supplier-table").removeClass('d-none');
-               
-                 if (data.supplierManagement.length ===0){
-                      swal({
-                        title: "This Country Doesn't Have Any Suppliers",
-                        icon: 'success',
-                        buttons: false
-                     })
-                 }
-                 else{
-                      $(".form-submit").removeClass('d-none');
-                 }
-                html = '';
-                html += `<div class="d-flex align-items-center justify-content-between">`;
-                $.each(data.supplierManagement, function (i, v) {
-                    html += `  <table class="table" >
-                      <thead>
-                        <tr><th> <input type="checkbox" name="country_Check" id="country_Check" data-check="${v[0].id}">${v[0].supplier_country}</th>
-                                    `;
-
-                    html += `    </tr></thead><tbody>`
-                    // console.log(html)
-                    // console.log(v);
-                    if (v.length != 0) {
-                        $.each(v, function (i, v1) {
-                            html += `<tr>`;
-
-                            html += `  <td><input type="checkbox" name="check[${v[0].id}]" class="vendor_id selectall_${v[0].id}" value="${v1.id}" data-id='${v[0].id}'>
-                               <lable>${v1.supplier_company}</label></td>
-                                    `;
-
-                            html += `</tr>
-    `;
-                        });
-                    }
-                    html += `<tr><td> 
-     <textarea name="email_content[${v[0].id}]" class="email_content_${v[0].id}" id="email_content" data-id="${v[0].id}" rows="4" cols="50" style="width:100%;height: 200px;"></textarea><br>
-     <label class="mr-3">Upload File </label><input type="file" class="mt-3" name="file" id="file_${v[0].id}" style="border:1px solid black" >
-      </td></tr></tbody></table>`
-
-                });
-                html += ` </div>`
-
-                // console.log(html)
-
-
-                $('#supplier-table').html(html);
-
-            }
-        })
-    });
-
-    // $("#mail_send_key").validate({
-    //             rules:{
-
-
-    //             },
-    //             errorPlacement: function (error, element) {
-    //         if (element.hasClass("select2-hidden-accessible")) {
-    //             error.insertAfter(element.siblings('span.select2'));
-    //         } else if (element.hasClass("floating-input")) {
-    //             element.closest('.form-floating-label').addClass("error-cont").append(error);
-    //         } else {
-    //             error.insertAfter(element);
-    //         }
-    //     },
-
-    //     submitHandler: function (form) {
-
-    $(document).on('click', '.form-submit', function () {
-
-     $(".loading_gif").removeClass('d-none');
-     $('.show_hide,.sidebar-offcanvas').css('opacity','0.1');
-        var e = document.querySelectorAll('.vendor_id:checked')
-
-        let data = [];
-        $.each(e, function (i, v) {
-            console.log($(v).attr('data-id'))
-            let id = $(v).attr('data-id');
-            let value = $(v).val();
-            data.push({
-                'id': value,
-                'content': $('.email_content_' + id).val(),
-                'file':$("#file_"+id)[0].files[0] ? $("#file_"+id)[0].files[0]: '' ,
-            })
-
+    $('#next').click(function () {
+    let selectedCountries = $('#country').val();
+    if (!selectedCountries || selectedCountries.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select at least one country.',
         });
+        return;
+    }
 
-        console.log('data', data);
-        
-        var formData = new FormData;
+    // Fetch companies based on selected countries
+    $.ajax({
+        url: "{{ route('supplierCountry') }}",
+        type: "GET",
+        data: { supplierdata: selectedCountries },
+        beforeSend: function () {
+            $('#loader').show();
+        },
+        success: function (response) {
+            $('#loader').hide();
+            $('#supplier-section').removeClass('d-none');
 
-for (var i = 0; i < data.length; i++) {
-    formData.append(`data[${i}][id]`, data[i]['id']);
-    formData.append(`data[${i}][content]`, data[i]['content']);
-    formData.append(`data[${i}][file]`, data[i]['file']);
-}
- 
-        $.ajax({
-            url: "{{ route('supplierMail') }}",
-            type: "post",
-            data: formData,
-            processData: false,
-            cache: false,
-           contentType: false,
-            success: function (data) {
-                    if(data.success ==1){
-                    $(".loading_gif").addClass('d-none');
-                    $('.show_hide,.sidebar-offcanvas').css('opacity','1');
-                    swal({
-                        title: 'Mail Sent Successfully',
-                        icon: 'success',
-                        buttons: false
-                    })
-                    window.location = "{{ route('supplier.costRequestView') }}";
-                    }
-                
-                    if(data.success == 2){
-                         $(".loading_gif").addClass('d-none');
-                         $('.show_hide,.sidebar-offcanvas').css('opacity','1');
-                         swal({
-                            title: 'Check All The Fields',
-                            icon: 'success',
-                            buttons: false
-                         })
-                    }
-                },
-        
-            error: function (data) {
-                // alert('Mail sent failed');
-                
+            if (response.supplierManagement.length === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Data Found',
+                    text: 'No suppliers found for the selected countries.',
+                });
+                return;
             }
-        })
+
+            let rows = '';
+            response.supplierManagement.forEach((supplier) => {
+                rows += `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="supplier-checkbox" value="${supplier.id}">
+                            ${supplier.supplier_company}
+                        </td>
+                    </tr>
+                `;
+            });
+            $('#supplier-table tbody').html(rows);
+        },
+        error: function () {
+            $('#loader').hide();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to fetch supplier data.',
+            });
+        },
+    });
+});
+
+$('#select-all').change(function () {
+    const isChecked = $(this).is(':checked');
+    $('.supplier-checkbox').prop('checked', isChecked);
+});
+
+$('.form-submit').click(function () {
+    let selectedSuppliers = [];
+    let emailContent = $('#email-content').val().trim(); // Get the email content and trim whitespace
+
+    // Check if email content is empty
+    if (!emailContent) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Email content is required.',
+        });
+        return;
+    }
+
+    // Loop through checked suppliers
+    $('.supplier-checkbox:checked').each(function () {
+        const id = $(this).val();
+        const fileInput = $('#upload-file')[0].files[0]; // Get the file input
+        selectedSuppliers.push({
+            id: id,
+            content: emailContent, // Add the email content for each supplier
+            file: fileInput ? fileInput : null, // Add file or null if not selected
+        });
     });
 
-    //     }
-    // });
+    // Check if at least one supplier is selected
+    if (selectedSuppliers.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select at least one supplier.',
+        });
+        return;
+    }
 
-    // $("#mail_send_key").click(function(){
+    let formData = new FormData();
+    selectedSuppliers.forEach((supplier, index) => {
+        formData.append(`data[${index}][id]`, supplier.id);
+        formData.append(`data[${index}][content]`, supplier.content);
+        if (supplier.file) {
+            formData.append(`data[${index}][file]`, supplier.file);
+        }
+    });
 
+    // Show loader
+    $('#loader').show();
 
-
-
-    // var email = [];
-    // i=0;
-    // $(".email_content").each(function() {
-    //    console.log($(this).data('id')); 
-    //     email[$( this ).data('id')] = $( this ).val();
-    // });
-
-    // var supplier_details =[];
-    // j=0;
-    // $('input[name="check"]:checked').each(function(){
-
-    //       supplier_details[$(this).data('id')] = $( this ).val();
-
-    // });
-
-
-
-
-    // $().css('opacity','0.1')
-    //     // });
-$(document).on('change','#country_Check',function(){
-     var check =$(this).attr('data-check');
-   if (this.checked) {
-    $(".selectall_"+check).prop('checked',true);
-       
-   }
-   else{
-        $(".selectall_"+check).prop('checked',false);
-   }
-})
+    // Send email request
+    $.ajax({
+        url: "{{ route('supplierMail') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            $('#loader').hide();
+            if (response.success === 1) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Email sent successfully!',
+                });
+            } else if (response.success === 2) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to send email.',
+                });
+            }
+        },
+        error: function () {
+            $('#loader').hide();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred.',
+            });
+        },
+    });
+});
 </script>
 @endsection

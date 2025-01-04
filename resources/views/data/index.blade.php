@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Viewer</title>
+    <title>AsiasResearch Partners Data</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Data Viewer</h2>
+    <h4>Asia Research Partners Data</h4>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="dataTabs" role="tablist">
@@ -37,15 +37,15 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Country</th>
-                        <th>City Name</th>
-                        <th>City Code</th>
-                        <th>Ph Number</th>
-                        <th>Whatsapp Number</th>
+                        <th style="min-width: 150px;">City Name</th>
+                        <th style="min-width: 150px;">City Code</th>
+                        <th style="min-width: 150px;">Ph Number</th>
+                        <th style="min-width: 150px;">Whatsapp Number</th>
                         <th>Speciality</th>
-                        <th>Total Experience</th>
+                        <th style="min-width: 150px;">Total Experience</th>
                         <th>Practice</th>
                         <th>License</th>
-                        <th>Patient Month</th>
+                        <th style="min-width: 150px;">Patient Month</th>
                         {{-- <th>Created At</th> --}}
                     </tr>
                 </thead>
@@ -58,13 +58,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th style="min-width: 150px;">First Name</th>
+                        <th style="min-width: 150px;">Last Name</th>
                         <th>Email</th>
-                        <th>Phone Number</th>
+                        <th style="min-width: 150px;">Phone Number</th>
                         <th>Address</th>
                         <th>Country</th>
-                        <th>Zip Code</th>
+                        <th style="min-width: 150px;">Zip Code</th>
                         {{-- <th>Created At</th> --}}
                     </tr>
                 </thead>
