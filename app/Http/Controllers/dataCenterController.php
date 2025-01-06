@@ -1671,9 +1671,13 @@ public function sendEmailToPanelists(Request $request)
 {
     $request->validate([
         'doctors' => 'required|array',
-        'emailAttachment' => 'file|mimes:pdf|max:2048' // Validate file as a PDF with max size of 2MB
+        'emailAttachment' => 'nullable|mimes:pdf,jpg,jpeg,png,doc,docx,xlsx,csv|max:2048',
+    ], [
+        'doctors.required' => 'Please select at least one doctor.',
+        'emailAttachment.mimes' => 'The attachment must be a file of type: pdf, jpg, jpeg, png, doc, docx, xlsx, csv.',
+        'emailAttachment.max' => 'The attachment may not be greater than 2MB.',
     ]);
-
+    
     $doctorIds = $request->input('doctors');
     $emailContent = $request->input('emailContent');
     $emailAttachment = $request->file('emailAttachment');
@@ -1860,6 +1864,11 @@ public function sendEmailToUsers(Request $request)
     $request->validate([
         'users' => 'required|array',
         'emailAttachment' => 'nullable|file|mimes:pdf|max:2048',
+    ],
+    [
+        'users.required' => 'Please select at least one employee.',
+        'emailAttachment.mimes' => 'The attachment must be a file of type: pdf, jpg, jpeg, png, doc, docx, xlsx, csv.',
+        'emailAttachment.max' => 'The attachment may not be greater than 2MB.',
     ]);
 
     $userIds = $request->input('users');

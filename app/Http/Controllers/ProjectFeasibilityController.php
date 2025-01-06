@@ -91,11 +91,11 @@ class ProjectFeasibilityController extends Controller
         }
     
         if ($request->has('country') && !empty($request->country)) {
-            $query->whereJsonContains('target_countries', $request->country);
+            $query->whereRaw('LOWER(JSON_EXTRACT(target_countries, "$")) LIKE ?', [strtolower($request->country)]);
         }
-    
+        
         if ($request->has('responded_titles') && !empty($request->responded_titles)) {
-            $query->where('responded_titles', 'LIKE', '%' . $request->responded_titles . '%');
+            $query->whereRaw('LOWER(responded_titles) LIKE ?', ['%' . strtolower($request->responded_titles) . '%']);
         }
     
         // Fetch data

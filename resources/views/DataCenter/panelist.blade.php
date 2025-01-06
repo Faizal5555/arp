@@ -144,32 +144,49 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: "{{ route('sendEmailToPanelists') }}",
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                $('#sendEmail').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Sending...');
-            },
-            success: function(response) {
-                swal.fire({
-                    title: "Success",
-                    text: response.message,
-                    icon: "success",
-                    button: "OK"
-                });
-                $('#sendEmailForm').hide();
-                $('#doctorList').empty();
-            },
-            error: function() {
-                swal.fire({
-                    title: "Error",
-                    text: "Error sending email.",
-                    icon: "error",
-                    button: "OK"
-                });
-            },
+    url: "{{ route('sendEmailToPanelists') }}",
+    method: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    beforeSend: function() {
+        $('#sendEmail').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+    },
+    success: function(response) {
+        swal.fire({
+            title: "Success",
+            text: response.message,
+            icon: "success",
+            button: "OK"
+        });
+        $('#sendEmailForm').hide();
+        $('#doctorList').empty();
+    },
+    error: function(xhr) {
+        if (xhr.status === 422) {
+            // Extract validation errors
+            let errors = xhr.responseJSON.errors;
+            let errorMessage = "Validation Errors:\n";
+            
+            $.each(errors, function(field, messages) {
+                errorMessage += `${messages.join("\n")}\n`;
+            });
+
+            swal.fire({
+                title: "Validation Error",
+                text: errorMessage,
+                icon: "error",
+                button: "OK"
+            });
+        } else {
+            swal.fire({
+                title: "Error",
+                text: "An unexpected error occurred while sending the email.",
+                icon: "error",
+                button: "OK"
+            });
+        }
+    },
             complete: function() {
                 $('#sendEmail').prop('disabled', false).text('Send Email');
             }
