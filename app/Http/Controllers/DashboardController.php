@@ -737,7 +737,8 @@ class DashboardController extends Controller
         'ques.country',
         DB::raw('(SELECT COUNT(*) FROM ques WHERE ques.user_id = users.id) as referral_consumer') // Count for consumer referrals
     )
-    ->where('users.user_type', 'global_team') // Filter for `global_team` user type
+    ->where('users.user_type', 'global_team') 
+    ->whereNull('users.deleted_at')// Filter for `global_team` user type
     ->get()
     ->transform(function ($record) {
         // Calculate referral_hcp for consumers based on datacenternews table
@@ -756,6 +757,7 @@ $userRecords = DB::table('users')
         DB::raw('(SELECT COUNT(*) FROM ques WHERE ques.user_id = users.id) as referral_consumer') // Count for consumer referrals
     )
     ->where('user_type', 'global_team')
+    ->whereNull('users.deleted_at')
     ->get()
     ->transform(function ($record) {
         // Calculate referral_hcp for HCPs based on datacenternews table
