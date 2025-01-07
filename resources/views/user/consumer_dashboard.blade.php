@@ -99,11 +99,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const hasData = data.length > 0;
     const labels = hasData ? data.map(item => item.label) : ['No Data'];
     const counts = hasData ? data.map(item => item.count) : [0];
+    
+    const totalCount = counts.reduce((total, num) => total + num, 0);
 
     consumerChart.setOption({
         title: { 
-            // text: hasData ? '' : '',
-            left: 'center' 
+            text: `Total: ${totalCount}`,
+                left: 'left',
+                top: '85%',
+                textStyle: {
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                },
         },
         tooltip: { 
             trigger: 'item', 
@@ -142,6 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const hasData = data.length > 0;
         const labels = hasData ? data.map(item => item.label || 'Unknown') : ['No Data'];
         const counts = hasData ? data.map(item => item.count) : [0];
+
+        const totalCount = counts.reduce((total, num) => total + num, 0);
 
         occupationChart.setOption({
             title: { 

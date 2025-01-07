@@ -32,7 +32,7 @@
                             <input type="file" class="form-control" name="emailFile" id="emailFile" accept=".csv, .txt" required>
                             <small class="form-text text-muted">
                                 Accepted formats: CSV or TXT (one email per line).
-                                <a href="{{ asset('assets/sample-email-file.csv') }}" download="sample-email-file.csv">Download sample file</a>
+                                <a href="{{ asset('adminapp/public/assets/sample-email-file.csv') }}" download="sample-email-file.csv">Download sample file</a>
                             </small>
                             <span id="fileError" class="text-danger" style="display: none;">Invalid file format. Only CSV and TXT files are allowed.</span>
                         </div>

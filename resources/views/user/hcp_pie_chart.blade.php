@@ -150,67 +150,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update pie chart for countries
     function updateCountryChart(data) {
-        if (data && data.length > 0) {
-            const labels = data.map(item => item.label);
-            const counts = data.map(item => item.count);
-            const totalCount = counts.reduce((sum, count) => sum + count, 0);
-            // Ensure the chart container is cleared before updating
-            document.getElementById('countryChart').innerHTML = '<div id="countryChartContainer" style="width: 100%; height: 400px;"></div>';
-            const chartDom = document.getElementById('countryChartContainer');
-            const countryChart = echarts.init(chartDom);
-
-            countryChart.setOption({
-                title: {
+        const hasData = data.length > 0;
+        const labels = hasData ? data.map(item => item.label) : ['No Data'];
+        const counts = hasData ? data.map(item => item.count) : [0];
+        const totalCount = counts.reduce((sum, count) => sum + count, 0);
+        countryChart.setOption({
+            title: {
                 text: `Total: ${totalCount}`, // Display total count
-                left: 'right', // Position on the top right
-                top: '10%', // Adjust position as needed
+                left: 'left', // Position on the top right
+                top: '85%', // Adjust position as needed
                 textStyle: {
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: 'bold',
                 },
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: function (params) {
-                        return `${params.name}: ${params.value}`; // Tooltip format
-                    },
-                },
-               legend: {
-                    orient: data.length > 12 ? 'vertical' : 'horizontal', // Switch layout based on legend count
-                    left: data.length > 12 ? 'right' : 'center',
-                    top: data.length > 12 ? 'middle' : 'top',
-                    data: labels,
-                    type: data.length > 12 ? 'scroll' : 'plain', // Enable scroll if items are more than 12
-                },
-                series: [
-                    {
-                        type: 'pie',
-                        radius: '50%',
-                        data: labels.map((label, index) => ({
-                            name: label,
-                            value: counts[index],
-                        })),
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)',
-                            },
-                        },
-                        label: {
-                            show: true,
-                            formatter: '{b}: {c}',
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}', // Tooltip shows country and count
+            },
+            legend: {
+                orient: 'horizontal',
+                left: 'left',
+                data: labels,
+            },
+            series: [
+                {
+                    type: 'pie',
+                    radius: '50%',
+                    data: labels.map((label, index) => ({ name: label, value: counts[index] })),
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)',
                         },
                     },
-                ],
-            });
-        } else {
-            // Clear the chart and display a placeholder message
-            document.getElementById('countryChart').innerHTML = `
-                <div style="text-align: center; color: gray; font-size: 14px;">
-                    No Data Available
-                </div>`;
-        }
+                    label: {
+                        show: true,
+                        formatter: '{b}: {c}', // Pie chart label shows country and count
+                    },
+                },
+            ],
+        });
     }
 
     // Update bar chart for specialties

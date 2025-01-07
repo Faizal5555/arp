@@ -74,11 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const hasData = data.length > 0;
         const labels = hasData ? data.map(item => item.label) : ['No Data'];
         const counts = hasData ? data.map(item => item.count) : [0];
-
+        const totalCount = counts.reduce((sum, count) => sum + count, 0);
         countryChart.setOption({
             title: {
-                // text: hasData ? 'Total HCP Registered by Country' : 'No Data Available',
-                left: 'center',
+                text: `Total: ${totalCount}`, // Display total count
+                left: 'left', // Position on the top right
+                top: '85%', // Adjust position as needed
+                textStyle: {
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                },
             },
             tooltip: {
                 trigger: 'item',

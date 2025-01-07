@@ -23,6 +23,8 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Country</th>
+                    <th>Referral Consumer</th> 
+                    <th>Referral Hcp</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -32,6 +34,8 @@
                         <td>{{ $employee->name }}</td>
                         <td>{{ $employee->email }}</td>
                         <td>{{ $employee->country }}</td>
+                        <td class="text-center">{{ $employee->referral_consumer > 0 ? $employee->referral_consumer : '-' }}</td>
+                        <td class="text-center">{{ $employee->referral_hcp > 0 ? $employee->referral_hcp : '-' }}</td>
                         <td>
                             <a href="{{ route('dashboard.view', ['user_id' => $employee->user_id, 'type' => 'consumer']) }}" class="btn btn-primary">View</a>
                         </td>

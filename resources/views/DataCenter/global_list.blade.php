@@ -19,85 +19,85 @@ $(function () {
 
     // Function to update the table header dynamically
     function updateTableHeader(userType) {
-        const headerRow = $("#tableHeader");
-        headerRow.empty(); // Clear existing header
+    const headerRow = $("#tableHeader");
+    headerRow.empty(); // Clear existing header
 
-        // Common columns
-        headerRow.append("<th>S.No</th>");
-        headerRow.append("<th>First Name</th>");
+    // Common columns
+    headerRow.append("<th>S.No</th>");
+    headerRow.append("<th>First Name</th>");
 
-        // Conditional columns
-        if (userType === 'doctor') {
-            headerRow.append("<th>Speciality</th>"); // Show Speciality for HCP
-        } else {
-            headerRow.append("<th>Last Name</th>"); // Show Last Name for Consumer
-        }
-
-        // Common columns
-        headerRow.append("<th>Country</th>");
-        // headerRow.append("<th>Email</th>");
-        headerRow.append("<th>Action</th>");
+    // Conditional columns
+    if (userType === 'doctor') {
+        headerRow.append("<th>Speciality</th>"); // Show Speciality for HCP
+    } else {
+        headerRow.append("<th>Last Name</th>"); // Show Last Name for Consumer
     }
+
+    // Common columns
+    headerRow.append("<th>Country</th>");
+    headerRow.append("<th>Referral</th>"); // Add Referral column
+    headerRow.append("<th>Action</th>");
+}
 
     // Function to initialize the DataTable with dynamic columns
     function initTable(userType) {
-        // Update table header dynamically
-        updateTableHeader(userType);
+    // Update table header dynamically
+    updateTableHeader(userType);
 
-        // Destroy any existing DataTable instance
-        if (table) {
-            table.destroy();
-        }
-
-        // Initialize DataTable
-        table = $('#globalManagerTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('globalManagerListData') }}",
-                data: function (data) {
-                    data.country = $("#country").val();
-                    data.user_type = userType;
-                },
-            },
-            destroy: true,
-            columns: userType === 'doctor' ? [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'firstname', name: 'firstname' },
-                { data: 'speciality', name: 'speciality' }, // Speciality column for HCP
-                { data: 'country', name: 'country' },
-                // { data: 'email', name: 'email' },
-                {
-                    data: null,
-                    name: 'action',
-                    orderable: false,
-                    searchable: false,
-                    render: function (data, type, row) {
-                        return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
-                                Send Email
-                            </button>`;
-                    }
-                }
-            ] : [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'fname', name: 'fname' },
-                { data: 'lname', name: 'lname' }, // Last Name column for Consumer
-                { data: 'country', name: 'country' },
-                // { data: 'email', name: 'email' },
-                {
-                    data: null,
-                    name: 'action',
-                    orderable: false,
-                    searchable: false,
-                    render: function (data, type, row) {
-                        return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
-                                Send Email
-                            </button>`;
-                    }
-                }
-            ],
-        });
+    // Destroy any existing DataTable instance
+    if (table) {
+        table.destroy();
     }
+
+    // Initialize DataTable
+    table = $('#globalManagerTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('globalManagerListData') }}",
+            data: function (data) {
+                data.country = $("#country").val();
+                data.user_type = userType;
+            },
+        },
+        destroy: true,
+        columns: userType === 'doctor' ? [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'firstname', name: 'firstname' },
+            { data: 'docterSpeciality', name: 'docterSpeciality' }, // Speciality column for HCP
+            { data: 'country', name: 'country' },
+            { data: 'referral', name: 'referral' }, // Referral column
+            {
+                data: null,
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
+                            Send Email
+                        </button>`;
+                }
+            }
+        ] : [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'fname', name: 'fname' },
+            { data: 'lname', name: 'lname' }, // Last Name column for Consumer
+            { data: 'country', name: 'country' },
+            { data: 'referral', name: 'referral' }, // Referral column
+            {
+                data: null,
+                name: 'action',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row) {
+                    return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
+                            Send Email
+                        </button>`;
+                }
+            }
+        ],
+    });
+}
 
     // Initialize the table for HCP by default
     initTable('doctor');

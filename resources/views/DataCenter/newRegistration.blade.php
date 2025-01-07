@@ -274,9 +274,9 @@
               
                 <input type="file" name="file" class="form-control" required>
                 <br>
-                <button class="btn btn-success">Import Client Data</button>
+                <button class="btn btn-success">Import Hcp Data</button>
                 
-                <a href="{{url('global_assets/demoexample/datacenter_example_file.csv')}}">Example clientsheet</a>
+                <a href="{{url('adminapp/public/global_assets/demoexample/datacenter_example_file.csv')}}">Example clientsheet</a>
             
             </form>
         </div>

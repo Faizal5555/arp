@@ -63,7 +63,7 @@
 </style>
 <body>
     <div class="container">
-        <h3>Dear Doctor / Consumer,</h3>
+        <h3>Hi,</h3>
         <p>{!! nl2br(e($emailContent)) !!}</p>
     </div>
   

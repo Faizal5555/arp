@@ -729,27 +729,44 @@ class DashboardController extends Controller
     // )
     // ->get();
     $quesRecords = DB::table('ques')
-        ->join('users', 'ques.link_id', '=', 'users.id') // Join with `users` table
-        ->select(
-            'ques.link_id as user_id', // Use `link_id` as `user_id`
-            DB::raw("CONCAT(ques.fname, ' ', ques.lname) as name"), // Concatenate first and last names
-            'ques.email',
-            'ques.country'
-        )
-        ->where('users.user_type', 'global_team') // Filter for `global_team` user type
-        ->get();
+    ->join('users', 'ques.link_id', '=', 'users.id') // Join with `users` table
+    ->select(
+        'ques.link_id as user_id', // Use `link_id` as `user_id`
+        DB::raw("CONCAT(ques.fname, ' ', ques.lname) as name"), // Concatenate first and last names
+        'ques.email',
+        'ques.country',
+        DB::raw('(SELECT COUNT(*) FROM ques WHERE ques.user_id = users.id) as referral_consumer') // Count for consumer referrals
+    )
+    ->where('users.user_type', 'global_team') // Filter for `global_team` user type
+    ->get()
+    ->transform(function ($record) {
+        // Calculate referral_hcp for consumers based on datacenternews table
+        $record->referral_hcp = DB::table('datacenternews')
+            ->where('datacenter_id', $record->user_id)
+            ->count();
+        return $record;
+    });
 
-    $userRecords = DB::table('users')
-        ->select(
-            'id as user_id',
-            'name',
-            'email',
-            'country'
-        )
-        ->where('user_type', 'global_team')
-        ->get();
-// dd($quesRecords, $userRecords);
-    $consumerEmployees = $quesRecords->concat($userRecords);
+$userRecords = DB::table('users')
+    ->select(
+        'id as user_id',
+        'name',
+        'email',
+        'country',
+        DB::raw('(SELECT COUNT(*) FROM ques WHERE ques.user_id = users.id) as referral_consumer') // Count for consumer referrals
+    )
+    ->where('user_type', 'global_team')
+    ->get()
+    ->transform(function ($record) {
+        // Calculate referral_hcp for HCPs based on datacenternews table
+        $record->referral_hcp = DB::table('datacenternews')
+            ->where('datacenter_id', $record->user_id)
+            ->count();
+        return $record;
+    });
+
+$consumerEmployees = $quesRecords->concat($userRecords);
+
 
 
     return view('DataCenter.employeelist', compact('consumerEmployees'));

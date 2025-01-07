@@ -421,7 +421,7 @@ document.querySelector('form').addEventListener('submit', function (e) {
                 @csrf
                 <input type="file" name="file" class="form-control" required>
                 <button class="btn btn-success mt-2">Import Supplier Data</button>
-                <a href="{{ url('global_assets/demoexample/supplier_example_file.csv') }}">Example Template</a>
+                <a href="{{ url('adminapp/public/global_assets/demoexample/supplier_example_file.csv') }}">Example Template</a>
             </form>
         </div>
         
