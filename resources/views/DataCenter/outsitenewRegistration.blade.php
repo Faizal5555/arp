@@ -296,7 +296,7 @@
                                     <option value="" disabled selected>Select Experience</option>
                             <?php
                             
-                            for($i= 1 ; $i<=55 ; $i ++)
+                            for($i= 1 ; $i<=80 ; $i ++)
                             {
                             ?>        
                                      <option value="{{ $i }}" >{{$i}}</option>
@@ -475,7 +475,8 @@
                     required:true
                 },
                 permonth:{
-                    required:true
+                    required:true,
+                    maxlength:4
                 },
                 file:{
                     required:true
