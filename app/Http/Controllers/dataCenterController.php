@@ -211,7 +211,7 @@ class dataCenterController extends Controller
     
         $data = [
             'emails' => $emails,
-            'link' => url('/adminapp/b2cregisration/' . $userId),
+            'link' => url('/adminapp/b2cregistration/' . $userId),
             'emailContent' => $emailContent,
             'attachment' => $attachment
         ];
