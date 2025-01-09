@@ -40,7 +40,7 @@
                 </div>
                 <!-- Responded Title Filter -->
                 <div class="col-md-3 mt-3">
-                    <label for="responded_titles">Responded Title</label>
+                    <label for="responded_titles">Respondent Title</label>
                     <input type="text" name="responded_titles" id="responded_titles" class="form-control" placeholder="Enter Responded Title">
                 </div>
             </div>
@@ -62,9 +62,9 @@
                     <th>Email Subject</th>
                     <th>Project Launch Date</th>
                     <th>Countries</th>
-                    <th>Responded Title</th>
+                    <th>Respondent Title</th>
                     @if(auth()->user()->user_type === 'admin') <!-- Check if the user type is admin -->
-                    <th>Responded Emails</th>
+                    <th>Respondent Email</th>
                 @endif
                     <th>Samples Required</th>
                     <th>Samples Delivered</th>

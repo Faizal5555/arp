@@ -36,7 +36,7 @@ class question_email
             $mail->from('registration@universalresearchpanels.com');
             $mail->cc('registration@universalresearchpanels.com');
             $mail->to($user[0]);
-            $mail->subject('User Active Status');
+            $mail->subject('Invitation to Join Our Global Healthcare Research Panel');
         });
     }
 }

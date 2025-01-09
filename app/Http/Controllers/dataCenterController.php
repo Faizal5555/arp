@@ -134,7 +134,7 @@ class dataCenterController extends Controller
             Mail::send('mails.invite', ['url' => $link, 'emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
                 $mail->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com');
                 $mail->to($email);
-                $mail->subject('Doctor Notification');
+                $mail->subject('Invitation to Join Our Global Healthcare Research Panel');
                 
                 if ($attachment) {
                     $mail->attach($attachment->getRealPath(), [
@@ -1690,7 +1690,7 @@ public function sendEmailToPanelists(Request $request)
     foreach ($doctors as $doctor) {
         Mail::send('mails.panelist_notification', ['doctor' => $doctor, 'emailContent' => $emailContent], function ($message) use ($doctor, $emailAttachment) {
             $message->to($doctor->email)
-                    ->subject('Doctor Notification')
+                    ->subject('Invitation to Join Our Global Healthcare Research Panel')
                     ->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com'); 
 
             if ($emailAttachment) {

@@ -54,7 +54,7 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group">
-                    <label for="responded_title">Responded Titles</label>
+                    <label for="responded_title">Respondent Title</label>
                     <div id="titles-container">
                         <div class="d-flex">
                             <input type="text" name="responded_titles[]" class="form-control mb-2" required>
@@ -79,7 +79,7 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group">
-                    <label for="responded_email">Responded Email</label>
+                    <label for="responded_email">Respondent Email</label>
                     <div id="emails-container">
                         <div class="d-flex">
                             <input type="email" name="responded_email[]" class="form-control mb-2" required>

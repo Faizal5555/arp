@@ -70,13 +70,9 @@
 <body>
     <div class="email-container">
         <!-- Email Header -->
-        <div class="email-header">
-            Notification from Asia Research Partners
-        </div>
-
         <!-- Email Body Content -->
         <div class="email-body">
-            <p>Hello {{ $doctor->firstname }},</p>
+            <p>Dear {{ $doctor->firstname }},</p>
             <p>{!! $emailContent !!}</p>
         </div>
 
