@@ -31,7 +31,7 @@ class SendInviteMailFired
             $mail->from('registrations@healthcarepanelsindia.com');
             $mail->to( $user[0]);
             $mail->cc('registrations@healthcarepanelsindia.com');
-            $mail->subject('Doctor Notification');
+            $mail->subject('Invitation to Join Our Global Healthcare Research Panel');
         });
 
     }
