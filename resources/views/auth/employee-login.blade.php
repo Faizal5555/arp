@@ -80,7 +80,7 @@
                       Remember me</label>
                 </label>
                     </div>
-                    <a href="{{ route('password.request') }}" class="auth-link text-black">Forgot password?</a>
+                    <a href="{{ route('employee.password.request') }}" class="auth-link text-black">Forgot password?</a>
                   </div>
 
                   <!--<div class="text-center mt-4 font-weight-light"> Don't have an account?-->

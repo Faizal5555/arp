@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::get('/', function () {
       Route::get('/supplier/login', [AuthenticatedSessionController::class, 'createSupplier'])->name('supplier.login');
       Route::post('/supplier/login', [AuthenticatedSessionController::class, 'storeSupplier'])->name('supplier.store');
   
+      Route::get('/employee/forgot-password', [PasswordResetLinkController::class, 'employeeCreate'])->name('employee.password.request');
+   
     });
 
     Route::get('adminapp/data', 'App\Http\Controllers\dataCenterController@index');

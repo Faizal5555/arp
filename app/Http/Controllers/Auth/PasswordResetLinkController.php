@@ -18,6 +18,12 @@ class PasswordResetLinkController extends Controller
         return view('auth.forgot-password');
     }
 
+
+    public function employeeCreate()
+    {
+        return view('auth.employee-forgot-password'); // Employee-specific forgot password view
+    }
+
     /**
      * Handle an incoming password reset link request.
      *
