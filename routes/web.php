@@ -44,7 +44,7 @@ Route::get('/', function () {
 
     Route::get('adminapp/data', 'App\Http\Controllers\dataCenterController@index');
     Route::get('adminapp/data/export', 'App\Http\Controllers\dataCenterController@exportHCPData')->name('adminapp.data.export');
-    Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
+    
 
     Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::get('/dashboard','App\Http\Controllers\DashboardController@index')->name('dashboard');
@@ -61,7 +61,7 @@ Route::get('/', function () {
     Route::get('/project-feasibility-data', 'App\Http\Controllers\ProjectFeasibilityController@ListData')->name('projectFeasibility.Data');
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
-    
+    Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
 
    
     //users
