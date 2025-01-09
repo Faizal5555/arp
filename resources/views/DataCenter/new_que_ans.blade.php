@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Document</title>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
 
@@ -722,11 +723,13 @@ p.lang-p {
                <div class="mt-2">
                   <label class="form-label">Email:</label> 
                   <input class="form-control lang-cal2" id="email" name="email" type="email" required pattern="[^@]+@[^@]+\.[com]{3,6}">
-               </div>
+                  <span class="error-message text-danger" id="email-error"></span>
+                </div>
                <div class="mt-2">
                   <label class="form-label">Phone / Mobile Number:</label> 
                   <input class="form-control lang-cal3" id="phone" name="phone" type="number" name="phone" minlength="9" minlength="10">
-               </div>
+                  <span class="error-message text-danger" id="phone-error"></span>
+                </div>
                <div class="mt-2">
                   <label class="form-label">Address:</label> 
                   <input class="form-control lang-cal4" id="address" name="address" type="text">
@@ -1810,8 +1813,8 @@ p.lang-p {
 
              <div id="success" class="lang-success d-none">
                <div class="mt-5">
-                  <h4>Thank you for registering with us! </h4>
-                  <p>You will receive the activation link on your registered email address.</p>
+                  <h4>Thank you for registering as a panel member! Please check your email to activate your registration and get started.</h4>
+                  <p> We're excited to have you join our global community of healthcare experts. </p>
                   <!--<a class="back-link" href="">Go back from the beginning ➜</a>-->
                </div>
              </div>
@@ -2738,28 +2741,31 @@ p.lang-p {
         });
    
 
-        $('.form_submit').click(function(){
-          if($("input:radio[name='que_37']").is(":checked")) {
+        $('.form_submit').click(function() {
+    if ($("input:radio[name='que_37']").is(":checked")) {
+        console.log($("input:radio[name='que_37']").val());
+        if ($("input:radio[name='que_37']").val() != '') {
             console.log($("input:radio[name='que_37']").val());
-              if($("input:radio[name='que_37']").val()!=''){
-                console.log($("input:radio[name='que_37']").val());
-               toastr.clear();
-                 $('.progress-bar').width(1000);
-                 $('#register').submit();
-               }
-               else{
-                 toastr.warning('Please Choose Option!' ,{
-                               closeButton: true,
-                           });
-               }
-             }
-             else{
-               toastr.warning('Please Choose Option!' ,{
-                               closeButton: true,
-                           });
-             }
+            toastr.clear();
+
+            // Disable the save button and show spinner
+            $('.form_submit')
+                .prop('disabled', true)
+                .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+
+            $('.progress-bar').width(1000);
+            $('#register').submit(); // Submit the form
+        } else {
+            toastr.warning('Please Choose Option!', {
+                closeButton: true,
+            });
+        }
+    } else {
+        toastr.warning('Please Choose Option!', {
+            closeButton: true,
         });
-  
+    }
+});
         $('#full_name').keypress(function (e) {
             var regex = new RegExp("^[a-zA-Z]+$");
              var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -2781,6 +2787,61 @@ p.lang-p {
             e.preventDefault();
             return false;
         });
+
+        $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+  
+        $('#email').on('blur', function () {
+    var email = $(this).val();
+    if (email) {
+        $.ajax({
+          
+            url: "{{route('checkEmail')}}", // Replace with your route
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { email: email },
+            success: function (response) {
+                $('#email-error').text('');
+                $('#email').removeClass('is-invalid');
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#email-error').text(xhr.responseJSON.message);
+                    $('#email').addClass('is-invalid');
+                }
+            }
+        });
+    }
+});
+
+$('#phone').on('blur', function () {
+    var phone = $(this).val();
+    if (phone) {
+        $.ajax({
+            url: "{{route('checkEmail')}}", // Same route as email
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { phone: phone },
+            success: function (response) {
+                $('#phone-error').text('');
+                $('#phone').removeClass('is-invalid');
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#phone-error').text(xhr.responseJSON.message);
+                    $('#phone').addClass('is-invalid');
+                }
+            }
+        });
+    }
+});
   </script>
 </body>
 </html>

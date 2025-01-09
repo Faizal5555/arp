@@ -184,7 +184,7 @@ $(document).ready(function () {
     <div class="col-md-12">
         <div class="card" id="header-title">
             <div class="card-header header">
-                <div class="card-title" style="color:whitesmoke;">Total Registered PaneList</div>
+                <div class="card-title" style="color:whitesmoke;">Total Registered Panelist</div>
             </div>
             <div class="card-body">
                 <div class="mb-4">

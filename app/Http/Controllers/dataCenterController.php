@@ -2214,7 +2214,7 @@ public function userconsumerlistData(Request $request)
                 );
     
             if ($request->filled('country')) {
-                $query->where('country1', 'like', '%' . $request->country . '%');
+                $query->orWhere('country1', 'like', '%' . $request->country . '%');
             }
             if ($request->filled('speciality')) {
                 $query->where('docterSpeciality', 'like', '%' . $request->speciality . '%');
@@ -2260,22 +2260,52 @@ public function userconsumerlistData(Request $request)
         }
     
         return Datatables::of($query)
-            ->addIndexColumn()
-            ->editColumn('name', function ($row) {
-                return $row->name ?? 'N/A';
-            })
-            ->editColumn('email', function ($row) {
-                return $row->email ?? 'N/A';
-            })
-            ->editColumn('country', function ($row) {
-                return $row->country ?? 'N/A';
-            })
-            ->addColumn('speciality', function ($row) use ($userType) {
-                return $userType === 'doctor'
-                    ? ($row->speciality ?? 'N/A')
-                    : 'N/A'; // Consumers don't have a speciality
-            })
-            ->make(true);
+        ->filterColumn('country', function ($query, $keyword) use ($userType) {
+            if ($userType === 'doctor') {
+                // Use 'country1' for HCP
+                $query->whereRaw("LOWER(country1) LIKE ?", ["%{$keyword}%"]);
+            } else {
+                // Use 'country' for consumers
+                $query->whereRaw("LOWER(country) LIKE ?", ["%{$keyword}%"]);
+            }
+        })
+        ->filter(function ($query) use ($request, $userType) {
+            if ($request->search['value']) {
+                $query->where(function ($q) use ($request, $userType) {
+                    $searchValue = strtolower($request->search['value']); // Convert search value to lowercase
+                    if ($userType === 'doctor') {
+                        // Filters for HCP (case-insensitive)
+                        $q->whereRaw('LOWER(firstname) LIKE ?', ['%' . $searchValue . '%'])
+                          ->orWhereRaw('LOWER(country1) LIKE ?', ['%' . $searchValue . '%'])
+                          ->orWhereRaw('LOWER(docterSpeciality) LIKE ?', ['%' . $searchValue . '%']); // Include speciality
+                    } else {
+                        // Filters for consumers (case-insensitive)
+                        $q->whereRaw('LOWER(fname) LIKE ?', ['%' . $searchValue . '%'])
+                          ->orWhereRaw('LOWER(country) LIKE ?', ['%' . $searchValue . '%'])
+                          ->orWhereRaw('LOWER(lname) LIKE ?', ['%' . $searchValue . '%']);
+                    }
+                });
+            }
+        })
+        ->addIndexColumn()
+        ->editColumn('name', function ($row) use ($userType) {
+            return $userType === 'doctor'
+                ? ($row->firstname ?? 'N/A') // Use 'firstname' for doctors
+                : ($row->fname ?? 'N/A'); // Use 'fname' for consumers
+        })
+        ->editColumn('email', function ($row) {
+            return $row->email ?? 'N/A';
+        })
+        ->editColumn('country', function ($row) {
+            return $row->country ?? 'N/A';
+        })
+        ->addColumn('speciality', function ($row) use ($userType) {
+            return $userType === 'doctor'
+                ? ($row->speciality ?? 'N/A') // Use speciality for doctors
+                : 'N/A'; // Consumers don't have a speciality
+        })
+        ->make(true);
+    
     }
     
         
@@ -2595,6 +2625,38 @@ public function exportHCPData(Request $request)
 
     return response()->json(['data' => $data], 200);
 }
+
+
+public function checkEmail(Request $request)
+{
+    $email = $request->email;
+    $phone = $request->phone;
+
+    // Check email in the 'users' table
+    if ($email) {
+        $emailExists = DB::table('users') // Replace 'users' with your table name
+            ->where('email', $email)
+            ->exists();
+
+        if ($emailExists) {
+            return response()->json(['status' => 'error', 'message' => 'Email already exists'], 400);
+        }
+    }
+
+    // Check phone number in the 'ques' table
+    if ($phone) {
+        $phoneExists = DB::table('ques') // Replace 'ques' with your table name
+            ->where('phone', $phone)
+            ->exists();
+
+        if ($phoneExists) {
+            return response()->json(['status' => 'error', 'message' => 'Phone number already exists'], 400);
+        }
+    }
+
+    return response()->json(['status' => 'success', 'message' => 'Validation passed'], 200);
+}
+
 
 
     

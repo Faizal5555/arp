@@ -41,7 +41,7 @@ Route::get('/', function () {
 
     Route::get('adminapp/data', 'App\Http\Controllers\dataCenterController@index');
     Route::get('adminapp/data/export', 'App\Http\Controllers\dataCenterController@exportHCPData')->name('adminapp.data.export');
-
+    Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
 
     Route::group(['middleware'=> 'auth' , 'prefix' => 'adminapp' ],function(){
     Route::get('/dashboard','App\Http\Controllers\DashboardController@index')->name('dashboard');
@@ -59,6 +59,8 @@ Route::get('/', function () {
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
     
+
+   
     //users
     Route::get('/adminapp/usersview', 'App\Http\Controllers\OperationNewController@usersview')->name('usersview');
     Route::get('/user/delete/{id}', 'App\Http\Controllers\OperationNewController@usersdelete')->name('usersdelete');
@@ -363,8 +365,9 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
    Route::post('paid/upsection','App\Http\Controllers\dataCenterController@paid')->name('paid_upsection');
    
    
+  
     //  doctor Export
-    Route::get('doctor/export', 'App\Http\Controllers\dataCenterController@DoctorExport')->name('doctor.export');
+   Route::get('doctor/export', 'App\Http\Controllers\dataCenterController@DoctorExport')->name('doctor.export');
    
     //doctor
    Route::get('documents', 'App\Http\Controllers\docterController@documents_view')->name('doctor.documents');

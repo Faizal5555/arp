@@ -110,7 +110,7 @@
                     
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label font-weight-semibold" style="font-size:16px;">Medical Document Attachment<span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-form-label font-weight-semibold" style="font-size:16px;">Medical Document Attachment<span class="text-danger"></span></label>
                             <div class="col-md-9">
                                 <input type="file" name="file" id="file" class="form-control" placeholder="Document Files" style="width:100%; outline:1px solid #8d7e7e;">
                             </div>
@@ -147,7 +147,7 @@
                         <div class="form-group row">
                             <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">City Code<span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" name="Citycode" id="citycode" class="form-control border border-secondary" placeholder="Citycode" onkeypress="return isNumber1(event)"  style="width:100%;" >
+                                <input type="text" name="Citycode" id="citycode" class="form-control border border-secondary" placeholder="Citycode"   style="width:100%;" >
                             </div>
                         </div>
                     </div>
@@ -410,10 +410,10 @@
                     required:true,
                      number:true,
                      maxlength:4
-                },
-                file:{
-                    required:true
                 }
+                // file:{
+                //     required:true
+                // }
             },
            
             

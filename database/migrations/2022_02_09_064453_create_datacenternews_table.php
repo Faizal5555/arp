@@ -18,7 +18,7 @@ class CreateDatacenternewsTable extends Migration
             $table->string('firstname');
             $table->string('lastname');
             $table->string('cityname');
-            $table->integer('citycode');
+            $table->string('citycode');
             $table->integer('PhNumber');
             $table->string('email');;
             $table->integer('whatdsappNumber');
