@@ -2065,11 +2065,31 @@ public function userconsumerlistData(Request $request)
             }
         
             return Datatables::of($query)
-                ->addIndexColumn()
-                ->editColumn('referral', function ($row) {
-                    return $row->referral ?? '-'; // Show referral name or hyphen if null
-                })
-                ->make(true);
+            ->filter(function ($query) use ($request, $userType) {
+                if ($request->search['value']) {
+                    $searchValue = strtolower($request->search['value']); // Convert search value to lowercase
+                    $query->where(function ($q) use ($searchValue, $userType) {
+                        if ($userType === 'doctor') {
+                            // Filters for doctors
+                            $q->whereRaw('LOWER(datacenternews.firstname) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(datacenternews.country1) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(datacenternews.docterSpeciality) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(referrers.name) LIKE ?', ['%' . $searchValue . '%']); // Referral name
+                        } else {
+                            // Filters for consumers
+                            $q->whereRaw('LOWER(ques.fname) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(ques.lname) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(ques.country) LIKE ?', ['%' . $searchValue . '%'])
+                              ->orWhereRaw('LOWER(referrers.name) LIKE ?', ['%' . $searchValue . '%']); // Referral name
+                        }
+                    });
+                }
+            })
+            ->addIndexColumn()
+            ->editColumn('referral', function ($row) {
+                return $row->referral ?? '-'; // Show referral name or hyphen if null
+            })
+            ->make(true);
         }
         
         
