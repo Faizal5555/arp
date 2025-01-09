@@ -32,7 +32,7 @@ class SendMailFired
             function ($mail) use ($admin_user) {
                 $mail->from('sales@marketingagencymd.com');
                 $mail->to($admin_user[0]);
-                $mail->subject('User Activate Status');
+                $mail->subject('Invitation to Join Our Global Healthcare Research Panel');
             });
     }
 }
