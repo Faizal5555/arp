@@ -1223,8 +1223,15 @@ class dataCenterController extends Controller
             
                     foreach ($failures as $failure) {
                         $row = $failure->row(); // Row number where error occurred
+                        $attribute = $failure->attribute(); // Column/Field name that caused the error
                         $errors = $failure->errors(); // Array of error messages for that row
-                        $validationErrors[$row] = $errors; // Store errors indexed by row number
+                        $values = $failure->values(); // All values for that row
+            
+                        // Append the column name and value to the error message
+                        foreach ($errors as $error) {
+                            $errorValue = isset($values[$attribute]) ? $values[$attribute] : 'N/A';
+                            $validationErrors[$row][] = "Column '{$attribute}' ({$errorValue}): {$error}";
+                        }
                     }
             
                     return back()->with('validationErrors', $validationErrors); // Pass errors to the session

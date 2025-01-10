@@ -29,8 +29,18 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'lastname' => 'required',
             'cityname' => 'required',
             'citycode' => 'required',
-            'phone_number' => 'required|min:10|numeric',
             'email' => 'required|email|unique:users,email',
+            'phone_number' => [
+                'required',
+                'min:10',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    // Check if phone number exists in the datacenternew table
+                    if (datacenternew::where('PhNumber', $value)->exists()) {
+                        $fail("The phone number '{$value}' is already registered.");
+                    }
+                },
+            ],
             'whatsappnumber' => 'required|min:10|numeric',
             'speciality' => 'required',
             'totalexperience' => 'required',
@@ -66,6 +76,8 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
         //  dd($pno_no);
          
         $random_no=uniqid();
+
+        
       $create = new User();
       $create->name = $row['firstname'];
       $create->email = $row['email'];

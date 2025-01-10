@@ -270,15 +270,15 @@
             
 
            
-            <form action="{{ route('datacenter.import') }}" method="POST" enctype="multipart/form-data">
+            <form id="importForm" action="{{ route('datacenter.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
               
                 <input type="file" name="file" class="form-control" required>
                 <br>
-                <button class="btn btn-success">Import Hcp Data</button>
+                <button class="btn btn-success" id="importSubmit">Import Hcp Data</button>
                 
-                <a href="{{url('adminapp/public/global_assets/demoexample/datacenter_example_file.csv')}}">Example clientsheet</a>
+                <a href="{{url('adminapp/public/global_assets/demoexample/datacenter_example_file.xlsx')}}">Example Excel Sheet</a>
             
             </form>
         </div>
@@ -529,6 +529,21 @@ $(document).ready(function () {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('#importForm');
+    const submitButton = document.querySelector('#importSubmit');
+
+    if (form && submitButton) {
+        form.addEventListener('submit', function () {
+            // Disable the button and add spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importing...`;
+        });
+    }
+});
+
 </script>
 @endsection
 
