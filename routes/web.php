@@ -39,7 +39,7 @@ Route::get('/', function () {
       Route::post('/supplier/login', [AuthenticatedSessionController::class, 'storeSupplier'])->name('supplier.store');
   
       Route::get('/employee/forgot-password', [PasswordResetLinkController::class, 'employeeCreate'])->name('employee.password.request');
-   
+      Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
     });
 
     Route::get('adminapp/data', 'App\Http\Controllers\dataCenterController@index');
@@ -61,7 +61,7 @@ Route::get('/', function () {
     Route::get('/project-feasibility-data', 'App\Http\Controllers\ProjectFeasibilityController@ListData')->name('projectFeasibility.Data');
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
-    Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
+    
 
    
     //users

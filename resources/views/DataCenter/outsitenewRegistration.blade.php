@@ -251,6 +251,7 @@
                             <label class=" col-md-3 col-form-label font-weight-semibold "  style="font-size:16px;">Phone Number <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <input type="text" name="PhoneNumber" id="phoneNumber" class="form-control border border-secondary"  placeholder="Phone Number"  onkeypress="return isNumber(event)" style="width:100%;" >
+                                <span id="phone-error" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -259,6 +260,7 @@
                             <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Email Address <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <input type="email" name="email" id="email" class="form-control border border-secondary"  placeholder="Email Address"  style="width:100%;" pattern="[a-z0-9._]+@[a-z]+\.[com]{3,6}">
+                                <span id="email-error" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -544,6 +546,62 @@ $(document).ready(function () {
         }
       });
     });
+
+    $(document).ready(function () {
+    // Email validation on blur
+    $('#email').on('blur', function () {
+        var email = $(this).val();
+        if (email) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}", // Replace with the actual route name
+                type: "POST",
+                data: {
+                    email: email,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    $('#email').removeClass('is-invalid');
+                    $('#email-error').text('');
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#email').addClass('is-invalid');
+                        $('#email-error').text(xhr.responseJSON.message);
+                    }
+                }
+            });
+        }
+    });
+
+    // Phone number validation on blur
+    $('#phoneNumber').on('blur', function () {
+        var phone = $(this).val();
+        if (phone) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}", // Replace with the actual route name
+                type: "POST",
+                data: {
+                    phone: phone,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    $('#phoneNumber').removeClass('is-invalid');
+                    $('#phone-error').text('');
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#phoneNumber').addClass('is-invalid');
+                        $('#phone-error').text(xhr.responseJSON.message);
+                    }
+                }
+            });
+        }
+    });
+});
 
 </script>
 
