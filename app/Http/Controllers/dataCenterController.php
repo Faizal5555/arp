@@ -2652,22 +2652,21 @@ public function checkEmail(Request $request)
     $email = $request->email;
     $phone = $request->phone;
 
-    // Check email in the 'users' table
+    // Check email in 'users', 'ques', and 'datacenternews' tables
     if ($email) {
-        $emailExists = DB::table('users') // Replace 'users' with your table name
-            ->where('email', $email)
-            ->exists();
+        $emailExists = DB::table('users')->where('email', $email)->exists() ||
+                       DB::table('ques')->where('email', $email)->exists() ||
+                       DB::table('datacenternews')->where('email', $email)->exists();
 
         if ($emailExists) {
             return response()->json(['status' => 'error', 'message' => 'Email already exists'], 400);
         }
     }
 
-    // Check phone number in the 'ques' table
+    // Check phone in 'ques' and 'datacenternews' tables
     if ($phone) {
-        $phoneExists = DB::table('ques') // Replace 'ques' with your table name
-            ->where('phone', $phone)
-            ->exists();
+        $phoneExists = DB::table('ques')->where('phone', $phone)->exists() ||
+                       DB::table('datacenternews')->where('PhNumber', $phone)->exists();
 
         if ($phoneExists) {
             return response()->json(['status' => 'error', 'message' => 'Phone number already exists'], 400);
