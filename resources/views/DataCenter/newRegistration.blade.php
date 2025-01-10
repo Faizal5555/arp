@@ -278,7 +278,7 @@
                 <br>
                 <button class="btn btn-success" id="importSubmit">Import Hcp Data</button>
                 
-                <a href="{{url('adminapp/public/global_assets/demoexample/datacenter_example_file.xlsx')}}">Example Excel Sheet</a>
+                <a href="{{url('adminapp/public/global_assets/demoexample/datacenter_example_file.xlsx')}}" download="datacenter_example_file.xlsx">Example Excel Sheet</a>
             
             </form>
         </div>
