@@ -2785,145 +2785,110 @@ public function exportHCPData(Request $request)
     $type = $request->get('type'); // Get type from the request
 
     if ($type === 'hcp') {
-        try {
-            $data = datacenternew::select(
-                'pno', // Use alias 'Reg ID' in the mapping below
-                'firstname',
-                'email',
-                'country1',
-                'cityname',
-                'citycode',
-                'PhNumber',
-                'whatdsappNumber',
-                'docterSpeciality',
-                'totalExperience',
-                'practice',
-                'licence',
-                'PatientsMonth',
-                DB::raw("DATE_FORMAT(created_at, '%d/%m/%Y') as created_date") // Format 'created_at'
-            )->get();
-
-            if ($data->isEmpty()) {
-                return response()->json(['error' => 'No data available for HCP'], 404);
-            }
-
-            $exportData = $data->map(function ($row) {
-                return [
-                    'Reg ID' => $row->pno ?? 'N/A',
-                    'First Name' => $row->firstname ?? 'N/A',
-                    'Email' => $row->email ?? 'N/A',
-                    'Country' => $row->country1 ?? 'N/A',
-                    'City Name' => $row->cityname ?? 'N/A',
-                    'City Code' => $row->citycode ?? 'N/A',
-                    'Phone Number' => $row->PhNumber ?? 'N/A',
-                    'WhatsApp Number' => $row->whatdsappNumber ?? 'N/A',
-                    'Speciality' => $row->docterSpeciality ?? 'N/A',
-                    'Total Experience' => $row->totalExperience ?? 'N/A',
-                    'Practice' => $row->practice ?? 'N/A',
-                    'Licence' => $row->licence ?? 'N/A',
-                    'Patients Per Month' => $row->PatientsMonth ?? 'N/A',
-                    'Created Date' => $row->created_date ?? 'N/A',
-                ];
-            });
-
-            return response()->json(['data' => $exportData], 200);
-
-        } catch (\Exception $e) {
-            \Log::error('HCP Export Failed:', ['message' => $e->getMessage()]);
-            return response()->json(['error' => 'Failed to export HCP data.'], 500);
-        }
-    } elseif ($type === 'consumer') {
-        try {
-            $answers = config('answer_key.answers'); // Load answers from the config
-
-            // Define custom question headings
-            $customHeadings = [
-                1 => 'Place where you live',
-                2 => 'Interested to be invited',
-                3 => 'Research studies have a web camera',
-                4 => 'Would you be willing to participate in a research',
-                5 => 'Do you agree to opt-in and participate in types of research',
-                6 => 'Track your exposure to certain advertising',
-                7 => 'Highest level of education',
-                8 => 'Did you graduate from university/college',
-                9 => 'Television do you watch per week',
-                10 => 'Do you smoke',
-                11 => 'Brand of cigarettes do you smoke',
-                12 => 'How many cigarettes do you smoke in a day',
-                13 => 'Do you have access to a car',
-                14 => 'Automotive-related purchases',
-                15 => 'Cars are there in your household',
-                16 => 'If you own/lease a car(s)',
-                17 => 'The car(s) you own/lease',
-                18 => 'Car (owned or leased) manufactured',
-                19 => 'Do you own a motorcycle',
-                20 => 'If you own a two-wheeled vehicle',
-                21 => 'Two-wheeled vehicle, what engine capacity',
-                22 => 'Own a two-wheeled vehicle',
-                23 => 'Own/lease a car(s), what fuel do they use',
-                24 => 'Buying or leasing a new or used car',
-                25 => 'Your current occupational status',
-                26 => 'What is your occupation',
-                27 => "Organisation's primary industry",
-                28 => 'Employees work at your organisation',
-                29 => 'Department do you primarily work',
-                30 => "Work in your organisation's IT department",
-                31 => 'Primary role in your organisation',
-                32 => 'Professional position in the organisation',
-                33 => 'Illnesses/conditions',
-                34 => 'Type of cancer',
-                35 => 'Diagnosed with diabetes',
-                36 => 'Do you use glasses or contact lenses',
-                37 => 'Do you use a hearing aid',
+        $data = datacenternew::select(
+            'pno',
+            'firstname',
+            'email',
+            'country1',
+            'cityname',
+            'citycode',
+            'PhNumber',
+            'whatdsappNumber',
+            'docterSpeciality',
+            'totalExperience',
+            'practice',
+            'licence',
+            'PatientsMonth',
+            DB::raw("DATE_FORMAT(created_at, '%d/%m/%Y') as created_date") // Use alias 'created_date'
+        )->get();
+    }elseif ($type === 'consumer') {
+        $answers = config('answer_key.answers'); // Load the answers from the config
+    
+        // Define custom question headings
+        $customHeadings = [
+            1 => 'place where you live',
+            2 => 'interested to be invited',
+            3 => 'research studies have a web camera',
+            4 => 'Would you be willing to participate in a research',
+            5 => 'Do you agree to opt-in and participate in types of research',
+            6 => 'track your exposure to certain advertising',
+            7 => 'highest level of education',
+            8 => 'did you graduate from university/college',
+            9 => 'television do you watch per week',
+            10 => 'Do you smoke',
+            11 => 'brand of cigarettes do you smoke',
+            12 => 'how many cigarettes do you smoke in a day',
+            13 => 'Do you have access to a car',
+            14 => 'automotive-related purchases',
+            15 => 'cars are there in your household',
+            16 => 'If you own/lease a car(s)',
+            17 => 'the car(s) you own/lease',
+            18 => 'car (owned or leased) manufactured',
+            19 => 'Do you own a motorcycle',
+            20 => 'If you own a two wheeled vehicle',
+            21 => 'two wheeled vehicle, what engine capacity',
+            22 => 'own a two wheeled vehicle',
+            23 => 'own/lease a car(s), what fuel do they use',
+            24 => 'buying or leasing a new or used car',
+            25 => 'your current occupational status',
+            26 => 'What is your occupation',
+            27 => "organisation's primary industry",
+            28 => 'employees work at your organisation',
+            29 => 'department do you primarily work',
+            30 => "work in your organisation's IT department",
+            31 => 'primary role in your organisation',
+            32 => 'professional position in the organisation',
+            33 => 'illnesses/conditions',
+            34 => 'type of cancer',
+            35 => 'diagnosed with diabetes',
+            36 => 'Do you use glasses or contact lenses',
+            37 => 'Do you use a hearing aid',
+        ];
+    
+        $data = Que::get()->map(function ($row) use ($answers, $customHeadings) {
+            $exportRow = [
+                'Reg ID'=>$row->cno,
+                'First Name' => $row->fname,
+                'Last Name' => $row->lname,
+                'Email' => $row->email,
+                'Phone' => $row->phone,
+                'Country' => $row->country,
+                'Address' => $row->address,
+                'Zipcode' => $row->zipcode,
+                'Created At' => \Carbon\Carbon::parse($row->created_at)->format('d/m/Y'),
             ];
-
-            $data = Que::get()->map(function ($row) use ($answers, $customHeadings) {
-                $exportRow = [
-                    'Reg ID' => $row->cno,
-                    'First Name' => $row->fname,
-                    'Last Name' => $row->lname,
-                    'Email' => $row->email,
-                    'Phone' => $row->phone,
-                    'Country' => $row->country,
-                    'Address' => $row->address,
-                    'Zipcode' => $row->zipcode,
-                    'Created At' => \Carbon\Carbon::parse($row->created_at)->format('d/m/Y'),
-                ];
-
-                // Add mapped answers for que_1 to que_37 with custom headings
-                for ($i = 1; $i <= 37; $i++) {
-                    $questionKey = "que_$i";
-                    $answerKey = $this->getAnswerKey($i);
-
-                    // Use the custom heading if defined, fallback to "Question $i"
-                    $customHeading = $customHeadings[$i] ?? "Question $i";
-
-                    $exportRow[$customHeading] = $this->mapAnswers($row->$questionKey, $answers[$answerKey] ?? []);
-                }
-
-                return $exportRow;
-            });
-
-            return response()->json(['data' => $data], 200);
-
-        } catch (\Exception $e) {
-            \Log::error('Consumer Export Failed:', ['message' => $e->getMessage()]);
-            return response()->json(['error' => 'Failed to export Consumer data.'], 500);
-        }
+    
+            // Add mapped answers for que_1 to que_37 with custom headings
+            for ($i = 1; $i <= 37; $i++) {
+                $questionKey = "que_$i";
+            $answerKey = $this->getAnswerKey($i);
+    
+                // Use the custom heading if defined, fallback to "Question $i"
+                $customHeading = $customHeadings[$i] ?? "Question $i";
+    
+                $exportRow[$customHeading] = $this->mapAnswers($row->$questionKey, $answers[$answerKey] ?? []);
+            }
+    
+            return $exportRow;
+        });
+    
+        return response()->json(['data' => $data], 200);
     }
-
-    return response()->json(['error' => 'Invalid data type'], 400);
 }
-
 
 private function mapAnswers($value, $options)
 {
-   
-    if (!$value) return '';
+    if (!$value) return ''; // Handle null or empty values
+
+    // Split the values by commas (e.g., "3,42,47")
     $selectedOptions = explode(',', $value);
+
+    // Map each numeric option to its corresponding text value
     $mappedOptions = array_map(function ($option) use ($options) {
         return isset($options[$option]) ? $options[$option] : 'N/A';
     }, $selectedOptions);
+
+    // Join the mapped options as a comma-separated string
     return implode(', ', $mappedOptions);
 }
 
