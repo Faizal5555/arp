@@ -189,83 +189,72 @@ $(document).ready(function () {
 
     // Consumer Table
     const consumerTable = $('#consumerTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-        url: "{{ url('adminapp/data') }}",
-        type: "GET", // Use POST
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: "{{ route('adminapp.data') }}", // Use the named route
+        type: "GET", // Use GET method
         data: function (d) {
-            d.type = 'consumer'; // Pass type
-        },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
+            d.type = 'consumer'; // Pass the type parameter
         }
     },
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                text: 'Export All',
-                action: function () {
-                    exportData('consumer', 'consumer_data.xlsx'); // Trigger export for Consumer data
-                },
+    dom: 'Bfrtip',
+    buttons: [
+        {
+            text: 'Export All',
+            action: function () {
+                exportData('consumer', 'consumer_data.xlsx'); // Handle export functionality
             },
-        ],
-        columns: [
-            {
-                data: null,
-                render: function (data, type, row, meta) {
-                    return meta.row + 1 + meta.settings._iDisplayStart; // Serial number
-                },
-                orderable: false,
-                searchable: false,
-            },
-            { data: 'cno', name: 'cno', title: 'Reg ID' },
-            { data: 'fname', name: 'fname', title: 'First Name' },
-            { data: 'lname', name: 'lname', title: 'Last Name' },
-            { data: 'email', name: 'email', title: 'Email' },
-            { data: 'phone', name: 'phone', title: 'Phone' },
-            { data: 'country', name: 'country', title: 'Country' },
-            { data: 'address', name: 'address', title: 'Address' },
-            { data: 'zipcode', name: 'zipcode', title: 'Zip Code' },
-
-            // Dynamically include questions
-            { data: 'que_1', name: 'que_1', title: 'Place where you live' },
-            { data: 'que_2', name: 'que_2', title: 'Interested to be invited' },
-            { data: 'que_3', name: 'que_3', title: 'Research studies with a web camera' },
-            { data: 'que_4', name: 'que_4', title: 'Willingness to participate in research' },
-            { data: 'que_5', name: 'que_5', title: 'Agree to participate in research types' },
-            { data: 'que_6', name: 'que_6', title: 'Exposure tracking for advertising' },
-            { data: 'que_7', name: 'que_7', title: 'Highest level of education' },
-            { data: 'que_8', name: 'que_8', title: 'University/college graduation status' },
-            { data: 'que_9', name: 'que_9', title: 'Hours of TV watched per week' },
-            { data: 'que_10', name: 'que_10', title: 'Smoking habits' },
-            { data: 'que_11', name: 'que_11', title: 'Brand of cigarettes smoked' },
-            { data: 'que_12', name: 'que_12', title: 'Daily cigarette count' },
-            { data: 'que_13', name: 'que_13', title: 'Access to a car' },
-            { data: 'que_14', name: 'que_14', title: 'Automotive-related purchases' },
-            { data: 'que_15', name: 'que_15', title: 'Number of cars in the household' },
-            { data: 'que_16', name: 'que_16', title: 'Car ownership details' },
-            { data: 'que_17', name: 'que_17', title: 'Owned/leased cars details' },
-            { data: 'que_18', name: 'que_18', title: 'Year of car manufacture' },
-            { data: 'que_19', name: 'que_19', title: 'Motorcycle ownership' },
-            { data: 'que_20', name: 'que_20', title: 'Two-wheeled vehicle details' },
-            { data: 'que_21', name: 'que_21', title: 'Engine capacity of two-wheelers' },
-            { data: 'que_22', name: 'que_22', title: 'Two-wheeled vehicle usage' },
-            { data: 'que_23', name: 'que_23', title: 'Car fuel type' },
-            { data: 'que_24', name: 'que_24', title: 'Car buying/leasing preferences' },
-            { data: 'que_25', name: 'que_25', title: 'Current occupational status' },
-            { data: 'que_26', name: 'que_26', title: 'Occupation' },
-            { data: 'que_27', name: 'que_27', title: "Organisation's primary industry" },
-            { data: 'que_28', name: 'que_28', title: 'Number of employees in organisation' },
-            { data: 'que_29', name: 'que_29', title: 'Primary work department' },
-            { data: 'que_30', name: 'que_30', title: 'Work in IT department' },
-            { data: 'que_31', name: 'que_31', title: 'Role in organisation' },
-            { data: 'que_32', name: 'que_32', title: 'Professional position' },
-            { data: 'que_33', name: 'que_33', title: 'Illnesses/conditions' },
-            { data: 'que_34', name: 'que_34', title: 'Type of cancer' },
-            { data: 'que_35', name: 'que_35', title: 'Diabetes diagnosis' },
-            { data: 'que_36', name: 'que_36', title: 'Usage of glasses/contact lenses' },
-            { data: 'que_37', name: 'que_37', title: 'Usage of hearing aid' },
+        },
+    ],
+    columns: [
+        { data: 'cno', name: 'cno', title: 'Reg ID' },
+        { data: 'fname', name: 'fname', title: 'First Name' },
+        { data: 'lname', name: 'lname', title: 'Last Name' },
+        { data: 'email', name: 'email', title: 'Email' },
+        { data: 'phone', name: 'phone', title: 'Phone' },
+        { data: 'country', name: 'country', title: 'Country' },
+        { data: 'address', name: 'address', title: 'Address' },
+        { data: 'zipcode', name: 'zipcode', title: 'Zip Code' },
+        { data: 'created_at', name: 'created_at', title: 'Created Date' },
+        // Add columns for que_1 to que_37
+        { data: 'que_1', name: 'que_1', title: 'Place where you live' },
+        { data: 'que_2', name: 'que_2', title: 'Interested to be invited' },
+        { data: 'que_3', name: 'que_3', title: 'Research studies with a web camera' },
+        { data: 'que_4', name: 'que_4', title: 'Willingness to participate in research' },
+        { data: 'que_5', name: 'que_5', title: 'Agree to participate in research types' },
+        { data: 'que_6', name: 'que_6', title: 'Exposure tracking for advertising' },
+        { data: 'que_7', name: 'que_7', title: 'Highest level of education' },
+        { data: 'que_8', name: 'que_8', title: 'University/college graduation status' },
+        { data: 'que_9', name: 'que_9', title: 'Hours of TV watched per week' },
+        { data: 'que_10', name: 'que_10', title: 'Smoking habits' },
+        { data: 'que_11', name: 'que_11', title: 'Brand of cigarettes smoked' },
+        { data: 'que_12', name: 'que_12', title: 'Daily cigarette count' },
+        { data: 'que_13', name: 'que_13', title: 'Access to a car' },
+        { data: 'que_14', name: 'que_14', title: 'Automotive-related purchases' },
+        { data: 'que_15', name: 'que_15', title: 'Number of cars in the household' },
+        { data: 'que_16', name: 'que_16', title: 'Car ownership details' },
+        { data: 'que_17', name: 'que_17', title: 'Owned/leased cars details' },
+        { data: 'que_18', name: 'que_18', title: 'Year of car manufacture' },
+        { data: 'que_19', name: 'que_19', title: 'Motorcycle ownership' },
+        { data: 'que_20', name: 'que_20', title: 'Two-wheeled vehicle details' },
+        { data: 'que_21', name: 'que_21', title: 'Engine capacity of two-wheelers' },
+        { data: 'que_22', name: 'que_22', title: 'Two-wheeled vehicle usage' },
+        { data: 'que_23', name: 'que_23', title: 'Car fuel type' },
+        { data: 'que_24', name: 'que_24', title: 'Car buying/leasing preferences' },
+        { data: 'que_25', name: 'que_25', title: 'Current occupational status' },
+        { data: 'que_26', name: 'que_26', title: 'Occupation' },
+        { data: 'que_27', name: 'que_27', title: "Organisation's primary industry" },
+        { data: 'que_28', name: 'que_28', title: 'Number of employees in organisation' },
+        { data: 'que_29', name: 'que_29', title: 'Primary work department' },
+        { data: 'que_30', name: 'que_30', title: 'Work in IT department' },
+        { data: 'que_31', name: 'que_31', title: 'Role in organisation' },
+        { data: 'que_32', name: 'que_32', title: 'Professional position' },
+        { data: 'que_33', name: 'que_33', title: 'Illnesses/conditions' },
+        { data: 'que_34', name: 'que_34', title: 'Type of cancer' },
+        { data: 'que_35', name: 'que_35', title: 'Diabetes diagnosis' },
+        { data: 'que_36', name: 'que_36', title: 'Usage of glasses/contact lenses' },
+        { data: 'que_37', name: 'que_37', title: 'Usage of hearing aid' },
 
             // Created Date column
             {
