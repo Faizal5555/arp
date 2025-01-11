@@ -2918,17 +2918,12 @@ public function exportHCPData(Request $request)
 
 private function mapAnswers($value, $options)
 {
-    if (!$value) return ''; // Handle null or empty values
-
-    // Split the values by commas (e.g., "3,42,47")
+   
+    if (!$value) return '';
     $selectedOptions = explode(',', $value);
-
-    // Map each numeric option to its corresponding text value
     $mappedOptions = array_map(function ($option) use ($options) {
         return isset($options[$option]) ? $options[$option] : 'N/A';
     }, $selectedOptions);
-
-    // Join the mapped options as a comma-separated string
     return implode(', ', $mappedOptions);
 }
 

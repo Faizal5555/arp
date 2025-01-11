@@ -188,17 +188,19 @@ $(document).ready(function () {
     });
 
     // Consumer Table
-const consumerTable = $('#consumerTable').DataTable({
+    const consumerTable = $('#consumerTable').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ url('adminapp/data') }}",
-            data: { type: 'consumer' }, 
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Add CSRF token for Laravel
+        url: "{{ url('adminapp/data') }}",
+        type: "GET", // Use POST
+        data: function (d) {
+            d.type = 'consumer'; // Pass type
         },
-    },// Pass type=consumer for Consumer data
-        
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
+        }
+    },
         dom: 'Bfrtip',
         buttons: [
             {
