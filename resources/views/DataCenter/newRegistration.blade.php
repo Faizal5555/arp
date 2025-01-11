@@ -475,84 +475,97 @@
 
 
 $(document).ready(function () {
-    function checkFormValidity() {
-        if ($('.is-invalid').length > 0) {
-            $('#submitInvite').attr('disabled', true);
-        } else {
-            $('#submitInvite').attr('disabled', false);
-        }
-    }
-
-    // Email validation on blur
     $('#email').on('blur', function () {
-        var email = $(this).val();
-        if (email) {
-            $.ajax({
-                url: "{{ route('checkEmail') }}", // Replace with the actual route name
-                type: "POST",
-                data: {
-                    email: email,
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    $('#email').removeClass('is-invalid');
-                    $('#email-error').text('');
+    var email = $(this).val();
+    if (email) {
+        $.ajax({
+            url: "{{ route('checkEmail') }}", // Replace with the actual route name
+            type: "POST",
+            data: {
+                email: email,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#email').removeClass('is-invalid');
+                $('#email-error').text('');
+                checkFormValidity(); // Re-check form validity
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#email').addClass('is-invalid');
+                    $('#email-error').text(xhr.responseJSON.message);
                     checkFormValidity(); // Re-check form validity
-                },
-                error: function (xhr) {
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        $('#email').addClass('is-invalid');
-                        $('#email-error').text(xhr.responseJSON.message);
-                        checkFormValidity(); // Re-check form validity
-                    }
                 }
-            });
-        } else {
-            // Reset error if input is empty
-            $('#email').removeClass('is-invalid');
-            $('#email-error').text('');
-            checkFormValidity(); // Re-check form validity
-        }
-    });
+            }
+        });
+    } else {
+        // Reset error if input is empty
+        $('#email').removeClass('is-invalid');
+        $('#email-error').text('');
+        checkFormValidity(); // Re-check form validity
+    }
+});
 
-    // Phone number validation on blur
-    $('#phoneNumber').on('blur', function () {
-        var phone = $(this).val();
-        if (phone) {
-            $.ajax({
-                url: "{{ route('checkEmail') }}", // Replace with the actual route name
-                type: "POST",
-                data: {
-                    phone: phone,
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (response) {
-                    $('#phoneNumber').removeClass('is-invalid');
-                    $('#phone-error').text('');
+// Phone number validation on blur
+$('#phoneNumber').on('blur', function () {
+    var phone = $(this).val();
+    if (phone) {
+        $.ajax({
+            url: "{{ route('checkEmail') }}", // Replace with the actual route name
+            type: "POST",
+            data: {
+                phone: phone,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#phoneNumber').removeClass('is-invalid');
+                $('#phone-error').text('');
+                checkFormValidity(); // Re-check form validity
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#phoneNumber').addClass('is-invalid');
+                    $('#phone-error').text(xhr.responseJSON.message);
                     checkFormValidity(); // Re-check form validity
-                },
-                error: function (xhr) {
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        $('#phoneNumber').addClass('is-invalid');
-                        $('#phone-error').text(xhr.responseJSON.message);
-                        checkFormValidity(); // Re-check form validity
-                    }
                 }
-            });
-        } else {
-            // Reset error if input is empty
-            $('#phoneNumber').removeClass('is-invalid');
-            $('#phone-error').text('');
-            checkFormValidity(); // Re-check form validity
-        }
-    });
+            }
+        });
+    } else {
+        // Reset error if input is empty
+        $('#phoneNumber').removeClass('is-invalid');
+        $('#phone-error').text('');
+        checkFormValidity(); // Re-check form validity
+    }
+});
 
-    // Initial form validity check
-    checkFormValidity();
+// Real-time error reset on input
+$('#email').on('input', function () {
+    $('#email').removeClass('is-invalid');
+    $('#email-error').text('');
+    checkFormValidity(); // Re-check form validity
+});
+
+$('#phoneNumber').on('input', function () {
+    $('#phoneNumber').removeClass('is-invalid');
+    $('#phone-error').text('');
+    checkFormValidity(); // Re-check form validity
+});
+
+// Form validity checker
+function checkFormValidity() {
+    if ($('.is-invalid').length > 0) {
+        $('#submit-button').prop('disabled', true);
+    } else {
+        $('#submit-button').prop('disabled', false);
+    }
+}
+
+// Initial form validity check
+checkFormValidity();
 });
 
 document.addEventListener('DOMContentLoaded', function () {

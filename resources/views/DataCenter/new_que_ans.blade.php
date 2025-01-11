@@ -2813,74 +2813,97 @@ $(document).ready(function () {
 
     // Function to validate email
     $('#email').on('blur', function () {
-        var email = $(this).val();
-        if (email) {
-            $.ajax({
-                url: "{{route('checkEmail')}}",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                },
-                data: { email: email },
-                success: function (response) {
-                    // Clear error if validation succeeds
-                    $('#email-error').text('');
-                    $('#email').removeClass('is-invalid');
+    var email = $(this).val();
+    if (email) {
+        $.ajax({
+            url: "{{route('checkEmail')}}",
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            data: { email: email },
+            success: function (response) {
+                // Clear error if validation succeeds
+                $('#email-error').text('');
+                $('#email').removeClass('is-invalid');
+                checkFormValidity();
+            },
+            error: function (xhr) {
+                // Show error if validation fails
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#email-error').text(xhr.responseJSON.message);
+                    $('#email').addClass('is-invalid');
                     checkFormValidity();
-                },
-                error: function (xhr) {
-                    // Show error if validation fails
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        $('#email-error').text(xhr.responseJSON.message);
-                        $('#email').addClass('is-invalid');
-                        checkFormValidity();
-                    }
-                },
-            });
-        } else {
-            // Reset error if input is empty
-            $('#email-error').text('');
-            $('#email').removeClass('is-invalid');
-            checkFormValidity();
-        }
-    });
+                }
+            },
+        });
+    } else {
+        // Reset error if input is empty
+        $('#email-error').text('');
+        $('#email').removeClass('is-invalid');
+        checkFormValidity();
+    }
+});
 
-    // Function to validate phone
-    $('#phone').on('blur', function () {
-        var phone = $(this).val();
-        if (phone) {
-            $.ajax({
-                url: "{{route('checkEmail')}}",
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                },
-                data: { phone: phone },
-                success: function (response) {
-                    // Clear error if validation succeeds
-                    $('#phone-error').text('');
-                    $('#phone').removeClass('is-invalid');
-                    checkFormValidity();
-                },
-                error: function (xhr) {
-                    // Show error if validation fails
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        $('#phone-error').text(xhr.responseJSON.message);
-                        $('#phone').addClass('is-invalid');
-                        checkFormValidity();
-                    }
-                },
-            });
-        } else {
-            // Reset error if input is empty
-            $('#phone-error').text('');
-            $('#phone').removeClass('is-invalid');
-            checkFormValidity();
-        }
-    });
-
-    // Initial check to ensure the button is disabled if there are validation errors
+// Real-time email error reset on input
+$('#email').on('input', function () {
+    $('#email-error').text(''); // Clear the error message
+    $('#email').removeClass('is-invalid'); // Remove the invalid class
     checkFormValidity();
+});
+
+// Phone validation on blur
+$('#phone').on('blur', function () {
+    var phone = $(this).val();
+    if (phone) {
+        $.ajax({
+            url: "{{route('checkEmail')}}",
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            data: { phone: phone },
+            success: function (response) {
+                // Clear error if validation succeeds
+                $('#phone-error').text('');
+                $('#phone').removeClass('is-invalid');
+                checkFormValidity();
+            },
+            error: function (xhr) {
+                // Show error if validation fails
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    $('#phone-error').text(xhr.responseJSON.message);
+                    $('#phone').addClass('is-invalid');
+                    checkFormValidity();
+                }
+            },
+        });
+    } else {
+        // Reset error if input is empty
+        $('#phone-error').text('');
+        $('#phone').removeClass('is-invalid');
+        checkFormValidity();
+    }
+});
+
+// Real-time phone error reset on input
+$('#phone').on('input', function () {
+    $('#phone-error').text(''); // Clear the error message
+    $('#phone').removeClass('is-invalid'); // Remove the invalid class
+    checkFormValidity();
+});
+
+// Function to check form validity
+function checkFormValidity() {
+    if ($('.is-invalid').length > 0) {
+        $('#submit-button').prop('disabled', true); // Disable button if there are errors
+    } else {
+        $('#submit-button').prop('disabled', false); // Enable button if no errors
+    }
+}
+
+// Initial check to ensure the button is disabled if there are validation errors
+checkFormValidity();
 });
 
   </script>
