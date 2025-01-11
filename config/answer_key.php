@@ -1,7 +1,59 @@
 <?php
 return[
     "answers"=>[
-        "nine"=>[
+        "one"=>[
+              "1" => "URBAN",
+              "2" => "SUB URBAN",
+              "3" => "RURAL",
+            ], 
+        "two"=>[
+            "1" => "Focus group studies",
+            "2" => "Inhome testing of new products",
+            "3" => "Webcamera studies",
+            "4" => "Online bulletin boards/diaries",
+            "5" => "Phone surveys",
+            "6" => "SMS / WhatsApp surveys",
+            "7" => "Mobile usage studies / Mobile phone surveys",
+            "8" => "Food/wine tasting",
+            "9" => "None of the above",
+           "10" => "Prefer not to say",
+
+        ], 
+        "three"=>[
+              "1" => "Yes",
+              "2" => "No",
+            ], 
+
+        "four"=>[
+                "1" => "Yes",
+                "2" => "No",
+            ], 
+        "five"=>[
+                "1" => "Yes",
+                "2" => "No",
+            ], 
+        "six"=>[
+                "1" => "Yes",
+                "2" => "No",
+        ], 
+        "seven"=>[
+            "1" => "Illiterate",
+            "2" => "Literate but no formal schooling",
+            "3" => "School - up to 4 years",
+            "4" => "School - 5 to 9 years",
+            "5" => "SSC / HSC",
+            "6" => "Some College but not graduate",
+            "7" => "Graduate / Post Graduate - General",
+            "8" => "Graduate / Post Graduate - Professional",
+            "9" => "PhD",
+           "10" => "Masters/Post-Graduate",
+           "11" => "MBA",
+
+
+        ], 
+         
+
+        "eight"=>[
                 "1" => "1990 or earlier",
                 "2" => "1991",
                 "3" => "1992",
@@ -45,6 +97,32 @@ return[
                 "40" => "I'm not studying/haven't studied at university/college",
                 "41" => "Prefer not to say"
         ],
+
+        "nine"=>[
+            "1" => "I don t watch TV",
+            "2" => "5 hours or less",
+            "3" => "6 to 10 hours",
+            "4" => "11 to 20 hours",
+            "5" => "More than 20 hours",
+            "6" => "Prefer not to say",
+
+        ], 
+
+        "ten"=>[
+            "1" => "Yes, I smoke",
+            "2" => "Yes, I smoke now and then",
+            "3" => "Yes, I smoke but I m planning to quit",
+            "4" => "No, I have quit",
+            "5" => "No, I don’t smoke",
+            "6" => "No, I don’t smoke, but use other tobacco products",
+            "7" => "Prefer not to say",
+
+
+        ], 
+
+        
+
+        
         "eleven"=>[
             "1" => "I don't smoke cigarettes",
                 "2" => "10/20's",
@@ -100,6 +178,47 @@ return[
                 "52" => "Other",
                 "53" => "Prefer not to say"
              ],
+
+
+
+             "twelve"=>[
+                "1" => "I dont smoke cigarette",
+                "2" => "1 to 3 cigarettes",
+                "3" => "4 to 6 cigarettes",
+                "4" => "7 to 10 cigarettes",
+                "5" => "More than 10 cigarettes",
+                "6" => "Prefer not to say",
+    
+    
+            ], 
+    
+            "thirteen"=>[
+                "1" => "I own a car/cars",
+                "2" => "I lease/have a company car",
+                "3" => "I have access to a car/cars",
+                "4" => "No, I dont have access to a car",
+                "5" => "Prefer not to say",
+    
+    
+            ], 
+
+            "fourteen"=>[
+                "1" => "Yes",
+                "2" => "No",
+                "3" => "I contribute equally in automotive decision",
+                "4" => "Prefer not to say",
+    
+            ], 
+            "fifteen"=>[
+                "1" => "1",
+                "2" => "2",
+                "3" => "3",
+                "4" => "4",
+                "5" => "OR MORE",
+    
+    
+            ], 
+             
         "sixteen"=>[
             "1" => "Audi",
                 "2" => "Alfa Romeo",
@@ -222,6 +341,11 @@ return[
                 "35" => "2022",
                 "36" => "I don't own/lease a car",                
             ],
+
+        "nineteen"=>[
+            "1" => "Yes",
+            "2" => "No",
+        ], 
         "twenty"=>[
             "1" => "I don’t own a two wheeled vehicle",
             "2" => "Aprilia",
@@ -246,21 +370,95 @@ return[
             "21" => "Other",
             "22" => "Prefer not to say",
         ],
-        "twentysix"=>[
-            "1" => "Unskilled Worker",
-                "2" => "Skilled Worked",
-                "3" => "Petty Trader",
-                "4" => "Shop Owner",
-                "5" => "Businessman / Industrialist - No employees",
-                "6" => "Businessman / Industrialist - 1-9 employees",
-                "7" => "Businessman / Industrialist - 10+ employees",
-                "8" => "Self Employed Professional",
-                "9" => "Clerical / Salesman",
-                "10" => "Supervisory Level",
-                "11" => "Officers / Executives - Junior",
-                "12" => "Officers / Executives - Middle / Senior",
+
+        "twentyone"=>[
+            "1" => "Less than 100 CC",
+            "2" => "100-149 CC",
+            "3" => "150-199 CC",
+            "4" => "200 CC+",
+            "5" => "I don’t own a two wheeled vehicle",
+            "6" => "Prefer not to say",
+
+
+        ], 
+
+
+        "twentytwo"=>[
+            "1" => "I don’t own a two wheeled vehicle",
+                "2" => "Standard",
+                "3" => "Cruiser",
+                "4" => "Sports bike",
+                "5" => "Touring",
+                "6" => "Sports touring",
+                "7" => "Dual-sport",
+                "8" => "Scooter, underbone or moped",
+                "9" => "Other",
+                "10" => "Prefer not to say",
               
         ],
+
+        "twentythree"=>[
+            "1" => "Bio-diesel / Bio-gas",
+                "2" => "Diesel",
+                "3" => "Electric (EV)",
+                "4" => "Ethanol / Flexible Fuel (FFV)",
+                "5" => "Hybrid (HEV/PHEV)",
+                "6" => "Hydrogen / Fuel Cell (FCEV)",
+                "7" => "Natural Gas (NGV)",
+                "8" => "Propane / Liquefied Petroleum Gas (LPG)",
+                "9" => "Propane / Liquefied Petroleum Gas (LPG)",
+                "10" => "Other",
+                "11" => "None of the above",
+                "12" => "I dont own/lease a car",
+              
+        ],
+
+        "twentyfour"=>[
+            "1" => "No, I m not considering it",
+            "2" => "Yes, I m considering buying or leasing a used car",
+            "3" => "Yes, Im considering buying or leasing a new car",
+            "4" => "Yes, but unsure if the car will be used or new",
+            "5" => "I do not know",
+           
+
+
+        ], 
+
+        "twentyfive"=>[
+            "1" => "Studies",
+                "2" => "Full-time work",
+                "3" => "Part-time work",
+                "4" => "Own business / Self-employed / Freelance",
+                "5" => "Active military service",
+                "6" => "Parental leave",
+                "7" => "Retired",
+                "8" => "Unemployed",
+                "9" => "Homemaker",
+                "10" => "Leave of absence",
+                "11" => "Unable to work",
+                "12" => "Other type of paid work",
+                "14" => "Prefer not to say",
+              
+        ],
+     
+        "twentysix"=>[
+            "1" => "Bio-diesel / Bio-gas",
+                "2" => "Diesel",
+                "3" => "Electric (EV)",
+                "4" => "Ethanol / Flexible Fuel (FFV)",
+                "5" => "Hybrid (HEV/PHEV)",
+                "6" => "Hydrogen / Fuel Cell (FCEV)",
+                "7" => "Natural Gas (NGV)",
+                "8" => "Propane / Liquefied Petroleum Gas (LPG)",
+                "9" => "Propane / Liquefied Petroleum Gas (LPG)",
+                "10" => "Other",
+                "11" => "None of the above",
+                "12" => "I dont own/lease a car",
+              
+        ],
+
+
+
         "twentyseven"=>[
             "1" => "Agriculture/Fishing",
                 "2" => "Military",
@@ -317,6 +515,54 @@ return[
                 "53" => "I don't work",
                 "54" => "Prefer not to say",
         ],
+
+        "twentyeight"=>[
+            "1" => "1-10",
+                "2" => "10-25",
+                "3" => "26-50",
+                "4" => "51-100",
+                "5" => "101-250",
+                "6" => "251-500",
+                "7" => "501-1000",
+                "8" => "1001-5000",
+                "9" => "Greater than 5000",
+                "10" => "I don't work/I don't know",
+                "11" => "Prefer not to say",
+              
+        ],
+         
+        "twentynine"=>[
+            "1" => "Administration/General Staff",
+                "2" => "Human Resources",
+                "3" => "Finance/Accounting",
+                "4" => "Marketing/Advertising",
+                "5" => "Technology Implementation",
+                "6" => "Production",
+                "7" => "Management",
+                "8" => "Medical",
+                "9" => "Legal/Law/Compliance",
+                "10" => "Engineering",
+                "11" => "Creative/Design",
+                "12" => "Entertainment",
+                "13" => "Customer Service/Client Service",
+                "14" => "Sales/Business Development",
+                "15" => "IT/IS/MIS",
+                "16" => "App/Software Development",
+                "17" => "Operations",
+                "18" => "Procurement",
+                "19" => "Executive Leadership",
+                "20" => "Product Management/Product Development",
+                "21" => "Market Research",
+                "22" => "Research/Development",
+                "23" => "Logistics/Shipping",
+                "24" => "Other",
+                "25" => "I don't work",
+                "26" => "Prefer not to say",
+
+        ],
+
+
+        
         "thirty"=>[
             "1" => "Network Engineer",
                 "2" => "Technical Specialist",
@@ -412,6 +658,17 @@ return[
                 "64" => "I don't work",
                 "65" => "Prefer not to say",
              ],
+
+             "thirtytwo"=>[
+                "1" => "Director/Manager",
+                "2" => "Not a managing position",
+                "3" => "Other decision maker",
+                "4" => "I don't work",
+                "5" => "Prefer not to say",
+               
+    
+    
+            ], 
         "thirtythree"=>[
             "1" => "Hay Fever",
             "2" => "Overactive Bladder",
@@ -533,6 +790,46 @@ return[
             "117" => "I don't have any illnesses/conditions",
             "118" => "Prefer not to say"
         ],
+
+        "thirtyfour"=>[
+            "1" => "Bowel cancer",
+                "2" => "Breast cancer",
+                "3" => "Kidney cancer",
+                "4" => "Leukaemia<",
+                "5" => "Liver cancer",
+                "6" => "Ovarian cancer",
+                "7" => "Prostate cancer",
+                "8" => "Melanoma/Skin cancer",
+                "9" => "Bladder cancer",
+                "10" => "Lung cancer",
+                "11" => "Non-Hodgkin's Lymphoma",
+                "12" => "Pancreatic cancer",
+                "13" => "Thyroid cancer",
+                "14" => "Other cancer type",
+                "15" => "I don't have cancer",
+                "16" => "Prefer not to say",
+        ],
+
+        "thirtyfive"=>[
+            "1" => "Diabetes Type 1",
+                "2" => "Diabetes Type 2",
+                "3" => "Diabetes Type 3",
+                "4" => "I don't have diabetes",
+                "5" => "Prefer not to say",
+        ],
+        "thirtysix"=>[
+            "1" => "Glasses",
+                "2" => "Contact lenses",
+                "3" => "Diabetes Type 3	",
+                "4" => "Both Glasses and Contact lenses",
+                "5" => "I don't use Glasses/Contact lenses",
+                "6" => "Prefer not to say",
+        ],
+
+        "thirtyseven"=>[
+            "1" => "Yes",
+            "2" => "No",
+          ], 
 
 
     ],

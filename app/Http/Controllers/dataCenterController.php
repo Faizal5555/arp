@@ -1376,8 +1376,20 @@ class dataCenterController extends Controller
     {
         $user_id=$id;
         $country=Country::get();
+        $unique_no = User::orderBy('id', 'DESC')->pluck('id')->first(); // Fetch the last user ID
+        if ($unique_no === null || $unique_no === "") {
+            // If the table is empty
+            $unique_no = 1;
+            $dt = Carbon::now();
+        } else {
+            // If the table already has data
+            $unique_no = $unique_no + 1;
+            $dt = Carbon::now();
+        }
+
+        $cno_no = 'CCOD' . $unique_no . '-' . $dt->year; 
         $questions = config(('site_questions.questions'));
-        $answers_9 = config(('answer_key.answers.nine'));
+        $answers_8 = config(('answer_key.answers.eight'));
         $answers_11 = config(('answer_key.answers.eleven'));
         $answers_16 = config(('answer_key.answers.sixteen'));
         $answers_17 = config(('answer_key.answers.seventeen'));
@@ -1388,7 +1400,7 @@ class dataCenterController extends Controller
         $answers_31 = config(('answer_key.answers.thirtyone'));
         $answers_33 = config(('answer_key.answers.thirtythree'));
 
-        return view('DataCenter.new_que_ans' ,compact('country','questions','answers_9','answers_11','answers_16','answers_17','answers_18','answers_20','answers_27','answers_30','answers_31','answers_33','user_id'));
+        return view('DataCenter.new_que_ans' ,compact('country','questions','answers_8','answers_11','answers_16','answers_17','answers_18','answers_20','answers_27','answers_30','answers_31','answers_33','user_id','cno_no'));
     }
 
     // public function languages()
@@ -1422,20 +1434,19 @@ class dataCenterController extends Controller
     public function new_register(Request $req)
     {    
 
-       $unique_no = datacenternew::orderBy('id', 'DESC')->with('pno_no','pno_no')->pluck('id')->first();
-         if($unique_no == null or $unique_no == ""){
-            #If Table is Empty
+        $unique_no = User::orderBy('id', 'DESC')->pluck('id')->first(); // Fetch the last user ID
+
+        if ($unique_no === null || $unique_no === "") {
+            // If the table is empty
             $unique_no = 1;
             $dt = Carbon::now();
-            // var_dump($dt->year);
-        }
-        else{
-            #If Table has Already some Data
+        } else {
+            // If the table already has data
             $unique_no = $unique_no + 1;
             $dt = Carbon::now();
-            // var_dump($dt->year);
         }
-         $pno_no = 'RNOD'.$unique_no. '-' .$dt->year;
+        
+        $cno_no = 'CCOD' . $unique_no . '-' . $dt->year; 
         
         try{
         // dd($req->all());
@@ -1447,6 +1458,7 @@ class dataCenterController extends Controller
                 
                 $random_no=uniqid();
                 $questions = new Que();
+                $questions->cno = $req->cno;
                 $questions->country = $req->country;
                 $questions->agree_all = $req->agree_all == "on" ? 1 : 0;
                 $questions->privacy_policy_condition = $req->agree_all == "on" ? 1 : 0;
@@ -2599,59 +2611,373 @@ public function userconsumerlistData(Request $request)
 public function index(Request $request)
 {
     if ($request->ajax()) {
-        // Check which tab is being requested (hcp or consumer)
         if ($request->get('type') === 'hcp') {
-            $hcpData = datacenternew::select('*'); // Fetch all columns
-            return DataTables::of($hcpData)->make(true);
+            $hcpData = datacenternew::query();
+            return DataTables::of($hcpData)
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && $request->search['value']) {
+                        $searchTerm = $request->search['value'];
+                        $query->where(function ($q) use ($searchTerm) {
+                            $q->where('pno', 'like', "%{$searchTerm}%")
+                              ->orWhere('firstname', 'like', "%{$searchTerm}%")
+                              ->orWhere('email', 'like', "%{$searchTerm}%")
+                              ->orWhere('country1', 'like', "%{$searchTerm}%")
+                              ->orWhere('cityname', 'like', "%{$searchTerm}%")
+                              ->orWhere('citycode', 'like', "%{$searchTerm}%")
+                              ->orWhere('PhNumber', 'like', "%{$searchTerm}%")
+                              ->orWhere('whatdsappNumber', 'like', "%{$searchTerm}%")
+                              ->orWhere('docterSpeciality', 'like', "%{$searchTerm}%")
+                              ->orWhere('totalExperience', 'like', "%{$searchTerm}%")
+                              ->orWhere('practice', 'like', "%{$searchTerm}%")
+                              ->orWhere('licence', 'like', "%{$searchTerm}%")
+                              ->orWhere('PatientsMonth', 'like', "%{$searchTerm}%")
+                              ->orWhereRaw("DATE_FORMAT(created_at, '%d/%m/%Y') LIKE ?", ["%{$searchTerm}%"]);
+                        });
+                    }
+                })
+                ->make(true);
         }
 
         if ($request->get('type') === 'consumer') {
-            $consumerData = Que::select('*'); // Fetch all columns
-            return DataTables::of($consumerData)->make(true);
+            $answers = config('answer_key.answers'); // Load the answers from the config
+            $consumerData = Que::query();
+
+            return DataTables::of($consumerData)
+                ->addColumn('que_1', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_1, $answers['one']);
+                })
+                ->addColumn('que_2', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_2, $answers['two']);
+                })
+                ->addColumn('que_3', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_3, $answers['three']);
+                })
+                ->addColumn('que_4', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_4, $answers['four']);
+                })
+                ->addColumn('que_5', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_5, $answers['five']);
+                })
+                ->addColumn('que_6', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_6, $answers['six']);
+                })
+                ->addColumn('que_7', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_7, $answers['seven']);
+                })
+                ->addColumn('que_8', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_8, $answers['eight']);
+                })
+                ->addColumn('que_9', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_9, $answers['nine']);
+                })
+                ->addColumn('que_10', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_10, $answers['ten']);
+                })
+                ->addColumn('que_11', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_11, $answers['eleven']);
+                })
+                ->addColumn('que_12', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_12, $answers['twelve']);
+                })
+                ->addColumn('que_13', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_13, $answers['thirteen']);
+                })
+                ->addColumn('que_14', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_14, $answers['fourteen']);
+                })
+                ->addColumn('que_15', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_15, $answers['fifteen']);
+                })
+                ->addColumn('que_16', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_16, $answers['sixteen']);
+                })
+                ->addColumn('que_17', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_17, $answers['seventeen']);
+                })
+                ->addColumn('que_18', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_18, $answers['eighteen']);
+                })
+                ->addColumn('que_19', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_19, $answers['nineteen']);
+                })
+                ->addColumn('que_20', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_20, $answers['twenty']);
+                })
+                ->addColumn('que_21', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_21, $answers['twentyone']);
+                })
+                ->addColumn('que_22', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_22, $answers['twentytwo']);
+                })
+                ->addColumn('que_23', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_23, $answers['twentythree']);
+                })
+                ->addColumn('que_24', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_24, $answers['twentyfour']);
+                })
+                ->addColumn('que_25', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_25, $answers['twentyfive']);
+                })
+                ->addColumn('que_26', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_26, $answers['twentysix']);
+                })
+                ->addColumn('que_27', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_27, $answers['twentyseven']);
+                })
+                ->addColumn('que_28', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_28, $answers['twentyeight']);
+                })
+                ->addColumn('que_29', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_29, $answers['twentynine']);
+                })
+                ->addColumn('que_30', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_30, $answers['thirty']);
+                })
+                ->addColumn('que_31', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_31, $answers['thirtyone']);
+                })
+                ->addColumn('que_32', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_32, $answers['thirtytwo']);
+                })
+                ->addColumn('que_33', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_33, $answers['thirtythree']);
+                })
+                ->addColumn('que_34', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_33, $answers['thirtyfour']);
+                })
+                ->addColumn('que_35', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_35, $answers['thirtyfive']);
+                })
+                ->addColumn('que_36', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_36, $answers['thirtysix']);
+                })
+                // Add similar columns for all questions up to que_37
+                ->addColumn('que_37', function ($row) use ($answers) {
+                    return $this->mapAnswers($row->que_37, $answers['thirtyseven']);
+                })
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && $request->search['value']) {
+                        $searchTerm = $request->search['value'];
+                        $query->where(function ($q) use ($searchTerm) {
+                                $q->where('cno', 'like', "%{$searchTerm}%")
+                                ->orwhere('fname', 'like', "%{$searchTerm}%")
+                                ->orWhere('lname', 'like', "%{$searchTerm}%")
+                                ->orWhere('email', 'like', "%{$searchTerm}%")
+                                ->orWhere('phone', 'like', "%{$searchTerm}%")
+                                ->orWhere('country', 'like', "%{$searchTerm}%")
+                                ->orWhere('address', 'like', "%{$searchTerm}%")
+                                ->orWhere('zipcode', 'like', "%{$searchTerm}%")
+                                ->orWhereRaw("DATE_FORMAT(created_at, '%d/%m/%Y') LIKE ?", ["%{$searchTerm}%"]);
+                        });
+                    }
+                })
+                ->make(true);
         }
+
     }
 
-    // Return view with no authentication
     return view('data.index');
 }
+
 
 public function exportHCPData(Request $request)
 {
     $type = $request->get('type'); // Get type from the request
 
     if ($type === 'hcp') {
-        $data = datacenternew::select(
-            'firstname',
-            'email',
-            'country1',
-            'cityname',
-            'citycode',
-            'PhNumber',
-            'whatdsappNumber',
-            'docterSpeciality',
-            'totalExperience',
-            'practice',
-            'licence',
-            'PatientsMonth'
-            // 'created_at'
-        )->get();
+        try {
+            $data = datacenternew::select(
+                'pno', // Use alias 'Reg ID' in the mapping below
+                'firstname',
+                'email',
+                'country1',
+                'cityname',
+                'citycode',
+                'PhNumber',
+                'whatdsappNumber',
+                'docterSpeciality',
+                'totalExperience',
+                'practice',
+                'licence',
+                'PatientsMonth',
+                DB::raw("DATE_FORMAT(created_at, '%d/%m/%Y') as created_date") // Format 'created_at'
+            )->get();
+
+            if ($data->isEmpty()) {
+                return response()->json(['error' => 'No data available for HCP'], 404);
+            }
+
+            $exportData = $data->map(function ($row) {
+                return [
+                    'Reg ID' => $row->pno ?? 'N/A',
+                    'First Name' => $row->firstname ?? 'N/A',
+                    'Email' => $row->email ?? 'N/A',
+                    'Country' => $row->country1 ?? 'N/A',
+                    'City Name' => $row->cityname ?? 'N/A',
+                    'City Code' => $row->citycode ?? 'N/A',
+                    'Phone Number' => $row->PhNumber ?? 'N/A',
+                    'WhatsApp Number' => $row->whatdsappNumber ?? 'N/A',
+                    'Speciality' => $row->docterSpeciality ?? 'N/A',
+                    'Total Experience' => $row->totalExperience ?? 'N/A',
+                    'Practice' => $row->practice ?? 'N/A',
+                    'Licence' => $row->licence ?? 'N/A',
+                    'Patients Per Month' => $row->PatientsMonth ?? 'N/A',
+                    'Created Date' => $row->created_date ?? 'N/A',
+                ];
+            });
+
+            return response()->json(['data' => $exportData], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('HCP Export Failed:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to export HCP data.'], 500);
+        }
     } elseif ($type === 'consumer') {
-        $data = Que::select(
-            'fname',
-            'lname',
-            'email',
-            'phone',
-            'country',
-            'address',
-            'zipcode'
-            // 'created_at'
-        )->get();
-    } else {
-        return response()->json(['error' => 'Invalid data type'], 400);
+        try {
+            $answers = config('answer_key.answers'); // Load answers from the config
+
+            // Define custom question headings
+            $customHeadings = [
+                1 => 'Place where you live',
+                2 => 'Interested to be invited',
+                3 => 'Research studies have a web camera',
+                4 => 'Would you be willing to participate in a research',
+                5 => 'Do you agree to opt-in and participate in types of research',
+                6 => 'Track your exposure to certain advertising',
+                7 => 'Highest level of education',
+                8 => 'Did you graduate from university/college',
+                9 => 'Television do you watch per week',
+                10 => 'Do you smoke',
+                11 => 'Brand of cigarettes do you smoke',
+                12 => 'How many cigarettes do you smoke in a day',
+                13 => 'Do you have access to a car',
+                14 => 'Automotive-related purchases',
+                15 => 'Cars are there in your household',
+                16 => 'If you own/lease a car(s)',
+                17 => 'The car(s) you own/lease',
+                18 => 'Car (owned or leased) manufactured',
+                19 => 'Do you own a motorcycle',
+                20 => 'If you own a two-wheeled vehicle',
+                21 => 'Two-wheeled vehicle, what engine capacity',
+                22 => 'Own a two-wheeled vehicle',
+                23 => 'Own/lease a car(s), what fuel do they use',
+                24 => 'Buying or leasing a new or used car',
+                25 => 'Your current occupational status',
+                26 => 'What is your occupation',
+                27 => "Organisation's primary industry",
+                28 => 'Employees work at your organisation',
+                29 => 'Department do you primarily work',
+                30 => "Work in your organisation's IT department",
+                31 => 'Primary role in your organisation',
+                32 => 'Professional position in the organisation',
+                33 => 'Illnesses/conditions',
+                34 => 'Type of cancer',
+                35 => 'Diagnosed with diabetes',
+                36 => 'Do you use glasses or contact lenses',
+                37 => 'Do you use a hearing aid',
+            ];
+
+            $data = Que::get()->map(function ($row) use ($answers, $customHeadings) {
+                $exportRow = [
+                    'Reg ID' => $row->cno,
+                    'First Name' => $row->fname,
+                    'Last Name' => $row->lname,
+                    'Email' => $row->email,
+                    'Phone' => $row->phone,
+                    'Country' => $row->country,
+                    'Address' => $row->address,
+                    'Zipcode' => $row->zipcode,
+                    'Created At' => \Carbon\Carbon::parse($row->created_at)->format('d/m/Y'),
+                ];
+
+                // Add mapped answers for que_1 to que_37 with custom headings
+                for ($i = 1; $i <= 37; $i++) {
+                    $questionKey = "que_$i";
+                    $answerKey = $this->getAnswerKey($i);
+
+                    // Use the custom heading if defined, fallback to "Question $i"
+                    $customHeading = $customHeadings[$i] ?? "Question $i";
+
+                    $exportRow[$customHeading] = $this->mapAnswers($row->$questionKey, $answers[$answerKey] ?? []);
+                }
+
+                return $exportRow;
+            });
+
+            return response()->json(['data' => $data], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Consumer Export Failed:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to export Consumer data.'], 500);
+        }
     }
 
-    return response()->json(['data' => $data], 200);
+    return response()->json(['error' => 'Invalid data type'], 400);
 }
+
+
+private function mapAnswers($value, $options)
+{
+    if (!$value) return ''; // Handle null or empty values
+
+    // Split the values by commas (e.g., "3,42,47")
+    $selectedOptions = explode(',', $value);
+
+    // Map each numeric option to its corresponding text value
+    $mappedOptions = array_map(function ($option) use ($options) {
+        return isset($options[$option]) ? $options[$option] : 'N/A';
+    }, $selectedOptions);
+
+    // Join the mapped options as a comma-separated string
+    return implode(', ', $mappedOptions);
+}
+
+private function getAnswerKey($questionNumber)
+{
+    $map = [
+        1 => 'one',
+        2 => 'two',
+        3 => 'three',
+        4 => 'four',
+        5 => 'five',
+        6 => 'six',
+        7 => 'seven',
+        8 => 'eight',
+        9 => 'nine',
+        10 => 'ten',
+        11 => 'eleven',
+        12 => 'twelve',
+        13 => 'thirteen',
+        14 => 'fourteen',
+        15 => 'fifteen',
+        16 => 'sixteen',
+        17 => 'seventeen',
+        18 => 'eighteen',
+        19 => 'nineteen',
+        20 => 'twenty',
+        21 => 'twentyone',
+        22 => 'twentytwo',
+        23 => 'twentythree',
+        24 => 'twentyfour',
+        25 => 'twentyfive',
+        26 => 'twentysix',
+        27 => 'twentyseven',
+        28 => 'twentyeight',
+        29 => 'twentynine',
+        30 => 'thirty',
+        31 => 'thirtyone',
+        32 => 'thirtytwo',
+        33 => 'thirtythree',
+        34 => 'thirtyfour',
+        35 => 'thirtyfive',
+        36 => 'thirtysix',
+        37 => 'thirtyseven',
+        
+    ];
+
+    return $map[$questionNumber] ?? '';
+}
+
 
 
 public function checkEmail(Request $request)

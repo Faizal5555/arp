@@ -139,7 +139,8 @@ label {
  
 button#prev-btn,
 button#next-btn,
-button#submit-btn {
+button#submit-btn,
+button#submit-btn1 {
     font-size: 17px;
     font-weight: bold;
     position: relative;
@@ -166,6 +167,7 @@ button#submit-btn {
  
 button#prev-btn:after,
 button#next-btn:after,
+button#submit-btn:after,
 button#submit-btn:after {
     position: absolute;
     top: 90%;
@@ -180,7 +182,8 @@ button#submit-btn:after {
  
 button#prev-btn:hover::after,
 button#next-btn:hover::after,
-button#submit-btn:hover::after {
+button#submit-btn:hover::after,
+button#submit-btn1:hover::after{
     transform: translateY(-80%);
     transition: transform .3s;
 }
@@ -713,6 +716,11 @@ p.lang-p {
             <div class="lang lang-personal d-none">
                <h4>Provide us with your personal information:</h4>
                <div class="mt-1">
+                <label class="form-label">Reg No</label> 
+                <input type="text" id="cno" name="cno" value="{{$cno_no}}" class="form-control lang-cal" readonly >
+             </div>
+
+               <div class="mt-1">
                   <label class="form-label">First Name:</label> 
                   <input class="form-control lang-cal" id="full_name" name="fname" type="text" pattern="[a-zA-Z]+">
                </div>
@@ -743,7 +751,7 @@ p.lang-p {
                 </div>
                </div>
                <div id="q-box__buttons"> 
-                  <button id="submit-btn" class="sub-personal" type="button">Continue</button>
+                  <button id="submit-btn1" class="sub-personal" type="button">Continue</button>
                </div>
             </div>
             <!-- end personal Details -->
@@ -955,8 +963,8 @@ p.lang-p {
                 <div class="q-box__question">
                       <select class="selectpicker" id="ques_8" name="que_8">
                           <option value="" disabled selected>Nothing Selected</option>
-                          @foreach($answers_9 as $k_9=> $ans_9)
-                            <option value="{{$k_9}}">{{$ans_9}}</option>
+                          @foreach($answers_8 as $k_8=> $ans_8)
+                            <option value="{{$k_8}}">{{$ans_8}}</option>
                             @endforeach
                       </select>
                 </div>
@@ -2794,54 +2802,87 @@ p.lang-p {
     }
 });
   
-        $('#email').on('blur', function () {
-    var email = $(this).val();
-    if (email) {
-        $.ajax({
-          
-            url: "{{route('checkEmail')}}", // Replace with your route
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: { email: email },
-            success: function (response) {
-                $('#email-error').text('');
-                $('#email').removeClass('is-invalid');
-            },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#email-error').text(xhr.responseJSON.message);
-                    $('#email').addClass('is-invalid');
-                }
-            }
-        });
+$(document).ready(function () {
+    function checkFormValidity() {
+        if ($('.is-invalid').length > 0) {
+            $('#submit-btn1').attr('disabled', true);
+        } else {
+            $('#submit-btn1').attr('disabled', false);
+        }
     }
+
+    // Function to validate email
+    $('#email').on('blur', function () {
+        var email = $(this).val();
+        if (email) {
+            $.ajax({
+                url: "{{route('checkEmail')}}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: { email: email },
+                success: function (response) {
+                    // Clear error if validation succeeds
+                    $('#email-error').text('');
+                    $('#email').removeClass('is-invalid');
+                    checkFormValidity();
+                },
+                error: function (xhr) {
+                    // Show error if validation fails
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#email-error').text(xhr.responseJSON.message);
+                        $('#email').addClass('is-invalid');
+                        checkFormValidity();
+                    }
+                },
+            });
+        } else {
+            // Reset error if input is empty
+            $('#email-error').text('');
+            $('#email').removeClass('is-invalid');
+            checkFormValidity();
+        }
+    });
+
+    // Function to validate phone
+    $('#phone').on('blur', function () {
+        var phone = $(this).val();
+        if (phone) {
+            $.ajax({
+                url: "{{route('checkEmail')}}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: { phone: phone },
+                success: function (response) {
+                    // Clear error if validation succeeds
+                    $('#phone-error').text('');
+                    $('#phone').removeClass('is-invalid');
+                    checkFormValidity();
+                },
+                error: function (xhr) {
+                    // Show error if validation fails
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#phone-error').text(xhr.responseJSON.message);
+                        $('#phone').addClass('is-invalid');
+                        checkFormValidity();
+                    }
+                },
+            });
+        } else {
+            // Reset error if input is empty
+            $('#phone-error').text('');
+            $('#phone').removeClass('is-invalid');
+            checkFormValidity();
+        }
+    });
+
+    // Initial check to ensure the button is disabled if there are validation errors
+    checkFormValidity();
 });
 
-$('#phone').on('blur', function () {
-    var phone = $(this).val();
-    if (phone) {
-        $.ajax({
-            url: "{{route('checkEmail')}}", // Same route as email
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: { phone: phone },
-            success: function (response) {
-                $('#phone-error').text('');
-                $('#phone').removeClass('is-invalid');
-            },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#phone-error').text(xhr.responseJSON.message);
-                    $('#phone').addClass('is-invalid');
-                }
-            }
-        });
-    }
-});
   </script>
 </body>
 </html>

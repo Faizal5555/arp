@@ -475,6 +475,14 @@
 
 
 $(document).ready(function () {
+    function checkFormValidity() {
+        if ($('.is-invalid').length > 0) {
+            $('#submitInvite').attr('disabled', true);
+        } else {
+            $('#submitInvite').attr('disabled', false);
+        }
+    }
+
     // Email validation on blur
     $('#email').on('blur', function () {
         var email = $(this).val();
@@ -491,14 +499,21 @@ $(document).ready(function () {
                 success: function (response) {
                     $('#email').removeClass('is-invalid');
                     $('#email-error').text('');
+                    checkFormValidity(); // Re-check form validity
                 },
                 error: function (xhr) {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         $('#email').addClass('is-invalid');
                         $('#email-error').text(xhr.responseJSON.message);
+                        checkFormValidity(); // Re-check form validity
                     }
                 }
             });
+        } else {
+            // Reset error if input is empty
+            $('#email').removeClass('is-invalid');
+            $('#email-error').text('');
+            checkFormValidity(); // Re-check form validity
         }
     });
 
@@ -518,16 +533,26 @@ $(document).ready(function () {
                 success: function (response) {
                     $('#phoneNumber').removeClass('is-invalid');
                     $('#phone-error').text('');
+                    checkFormValidity(); // Re-check form validity
                 },
                 error: function (xhr) {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         $('#phoneNumber').addClass('is-invalid');
                         $('#phone-error').text(xhr.responseJSON.message);
+                        checkFormValidity(); // Re-check form validity
                     }
                 }
             });
+        } else {
+            // Reset error if input is empty
+            $('#phoneNumber').removeClass('is-invalid');
+            $('#phone-error').text('');
+            checkFormValidity(); // Re-check form validity
         }
     });
+
+    // Initial form validity check
+    checkFormValidity();
 });
 
 document.addEventListener('DOMContentLoaded', function () {
