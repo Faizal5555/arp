@@ -353,7 +353,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-center">
-                     <button type="sumbit" class="btn btn-success ">Submit</button>
+                     <button type="sumbit" id="submitInvite" class="btn btn-success ">Submit</button>
                     </div>
                 </form>
             </div> 
@@ -480,9 +480,9 @@
                     required:true,
                     maxlength:4
                 },
-                file:{
-                    required:true
-                }
+                // file:{
+                //     required:true
+                // }
             },
            
             
@@ -500,7 +500,17 @@
                     },
                    dataType: "json",
                    data:data,
+                   beforeSend: function () {
+                // Disable the submit button and show the loader inside it
+                $('#submitInvite')
+                    .prop('disabled', true)
+                    .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+                   },
                    success:function(data){
+
+                    $('#submitInvite')
+                    .prop('disabled', false)
+                    .html('Submit');
                     if(data.success == 0){
                         $.each(data.errors, function(index, error){  
                                         $(form).find( "[name='"+index+"']" ).addClass("error").after( "<label class='error'>"+error+"</label>" ); 
