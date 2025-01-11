@@ -42,7 +42,7 @@ Route::get('/', function () {
       Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
     });
 
-    Route::any('adminapp/data', 'App\Http\Controllers\dataCenterController@index')->name('adminapp.data');
+    Route::match(['get', 'post'],'adminapp/data', 'App\Http\Controllers\dataCenterController@index')->name('adminapp.data');
     Route::get('adminapp/data/export', 'App\Http\Controllers\dataCenterController@exportHCPData')->name('adminapp.data.export');
     
 
