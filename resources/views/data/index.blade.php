@@ -277,7 +277,7 @@ $(document).ready(function () {
             {
                 data: 'created_at',
                 name: 'created_at',
-                title: 'Created Date',
+                title: 'Date',
                 render: function (data) {
                     if (data) {
                         const date = new Date(data);

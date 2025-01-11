@@ -2787,21 +2787,28 @@ public function exportHCPData(Request $request)
 
     if ($type === 'hcp') {
         $data = datacenternew::select(
-            'pno',
-            'firstname',
-            'email',
-            'country1',
-            'cityname',
-            'citycode',
-            'PhNumber',
-            'whatdsappNumber',
-            'docterSpeciality',
-            'totalExperience',
-            'practice',
-            'licence',
-            'PatientsMonth',
-            DB::raw("DATE_FORMAT(created_at, '%d/%m/%Y') as created_date") // Use alias 'created_date'
+            'pno as `Reg ID`',
+            'firstname as `First Name`',
+            'email as `Email`',
+            'country1 as `Country`',
+            'cityname as `City`',
+            'citycode as `City Code`',
+            'PhNumber as `Phone Number`',
+            'whatdsappNumber as `WhatsApp Number`',
+            'docterSpeciality as `Speciality`',
+            'totalExperience as `Experience`',
+            'practice as `Practice`',
+            'licence as `Licence`',
+            'PatientsMonth as `Patients Per Month`',
+            DB::raw("DATE_FORMAT(created_at, '%d/%m/%Y') as `Date`") // Escape the alias `Date`
         )->get();
+
+        // Check if data is empty
+        if ($data->isEmpty()) {
+            return response()->json(['error' => 'No data available for HCP export.'], 404);
+        }
+
+        return response()->json(['data' => $data], 200);
     }elseif ($type === 'consumer') {
         $answers = config('answer_key.answers'); // Load the answers from the config
     
@@ -2856,7 +2863,7 @@ public function exportHCPData(Request $request)
                 'Country' => $row->country,
                 'Address' => $row->address,
                 'Zipcode' => $row->zipcode,
-                'Created At' => \Carbon\Carbon::parse($row->created_at)->format('d/m/Y'),
+                'Date' => \Carbon\Carbon::parse($row->created_at)->format('d/m/Y'),
             ];
     
             // Add mapped answers for que_1 to que_37 with custom headings
