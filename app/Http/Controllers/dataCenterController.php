@@ -2609,8 +2609,9 @@ public function userconsumerlistData(Request $request)
 
 
 public function index(Request $request)
+
 {
-    if ($request->ajax()) {
+    if ($request->isMethod('post') && $request->ajax()) {
         if ($request->get('type') === 'hcp') {
             $hcpData = datacenternew::query();
             return DataTables::of($hcpData)

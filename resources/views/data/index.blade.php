@@ -137,9 +137,15 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ url('adminapp/data') }}",
-            data: { type: 'hcp' }, // Pass type=hcp for HCP data
+        url: "{{ route('adminapp.data') }}",
+        type: "POST", // Use POST instead of GET
+        data: function (d) {
+            d.type = 'hcp'; // Pass the type parameter
         },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token for Laravel
+        }
+    },
         dom: 'Bfrtip',
         buttons: [
             {
@@ -192,13 +198,13 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-        url: "{{ url('adminapp/data') }}",
-        type: "GET", // Use POST
+        url: "{{ route('adminapp.data') }}",
+        type: "POST", // Use POST instead of GET
         data: function (d) {
-            d.type = 'consumer'; // Pass type
+            d.type = 'consumer'; // Pass the type parameter
         },
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token for Laravel
         }
     },
         dom: 'Bfrtip',
