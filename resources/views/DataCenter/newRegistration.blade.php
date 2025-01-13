@@ -240,7 +240,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-center">
-                     <button type="sumbit" id="submitInvite" class="btn btn-success ">Submit</button>
+                     <button type="sumbit" id="submitInvite" class="btn btn-success" disabled>Submit</button>
                     </div>
                 </form>
             </div> 
@@ -314,6 +314,105 @@
 
 
 <script>
+
+
+$(document).ready(function () {
+    // CSRF Token setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // Email validation on blur
+    $('#email').on('blur', function () {
+        var email = $(this).val();
+        if (email) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}", // Replace with the actual route name
+                type: "POST",
+                data: {
+                    email: email,
+                },
+                success: function (response) {
+                    $('#email').removeClass('is-invalid');
+                    $('#email-error').text('');
+                    checkFormValidity(); // Re-check form validity
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#email').addClass('is-invalid');
+                        $('#email-error').text(xhr.responseJSON.message);
+                        checkFormValidity(); // Re-check form validity
+                    }
+                }
+            });
+        } else {
+            // Reset error if input is empty
+            $('#email').removeClass('is-invalid');
+            $('#email-error').text('');
+            checkFormValidity(); // Re-check form validity
+        }
+    });
+
+    // Phone number validation on blur
+    $('#phoneNumber').on('blur', function () {
+        var phone = $(this).val();
+        if (phone) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}", // Replace with the actual route name
+                type: "POST",
+                data: {
+                    phone: phone,
+                },
+                success: function (response) {
+                    $('#phoneNumber').removeClass('is-invalid');
+                    $('#phone-error').text('');
+                    checkFormValidity(); // Re-check form validity
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#phoneNumber').addClass('is-invalid');
+                        $('#phone-error').text(xhr.responseJSON.message);
+                        checkFormValidity(); // Re-check form validity
+                    }
+                }
+            });
+        } else {
+            // Reset error if input is empty
+            $('#phoneNumber').removeClass('is-invalid');
+            $('#phone-error').text('');
+            checkFormValidity(); // Re-check form validity
+        }
+    });
+
+    // Real-time error reset on input
+    $('#email').on('input', function () {
+        $('#email').removeClass('is-invalid');
+        $('#email-error').text('');
+        checkFormValidity(); // Re-check form validity
+    });
+
+    $('#phoneNumber').on('input', function () {
+        $('#phoneNumber').removeClass('is-invalid');
+        $('#phone-error').text('');
+        checkFormValidity(); // Re-check form validity
+    });
+
+    // Form validity checker
+    function checkFormValidity() {
+        // Disable submit button if there are validation errors
+        if ($('.is-invalid').length > 0) {
+            $('#submitInvite').prop('disabled', true); // Disable the button
+        } else {
+            $('#submitInvite').prop('disabled', false); // Enable the button
+        }
+    }
+
+    // Initial form validity check
+    checkFormValidity();
+});
+
     $("#country").change(function(){
         $("#wondiv").addClass('d-none');
 
@@ -474,99 +573,8 @@
 });
 
 
-$(document).ready(function () {
-    $('#email').on('blur', function () {
-    var email = $(this).val();
-    if (email) {
-        $.ajax({
-            url: "{{ route('checkEmail') }}", // Replace with the actual route name
-            type: "POST",
-            data: {
-                email: email,
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                $('#email').removeClass('is-invalid');
-                $('#email-error').text('');
-                checkFormValidity(); // Re-check form validity
-            },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#email').addClass('is-invalid');
-                    $('#email-error').text(xhr.responseJSON.message);
-                    checkFormValidity(); // Re-check form validity
-                }
-            }
-        });
-    } else {
-        // Reset error if input is empty
-        $('#email').removeClass('is-invalid');
-        $('#email-error').text('');
-        checkFormValidity(); // Re-check form validity
-    }
-});
 
-// Phone number validation on blur
-$('#phoneNumber').on('blur', function () {
-    var phone = $(this).val();
-    if (phone) {
-        $.ajax({
-            url: "{{ route('checkEmail') }}", // Replace with the actual route name
-            type: "POST",
-            data: {
-                phone: phone,
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                $('#phoneNumber').removeClass('is-invalid');
-                $('#phone-error').text('');
-                checkFormValidity(); // Re-check form validity
-            },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#phoneNumber').addClass('is-invalid');
-                    $('#phone-error').text(xhr.responseJSON.message);
-                    checkFormValidity(); // Re-check form validity
-                }
-            }
-        });
-    } else {
-        // Reset error if input is empty
-        $('#phoneNumber').removeClass('is-invalid');
-        $('#phone-error').text('');
-        checkFormValidity(); // Re-check form validity
-    }
-});
 
-// Real-time error reset on input
-$('#email').on('input', function () {
-    $('#email').removeClass('is-invalid');
-    $('#email-error').text('');
-    checkFormValidity(); // Re-check form validity
-});
-
-$('#phoneNumber').on('input', function () {
-    $('#phoneNumber').removeClass('is-invalid');
-    $('#phone-error').text('');
-    checkFormValidity(); // Re-check form validity
-});
-
-// Form validity checker
-function checkFormValidity() {
-    if ($('.is-invalid').length > 0) {
-        $('#submit-button').prop('disabled', true);
-    } else {
-        $('#submit-button').prop('disabled', false);
-    }
-}
-
-// Initial form validity check
-checkFormValidity();
-});
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('#importForm');

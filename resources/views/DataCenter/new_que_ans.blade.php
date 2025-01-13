@@ -168,7 +168,7 @@ button#submit-btn1 {
 button#prev-btn:after,
 button#next-btn:after,
 button#submit-btn:after,
-button#submit-btn:after {
+button#submit-btn1:after {
     position: absolute;
     top: 90%;
     left: 0;
@@ -751,7 +751,7 @@ p.lang-p {
                 </div>
                </div>
                <div id="q-box__buttons"> 
-                  <button id="submit-btn1" class="sub-personal" type="button">Continue</button>
+                  <button id="submit-btn1" class="sub-personal" type="button" disabled>Continue</button>
                </div>
             </div>
             <!-- end personal Details -->
@@ -2803,108 +2803,98 @@ p.lang-p {
 });
   
 $(document).ready(function () {
+    // CSRF Token setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+    });
+
+    // Function to check form validity
     function checkFormValidity() {
         if ($('.is-invalid').length > 0) {
-            $('#submit-btn1').attr('disabled', true);
+            $('#submit-btn1').prop('disabled', true); // Disable button if there are errors
+            console.log('Continue button disabled');
         } else {
-            $('#submit-btn1').attr('disabled', false);
+            $('#submit-btn1').prop('disabled', false); // Enable button if no errors
+            console.log('Continue button enabled');
         }
     }
 
-    // Function to validate email
+    // Email validation on blur
     $('#email').on('blur', function () {
-    var email = $(this).val();
-    if (email) {
-        $.ajax({
-            url: "{{route('checkEmail')}}",
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            },
-            data: { email: email },
-            success: function (response) {
-                // Clear error if validation succeeds
-                $('#email-error').text('');
-                $('#email').removeClass('is-invalid');
-                checkFormValidity();
-            },
-            error: function (xhr) {
-                // Show error if validation fails
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#email-error').text(xhr.responseJSON.message);
-                    $('#email').addClass('is-invalid');
-                    checkFormValidity();
-                }
-            },
-        });
-    } else {
-        // Reset error if input is empty
-        $('#email-error').text('');
-        $('#email').removeClass('is-invalid');
-        checkFormValidity();
-    }
-});
+        var email = $(this).val();
+        if (email) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}",
+                type: "POST",
+                data: { email: email },
+                success: function (response) {
+                    $('#email-error').text(''); // Clear the error message
+                    $('#email').removeClass('is-invalid'); // Remove the invalid class
+                    checkFormValidity(); // Re-check form validity
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#email-error').text(xhr.responseJSON.message); // Show error message
+                        $('#email').addClass('is-invalid'); // Add invalid class
+                        checkFormValidity(); // Re-check form validity
+                    }
+                },
+            });
+        } else {
+            $('#email-error').text(''); // Reset error if input is empty
+            $('#email').removeClass('is-invalid'); // Remove the invalid class
+            checkFormValidity(); // Re-check form validity
+        }
+    });
 
-// Real-time email error reset on input
-$('#email').on('input', function () {
-    $('#email-error').text(''); // Clear the error message
-    $('#email').removeClass('is-invalid'); // Remove the invalid class
+    // Real-time email error reset on input
+    $('#email').on('input', function () {
+        $('#email-error').text(''); // Clear the error message
+        $('#email').removeClass('is-invalid'); // Remove the invalid class
+        checkFormValidity(); // Re-check form validity
+    });
+
+    // Phone validation on blur
+    $('#phone').on('blur', function () {
+        var phone = $(this).val();
+        if (phone) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}",
+                type: "POST",
+                data: { phone: phone },
+                success: function (response) {
+                    $('#phone-error').text(''); // Clear the error message
+                    $('#phone').removeClass('is-invalid'); // Remove the invalid class
+                    checkFormValidity(); // Re-check form validity
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#phone-error').text(xhr.responseJSON.message); // Show error message
+                        $('#phone').addClass('is-invalid'); // Add invalid class
+                        checkFormValidity(); // Re-check form validity
+                    }
+                },
+            });
+        } else {
+            $('#phone-error').text(''); // Reset error if input is empty
+            $('#phone').removeClass('is-invalid'); // Remove the invalid class
+            checkFormValidity(); // Re-check form validity
+        }
+    });
+
+    // Real-time phone error reset on input
+    $('#phone').on('input', function () {
+        $('#phone-error').text(''); // Clear the error message
+        $('#phone').removeClass('is-invalid'); // Remove the invalid class
+        checkFormValidity(); // Re-check form validity
+    });
+
+    // Initial check to ensure the button is disabled if there are validation errors
     checkFormValidity();
 });
 
-// Phone validation on blur
-$('#phone').on('blur', function () {
-    var phone = $(this).val();
-    if (phone) {
-        $.ajax({
-            url: "{{route('checkEmail')}}",
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            },
-            data: { phone: phone },
-            success: function (response) {
-                // Clear error if validation succeeds
-                $('#phone-error').text('');
-                $('#phone').removeClass('is-invalid');
-                checkFormValidity();
-            },
-            error: function (xhr) {
-                // Show error if validation fails
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    $('#phone-error').text(xhr.responseJSON.message);
-                    $('#phone').addClass('is-invalid');
-                    checkFormValidity();
-                }
-            },
-        });
-    } else {
-        // Reset error if input is empty
-        $('#phone-error').text('');
-        $('#phone').removeClass('is-invalid');
-        checkFormValidity();
-    }
-});
-
-// Real-time phone error reset on input
-$('#phone').on('input', function () {
-    $('#phone-error').text(''); // Clear the error message
-    $('#phone').removeClass('is-invalid'); // Remove the invalid class
-    checkFormValidity();
-});
-
-// Function to check form validity
-function checkFormValidity() {
-    if ($('.is-invalid').length > 0) {
-        $('#submit-button').prop('disabled', true); // Disable button if there are errors
-    } else {
-        $('#submit-button').prop('disabled', false); // Enable button if no errors
-    }
-}
-
-// Initial check to ensure the button is disabled if there are validation errors
-checkFormValidity();
-});
 
   </script>
 </body>
