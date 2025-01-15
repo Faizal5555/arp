@@ -414,10 +414,11 @@ document.addEventListener('DOMContentLoaded', function () {
             <form id="importForm" action="{{ route('supplier.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="file" class="form-control" required>
+                <small class="form-text text-muted">
+                    Accepted formats: CSV,XLSX.
+                    <a href="{{ route('downloadSupplierSample') }}">Download Sample File</a>
+                </small>
                 <button class="btn btn-success mt-2" id="importSubmit">Import Supplier Data</button>
-                <a href="{{ route('downloadSupplierSample') }}">
-                    Download Sample File
-                </a>
             </form>
         </div>
         
