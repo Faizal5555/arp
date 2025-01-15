@@ -662,7 +662,7 @@ class SupplierController extends Controller
     $sheet->setCellValue('C2', 'johndoe@example.com');
     $sheet->setCellValue('D2', '1234567890');
     $sheet->setCellValue('E2', '9876543210');
-    $sheet->setCellValue('F2', 'USA');
+    $sheet->setCellValue('F2', 'India');
     $sheet->setCellValue('G2', 'Details about the supplier');
 
     // Save the file
