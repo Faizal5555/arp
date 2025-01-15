@@ -89,6 +89,12 @@ button#addRegisterButton:hover {
     </div>
 @endif
 
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 
 <script>
     $(document).ready(function(){

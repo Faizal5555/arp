@@ -471,14 +471,6 @@ class SupplierController extends Controller
         DB::beginTransaction();
         try {
             // Validate the uploaded file
-            $validator = Validator::make($request->all(), [
-                'file' => 'required|mimes:csv,xlsx,xls|max:2048',
-            ]);
-    
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
-    
             // Process the file
             $import = new SupplierImport();
             Excel::import($import, $request->file('file'));
