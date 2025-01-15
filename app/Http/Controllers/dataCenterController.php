@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\datacenternew;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Events\SendInviteMail;
 use App\Events\SendMail;
 use App\Events\SendDoctorMail;
@@ -70,12 +71,12 @@ class dataCenterController extends Controller
     }
     public function invite1(Request $req)
     {
-        // Validate the attachment, email file, and email content
+        // Validate the file types and email content
         $validator = Validator::make(
             $req->all(),
             [
-                'emailFile' => 'nullable|file|mimes:csv,txt|max:2048', // Validate email file if present
-                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048', // Validate attachment if present
+                'emailFile' => 'nullable|file|mimes:csv,txt,xlsx|max:2048', // Include xlsx
+                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048',
                 'emailContent' => 'required|string'
             ]
         );
@@ -86,27 +87,36 @@ class dataCenterController extends Controller
     
         $emails = [];
     
-        // Get emails from uploaded file if provided
+        // Process the uploaded file if provided
         if ($req->hasFile('emailFile')) {
             $file = $req->file('emailFile');
             $filePath = $file->getRealPath();
-            
-            // Read each line for TXT files, or parse as CSV for CSV files
             $fileExtension = $file->getClientOriginalExtension();
+    
             if ($fileExtension === 'txt') {
-                // Get emails from each line in TXT file
+                // Read emails from TXT file
                 $emails = array_merge($emails, file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
             } elseif ($fileExtension === 'csv') {
-                // Get emails from CSV file
+                // Read emails from CSV file
                 $file = fopen($filePath, 'r');
                 while (($line = fgetcsv($file)) !== false) {
                     $emails = array_merge($emails, $line);
                 }
                 fclose($file);
+            } elseif ($fileExtension === 'xlsx') {
+                // Read emails from XLSX file using PhpSpreadsheet
+                $spreadsheet = IOFactory::load($filePath);
+                $worksheet = $spreadsheet->getActiveSheet();
+                foreach ($worksheet->getRowIterator() as $row) {
+                    $cell = $row->getCellIterator()->current();
+                    if ($cell && filter_var($cell->getValue(), FILTER_VALIDATE_EMAIL)) {
+                        $emails[] = $cell->getValue();
+                    }
+                }
             }
         }
     
-        // Validate and separate valid and invalid emails
+        // Validate email addresses
         $validEmails = [];
         $invalidEmails = [];
     
@@ -129,10 +139,10 @@ class dataCenterController extends Controller
         $authUserId = auth()->user()->id;
         $link = url("/adminapp/newdoctorregister/{$authUserId}");
     
-        // Send email to each valid email address
+        // Send emails
         foreach ($validEmails as $email) {
             Mail::send('mails.invite', ['url' => $link, 'emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
-                $mail->from('researchaccountmanager@asiaresearchpartners.com','researchaccountmanager@asiaresearchpartners.com');
+                $mail->from('researchaccountmanager@asiaresearchpartners.com', 'researchaccountmanager@asiaresearchpartners.com');
                 $mail->to($email);
                 $mail->subject('Invitation to Join Our Global Healthcare Research Panel');
                 
@@ -147,7 +157,6 @@ class dataCenterController extends Controller
     
         return response()->json(['message' => 'Emails sent successfully.']);
     }
-    
     
 
     public function popinvite(Request $req){
