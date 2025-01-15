@@ -62,7 +62,7 @@ Route::get('/', function () {
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
     
-    Route::get('/sample-email-file', 'App\Http\Controllers\datacenterController@generateEmailSampleFile')->name('sampleEmailFile');
+    Route::get('/sample-email-file', 'App\Http\Controllers\dataCenterController@generateEmailSampleFile')->name('sampleEmailFile');
 
    
     //users
