@@ -29,12 +29,12 @@
                     <form id="inviteForm" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="emailFile">Upload a File with Emails:</label>
-                            <input type="file" class="form-control" name="emailFile" id="emailFile" accept=".csv, .txt" required>
+                            <input type="file" class="form-control" name="emailFile" id="emailFile" accept=".csv, .txt, .xlsx" required>
                             <small class="form-text text-muted">
-                                Accepted formats: CSV or TXT (one email per line).
-                                <a href="{{ asset('adminapp/public/assets/sample-email-file.csv') }}" download="sample-email-file.csv">Download sample file</a>
+                                Accepted formats: CSV, TXT, or XLSX (one email per line).
+                                <a href="{{ route('sampleEmailFile') }}">Download Email Sample File</a>
                             </small>
-                            <span id="fileError" class="text-danger" style="display: none;">Invalid file format. Only CSV and TXT files are allowed.</span>
+                            <span id="fileError" class="text-danger" style="display: none;">Invalid file format. Only CSV, TXT, and XLSX files are allowed.</span>
                         </div>
 
                         <div class="form-group">
@@ -56,13 +56,12 @@
 </div>
 
 <script>
-$(document).ready(function() {
-    // Check file type when user selects a file for email list
-    $('#emailFile').on('change', function() {
-        const allowedExtensions = ['csv', 'txt'];
+$(document).ready(function () {
+    $('#emailFile').on('change', function () {
+        const allowedExtensions = ['csv', 'txt', 'xlsx'];
         const file = this.files[0];
         const fileExtension = file ? file.name.split('.').pop().toLowerCase() : '';
-        
+
         if (!allowedExtensions.includes(fileExtension)) {
             $('#fileError').show(); // Show error message
             this.value = ''; // Clear the input
@@ -71,8 +70,7 @@ $(document).ready(function() {
         }
     });
 
-    // AJAX request on form submit
-    $('#submitInvite').on('click', function() {
+    $('#submitInvite').on('click', function () {
         let formData = new FormData($('#inviteForm')[0]);
 
         $.ajax({
@@ -81,30 +79,30 @@ $(document).ready(function() {
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend: function() {
+            beforeSend: function () {
                 $('#submitInvite').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Sending...');
             },
-            success: function(response) {
+            success: function (response) {
                 Swal.fire({
                     title: 'Success!',
                     text: response.message,
                     icon: 'success',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 2000,
                 });
                 $('#inviteForm')[0].reset();
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 Swal.fire({
                     title: 'Error',
                     text: xhr.responseJSON.error || 'An error occurred',
                     icon: 'error',
-                    confirmButtonText: 'OK'
+                    confirmButtonText: 'OK',
                 });
             },
-            complete: function() {
+            complete: function () {
                 $('#submitInvite').prop('disabled', false).text('Send Invite');
-            }
+            },
         });
     });
 });

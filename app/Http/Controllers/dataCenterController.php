@@ -166,36 +166,34 @@ class dataCenterController extends Controller
     }
     public function popinvite1(Request $req)
     {
-        // Validate request input, making sure emailContent is required and email/attachment have correct formats.
+        // Validate request input
         $validator = Validator::make(
             $req->all(),
             [
                 'email' => 'nullable|string', // Optional for manual input
-                'emailFile' => 'nullable|file|mimes:csv,txt|max:2048', // CSV or TXT file
-                'attachment' => 'file|mimes:pdf,jpg,jpeg,png|max:2048', // Optional attachment
+                'emailFile' => 'nullable|file|mimes:csv,txt,xlsx|max:2048', // Support for CSV, TXT, and XLSX files
+                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // Optional attachment
                 'emailContent' => 'required|string' // Required email content
             ]
         );
     
-        // If validation fails, return the first error message
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
     
         $emails = [];
     
-        // Collect emails from text input if provided
+        // Collect emails from text input
         if ($req->email) {
             $emails = array_merge($emails, explode(',', $req->email));
         }
     
-        // Collect emails from uploaded file if provided
+        // Process uploaded file
         if ($req->hasFile('emailFile')) {
             $file = $req->file('emailFile');
             $filePath = $file->getRealPath();
             $fileExtension = $file->getClientOriginalExtension();
     
-            // Process based on file type (TXT or CSV)
             if ($fileExtension === 'txt') {
                 $emails = array_merge($emails, file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
             } elseif ($fileExtension === 'csv') {
@@ -204,27 +202,36 @@ class dataCenterController extends Controller
                     $emails = array_merge($emails, $line);
                 }
                 fclose($file);
+            } elseif ($fileExtension === 'xlsx') {
+                $spreadsheet = IOFactory::load($filePath);
+                $sheet = $spreadsheet->getActiveSheet();
+                foreach ($sheet->getRowIterator() as $row) {
+                    $cell = $row->getCellIterator()->current();
+                    $emails[] = $cell->getValue();
+                }
             }
         }
     
-        // Remove duplicate emails and trim whitespace
+        // Remove duplicates and validate emails
         $emails = array_unique(array_map('trim', $emails));
+        $validEmails = array_filter($emails, function ($email) {
+            return filter_var($email, FILTER_VALIDATE_EMAIL);
+        });
     
-        // Check if there are any valid emails to send to
-        if (empty($emails)) {
-            return response()->json(['error' => 'No valid emails provided. Please check your input.'], 400);
+        if (empty($validEmails)) {
+            return response()->json(['error' => 'No valid emails found. Please check your input.'], 400);
         }
     
-        // Prepare data for sending emails
+        // Prepare email data
         $emailContent = $req->emailContent;
         $attachment = $req->file('attachment');
         $userId = Auth::user()->id;
     
         $data = [
-            'emails' => $emails,
+            'emails' => $validEmails,
             'link' => url('/adminapp/b2cregistration/' . $userId),
             'emailContent' => $emailContent,
-            'attachment' => $attachment
+            'attachment' => $attachment,
         ];
     
         // Fire the event to send emails
@@ -232,7 +239,6 @@ class dataCenterController extends Controller
     
         return response()->json(['message' => 'Emails sent successfully.']);
     }
-    
     
 
     public function OutsideDataNew(Request $req ,$id = null)
