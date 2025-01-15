@@ -3012,6 +3012,35 @@ public function generateEmailSampleFile()
 
     return response()->download($filePath)->deleteFileAfterSend(false);
 }
+
+public function downloadHcpSampleFile()
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Add headers
+    $headers = [
+        'firstname', 'lastname', 'cityname', 'citycode', 'email', 'phone_number',
+        'whatsappnumber', 'speciality', 'totalexperience', 'practice', 'licence',
+        'patientsmonth', 'country'
+    ];
+    foreach ($headers as $index => $header) {
+        $sheet->setCellValueByColumnAndRow($index + 1, 1, $header);
+    }
+
+    // Add some sample data
+    $sheet->fromArray([
+        ['John', 'Doe', 'New York', '10001', 'johndoe@example.com', '1234567890', '1234567890', 'Cardiology', '10', 'Private', '12345', '30', 'USA'],
+        ['Jane', 'Smith', 'Los Angeles', '90001', 'janesmith@example.com', '9876543210', '9876543210', 'Neurology', '8', 'Public', '54321', '50', 'USA']
+    ], null, 'A2');
+
+    // Save the file and download it
+    $filePath = public_path('assets/sample-hcp-file.xlsx');
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+
+    return response()->download($filePath)->deleteFileAfterSend(false);
+}
     
 
 }

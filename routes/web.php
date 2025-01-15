@@ -63,6 +63,7 @@ Route::get('/', function () {
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
     
     Route::get('/sample-email-file', 'App\Http\Controllers\dataCenterController@generateEmailSampleFile')->name('sampleEmailFile');
+    Route::get('/hcp-sample-download', 'App\Http\Controllers\dataCenterController@downloadHcpSampleFile')->name('hcp.sample.download');
 
    
     //users
