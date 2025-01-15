@@ -180,6 +180,9 @@
                     return `${item.name}: ${item.value}`; // Tooltip format
                 },
             },
+            grid: {
+                bottom: 200, // Increased bottom space for label visibility
+            },
             xAxis: {
                 type: 'category',
                 data: data.map(item => item.supplier_company),
