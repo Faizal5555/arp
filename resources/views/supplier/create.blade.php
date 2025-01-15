@@ -69,35 +69,21 @@ button#addRegisterButton:hover {
 </style>
 @section('page_title')
 @section('content')
-@if (session('validationErrors'))
-    <div class="alert alert-danger">
-        <h4>Validation Errors:</h4>
-        <ul>
-            @foreach (session('validationErrors') as $row => $errors)
-                <li>
-                    <strong>Row {{ $row }}:</strong>
-                    <ul>
-                        @foreach ($errors as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
 
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+@if (session('validationErrors'))
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (session('validationErrors') as $validationError)
+                <li>{{ $validationError }}</li>
             @endforeach
         </ul>
     </div>
@@ -197,8 +183,7 @@ button#addRegisterButton:hover {
     $('.alert').remove(); // Remove any alert messages
 });
 
-$(document).ready(function () {
-    $('form[action="{{ route('supplier.import') }}"]').submit(function (e) {
+$('#importForm').on('submit', function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
@@ -210,45 +195,40 @@ $(document).ready(function () {
         processData: false,
         contentType: false,
         success: function (response) {
-            swal({
+            Swal.fire({
                 title: 'Success',
                 text: response.message,
                 icon: 'success',
-                buttons: false,
+                timer: 3000,
+                showConfirmButton: false,
             });
             setTimeout(() => location.reload(), 3000);
         },
         error: function (xhr) {
             if (xhr.status === 422) {
+                // Clear previous errors
+                $('.validation-errors').remove();
+
                 const errors = xhr.responseJSON.errors;
-                let errorMessage = 'Validation failed:\n';
-                for (const [key, value] of Object.entries(errors)) {
-                    errorMessage += `${key}: ${value}\n`;
+                let errorMessage = '<div class="validation-errors alert alert-danger"><ul>';
+
+                for (const error of errors.validationErrors) {
+                    errorMessage += `<li>${error}</li>`;
                 }
-                swal({
-                    title: 'Validation Error',
-                    text: errorMessage,
-                    icon: 'error',
-                    buttons: true,
-                });
-            } else if (xhr.status === 401) {
-                swal({
-                    title: 'Authentication Error',
-                    text: 'You are not authenticated!',
-                    icon: 'error',
-                    buttons: true,
-                });
+
+                errorMessage += '</ul></div>';
+
+                $('#importForm').before(errorMessage); // Add errors above the form
             } else {
-                swal({
+                Swal.fire({
                     title: 'Error',
                     text: xhr.responseJSON.error || 'Something went wrong!',
                     icon: 'error',
-                    buttons: true,
+                    confirmButtonText: 'OK',
                 });
             }
         },
     });
-});
 });
 
 document.querySelector('form').addEventListener('submit', function (e) {
@@ -269,6 +249,20 @@ document.querySelector('form').addEventListener('submit', function (e) {
         e.preventDefault();
         alert('File size exceeds the 2MB limit.');
         return;
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('#importForm');
+    const submitButton = document.querySelector('#importSubmit');
+
+    if (form && submitButton) {
+        form.addEventListener('submit', function () {
+            // Disable the button and add spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importing...`;
+        });
     }
 });
 
@@ -417,11 +411,13 @@ document.querySelector('form').addEventListener('submit', function (e) {
             
 
            
-            <form action="{{ route('supplier.import') }}" method="POST" enctype="multipart/form-data">
+            <form id="importForm" action="{{ route('supplier.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="file" class="form-control" required>
-                <button class="btn btn-success mt-2">Import Supplier Data</button>
-                <a href="{{ url('adminapp/public/global_assets/demoexample/supplier_example_file.csv') }}">Example Template</a>
+                <button class="btn btn-success mt-2" id="importSubmit">Import Supplier Data</button>
+                <a href="{{ route('downloadSupplierSample') }}">
+                    Download Sample File
+                </a>
             </form>
         </div>
         

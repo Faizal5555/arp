@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
 use App\Imports\SupplierImport;
 use DB;
@@ -466,28 +468,45 @@ class SupplierController extends Controller
     }
     public function import(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:csv,xlsx,xls',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-    
-        // Proceed with import logic...
         DB::beginTransaction();
         try {
+            // Validate the uploaded file
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:csv,xlsx,xls|max:2048',
+            ]);
+    
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+    
+            // Process the file
             $import = new SupplierImport();
             Excel::import($import, $request->file('file'));
-            DB::commit();
     
-            return response()->json(['success' => true, 'message' => 'Imported successfully!']);
+            DB::commit();
+            return redirect()->back()->with('success', 'Imported successfully!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            DB::rollback();
+            $failures = $e->failures();
+            $validationErrors = [];
+    
+            foreach ($failures as $failure) {
+                $row = $failure->row(); // Row number where error occurred
+                $attribute = $failure->attribute(); // Column/Field name that caused the error
+                $errors = $failure->errors(); // Array of error messages for that row
+                $values = $failure->values(); // All values for that row
+    
+                foreach ($errors as $error) {
+                    $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
+                }
+            }
+    
+            return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => $e->getMessage()], 500);
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
-    
     
     public function performance(Request $req){
         // dd('hi');
@@ -624,5 +643,44 @@ class SupplierController extends Controller
 
     return view('supplier.supplier_dashboard', compact('countries', 'suppliersByCountry', 'suppliersData', 'countryFilter'));
   }
+
+  public function generateSupplierSampleFile()
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Add headers
+    $headers = [
+        'A1' => 'supplier_company',
+        'B1' => 'supplier_manager',
+        'C1' => 'supplier_email',
+        'D1' => 'supplier_phone',
+        'E1' => 'supplier_whatsapp',
+        'F1' => 'supplier_country',
+        'G1' => 'other_detail'
+    ];
+
+    foreach ($headers as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // Add sample data
+    $sheet->setCellValue('A2', 'Tech Supplies Ltd');
+    $sheet->setCellValue('B2', 'John Doe');
+    $sheet->setCellValue('C2', 'johndoe@example.com');
+    $sheet->setCellValue('D2', '1234567890');
+    $sheet->setCellValue('E2', '9876543210');
+    $sheet->setCellValue('F2', 'USA');
+    $sheet->setCellValue('G2', 'Details about the supplier');
+
+    // Save the file
+    $fileName = 'supplier-sample-file.xlsx';
+    $filePath = public_path("assets/$fileName");
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+
+    return response()->download($filePath)->deleteFileAfterSend(false);
+}
     
 }

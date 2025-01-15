@@ -64,7 +64,7 @@ Route::get('/', function () {
     
     Route::get('/sample-email-file', 'App\Http\Controllers\dataCenterController@generateEmailSampleFile')->name('sampleEmailFile');
     Route::get('/hcp-sample-download', 'App\Http\Controllers\dataCenterController@downloadHcpSampleFile')->name('hcp.sample.download');
-
+    Route::get('/download-supplier-sample', 'App\Http\Controllers\SupplierController@generateSupplierSampleFile')->name('downloadSupplierSample');
    
     //users
     Route::get('/adminapp/usersview', 'App\Http\Controllers\OperationNewController@usersview')->name('usersview');

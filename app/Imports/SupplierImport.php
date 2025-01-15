@@ -24,64 +24,55 @@ class SupplierImport implements  ToModel, WithHeadingRow, WithValidation
     }
     public function rules(): array
     {
-        return [    
-            'supplier_company'=>'required',
-            'supplier_manager'=>'required',
-            'supplier_email'=>'required|email|unique:supplier,supplier_email',
-            'supplier_phone'=>'required',
-            'supplier_whatsapp'=>'required',
-            'supplier_country'=>'required',
-            'other_detail'=>'required'
+        return [
+            'supplier_company' => 'required',
+            'supplier_manager' => 'required',
+            'supplier_email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    if (Supplier::where('supplier_email', $value)->exists()) {
+                        $fail("The email '{$value}' already exists.");
+                    }
+                },
+            ],
+            'supplier_phone' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (Supplier::where('supplier_phone', $value)->exists()) {
+                        $fail("The phone number '{$value}' already exists.");
+                    }
+                },
+            ],
+            'supplier_whatsapp' => 'required',
+            'supplier_country' => 'required',
+            'other_detail' => 'required',
         ];
     }
 
     public function model(array $row)
-    {     
-        //dd('hi');
-        $unique_no = Supplier::orderBy('id', 'DESC')->pluck('id')->first();
-        if($unique_no == null or $unique_no == ""){
-            
-        $unique_no = 1;
+    {
+        $unique_no = Supplier::orderBy('id', 'DESC')->pluck('id')->first() ?? 1;
         $dt = Carbon::now();
-        //  var_dump($dt->year);
-        }
-        else{
-     
-            $unique_no = $unique_no + 001;
-            $dt = Carbon::now();
-    
-        }
-        $rfq_no = 'RFQ'.$unique_no. '-' .$dt->year;
-        $sp_no = 'SP'.$unique_no. '-' .$dt->year;
-        $rfqno = $rfq_no;
-        $spno = $sp_no;
-        
+        $rfq_no = 'RFQ' . $unique_no . '-' . $dt->year;
+        $sp_no = 'SP' . $unique_no . '-' . $dt->year;
+
         $supplier = new Supplier();
-        $supplier->rfq_no = $rfqno;
-        $supplier->sp_no = $spno;
-        $supplier->supplier_company =$row['supplier_company'];
+        $supplier->rfq_no = $rfq_no;
+        $supplier->sp_no = $sp_no;
+        $supplier->supplier_company = $row['supplier_company'];
         $supplier->supplier_manager = $row['supplier_manager'];
         $supplier->supplier_email = $row['supplier_email'];
-        $supplier->supplier_phone =$row['supplier_phone'];
+        $supplier->supplier_phone = $row['supplier_phone'];
         $supplier->supplier_whatsapp = $row['supplier_whatsapp'];
         $supplier->supplier_country = $row['supplier_country'];
         $supplier->other_detail = $row['other_detail'];
         $supplier->user_id = auth()->user()->id;
-        
-       if($supplier->save()){
-           
-        // dd($supplier);  
-       }
-       else{
-          
-       }
-       
-    }
 
-    // public function getRowCount(): array
-    // {
-    //     return $this->row;
-    // }
+        $supplier->save();
+    }
+       
+    
 
   
 }
