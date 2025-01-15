@@ -7,6 +7,8 @@ use App\Models\Country;
 use App\Models\datacenternew;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Events\SendInviteMail;
 use App\Events\SendMail;
 use App\Events\SendDoctorMail;
@@ -2988,7 +2990,22 @@ public function checkEmail(Request $request)
 
 
 
-    
+public function generateEmailSampleFile()
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+
+    $sheet->setCellValue('A1', 'johndoe@example.com');
+    $sheet->setCellValue('A2', 'janesmith@example.com');
+
+    // Save the file
+    $filePath = public_path('assets/sample-email-file.xlsx');
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+
+    return response()->download($filePath)->deleteFileAfterSend(false);
+}
     
 
 }
