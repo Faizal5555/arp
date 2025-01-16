@@ -2985,6 +2985,7 @@ public function checkEmail(Request $request)
     if ($phone) {
         $phoneExists = DB::table('ques')->where('phone', $phone)->exists() ||
                        DB::table('datacenternews')->where('PhNumber', $phone)->exists();
+                       DB::table('datacenternews')->where('whatdsappNumber', $phone)->exists();
 
         if ($phoneExists) {
             return response()->json(['status' => 'error', 'message' => 'Phone number already exists'], 400);
