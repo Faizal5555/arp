@@ -95,10 +95,9 @@ $(document).ready(function () {
         const emailFileInput = $('#emailFile')[0];
     if (!validateFile(emailFileInput)) {
         Swal.fire({
-            title: 'File Missing',
-            text: 'Please fix the file validation errors before submitting.',
             icon: 'error',
-            confirmButtonText: 'OK'
+                title: 'No File Selected',
+                text: 'Please select a file to upload.',
         });
         return;
     }

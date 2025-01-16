@@ -174,6 +174,7 @@
                             <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Whatsapp Number<span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <input type="text" name="whatsappNumber" id="whatsappNumber" class="form-control border border-secondary" placeholder="Whatsapp Number"  onkeypress="return isNumber(event)" style="width:100%;" >
+                                <div id="whatsapp-error" class="invalid-feedback"></div>
                             </div>
                         </div>
                     </div>
@@ -399,6 +400,53 @@ $(document).ready(function () {
         }
     }
 
+    $('#whatsappNumber').on('blur', function () {
+        validateWhatsAppNumber();
+    });
+
+    $('#whatsappNumber').on('input', function () {
+        clearWhatsAppError(); // Clear error message on new input
+    });
+
+    // WhatsApp number validation function
+    function validateWhatsAppNumber() {
+        var whatsappNumber = $('#whatsappNumber').val();
+        if (whatsappNumber) {
+            $.ajax({
+                url: "{{ route('checkEmail') }}", // Use the same route for validation
+                type: "POST",
+                data: { phone: whatsappNumber },
+                success: function () {
+                    // Clear error message if validation passes
+                    $('#whatsappNumber').removeClass('is-invalid');
+                    $('#whatsapp-error').text('').hide(); // Hide error message
+                    checkFormValidity();
+                },
+                error: function (xhr) {
+                    // Show error message if validation fails
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        $('#whatsappNumber').addClass('is-invalid');
+                        $('#whatsapp-error')
+                            .text(xhr.responseJSON.message) // Set error message
+                            .show(); // Ensure the error is visible
+                        checkFormValidity();
+                    }
+                },
+            });
+        } else {
+            // Clear error if input is empty
+            clearWhatsAppError();
+        }
+    }
+
+    // Clear WhatsApp error
+    function clearWhatsAppError() {
+        $('#whatsappNumber').removeClass('is-invalid');
+        $('#whatsapp-error').text('').hide(); // Clear and hide error message
+        checkFormValidity();
+    }
+
+
     // Form validity checker
     function checkFormValidity() {
         // Disable submit button if there are validation errors
@@ -408,6 +456,8 @@ $(document).ready(function () {
             $('#submitInvite').prop('disabled', false); // Enable the button
         }
     }
+
+    
 
     // Initial form validity check
     checkFormValidity();

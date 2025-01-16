@@ -57,20 +57,32 @@
 
 <script>
 $(document).ready(function () {
-    $('#emailFile').on('change', function () {
+    $('#submitInvite').on('click', function () {
+        // Get the file input value
+        const file = $('#emailFile')[0].files[0];
         const allowedExtensions = ['csv', 'txt', 'xlsx'];
-        const file = this.files[0];
         const fileExtension = file ? file.name.split('.').pop().toLowerCase() : '';
 
-        if (!allowedExtensions.includes(fileExtension)) {
-            $('#fileError').show(); // Show error message
-            this.value = ''; // Clear the input
-        } else {
-            $('#fileError').hide(); // Hide error message if file is valid
+        // Check if a file is selected
+        if (!file) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No File Selected',
+                text: 'Please select a file to upload.',
+            });
+            return; // Prevent form submission if no file is selected
         }
-    });
 
-    $('#submitInvite').on('click', function () {
+        // Check if the file extension is valid
+        if (!allowedExtensions.includes(fileExtension)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid File Type',
+                text: 'Please upload a valid file (csv, txt, xlsx).',
+            });
+            return; // Prevent form submission if file is invalid
+        }
+
         let formData = new FormData($('#inviteForm')[0]);
 
         $.ajax({
@@ -106,6 +118,7 @@ $(document).ready(function () {
         });
     });
 });
+
 </script>
 
 @endsection
