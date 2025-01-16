@@ -2829,7 +2829,7 @@ $(document).ready(function () {
                 url: "{{ route('checkEmail') }}",
                 type: "POST",
                 data: { email: email },
-                success: function (response) {
+                success: function () {
                     $('#email-error').text(''); // Clear the error message
                     $('#email').removeClass('is-invalid'); // Remove the invalid class
                     checkFormValidity(); // Re-check form validity
@@ -2864,7 +2864,7 @@ $(document).ready(function () {
                 url: "{{ route('checkEmail') }}",
                 type: "POST",
                 data: { phone: phone },
-                success: function (response) {
+                success: function () {
                     $('#phone-error').text(''); // Clear the error message
                     $('#phone').removeClass('is-invalid'); // Remove the invalid class
                     checkFormValidity(); // Re-check form validity
@@ -2894,6 +2894,7 @@ $(document).ready(function () {
     // Initial check to ensure the button is disabled if there are validation errors
     checkFormValidity();
 });
+
 
 
   </script>

@@ -556,7 +556,6 @@ $(document).ready(function () {
         }
       });
     });
-
     $(document).ready(function () {
     // CSRF Token setup
     $.ajaxSetup({
@@ -566,13 +565,21 @@ $(document).ready(function () {
     });
 
     // Email validation on blur and input
-    $('#email').on('blur input', function () {
+    $('#email').on('blur', function () {
         validateEmail();
     });
 
+    $('#email').on('input', function () {
+        clearEmailError(); // Clear error message on new input
+    });
+
     // Phone number validation on blur and input
-    $('#phoneNumber').on('blur input', function () {
+    $('#phoneNumber').on('blur', function () {
         validatePhone();
+    });
+
+    $('#phoneNumber').on('input', function () {
+        clearPhoneError(); // Clear error message on new input
     });
 
     // Email validation function
@@ -586,7 +593,7 @@ $(document).ready(function () {
                 success: function () {
                     // Clear error message if validation passes
                     $('#email').removeClass('is-invalid');
-                    $('#email-error').text('').hide(); // Clear the error message
+                    $('#email-error').text('').hide(); // Hide error message
                     checkFormValidity();
                 },
                 error: function (xhr) {
@@ -594,17 +601,15 @@ $(document).ready(function () {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         $('#email').addClass('is-invalid');
                         $('#email-error')
-                            .text(xhr.responseJSON.message) // Show the error message
-                            .show(); // Ensure the error message is visible
+                            .text(xhr.responseJSON.message) // Set error message
+                            .show(); // Ensure the error is visible
                         checkFormValidity();
                     }
                 },
             });
         } else {
             // Clear error if input is empty
-            $('#email').removeClass('is-invalid');
-            $('#email-error').text('').hide(); // Clear and hide error message
-            checkFormValidity();
+            clearEmailError();
         }
     }
 
@@ -613,13 +618,13 @@ $(document).ready(function () {
         var phone = $('#phoneNumber').val();
         if (phone) {
             $.ajax({
-                url: "{{ route('checkEmail') }}",
+                url: "{{ route('checkEmail') }}", // Replace with the actual route for phone validation
                 type: "POST",
                 data: { phone: phone },
                 success: function () {
                     // Clear error message if validation passes
                     $('#phoneNumber').removeClass('is-invalid');
-                    $('#phone-error').text('').hide(); // Clear the error message
+                    $('#phone-error').text('').hide(); // Hide error message
                     checkFormValidity();
                 },
                 error: function (xhr) {
@@ -627,18 +632,30 @@ $(document).ready(function () {
                     if (xhr.responseJSON && xhr.responseJSON.message) {
                         $('#phoneNumber').addClass('is-invalid');
                         $('#phone-error')
-                            .text(xhr.responseJSON.message) // Show the error message
-                            .show(); // Ensure the error message is visible
+                            .text(xhr.responseJSON.message) // Set error message
+                            .show(); // Ensure the error is visible
                         checkFormValidity();
                     }
                 },
             });
         } else {
             // Clear error if input is empty
-            $('#phoneNumber').removeClass('is-invalid');
-            $('#phone-error').text('').hide(); // Clear and hide error message
-            checkFormValidity();
+            clearPhoneError();
         }
+    }
+
+    // Clear email error
+    function clearEmailError() {
+        $('#email').removeClass('is-invalid');
+        $('#email-error').text('').hide(); // Clear and hide error message
+        checkFormValidity();
+    }
+
+    // Clear phone error
+    function clearPhoneError() {
+        $('#phoneNumber').removeClass('is-invalid');
+        $('#phone-error').text('').hide(); // Clear and hide error message
+        checkFormValidity();
     }
 
     // Form validity checker
@@ -654,7 +671,6 @@ $(document).ready(function () {
     // Initial form validity check
     checkFormValidity();
 });
-
 
 </script>
 
