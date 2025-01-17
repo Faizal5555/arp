@@ -34,7 +34,7 @@
             <table id="hcpTable" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Sno</th>
+                        <th>S.no</th>
                         <th>Reg ID</th>
                         <th>Name</th>
                         <th>Email</th>
@@ -59,7 +59,7 @@
             <table id="consumerTable" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>S.no</th>
                         <th>Reg ID</th>
                         <th style="min-width: 150px;">First Name</th>
                         <th style="min-width: 150px;">Last Name</th>
