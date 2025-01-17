@@ -479,7 +479,8 @@
                 },
                 permonth:{
                     required:true,
-                    maxlength:4
+                    maxlength:4,
+                    digits: true
                 },
                 // file:{
                 //     required:true
@@ -729,6 +730,13 @@ $(document).ready(function () {
 
     // Initial form validity check
     checkFormValidity();
+});
+
+$('#permonth').on('keypress', function (e) {
+    const charCode = e.which ? e.which : e.keyCode;
+    if (charCode < 48 || charCode > 57) { // Allow only numbers (ASCII 48-57)
+        e.preventDefault();
+    }
 });
 
 </script>
