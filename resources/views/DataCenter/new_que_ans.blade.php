@@ -138,6 +138,7 @@ label {
 }
  
 button#prev-btn,
+button#prev-btn1,
 button#next-btn,
 button#submit-btn,
 button#submit-btn1 {
@@ -166,6 +167,7 @@ button#submit-btn1 {
 }
  
 button#prev-btn:after,
+button#prev-btn1:after
 button#next-btn:after,
 button#submit-btn:after,
 button#submit-btn1:after {
@@ -180,7 +182,8 @@ button#submit-btn1:after {
     transition: transform .3s;
 }
  
-button#prev-btn:hover::after,
+button#prev-btn:hover::after
+button#prev-btn1:hover::after,
 button#next-btn:hover::after,
 button#submit-btn:hover::after,
 button#submit-btn1:hover::after{
@@ -1813,7 +1816,7 @@ p.lang-p {
                     </div>
                   </div>
                   <div id="q-box__buttons"> 
-                  <button id="prev-btn" class="lang-prev-37" type="button">Prev</button> 
+                  <button id="prev-btn1" class="lang-prev-37" type="button">Prev</button> 
                   <button id="next-btn" class="lang-que-37 form_submit" type="button" value="submit">Save</button>
                   </div>
               </div>
@@ -2749,18 +2752,20 @@ p.lang-p {
         });
    
 
-        $('.form_submit').click(function() {
+        $('.form_submit').click(function () {
     if ($("input:radio[name='que_37']").is(":checked")) {
         console.log($("input:radio[name='que_37']").val());
         if ($("input:radio[name='que_37']").val() != '') {
             console.log($("input:radio[name='que_37']").val());
             toastr.clear();
 
-            // Disable the save button and show spinner
+            // Disable the Save and Prev buttons and show spinner on Save button
             $('.form_submit')
                 .prop('disabled', true)
                 .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
-
+            
+            $('#prev-btn1').prop('disabled', true); // Disable the Prev button
+            
             $('.progress-bar').width(1000);
             $('#register').submit(); // Submit the form
         } else {
