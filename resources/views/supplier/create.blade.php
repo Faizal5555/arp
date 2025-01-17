@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 <div class="card-header header-elements-inline">
                 <div class="card-title">
-                    <div class="sub-text">Add Supplier
+                    <div class="sub-text">Add Suppliers
                      </div>
                     </div>
                 </div>
