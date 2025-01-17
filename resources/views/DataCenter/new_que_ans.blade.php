@@ -735,7 +735,7 @@ p.lang-p {
                 </div>
                <div class="mt-2">
                   <label class="form-label">Phone / Mobile Number:</label> 
-                  <input class="form-control lang-cal3" id="phone" name="phone" type="number" name="phone" minlength="9" minlength="10">
+                  <input class="form-control lang-cal3" id="phone" name="phone" type="number" name="phone" minlength="9" maxlength="15">
                   <span class="error-message text-danger" id="phone-error"></span>
                 </div>
                <div class="mt-2">
@@ -2829,7 +2829,7 @@ $(document).ready(function () {
                 url: "{{ route('checkEmail') }}",
                 type: "POST",
                 data: { email: email },
-                success: function () {
+                success: function (response) {
                     $('#email-error').text(''); // Clear the error message
                     $('#email').removeClass('is-invalid'); // Remove the invalid class
                     checkFormValidity(); // Re-check form validity
@@ -2864,7 +2864,7 @@ $(document).ready(function () {
                 url: "{{ route('checkEmail') }}",
                 type: "POST",
                 data: { phone: phone },
-                success: function () {
+                success: function (response) {
                     $('#phone-error').text(''); // Clear the error message
                     $('#phone').removeClass('is-invalid'); // Remove the invalid class
                     checkFormValidity(); // Re-check form validity
@@ -2895,7 +2895,11 @@ $(document).ready(function () {
     checkFormValidity();
 });
 
-
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted || performance.navigation.type === 2) {
+        window.location.reload();
+    }
+});
 
   </script>
 </body>
