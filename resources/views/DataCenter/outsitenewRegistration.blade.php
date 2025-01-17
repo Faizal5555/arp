@@ -475,7 +475,8 @@
                     required:true
                 },
                 licenceNumber:{
-                    required:true
+                    required:true,
+                    
                 },
                 permonth:{
                     required:true,
@@ -738,6 +739,8 @@ $('#permonth').on('keypress', function (e) {
         e.preventDefault();
     }
 });
+
+
 
 </script>
 

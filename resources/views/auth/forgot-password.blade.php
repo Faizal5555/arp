@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/forgot-password">
-                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="https://www.universalresearchpanels.com/wp-content/uploads/2021/06/logo.png" alt="Asia Research Partners LLP">
+                <img class="btMainLogo" style="width: 200px;" data-hw="1.7966666666667" src="https://www.asiaresearchpartners.com/adminapp/assets/images/logo-3.png" alt="Asia Research Partners LLP">
             </a>
         </x-slot>
 
