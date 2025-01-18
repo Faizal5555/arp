@@ -135,11 +135,11 @@ button.dt-button.buttons-excel.buttons-html5:hover {
 button.dt-button.buttons-excel.buttons-html5 {
     display: none;
 }
-@if(auth()->user()->user_type == 'admin')
+/* @if(auth()->user()->user_type == 'admin') */
 button.dt-button.buttons-excel.buttons-html5 {
     display: block;
 }
-@endif
+/* @endif */
     </style>
 @section('page_title', 'Client List')
 @section('content')
@@ -331,8 +331,14 @@ button.dt-button.buttons-excel.buttons-html5 {
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="shortcut icon" href="../../assets/images/favicon.ico" />
 @endpush
-@section('scripts')
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if(auth()->user()->user_type == 'admin')
+            document.querySelector('.dt-button.buttons-excel.buttons-html5').style.display = 'block';
+        @endif
+    });
+</script>
 
 
 
-@endsection
