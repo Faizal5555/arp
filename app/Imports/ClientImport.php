@@ -21,17 +21,38 @@ class ClientImport implements ToModel, WithHeadingRow, WithValidation
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    public function rules(): array
-    {
-        return [
-             'client_name' => 'required|alpha',
-             'client_country' => 'required|alpha',
-             'client_manager' => 'required|alpha',
-             'client_email' => 'required|email|max:100|unique:client',
-             'client_phoneno' => 'required|numeric|min:9',
-             'client_whatsapp' => 'required|numeric|min:9'
-        ];
-    }
+  public function rules(): array
+{
+    return [
+        'client_name' => 'required|alpha',
+        'client_country' => 'required|alpha',
+        'client_manager' => 'required|alpha',
+        'client_email' => [
+            'required',
+            'email',
+            'max:100',
+            function ($attribute, $value, $fail) {
+                // Check if email exists in the clients table
+                if (Client::where('client_email', $value)->exists()) {
+                    $fail("The email '{$value}' is already registered.");
+                }
+            },
+        ],
+        'client_phoneno' => [
+            'required',
+            'numeric',
+            'digits_between:9,15',
+            function ($attribute, $value, $fail) {
+                // Check if phone number exists in the clients table
+                if (Client::where('client_phoneno', $value)->exists()) {
+                    $fail("The phone number '{$value}' is already registered.");
+                }
+            },
+        ],
+        'client_whatsapp' => 'required|numeric|digits_between:9,15',
+    ];
+}
+
    
 
          public function model(array $row)

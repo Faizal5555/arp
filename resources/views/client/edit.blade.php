@@ -83,7 +83,7 @@ button#addRegisterButton:hover {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <form id="{{ $client && $client->id ? 'update' : 'register'}}" class="form col-md-12 d-flex flex-wrap"
+                        <form id="{{ $client && $client->id ? 'update' : 'register'}}" class="flex-wrap form col-md-12 d-flex"
                            enctype="multipart/form-data">
                            @csrf
 
@@ -166,7 +166,7 @@ button#addRegisterButton:hover {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <a href="{{route('client.index')}}" class="btn btn-outline-secondary">Back</a>
                                 <button type="submit" id="addRegisterButton"
-                                    class="btn btn-success ml-2">Update</button>
+                                    class="ml-2 btn btn-success">Update</button>
                             </div>
                         </form>
                     </div>
@@ -179,7 +179,10 @@ button#addRegisterButton:hover {
 </div>
 
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 
 @section('css')
@@ -249,23 +252,31 @@ button#addRegisterButton:hover {
                     contentType: false,
                     dataType: "json",
                     success: function (data) {
-                        if (data.success == 1) {
-                            swal({
-                            title:'Success',
-                            text:'Client Updated Successfully',
-                            icon:'success',
-                            buttons:false
-                        })
-                            window.location = "{{route('client.index')}}";
+                    if (data.success === 1) {
+                        swal.fire({
+                            title: 'Success',
+                            text: 'Client updated successfully',
+                            icon: 'success',
+                            buttons: false
+                        });
+                        window.location = "{{route('client.index')}}";
+                    } else if (data.success === 0) {
+                        if (data.message) {
+                            swal.fire({
+                                title: 'Error',
+                                text: data.message,
+                                icon: "warning",
+                                button: false
+                            });
                         }
-                        else {
-                            swal({
-                            title:'Please Fill All Fields',
-                            icon:"warning",
-                            button:false
-                        })
+                        if (data.error) {
+                            $.each(data.error, function (index, error) {
+                                $("[name='" + index + "']").addClass("error").after("<label class='error'>" + error + "</label>");
+                            });
                         }
                     }
+                }
+
 
                 });
             }

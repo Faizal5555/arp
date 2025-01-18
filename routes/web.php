@@ -88,7 +88,7 @@ Route::post('/client/update', 'App\Http\Controllers\ClientController@update')->n
 Route::get('/client/export', 'App\Http\Controllers\ClientController@export')->name('client.export');
 Route::get('/client/import', 'App\Http\Controllers\ClientController@importview');
 Route::post('/client/import', 'App\Http\Controllers\ClientController@import')->name('client.import');
-
+Route::get('/client/import1', 'App\Http\Controllers\ClientController@downloadclientSampleFile')->name('client.sample');
 //vendor
 
 Route::get('/vendor/index', 'App\Http\Controllers\VendorController@index')->name('vendor.index');

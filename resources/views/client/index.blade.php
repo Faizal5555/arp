@@ -286,7 +286,7 @@ button.dt-button.buttons-excel.buttons-html5 {
                 <br>
                 <button class="btn btn-success">Import Client Data</button>
                 
-                <a href="{{url('adminapp/public/global_assets/demoexample/demo.csv')}}">Example clientsheet</a>
+                <a href="{{ route('client.sample') }}">Download Sample File</a>
             
             </form>
         </div>
