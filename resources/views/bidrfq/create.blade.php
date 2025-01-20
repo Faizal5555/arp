@@ -679,10 +679,10 @@
                                     </button>
                                     <div class="col-md-12 d-flex align-items-center justify-content-center mb-4">
                                         <button class="btn btn-sucess format-btn-1 active" type="button">
-                                            Format 1
+                                            Qualitative RFQs
                                         </button>
                                         <button class="btn btn-seconday format-btn-2 ml-2" type="button">
-                                            Format 2
+                                            Quantitative RFQs
                                         </button>
                                     </div>
                                     <div class="col-lg-12">
