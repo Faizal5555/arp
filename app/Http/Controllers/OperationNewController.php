@@ -25,6 +25,7 @@ use Auth;
 use Session;
 use DataTables;
 use App\Models\operationImage;
+use DB;
 
 class OperationNewController extends Controller
 {
@@ -1286,7 +1287,7 @@ class OperationNewController extends Controller
     
         public function usersview(Request $request){
             $user = Auth()->user();
-            $users=User::latest()->get();
+            $users = User::where('user_type', '!=', 'admin')->latest()->get(); 
             $country=Country::get();
             if($request->ajax()){
                 return Datatables::of($users)
@@ -1365,6 +1366,15 @@ class OperationNewController extends Controller
                $create->user_type =$req->user_type;
                $create->user_role=$req->user_role;
                if($create->save()){
+
+                if ($req->user_type === 'global_team' && $req->has('global_manager_id')) {
+                    DB::table('global_manager_team')->insert([
+                        'global_manager_id' => $req->global_manager_id,
+                        'global_team_id' => $create->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
                    event(new SendUserMail([$req->email,$req->password]));
                    $response_data=["success"=>1,"message"=>"register Success"];
                }
