@@ -114,6 +114,7 @@
     .btnn:hover .dropdown-content-two {
         display: block;
     }
+    
 
     /*for notification*/
 </style>
@@ -128,18 +129,18 @@
         <!--/*for notification*/-->
         <br>
         <div id="won_noti">
-            <div class="col-md-11 container d-flex justify-content-end">
+            <div class="container col-md-11 d-flex justify-content-end">
                 <div class="dropdown">
                     <a class="nav-link " href="#"><i class="fas fa-bell fa-lg"></i><span
                             class="badge">{{ $notificationCount }}</span></a>
-                    <div class="dropdown-content  " style="width: 200px;margin-left:-100px">
+                    <div class="dropdown-content " style="width: 200px;margin-left:-100px">
                         <div class="btnn">
                             @if ($notificationCount > 0)
                                 <h6 class="text-center" style="color:rgb(183,110,255)"><button class="btn1"
                                         style="all:unset">{{ $notificationCount }} New Won Project</button></h6>
                             @endif
                             <div class="dropdown-content-two" id="ui-notification">
-                                <ul class="nav flex-column  sub-menu1">
+                                <ul class="nav flex-column sub-menu1">
                                     @if (count($notification) > 0)
                                         @foreach ($notification as $value)
                                             <li class="text-center notify-won" data-win="{{ $value->rfq_no }}">
@@ -166,7 +167,7 @@
 
                     <div class="card-body">
                         <div class="row">
-                            {{-- <form id="update" class="form col-md-12 d-flex flex-wrap"
+                            {{-- <form id="update" class="flex-wrap form col-md-12 d-flex"
                            enctype="multipart/form-data">
                            @csrf --}}
                             <input type="hidden" value="rfq_no_id">
@@ -192,9 +193,9 @@
                                 </div>
                             </div>
 
-                            <div class="card-body d-none" id="edit-rfq">
+                            <div class="card-body d-none w-100" id="edit-rfq">
                                 <div class="row">
-                                    <form id="rfq" class="form col-md-12 d-flex flex-wrap update"
+                                    <form id="rfq" class="flex-wrap form col-md-12 d-flex update"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="id" id="id" value="">
@@ -335,7 +336,7 @@
 
                                         <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                             <div class="form-group row">
-                                                <button class="btn btn-success btn-country mb-4 ml-2" type="button">Add
+                                                <button class="mb-4 ml-2 btn btn-success btn-country" type="button">Add
                                                     country</button>
 
 
@@ -354,21 +355,17 @@
                                                         $client_id = json_decode($bidrfq[0]->client_id);
                                                         $vendor_id = json_decode($bidrfq[0]->vendor_id);
                                                         ?>
-                                                        <tr>
-                                                            <th></th>
+                                                        <tr id="remove_country_row">
+                                                            {{-- <th><th> --}}
                                                             @if (!is_null($world))
                                                                 @foreach ($world as $kv => $value)
                                                                     @if (!is_null($value))
                                                                         @foreach ($value as $data)
-                                                                            <th
-                                                                                class="country_remove_{{ $kv }}_13">
-                                                                                <button
-                                                                                    class="btn btn-danger remove-country mb-4 ml-2"
-                                                                                    data-remove="{{ $kv }}"
-                                                                                    type="button">
-                                                                                    <i class="fa-solid fa-xmark"></i>
-                                                                                </button>
-                                                                            </th>
+                                                                        <th class="country_remove_{{$kv}}_13">
+                                                                            <button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="{{$kv}}" type="button">
+                                                                                               <i class="fa-solid fa-xmark"></i> 
+                                                                           </button>     
+                                                                           </th>
                                                                             @if (!is_null($vendor_id))
                                                                                 @foreach ($vendor_id as $k1 => $v1)
                                                                                     @if (!is_null($v1))
@@ -429,14 +426,14 @@
                                             <a href="" class=" btn btn-outline-secondary"
                                                 id="won-rfq-btn1">Back</a>
                                             <button type="submit" id="addRegisterButtons"
-                                                class="btn btn-success ml-2 rfq-sub d-none">Update</button>
-                                            <p id="nextrfq" class="btn btn-primary m-2 won-rfq-btn2">Next</button>
+                                                class="ml-2 btn btn-success rfq-sub d-none">Update</button>
+                                            <p id="nextrfq" class="m-2 btn btn-primary won-rfq-btn2">Next</button>
 
                                         </div>
                                         <div class="col-md-12 d-flex align-items-end justify-content-end">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                                                <div class="col-lg-9 pl-2">
+                                                <div class="pl-2 col-lg-9">
                                                     <input name="last_edited_by" id="user" type="text"
                                                         class="form-control user" placeholder="Last Edited by" readonly>
                                                 </div>
@@ -448,7 +445,7 @@
 
                             <div class="card-body">
                                 <div class="row d-none" id="otherFieldDiv">
-                                    <form id="won" class="form col-md-12 d-flex flex-wrap update"
+                                    <form id="won" class="flex-wrap form col-md-12 d-flex update"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
@@ -636,7 +633,7 @@
                                                         <div id="client_contract_attachment">
                                                         </div>
                                                         <!--<input name="client_contract" value=""-->
-                                                        <!--    id="client_contract" type="file" class="form-control p-1" placeholder="Attach Client Contract">-->
+                                                        <!--    id="client_contract" type="file" class="p-1 form-control" placeholder="Attach Client Contract">-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -758,7 +755,7 @@
                                                                     <input name="vendor_contract_0[{{ $key }}]"
                                                                         style="text-transform: capitalize;" id="otherField16"
                                                                         type="file" value="{{ $value4 }}"
-                                                                        class="form-control p-1" placeholder="Attach Vendor Contract">
+                                                                        class="p-1 form-control" placeholder="Attach Vendor Contract">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -776,15 +773,15 @@
 
                                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                                 <button id="Won_back" class="btn btn-outline-secondary">Back</button>
-                                                <button id="next" class="btn btn-success ml-2">Next</button>
+                                                <button id="next" class="ml-2 btn btn-success">Next</button>
                                                 {{-- <button type="submit" id="addRegisterButton"
                                         class="btn btn-success ">Submit</button>
-                                        <a href="{{route('operationNew.create')}}" class=" btn btn-primary ml-2">Next</a> --}}
+                                        <a href="{{route('operationNew.create')}}" class="ml-2 btn btn-primary">Next</a> --}}
                                             </div>
                                             <div class="col-md-12 d-flex align-items-end justify-content-end">
                                                 <div class="form-group row">
                                                     <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                                                    <div class="col-lg-9 pl-2">
+                                                    <div class="pl-2 col-lg-9">
                                                         <input name="last_edited_by" id="user" type="text"
                                                             class="form-control user" placeholder="Last edited by"
                                                             readonly>
@@ -817,7 +814,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <form id="{{ $operation && $operation->id ? 'update' : 'register' }}"
-                                        class="form col-md-12 d-flex flex-wrap" enctype="multipart/form-data">
+                                        class="flex-wrap form col-md-12 d-flex" enctype="multipart/form-data">
                                         @csrf
                                         <input id="bidrfqCount" type="hidden" value="1" name="bidrfqCount">
                                         <input type="hidden" name="rfq" id="operation_rfq_no">
@@ -950,7 +947,7 @@
                                                     Documents
                                                     <span class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <i class="fa-solid fa-circle-plus add float-right"
+                                                    <i class="float-right fa-solid fa-circle-plus add"
                                                         style="color:green;" data-id="1"></i>
                                                     <input name="other_document[]" style="text-transform: capitalize" ;
                                                         value="" type="file" class="form-control"
@@ -975,13 +972,13 @@
                                             <div class="form-group row">
                                                 <label class="col-lg-12 col-form-label font-weight-semibold">Target
                                                     Table<span class="text-danger">*</span></label>
-                                                <button class="btn btn-danger  ml-2" style="float: right;"id="addBtn"
+                                                <button class="ml-2 btn btn-danger" style="float: right;"id="addBtn"
                                                     data-count="0" type="button">
                                                     Add New Country
                                                 </button>
                                                 <div class="col-md-12 table-responsive" style="overflow-x:auto;">
 
-                                                    {{-- <button class="btn btn-danger  ml-2" class="removeBtn" type="button">
+                                                    {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
                                                     <table border="1" name="" id="mtable">
@@ -1116,7 +1113,7 @@
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
                                             <a href="" id="add_reg" class="btn btn-outline-secondary">Back</a>
                                             <button type="submit" id="addRegisterButton"
-                                                class="btn btn-success ml-2">Submit</button>
+                                                class="ml-2 btn btn-success">Submit</button>
                                         </div>
                                     </form>
                                 </div>
@@ -1551,81 +1548,69 @@
                             var vendor_id = JSON.parse(data.bidrfq.vendor_id);
                             console.log("user", user);
                             let worldHtml = '<th>Country</th>';
+                            let removeHtml = `<th><th>`;
 
-                            if (world.length != 0) {
-                                $.each(world, function(kv, value) {
-                                    if (value != null) {
-                                        $.each(value, function(dataIndex, data) {
-                                            worldHtml +=
-                                                '<th class="data-country country_remove_' + kv +
-                                                '">';
-                                            worldHtml +=
-                                                '<label class="form-group has-float-label">';
-                                            worldHtml +=
-                                                '<select class="form-control label-gray-3" name="country_0[' +
-                                                kv + '][]">';
-                                            worldHtml +=
-                                                '<option class="label-gray-3" value="' + data +
-                                                '">' + data + '</option>';
+if (world.length != 0) {
+    $.each(world, function (kv, value) {
+        if (value != null) {
+            $.each(value, function (dataIndex, data) {
+                worldHtml += '<th class="data-country country_remove_' + kv + '">';
+                worldHtml += '<label class="form-group has-float-label">';
+                worldHtml +=
+                    '<select class="form-control label-gray-3" name="country_0[' +
+                    kv + '][]">';
+                worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
+                if(kv == 0)
+                {
+                    removeHtml += `<th class="remove-country-${kv}"></th>`;
+                }else{
+                    removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                    </button></th>`;
+                }
+                removeHtml += `<th class="remove-country-${kv}"></th>`;
+                // Loop through countries passed from Blade
+                var countries = <?php echo json_encode($country); ?>;
+                if (countries.length > 0) {
+                    $.each(countries, function (index, country) {
+                        worldHtml += '<option value="' + country.name + '"';
+                        if (data === country.name) {
+                            worldHtml += ' selected';
+                        }
+                        worldHtml += '>' + country.name + '</option>';
+                    });
+                }
 
-                                            // Loop through the country data passed from Blade using JavaScript
-                                            var countries = <?php echo json_encode($country); ?>;
-                                            if (countries.length > 0) {
-                                                $.each(countries, function(index, country) {
-                                                    worldHtml += '<option value="' +
-                                                        country.name + '"';
-                                                    if (data === country.name) {
-                                                        worldHtml += ' selected';
-                                                    }
-                                                    worldHtml += '>' + country.name +
-                                                        '</option>';
-                                                });
-                                            }
+                worldHtml += '</select>';
+                worldHtml += '<span>Country</span>';
 
-                                            worldHtml += '</select>';
-                                            worldHtml += '<span>Country</span>';
-                                            $.each(vendor_id, function(k1, value) {
-                                                $.each(value, function(k1, k) {
-                                                    if (k != null) {
-                                                        worldHtml +=
-                                                            '<td class="country_remove_{{ $kv }}_11"></td>';
-                                                        worldHtml +=
-                                                            '<th class="abcversion_{{ $kv }}_coun country_remove_{{ $kv }}_10">';
-                                                        worldHtml +=
-                                                            '<button class="btn btn-success ml-2 float-left addvendor" data-button="{{ $kv }}" type="button">';
-                                                        worldHtml +=
-                                                            'Add vendor';
-                                                        worldHtml +=
-                                                            '</button>';
-                                                        worldHtml +=
-                                                            '<button class="btn btn-success btn-remove mb-4 ml-2" data-remove="{{ $kv }}" type="button">';
-                                                        worldHtml +=
-                                                            '<i class="fa-solid fa-xmark"></i>';
-                                                        worldHtml +=
-                                                            '</button>';
-                                                        worldHtml += '</th>';
-                                                        worldHtml += '</label>';
-                                                        worldHtml += '</th>';
-                                                    }
-                                                });
-                                            });
-                                            worldHtml +=
-                                                '<button class="btn btn-success ml-2 float-right addvendor" data-button="' +
-                                                kv + '" type="button">Add vendor</button>';
-                                            worldHtml +=
-                                                '<button class="btn btn-success btn-remove mb-4 ml-2" data-remove="' +
-                                                kv +
-                                                '" type="button"><i class="fa-solid fa-xmark"></i></button>';
-                                            worldHtml += '</label>';
-                                            worldHtml += '</th>';
+                // Append Add Vendor and Remove Country buttons only once per country
+                // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
+                worldHtml +=
+                    '<th class="abcversion_' +
+                    kv +
+                    '_coun country_remove_' +
+                    kv +
+                    '_10">';
+                worldHtml +=
+                    '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
+                    kv +
+                    '" type="button">Add vendor</button>';
+                worldHtml +=
+                    '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
+                    kv +
+                    '" type="button"><i class="fa-solid fa-xmark"></i></button>';
+                worldHtml += '</th>';
+                worldHtml += '</label>';
+                worldHtml += '</th>';
+            });
+        }
+    });
+}
 
-                                        });
-                                    }
-                                });
-                            }
-
-                            $('#world_row').html(worldHtml);
-
+// Render the final HTML
+$('#remove_country_row').html(removeHtml);
+$('#world_row').html(worldHtml);
 
 
 
@@ -1649,7 +1634,7 @@
                                         $.each(clientData, function(index, clientItem) {
                                             vendorRowHtml += '<option value="' +
                                                 clientItem.client_name + '"';
-                                            if ('{{ $data }}' === clientItem
+                                            if (data === clientItem
                                                 .client_name) {
                                                 vendorRowHtml += ' selected';
                                             }
@@ -1679,7 +1664,7 @@
                                         $.each(vendorData, function(index, vendorItem) {
                                             vendorRowHtml += '<option value="' +
                                                 vendorItem.vendor_name + '"';
-                                            if ('{{ $data }}' === vendorItem
+                                            if (data === vendorItem
                                                 .vendor_name) {
                                                 vendorRowHtml += ' selected';
                                             }
@@ -1943,11 +1928,12 @@
                         }
                     });
 
-
+                   
                 });
 
+
                 $(document).on('click', '.addvendor', function() {
-                    debugger
+                    //debugger
                     var key = $(this).attr('data-button');
                     var d = 1 + parseInt($('.abcversion_' + key + '_2').last().attr("data-id"));
                     var count = 1;
@@ -2007,7 +1993,7 @@
                       <tbody class="mytbody_${rar}">
                       <tr>
                       <th class="btn-length">
-                      <button class="btn btn-danger  ml-2 float-left btn-remove-country1" data-country1="${rar}"  type="button">
+                      <button class="float-left ml-2 btn btn-danger btn-remove-country1" data-country1="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                       </th>
                       </tr>
@@ -2027,14 +2013,14 @@
                                         
                                 </th>
                                 <th>
-                                <button class="btn btn-success   float-left addvendor" data-button="${rar}" data-count="0"   type="button">
+                                <button class="float-left btn btn-success addvendor" data-button="${rar}" data-count="0"   type="button">
                                         Add vendor
                                     </button>
                                     
                                 </th>
                                 
                                 <th>
-                                <button class="btn btn-success   float-left btn-remove" data-remove="${rar}"  type="button">
+                                <button class="float-left btn btn-success btn-remove" data-remove="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                                 </th>
                             </tr>
@@ -2058,7 +2044,14 @@
 
                                     </td>
                                     <td class="abcversion_${rar}" data-arr="0">
-                                    
+                                     <select class="form-control label-gray-3" name="vendor_id_0[${rar}][]">
+                                        <option class="label-gray-3" value="">Vendor</option>
+                                            @if(count($vendor) > 0)
+                                            @foreach($vendor as $v)
+                                        <option value="{{$v->vendor_name}}">{{$v->vendor_name}}</option>
+                                            @endforeach
+                                            @endif
+                                    </select>
                                    
                                 </div>
                                 </label>
@@ -2397,7 +2390,7 @@
 
                 $(document).on('click', '.remove-country', function() {
                     var country = $(this).attr('data-remove');
-
+                    $(`.remove-country-${country}`).remove();
                     $('.country_remove_' + country).remove();
                     $('.country_remove_' + country + '_1').remove();
                     $('.country_remove_' + country + '_2').remove();
@@ -2412,7 +2405,8 @@
                     $('.country_remove_' + country + '_11').remove();
                     $('.country_remove_' + country + '_12').remove();
                     $('.country_remove_' + country + '_13').remove();
-
+                    // $(this).closest('th').remove();
+                    // $(this).remove();
 
                 })
 
@@ -2646,6 +2640,7 @@
 
                     }
                 });
+                
                 // for notification
             </script>
 
@@ -2761,6 +2756,14 @@
 
 
                 })
+
+                $(document).on('click', '.add-country', function() {
+    const countryCount = $('table thead tr th').length;
+    $('table thead tr').append(`<th>Country ${countryCount}</th>`);
+    $('table tbody tr').each(function() {
+        $(this).append('<td><input type="text" value="0"></td>');
+    });
+});
             </script>
             <script>
                 $(document).on('click', '#next', function() {
@@ -2929,7 +2932,7 @@
             <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
         </td>
         <td>
-            <button class="btn btn-danger  ml-2" id="removeBtn" type="button">
+            <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
                                             Remove Country
                                         </button>
         </td>
@@ -2945,7 +2948,7 @@
                 $(document).on('click', '.add', function() {
                     var data_id = parseInt($(this).attr('data-id'));
                     $("#other_document").append(
-                        `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[${data_id}]" class="form-control mt-1"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
+                        `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[${data_id}]" class="mt-1 form-control"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
                     );
                     $('.add').attr('data-id', `${data_id+1}`);
                 })
