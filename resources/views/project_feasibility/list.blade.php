@@ -72,7 +72,9 @@
                     <th>Total Incentive paid</th>
                     <th>Incentive Paid Date</th>
                     <th>Mode of Payment</th>
-                    <th>Actions</th>
+                    @if($user_type === 'admin' || $user_type === 'global_manager')
+                    <th>Action</th> <!-- Show 'User' column only for admins -->
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -266,10 +268,12 @@
                 <td>${row.total_incentive_paid}</td>
                 <td>${row.incentive_paid_date}</td>
                 <td>${row.mode_of_payment}</td>
-                 <td>
-                    <button class="btn btn-warning btn-sm edit-btn" data-id="${row.id}">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
-                </td>
+                   ${userType === 'admin' || userType === 'global_manager' ? `
+                    <td>
+                        <button class="btn btn-info btn-sm edit-btn" data-id="${row.id}">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
+                    </td>
+                ` : ''}
             </tr>
         `);
     });

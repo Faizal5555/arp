@@ -75,53 +75,47 @@ class ProjectFeasibilityController extends Controller
 
      public function index()
      {
-        return view('project_feasibility.list');
+        return view('project_feasibility.list', [
+            'user_type' => auth()->user()->user_type
+        ]);
      }
 
 
-     public function ListData(Request $request)
-     {
-         // Get the authenticated user's type
-         $userType = auth()->user()->user_type;
-     
-         // Initialize the query
-         $query = ProjectFeasibility::query();
-     
-         // If the user is an employee, apply the user-specific filter
-         if ($userType === 'user') {
-             $query->where('user_id', auth()->id());
-         }
-     
-         // Apply filters
-         if ($request->has('from_date') && !empty($request->from_date)) {
-             $query->where('date', '>=', $request->from_date);
-         }
-     
-         if ($request->has('to_date') && !empty($request->to_date)) {
-             $query->where('date', '<=', $request->to_date);
-         }
-     
-         if ($request->has('pn_number') && !empty($request->pn_number)) {
-             $query->where('pn_number', 'LIKE', '%' . $request->pn_number . '%');
-         }
-     
-         if ($request->has('country') && !empty($request->country)) {
-             $query->whereRaw('LOWER(JSON_EXTRACT(target_countries, "$")) LIKE ?', [strtolower($request->country)]);
-         }
-     
-         if ($request->has('responded_titles') && !empty($request->responded_titles)) {
-             $query->whereRaw('LOWER(responded_titles) LIKE ?', ['%' . strtolower($request->responded_titles) . '%']);
-         }
-     
-         // Fetch data
-         $projects = $query->get();
-     
-         return response()->json([
-             'data' => $projects,
-             'user_type' => $userType,
-         ]);
-     }
-     
+    public function ListData(Request $request)
+    {
+        $query = ProjectFeasibility::query();
+
+        // Apply filters
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $query->where('date', '>=', $request->from_date);
+        }
+    
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $query->where('date', '<=', $request->to_date);
+        }
+    
+        if ($request->has('pn_number') && !empty($request->pn_number)) {
+            $query->where('pn_number', 'LIKE', '%' . $request->pn_number . '%');
+        }
+    
+        if ($request->has('country') && !empty($request->country)) {
+            $query->whereRaw('LOWER(JSON_EXTRACT(target_countries, "$")) LIKE ?', [strtolower($request->country)]);
+        }
+        
+        if ($request->has('responded_titles') && !empty($request->responded_titles)) {
+            $query->whereRaw('LOWER(responded_titles) LIKE ?', ['%' . strtolower($request->responded_titles) . '%']);
+        }
+    
+        // Fetch data
+        $projects = $query->get();
+        $userType = auth()->user()->user_type;
+    
+        return response()->json([
+            'data' => $projects,
+            'user_type' => $userType,
+        ]);
+
+    }
 
     public function edit($id)
 {
