@@ -848,7 +848,8 @@ input.form-control {
                                                                 <div class="col-lg-9">
             
                                                                     <a target="_blank" download
-                                                                        href="{{ url($value4) }}">{{ $value4 }}</a>
+                                                                    href="{{ url($value4 ? 'adminapp/public/'.$value4 : '') }}">{{ $value4 ? 'adminapp/public/'.$value4 : '' }}</a>
+
                                                                     <input name="vendor_contract_0[{{ $key }}]"
                                                                         style="text-transform: capitalize;" id="otherField16"
                                                                         type="file" value="{{ $value4 }}"
