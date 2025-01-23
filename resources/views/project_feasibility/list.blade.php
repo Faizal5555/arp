@@ -160,7 +160,7 @@
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <label for="edit-no_of_sample_required">No. of Samples Required</label>
-                            <input type="number" name="no_of_sample_required" id="edit-no_of_sample_required" class="form-control" required>
+                            <input type="text" name="no_of_sample_required" id="edit-no_of_sample_required" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label for="edit-no_of_sample_delivered">No. of Samples Delivered</label>
