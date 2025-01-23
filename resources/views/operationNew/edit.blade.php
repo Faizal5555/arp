@@ -1007,7 +1007,9 @@ input.form-control {
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Attach Questionnaire <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-9">
-                                    <a target="_blank" download href="{{url($operation && $operation->questionnarie ? $operation->questionnarie : '')}}">{{$operation && $operation->questionnarie ? $operation->questionnarie : ''}}</a>
+                                    <a target="_blank" download href="{{ url($operation && $operation->questionnarie ? 'adminapp/public/'.$operation->questionnarie : '') }}">
+                                        {{ $operation && $operation->questionnarie ? 'adminapp/public/'.$operation->questionnarie : '' }}
+                                    </a>
                                         <input name="questionnarie" value="{{$operation && $operation->questionnarie ? $operation->questionnarie : ''}}"
                                              type="file" id="my-questionnarie" class="form-control" placeholder="Attach Questionnaire">
                                     </div>
@@ -1021,7 +1023,9 @@ input.form-control {
                                     @if(isset($operation->operationNewImage) && count($operation->operationNewImage)>0)
                                      @foreach($operation->operationNewImage as $k=> $value)
                                         <div class="division_{{$value->id}}" >
-                                      <a download href="{{url($value && $value->other_documents  ? $value->other_documents  : '')}}" target="_blank" class="other_document_{{$k}}"> {{$value && $value->other_documents  ? $value->other_documents  : ''}}</a>
+                                      <a download href="{{ url($value && $value->other_documents ? 'adminapp/public/'.$value->other_documents : '') }}" target="_blank" class="other_document_{{$k}}">
+                                        {{ $value && $value->other_documents ? 'adminapp/public/'.$value->other_documents : '' }}
+                                    </a>
                                          
                                          @if($k != 0)<i class="fa-solid fa-circle-minus removebutton" style="color:red;" data-id="{{$value->id}}"></i>
                                          @endif
@@ -1041,7 +1045,10 @@ input.form-control {
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Attach Survey Link <span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-9">
-                                    <a target="_blank" download href="{{url($operation && $operation->survey_link  ? $operation->survey_link  : '')}}">{{$operation && $operation->survey_link  ? $operation->survey_link  : ''}}</a>
+                                    <a target="_blank" download href="{{ url($operation && $operation->survey_link ? 'adminapp/public/'.$operation->survey_link : '') }}">
+                                        {{ $operation && $operation->survey_link ? 'adminapp/public/'.$operation->survey_link : '' }}
+                                    </a>
+                                    
                                         <input name="survey_link" value="{{$operation && $operation->survey_link   ? $operation->survey_link   : ''}}"
                                              type="file" id="my-survey_link"  class="form-control" placeholder="Attach Survey Link">
                                     </div>

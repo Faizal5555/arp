@@ -1503,7 +1503,9 @@
                                             Email <span class="text-danger">*</span></label>
                                         <div class="col-lg-9">
                                             <a download target="_blank"
-                                                href="{{ url($wonproject->client_contract ? $wonproject->client_contract : '') }}">{{ $wonproject->client_contract ? $wonproject->client_contract : '' }}</a>
+                                            href="{{ url($wonproject->client_contract ? 'adminapp/public/'.$wonproject->client_contract : '') }}">
+                                            {{ $wonproject->client_contract ? 'adminapp/public/'.$wonproject->client_contract : '' }}
+                                        </a>
                                             <input name="client_contract" style="text-transform: capitalize;"
                                                 id="otherField15" type="file"
                                                 value="{{ $wonproject->client_contract ? $wonproject->client_contract : '' }} "
@@ -1735,12 +1737,14 @@
                                         <div class="col-lg-4 d-flex">
                                             <input class="form-control" readonly="readonly"
                                                 value="{{ $clientrequest && $clientrequest->client_contract ? $clientrequest->client_contract : '' }}">
-                                            <a target="_blank" download
-                                                href="{{ url($clientrequest && $clientrequest->client_contract ? $clientrequest->client_contract : '') }}"
+                                                <a target="_blank" download
+                                                href="{{ url($clientrequest && $clientrequest->client_contract ? 'adminapp/public/'.$clientrequest->client_contract : '') }}"
                                                 class="mdi mdi-download"
                                                 style="
-                                         margin-top: 10px;
-                                     "></a>
+                                                    margin-top: 10px;
+                                                ">
+                                             </a>
+                                             
                                         </div>
                                     </div>
                                 </div>
@@ -1762,12 +1766,13 @@
                                             @if ($clientrequest->upload_invoice != '')
                                                 <input class="form-control" readonly="readonly"
                                                     value="{{ $clientrequest && $clientrequest->upload_invoice ? $clientrequest->upload_invoice : '' }}">
-                                                <a target="_blank" download
-                                                    href="{{ url($clientrequest && $clientrequest->upload_invoice ? $clientrequest->upload_invoice : '') }}"
+                                                    <a target="_blank" download
+                                                    href="{{ url($clientrequest && $clientrequest->upload_invoice ? 'adminapp/public/'.$clientrequest->upload_invoice : '') }}"
                                                     class="mdi mdi-download"
                                                     style="
-                                         margin-top: 10px;
-                                     "></a>
+                                                        margin-top: 10px;
+                                                    ">
+                                                 </a>
                                             @else
                                                 <input type="file" name="upload_invoice" id="upload_invoice"
                                                     class="form-control" required>

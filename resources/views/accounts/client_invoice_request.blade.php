@@ -96,7 +96,7 @@ select.form-control {
                                     <div class="list-icons ">
                                         
                                        
-                                        <a href='{{env("APP_URL")}}accounts/clientview/${row.id}' ><i class="fas fa-eye"></i></a>
+                                        <a href='{{env("APP_URL")}}/accounts/clientview/${row.id}' ><i class="fas fa-eye"></i></a>
                                         </div>
                                     </div>
                                 </div>`;
