@@ -21,6 +21,11 @@ class ProjectFeasibility extends Model
         'no_of_sample_delivered',
         'incentive_promised',
         'responded_emails',
-        'user_id'
+        'user_id',
+        'total_incentive_paid',
+        'incentive_paid_date',
+        'mode_of_payment',
+
+
     ];
 }

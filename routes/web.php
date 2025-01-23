@@ -59,8 +59,13 @@ Route::get('/', function () {
     Route::post('/project-feasibility/store', 'App\Http\Controllers\ProjectFeasibilityController@store')->name('ProjectFeasibility.store');
     Route::get('/project-feasibility', 'App\Http\Controllers\ProjectFeasibilityController@index')->name('projectFeasibility.list');
     Route::get('/project-feasibility-data', 'App\Http\Controllers\ProjectFeasibilityController@ListData')->name('projectFeasibility.Data');
+    Route::get('/project-feasibility/{id}/edit', 'App\Http\Controllers\ProjectFeasibilityController@edit');
+    Route::put('/project-feasibility/{id}', 'App\Http\Controllers\ProjectFeasibilityController@update')->name('project-feasibility.update');
+    Route::delete('/project-feasibility/{id}', 'App\Http\Controllers\ProjectFeasibilityController@destroy')->name('project-feasibility.destroy');
+
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
+    
     
     Route::get('/sample-email-file', 'App\Http\Controllers\dataCenterController@generateEmailSampleFile')->name('sampleEmailFile');
     Route::get('/hcp-sample-download', 'App\Http\Controllers\dataCenterController@downloadHcpSampleFile')->name('hcp.sample.download');

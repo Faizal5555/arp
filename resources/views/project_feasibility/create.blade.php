@@ -64,17 +64,17 @@
                 </div>
                 <div class="col-md-5 form-group">
                     <label for="no_of_sample_required">No. of Samples Required</label>
-                    <input type="number" name="no_of_sample_required" id="no_of_sample_required" class="form-control" required>
+                    <input type="text" name="no_of_sample_required" id="no_of_sample_required" class="form-control" required>
                 </div>
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group">
                     <label for="no_of_sample_delivered">No. of Samples Delivered</label>
-                    <input type="number" name="no_of_sample_delivered" id="no_of_sample_delivered" class="form-control" required>
+                    <input type="text" name="no_of_sample_delivered" id="no_of_sample_delivered" class="form-control" required>
                 </div>
                 <div class="col-md-5 form-group">
                     <label for="incentive_promised">Incentive Promised</label>
-                    <input type="number" step="0.01" name="incentive_promised" id="incentive_promised" class="form-control" required>
+                    <input type="text" name="incentive_promised" id="incentive_promised" class="form-control" required>
                 </div>
             </div>
             <div class="row pl-2 d-flex justify-content-center">
@@ -87,8 +87,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5 form-group"></div>
+                <div class="col-md-5 form-group">
+                    <label for="total_incentive_paid">Total Incentive Paid</label>
+                    <input type="text" name="total_incentive_paid" id="total_incentive_paid" class="form-control" required>
+                </div>
             </div>
+            <div class="row pl-2 d-flex justify-content-center">
+                <div class="col-md-5 form-group">
+                    <label for="incentive_paid_date">Incentive Paid Date</label>
+                    <input type="date" name="incentive_paid_date" id="incentive_paid_date" class="form-control" required>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label for="mode_of_payment">Mode of Payment</label>
+                    <input type="text" name="mode_of_payment" id="mode_of_payment" class="form-control" required>
+                </div>
+            </div>
+            
             <div class="d-flex justify-content-center">
                 <button type="button" id="save-project" class="btn btn-primary">Save</button>
             </div>
