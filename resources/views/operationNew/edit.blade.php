@@ -871,7 +871,7 @@ input.form-control {
             
                                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                                 <button id="Won_back" class="btn btn-outline-secondary">Back</button>
-                                                <button id="next1" class="btn btn-success ml-2">Next</button>
+                                                <button id="next" class="btn btn-success ml-2">Next</button>
                                                 {{-- <button type="submit" id="addRegisterButton"
                                             class="btn btn-success ">Submit</button>
                                             <a href="{{route('operationNew.create')}}" class=" btn btn-primary ml-2">Next</a> --}}
@@ -3922,7 +3922,7 @@ $("#complete").validate({
        $('#bidrfq_edit').addClass('d-none');
    });
 
-   $(document).on('click',"#next1",function(){
+   $(document).on('click',"#next",function(){
        $('#edit-rfq').addClass('d-none');
        $('#otherFieldDiv').addClass('d-none');
        $('#bidrfq_edit').removeClass('d-none');
