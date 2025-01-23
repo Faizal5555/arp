@@ -727,7 +727,7 @@ input.form-control {
                                                         Email <span class="text-danger">*</span></label>
                                                     <div class="col-lg-9">
                                                         <a download target="_blank"
-                                                            href="{{ url($wonproject->client_contract ? $wonproject->client_contract : '') }}">{{ $wonproject->client_contract ? $wonproject->client_contract : '' }}</a>
+                                                            href="{{ url($wonproject->client_contract ? 'adminapp/public/'.$wonproject->client_contract : '') }}">{{ $wonproject->client_contract ? 'adminapp/public/'.$wonproject->client_contract : '' }}</a>
                                                         <input name="client_contract" style="text-transform: capitalize;"
                                                             id="otherField15" type="file"
                                                             value="{{ $wonproject->client_contract ? $wonproject->client_contract : '' }} "
@@ -1081,7 +1081,7 @@ input.form-control {
                                         {{-- <button class="btn btn-danger  ml-2" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
-                                    <table border="1" name="" id="mtable">
+                                    <table border="1" name="" id="mtables">
                                       
                                         <tr>
                                             <th class="operation-country">Country</th>
@@ -2602,12 +2602,12 @@ $(document).ready(function(){
         </td>
         <td>
             <button class="btn btn-danger  ml-2" id="removeBtn" type="button">
-                                            Remove Country
+                                            Remove
                                         </button>
         </td>
     </tr>`;
     $(document).on('click' ,'#addBtn',function(){
-    $("#mtable").append(html);
+    $("#mtables").append(html);
     });
    $(document).on('click', '#removeBtn', function(){  
          $(this).closest("tr").remove();
