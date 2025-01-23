@@ -981,7 +981,7 @@
                                                     {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
-                                                    <table border="1" name="" id="mtable">
+                                                    <table border="1" name="" id="mtables">
                                                         <tr>
                                                         <tr>
                                                             <th class="operation-country">Country</th>
@@ -2765,7 +2765,7 @@ $('#world_row').html(worldHtml);
     });
 });
             </script>
-            <script>
+             <script>
                 $(document).on('click', '#next', function() {
                     var rfq = $('#rfqno').val();
                     var client_advance = $('#client_advance').val();
@@ -2776,8 +2776,8 @@ $('#world_row').html(worldHtml);
                     $('#operation_client_advance').val(client_advance);
                     $('#opertion_client_id').val(client_id)
                 })
+    
             </script>
-
 
 
             <script>
@@ -2883,66 +2883,53 @@ $('#world_row').html(worldHtml);
                 })
             </script>
             <script>
-                $(document).on('click', '#addBtn', function() {
-                    var count = 1 + parseInt($('.operation_target').last().attr("data-count"));
-                    console.log(count);
-                    html = `<tr class="operation_target" data-count="${count}" id="addoperation">
-                                            
-        <td>
-            <select class="form-control label-gray-3" name="country_name_0[${count}]" id="country_name" required>
-            <option class="label-gray-3" value="">Select Country</option>
-                
-                @if (count($country) > 0)
-                @foreach ($country as $value)
-                <option value="{{ $value->name }}">{{ $value->name }}</option>
-                @endforeach
-                @endif
-            </select>
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
-                                            Remove Country
-                                        </button>
-        </td>
-    </tr>`;
+                $(document).ready(function () {
+    // Add new country functionality
+    $('#addBtn').on('click', function () {
+        // Get the last row's data-count or initialize to -1 if no rows exist
+        var lastRow = $('.operation_target').last();
+        var count = lastRow.length ? parseInt(lastRow.attr('data-count')) + 1 : 0;
 
-                    $("#mtable").append(html);
-                    $(document).on('click', '#removeBtn', function() {
-                        $(this).closest("tr").remove();
-                    });
-                });
+        // Construct the new row
+        var html = `
+        <tr class="operation_target" data-count="${count}">
+            <td>
+                <select class="form-control label-gray-3" name="country_name_0[${count}]" required>
+                    <option value="">Select Country</option>
+                    @if (count($country) > 0)
+                    @foreach ($country as $value)
+                    <option value="{{ $value->name }}">{{ $value->name }}</option>
+                    @endforeach
+                    @endif
+                </select>
+            </td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td>
+                <button type="button" class="ml-2 btn btn-danger removeBtn">Remove</button>
+            </td>
+        </tr>`;
+
+        // Append the new row to the table
+        $('#mtables').append(html);
+    });
+
+    // Remove country functionality
+    $(document).on('click', '.removeBtn', function () {
+        $(this).closest('tr').remove();
+    });
+});
+
 
 
                 $(document).on('click', '.add', function() {
@@ -2951,12 +2938,13 @@ $('#world_row').html(worldHtml);
                         `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[${data_id}]" class="mt-1 form-control"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
                     );
                     $('.add').attr('data-id', `${data_id+1}`);
-                })
+                });
 
 
                 $(document).on('click', '.minus', function() {
                     // alert("hi");
                     $(this).parent().remove();
                 });
+                
             </script>
         @endsection
