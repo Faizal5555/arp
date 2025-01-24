@@ -171,13 +171,9 @@ select.form-control {
               
               
             
-              {data: 'rfq_no', name: 'rfq_no'},
-              {data: 'project_type', name: 'project_type'},
-              {data: 'project_name', name: 'project_name'},
-              {data: 'project_execution', name: 'project_execution'},
-              {data: 'project_start_date', name: 'project_start_date'},
-              {data: 'project_end_date', name: 'project_end_date'},
-              
+              {data: 'rfq', name: 'rfq'},
+              {data: 'country_name', name: 'country_name'},
+              {data: 'client_id', name: 'client_id'},
               {data: '', 
                     render: (data,type,row) => {
                         return `<div class="text-center">
@@ -254,7 +250,7 @@ select.form-control {
          },
          success: function (data) {
              if(data.success == 1){
-             window.location.href=""+ '/wonproject/'+'projectstatus/'+data.rfq,
+             window.location.href=""+ '/adminapp/wonproject/'+'projectstatus/'+data.rfq,
              console.log(data);
              }
              if(data.success == 0){
@@ -295,7 +291,7 @@ select.form-control {
                                <label class="fcol-lg-3 col-form-label font-weight-semibold ml-3"> <span>RFQ No</span></label>
                                <input type='text' class="form-control" id='rfq_no' placeholder='Search RFQ No' name='rfq_no'  autocomplete='off'>
                                </div>
-                               <div class="col-md-3" style="padding-left: 20px !important;">
+                               {{-- <div class="col-md-3" style="padding-left: 20px !important;">
                                <label class="fcol-lg-3 col-form-label font-weight-semibold ml-3"> <span>Project Execution</span></label>
                                   <input type='text' class="form-control"  id='project_execution' placeholder='Search Project Execution' name='project_execution' autocomplete='off'> 
                                </div>
@@ -318,7 +314,7 @@ select.form-control {
                                                 <option value="Online">Online</option>
                                                 <option value="Offline">Offline</option>
                                    </select>
-                               </div>
+                               </div> --}}
                                </div>
                                
                                
@@ -327,11 +323,8 @@ select.form-control {
                                 <thead>
                                     <tr class="my-won">
                                         <th>RFQ No</th>
-                                        <th>Project Type</th>
-                                        <th>Project Name</th>
-                                        <th>Project Execution</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
+                                        <th>Country Name</th>
+                                        <th>Client Name</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>

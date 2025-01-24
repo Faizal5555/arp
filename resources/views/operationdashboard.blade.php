@@ -10,7 +10,12 @@
 
 {{-- for chartjs --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+  <style>
+    .status-badge {
+    font-size: 14px; /* Adjust as needed */
+    font-weight: bold; /* Optional for better emphasis */
+}
+  </style>
 <div class="content-wrapper">
             <div class="page-header">
               <h3 class="page-title">
@@ -145,23 +150,23 @@
                                 @endif
                                 </td>
                                 
-                               <td class="badge badge-gradient-success">
-                                      @if($data->status == 'hold')
-                                       Ongoing Project
-                                      @elseif($data->status == 'completed')
-                                        Completed
-                                      @else
-                                      Project Stop In Middle
-                                       @endif
-                                     </td>
+                                <td>
+                                  @if($data->status == 'hold')
+                                      <span class="badge badge-info status-badge">Ongoing Project</span>
+                                  @elseif($data->status == 'completed')
+                                      <span class="badge badge-success status-badge">Completed</span>
+                                  @else
+                                      <span class="badge badge-danger status-badge">Project Stop In Middle</span>
+                                  @endif
+                              </td>
                                 <td>
                               <div class="progress">
                                   @if($data->status == 'hold')
-                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     @elseif($data->status == 'completed')
-                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                     @else
-                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                     @endif
                               
                               </div>
@@ -194,20 +199,20 @@
                          
                             <td>
                               <div class="progress">
-                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 50%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                             </td>
                             
                             
                             <td>
                               <div class="progress">
-                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                             </td>
                             
                             <td>
                               <div class="progress">
-                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
                             </td>  
                         </tbody>
@@ -283,7 +288,7 @@ $(function () {
         var option = {
             title: {
                 text: 'Projects',
-                subtext: 'Completed, Hold, and Existing',
+                subtext: 'Completed, New, and Existing',
                 left: 'center'
             },
             tooltip: {
@@ -307,10 +312,22 @@ $(function () {
                         formatter: '{b}: {c}'
                     },
                     data: [
-                        { value: newProjects, name: 'New Projects' },
-                        { value: existingProjects, name: 'Existing Projects' },
-                        { value: closedProjects, name: 'Closed Projects' }
-                    ]
+                    { 
+                        value: newProjects, 
+                        name: 'New Projects', 
+                        itemStyle: { color: '#ffc107' } // Primary color (blue) 
+                    },
+                    { 
+                        value: newProjects, 
+                        name: 'Existing Projects', 
+                        itemStyle: { color: '#17a2b8' } // Info color (teal)
+                    },
+                    { 
+                        value: closedProjects, 
+                        name: 'Closed Projects', 
+                        itemStyle: { color: '#28a745' } // Success color (green)
+                    }
+                ]
                 }
             ]
         };

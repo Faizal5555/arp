@@ -1886,7 +1886,7 @@ $('#world_row').html(worldHtml);
                             // $("#vendor_advance").val(data.bidrfq.vendor_advance);
                             // $("#vendor_balance").val(data.bidrfq.vendor_balance);
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="../../${data.bidrfq.client_contract}" style=" text-decoration: none !important;">${data.bidrfq.client_contract}</a>`
+                                `<a target="_blank" download href="adminapp/public/${data.bidrfq.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.bidrfq.client_contract}</a>`
                             );
                             // $("#vendor_contract_attachment").html( `<a href="${data.bidrfq.vendor_contract}" style=" text-decoration: none !important;">${data.bidrfq.vendor_contract}</a>`);
                             $(".currency").html(data.bidrfq.currency);
@@ -2331,7 +2331,7 @@ $('#world_row').html(worldHtml);
                             // $("#vendor_advance").val(data.wonProject.vendor_advance);
                             // $("#vendor_balance").val(data.wonProject.vendor_balance);
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="../../${data.wonProject.client_contract}" style=" text-decoration: none !important;">${data.wonProject.client_contract}</a>`
+                                `<a target="_blank" download href="adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
                             );
                             // $("#vendor_contract_attachment").html( `<a href="${data.wonProject.vendor_contract}" style=" text-decoration: none !important;">${data.wonProject.vendor_contract}</a>`);
                             $(".currency").html(data.wonProject.currency);
@@ -2712,7 +2712,7 @@ $('#world_row').html(worldHtml);
 
 
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="${data.wonProject.client_contract}" style=" text-decoration: none !important;">${data.wonProject.client_contract}</a>`
+                                `<a target="_blank" download href="adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
                             );
                             $(".currency").html(data.wonProject.currency);
 

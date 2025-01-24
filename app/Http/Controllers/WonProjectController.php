@@ -876,6 +876,63 @@ class WonProjectController extends Controller
        }
        return response()->json($response_data);
     }
+
+    public function completed(Request $request)
+    {
+        // Get all request data
+        $data = $request->all();
+    
+        // Base query: Fetch only 'completed' projects
+        $wonproject = OperationNew::where('status', 'completed');
+    
+        // Apply filters
+        if (isset($data['rfq']) && !empty($data['rfq'])) {
+            $wonproject->where('rfq', 'like', '%' . $data['rfq'] . '%');
+        }
+    
+        // if (isset($data['project_execution']) && !empty($data['project_execution'])) {
+        //     $wonproject->where('project_execution', 'like', '%' . $data['project_execution'] . '%');
+        // }
+    
+        // if (isset($data['project_start_date1']) && isset($data['project_start_date2']) &&
+        //     !empty($data['project_start_date1']) && !empty($data['project_start_date2'])) {
+        //     $wonproject->whereBetween('project_start_date', [$data['project_start_date1'], $data['project_start_date2']]);
+        // }
+    
+        // if (isset($data['project_end_date1']) && isset($data['project_end_date2']) &&
+        //     !empty($data['project_end_date1']) && !empty($data['project_end_date2'])) {
+        //     $wonproject->whereBetween('project_end_date', [$data['project_end_date1'], $data['project_end_date2']]);
+        // }
+    
+        // if (isset($data['mode']) && !empty($data['mode'])) {
+        //     $wonproject->where('mode', $data['mode']);
+        // }
+    
+        // Fetch additional required data for the view (if needed)
+        $client = Client::get();
+        $vendor = Vendor::get();
+        $bidRfq = BidRfq::get();
+        $country = Country::get();
+    
+        // Check if request is AJAX for DataTables
+        if ($request->ajax()) {
+            // Return the data for DataTables
+            return Datatables::of($wonproject->get())
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    $deleteUrl = url("/wonproject/delete/" . $row->id);
+                    return '
+                        <a href="' . $deleteUrl . '" class="mdi mdi-delete"></a>
+                    ';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        // Return the view for non-AJAX requests
+        return view('wonproject.completed', compact('bidRfq', 'client', 'country', 'vendor', 'wonproject'));
+    }
+    
     
     
 }
