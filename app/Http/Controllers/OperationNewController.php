@@ -996,46 +996,86 @@ class OperationNewController extends Controller
     
     }
     public function chart(Request $req)
-    {
-        // dd($req->all());
-        if($req->start_1 ==$req->end_1){
-              $new = OperationNew::whereDate('created_at', '=', $req->start_1)->count();
-              $closed = OperationNew::whereDate('created_at', '=', $req->start_1)->where('status', 'completed')->count();
-            
+{
+    // If no filters are applied, fetch all data
+    if (empty($req->start_1) && empty($req->end_1)) {
+        // Total open projects: Exclude 'completed' status
+        $new = OperationNew::where('status', '!=', 'completed')->count();
+    
+        // Total closed projects: Only 'completed' status
+        $closed = OperationNew::where('status', 'completed')->count();
+    } else {
+        // If a specific date or range is provided
+        if ($req->start_1 == $req->end_1) {
+            // Open projects for the specific date
+            $new = OperationNew::whereDate('created_at', '=', $req->start_1)
+                ->where('status', '!=', 'completed')
+                ->count();
+    
+            // Closed projects for the specific date
+            $closed = OperationNew::whereDate('created_at', '=', $req->start_1)
+                ->where('status', 'completed')
+                ->count();
+        } else {
+            // Open projects for the date range
+            $new = OperationNew::whereDate('created_at', '>=', $req->start_1)
+                ->whereDate('created_at', '<=', $req->end_1)
+                ->where('status', '!=', 'completed')
+                ->count();
+    
+            // Closed projects for the date range
+            $closed = OperationNew::whereDate('created_at', '>=', $req->start_1)
+                ->whereDate('created_at', '<=', $req->end_1)
+                ->where('status', 'completed')
+                ->count();
         }
-        else
-        {
-            
-             $new = OperationNew::whereDate('created_at', '>=', $req->start_1)->whereDate('created_at', '<=', $req->end_1)->count();
-        // dd($new);
-        $closed = OperationNew::whereDate('created_at', '>=', $req->start_1)->whereDate('created_at', '<=', $req->end_1)->where('status', 'completed')->count();
-        // dd($closed);
-       
-        }
-        return response()->json(["new" => $new, "closed" => $closed]);
     }
     
+    // Return the data as JSON for the frontend
+    return response()->json([
+        "new" => $new,
+        "closed" => $closed
+    ]);
     
-     public function fieldchart(Request $req)
-    {
-        // dd($req->all());
-        if($req->start_1 ==$req->end_1){
-              $new = OperationNew::whereDate('created_at', '=', $req->start_1)->where('status','hold')->count();
-              $closed = OperationNew::whereDate('created_at', '=', $req->start_1)->where('status', 'completed')->count();
-            
-        }
-        else
-        {
-            
-         $new = OperationNew::whereDate('created_at', '>=', $req->start_1)->whereDate('created_at', '<=', $req->end_1)->where('status','hold')->count();
-        // dd($new);
-        $closed = OperationNew::whereDate('created_at', '>=', $req->start_1)->whereDate('created_at', '<=', $req->end_1)->where('status', 'completed')->count();
-        // dd($closed);
-       
-        }
-        return response()->json(["new" => $new, "closed" => $closed]);
+}
+
+    
+    
+public function fieldchart(Request $req)
+{
+    if (empty($req->start_1) && empty($req->end_1)) {
+        // Total counts without date filter
+        $new = OperationNew::where('status', 'hold')->count();
+        $existing = OperationNew::where('status', '!=', 'completed')
+            ->where('status', '!=', 'hold')->count();
+        $closed = OperationNew::where('status', 'completed')->count();
+    } else {
+        // Filtered counts
+        $new = OperationNew::where('status', 'hold')
+            ->whereDate('created_at', '>=', $req->start_1)
+            ->whereDate('created_at', '<=', $req->end_1)
+            ->count();
+
+        $existing = OperationNew::where('status', '!=', 'completed')
+            ->where('status', '!=', 'hold')
+            ->whereDate('created_at', '>=', $req->start_1)
+            ->whereDate('created_at', '<=', $req->end_1)
+            ->count();
+
+        $closed = OperationNew::where('status', 'completed')
+            ->whereDate('created_at', '>=', $req->start_1)
+            ->whereDate('created_at', '<=', $req->end_1)
+            ->count();
     }
-    
+
+    return response()->json([
+        "new" => $new,
+        "existing" => $existing,
+        "closed" => $closed
+    ]);
+}
+
+
     // accounts
 
     public function clientrequest(Request $req){

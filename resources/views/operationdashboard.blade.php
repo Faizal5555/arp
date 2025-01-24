@@ -6,7 +6,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
 
 {{-- for chartjs --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,65 +14,68 @@
 <div class="content-wrapper">
             <div class="page-header">
               <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                <span class="mr-2 text-white page-title-icon bg-gradient-primary">
                   <i class="mdi mdi-home"></i>
                 </span> Operation Dashboard
               </h3>
               <nav aria-label="breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item active" aria-current="page">
-                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    <span></span>Overview <i class="align-middle mdi mdi-alert-circle-outline icon-sm text-primary"></i>
                   </li>
                 </ul>
               </nav>
             </div>
             {{-- date range picker --}}
-            <div class="row mb-4">
+            <div class="mb-4 row">
               <div class="col-md-12 d-flex align-items-center">
-                <label class="start_1" style="margin-right:13px; font-size:15px; margin-left:46px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; color:#5c4949;">Date:</label>
-                <input type="text" name="RFQs" class="won_project " value="" id="daterange" style="max-width: 100%; max-height: 100%; width: 220px;   padding:auto; margin-top:-7px;  border-radius: 16px !important; border-color: #237ee6 !important;">  
+                  <label class="start_1" style="margin-right:13px; font-size:15px; margin-left:46px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; color:#5c4949;">
+                      Date:
+                  </label>
+                  <input type="text" name="RFQs" class="won_project" value="" id="daterange" style="max-width: 100%; max-height: 100%; width: 220px; padding:auto; margin-top:-7px;">
+                  <button type="button" id="clear-daterange" class="ml-2 btn btn-secondary">Clear</button>
               </div>
-            </div>
-            <div class="row">
+          </div>
+          
+          <!--<div class="row">
               <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">New Project <i class="mdi mdi-chart-line mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="new">0</h2>
-                    <!--<h6 class="card-text">Increased by 60%</h6>-->
+                  <div class="text-white card bg-gradient-danger card-img-holder">
+                      <div class="card-body">
+                          <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="mb-3 font-weight-normal">New Project <i class="float-right mdi mdi-chart-line mdi-24px"></i></h4>
+                          <h2 class="mb-5" id="new">0</h2>
+                      </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Existing Project<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="existing">0</h2>
-                    <!--<h6 class="card-text">Decreased by 10%</h6>-->
-                  </div>
-                </div>
               </div>
               <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-weight-normal mb-3">Closed Project <i class="mdi mdi-diamond mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="closed">0</h2>
-                    <!--<h6 class="card-text">Increased by 5%</h6>-->
+                  <div class="text-white card bg-gradient-info card-img-holder">
+                      <div class="card-body">
+                          <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="mb-3 font-weight-normal">Existing Project<i class="float-right mdi mdi-bookmark-outline mdi-24px"></i></h4>
+                          <h2 class="mb-5" id="existing">0</h2>
+                      </div>
                   </div>
-                </div>
               </div>
-            </div>
-            
+              <div class="col-md-4 stretch-card grid-margin">
+                  <div class="text-white card bg-gradient-success card-img-holder">
+                      <div class="card-body">
+                          <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                          <h4 class="mb-3 font-weight-normal">Closed Project <i class="float-right mdi mdi-diamond mdi-24px"></i></h4>
+                          <h2 class="mb-5" id="closed">0</h2>
+                      </div>
+                  </div>
+              </div>
+          </div>-->
+          <div class="col-md-8">
+          <div id="chartContainer" style="width: 100%; height: 400px; margin-top: 20px;">
+
+          </div>
+        </div>
+          
             
 
             <!--for chart-->
-            <!--<div class="card mb-3">-->
+            <!--<div class="mb-3 card">-->
             <!--  <div class="col-md-12">-->
             <!--    <div class="chart-container" style="position:relative;width:94%;height:100% !important;  margin: 20px 0px 10px 50px !important;">-->
             <!--      <div class="canvas_append">-->
@@ -218,48 +221,103 @@
             </div>
           </div>
 <script type="text/javascript">
-  $(function() {
+$(function () {
+    // Initialize the date range picker
     $('input[name="RFQs"]').daterangepicker({
-      "showDropdowns": true,
-      ranges: {
-          'Today': [moment(), moment()],
-          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-          'This Month': [moment().startOf('month'), moment().endOf('month')],
-          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      },
-      opens: 'right'
-    }, 
-    function(start, end, label) {
-      // console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-      RFQs(start.format('YYYY-MM-DD'),end.format('YYYY-MM-DD'))   
+        "showDropdowns": true,
+        "autoUpdateInput": false,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'right'
+    }, function (start, end, label) {
+        $('input[name="RFQs"]').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+        fetchRFQData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
     });
-  });
 
-  $(document).ready(function(){
-    var startDate = moment().format('YYYY-MM-DD');
-    var endDate = moment().format('YYYY-MM-DD');
-  
-    RFQs(startDate,endDate)   
-  });
+    // Clear Button
+    $('#clear-daterange').on('click', function () {
+        $('input[name="RFQs"]').val('');
+        fetchRFQData('', '');
+    });
 
-  function RFQs(start_date,end_date){
-    // alert(start_date);
-    $.ajax({
-      url:"{{route('operation.fieldoverviewChart')}}",
-       type:"post",
-       data:{start_1:start_date,end_1:end_date},   
-       success:function(data){
-        console.log(data);
+    // Load initial data (all data)
+    fetchRFQData('', '');
 
-      
+    function fetchRFQData(start_date, end_date) {
+        $.ajax({
+            url: "{{ route('operation.fieldoverviewChart') }}",
+            type: "POST",
+            data: {
+                start_1: start_date,
+                end_1: end_date,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function (data) {
+                console.log(data);
 
-           $("#new").html(data.new);
-           $("#existing").html(data.new);
-           $("#closed").html(data.closed);
-       }
-    })
-  }
+                // Update card counts
+                $("#new").html(data.new || 0);
+                $("#existing").html(data.existing || 0);
+                $("#closed").html(data.closed || 0);
+
+                // Update pie chart
+                renderPieChart(data.new, data.existing, data.closed);
+            },
+            error: function () {
+                alert("Error fetching data");
+            }
+        });
+    }
+
+    // Render Pie Chart
+    function renderPieChart(newProjects, existingProjects, closedProjects) {
+        var chartDom = document.getElementById('chartContainer');
+        var myChart = echarts.init(chartDom);
+
+        var option = {
+            title: {
+                text: 'Projects',
+                subtext: 'Completed, Hold, and Existing',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c}'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['New Projects', 'Existing Projects', 'Closed Projects']
+            },
+            series: [
+                {
+                    name: 'Projects',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    top:'10%',
+                    label: {
+                        show: true,
+                        position: 'outside',
+                        formatter: '{b}: {c}'
+                    },
+                    data: [
+                        { value: newProjects, name: 'New Projects' },
+                        { value: existingProjects, name: 'Existing Projects' },
+                        { value: closedProjects, name: 'Closed Projects' }
+                    ]
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+    }
+});
+
 </script>
 @endsection
