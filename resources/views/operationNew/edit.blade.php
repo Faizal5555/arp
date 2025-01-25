@@ -1192,7 +1192,7 @@ input.form-control {
             </div>
             <div class="modal-body">
                 <div class="row">
-                     @if(auth()->user()->user_type == 'operation' or auth()->user()->user_type == 'admin' )
+                     @if(auth()->user()->user_type == 'admin' )
                     <div class="col-md-4">
                        
                           <button type="button" class="btn btn-primary" id="my-comments" data-toggle="modal" data-target="#exampleModalCenter">
@@ -1233,8 +1233,8 @@ input.form-control {
                     </div>
                      @elseif(auth()->user()->user_role == 'project_manager')
                        <div class="col-md-4">
-                          <button type="button" class="btn btn-primary" id="pl-comments" data-toggle="modal" data-target="#pmexampleModalCenter">
-                            Open Comments Box
+                          <button type="button" class="btn btn-primary" id="pm-comments" data-toggle="modal" data-target="#pmexampleModalCenter">
+                            Open Comments Box 
                           </button>
                     </div>
                       <div class="col-md-4">
@@ -1249,6 +1249,24 @@ input.form-control {
                             Client Invoice Request
                           </button>
                     </div>
+                    @elseif(auth()->user()->user_role == 'operation_head')
+                    <div class="col-md-4">
+                       <button type="button" class="btn btn-primary" id="oh-comments" data-toggle="modal" data-target="#ohexampleModalCenter">
+                         Open Comments Box
+                       </button>
+                 </div>
+                   <div class="col-md-4">
+                     <div class="middle">
+                     <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
+                         Project Stopped In The Middle
+                       </button>
+                     </div>
+                 </div>
+                 <div class="col-md-4">
+                      <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
+                         Client Invoice Request
+                       </button>
+                 </div>
                      @else
                        <div class="col-md-4">
                           <button type="button" class="btn btn-primary" id="ql-comments" data-toggle="modal" data-target="#qlexampleModalCenter">
@@ -1358,6 +1376,18 @@ input.form-control {
                {{$operation && $operation->ql_msg ? $operation->ql_msg : ''}}
             </div>
            </div>
+
+           <div class="msg-bubble mt-3">
+            <div class="msg-info">
+             <div class="msg-info-name">Operation Head</div>
+           </div>
+
+       <div class="msg-text">
+          {{$operation && $operation->oh_msg ? $operation->oh_msg : ''}}
+       </div>
+      </div>
+
+           
            
            @if($operation->comments!='')
             <div class="right-msg mt-3 col-md-12">
@@ -1510,7 +1540,62 @@ input.form-control {
       </div>
     </div>
   </div>
-    <!--  Open Project Manager Comments BOX End-->
+  
+    <!--  Open Operation Head Comments BOX End-->
+    <div class="modal fade bd-example-modal-lg" id="ohexampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Comments BOX</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                
+                <form id="ohcommentupdate" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="id"  id="id" value="{{$operation && $operation->id ? $operation->id : ''}}">
+                 <div class="msg-bubble">
+                     <div class="msg-info">
+                      <div class="msg-info-name">Operation</div>
+                    </div>
+    
+                <div class="msg-text">
+                   {{$operation && $operation->comments ? $operation->comments : ''}}
+                </div>
+               </div>
+               
+                @if($operation->oh_msg!='')
+                <div class="right-msg mt-3 col-md-12">
+                    <div class="col-md-3"></div>
+                    <div class="msg-bubble mt-3">
+                        <div class="col-md-6">
+                     <div class="msg-info">
+                      <div class="msg-info-name">You</div>
+                    </div>
+    
+                <div class="msg-text">
+                   {{$operation && $operation->oh_msg ? $operation->oh_msg : ''}}
+                </div>
+                </div>
+                </div>
+               </div>
+               @endif
+               
+               <div class="msger-inputarea mt-3">
+                 <textarea name="oh_comments" id="oh_comments" value=""
+                class="form-control msger-input" placeholder="Comments here..." required></textarea>
+                 <button type="button" id="ohcommentsubmit" class="msger-send-btn">Send</button>
+              </div>
+               
+            </form>   
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
     
     <!--  Open Qulity Analist Comments BOX-->
 
@@ -3079,6 +3164,50 @@ $("#complete").validate({
          $(document).on('click','#pm-comments',function(){
           $('#exampleModal').modal('hide');
         });
+
+
+        $("#ohcommentsubmit").click(function(e){
+        e.preventDefault();
+            $.ajaxSetup({
+             headers: {
+                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                 },
+            });
+            $.ajax({
+                type:"POST",
+                data:{
+                    id:$('#id').val(),
+                    comments:$('#oh_comments').val(),
+                },
+                url:"{{route('operationNew.ohadd')}}",
+                // contentType:true,
+                // processData:true,
+                dataType:"json",
+                success:function(data) {
+                    if(data.success == 1){
+                        swal({
+                            title:'Updated Successfully',
+                            icon:'success',
+                            button:false
+                    })
+                    //  $('#exampleModal').modal('show');
+                     $('#ohexampleModalCenter').modal('hide');
+                     window.location.reload();
+                }
+                else{
+                        swal({
+                            title:'Please Fill Comment',
+                            icon:'success',
+                            button:false
+                    })
+                    }
+
+                }
+            });
+        });
+         $(document).on('click','#oh-comments',function(){
+          $('#exampleModal').modal('hide');
+        });
         
       
 </script>
@@ -3342,7 +3471,7 @@ $("#complete").validate({
                 
                         advancehtml+=`<div class="vendor_design vendor_design_${i} ${i != 0 ? 'd-none' :''}" ><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id"  value="${v}" class="form-control" id="vendor_id_${i}"></div>
                      <label>Vendor Advance</label><input type="type" name="vendor_advance" id="vendor_advance_${i}" value="${vendor_currency} ${vendor_advance[i]}" class="form-control">
-                     <div class="form-group mt-3"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mdi mdi-download mt-3" href="../../${vendor_contract[i]}" id="version-1" download >download</a></div>
+                     <div class="form-group mt-3"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mdi mdi-download mt-3" href="adminapp/public/                                                                                                     ${vendor_contract[i]}" id="version-1" download >download</a></div>
                       <div class="modal-footer d-flex justify-content-between"><button value="submit" class="btn btn-success vendor_advance_request" data-id="${i}">Submit</button></div>
                     <div class="modal-footer d-flex justify-content-between"><button  class="btn btn-success  vendor_design_prev" data-prev="${i-1}">Prev</button><button  class="btn btn-success  vendor_design_next" data-next=${i+ 1}>Next</button></div></div>`;
                     $('#vendor-template').html(advancehtml);
@@ -3400,7 +3529,7 @@ $("#complete").validate({
                     let vendor_contract = data.wonproject.vendor_contract.split(',');  
                     let vendor_currency = data.wonproject.currency;
                   html += `<div class="vendor_sign vendor_sign_${i} ${i != 0 ? 'd-none' :''}"><div class="col-md-12"></div><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id" value="${v}" id="vendor_id1_${i}" class="form-control">
-               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success      vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="btn btn-success  float-right vendor_sign_next" data-nxt=${i+ 1}>Next</button>
+               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="adminapp/public/${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success      vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="btn btn-success  float-right vendor_sign_next" data-nxt=${i+ 1}>Next</button>
                </div></div></div>`;
             });          
              $('#vendor_template1').html(html)

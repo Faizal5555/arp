@@ -669,7 +669,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 table-responsive" style="overflow-x:auto;">
+                            <div class="col-md-12" style="overflow-x:auto;">
                                 <div class="form-group row">
                                     <label class="col-lg-12 col-form-label font-weight-semibold">Industry Table<span
                                             class="text-danger">*</span></label>
@@ -685,7 +685,7 @@
                                             Quantitative RFQs
                                         </button>
                                     </div>
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-6">
                                         <div class="rfq-table">
                                             <div class="btn-var">
 

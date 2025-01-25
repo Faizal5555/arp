@@ -312,8 +312,9 @@ table tfoot th {
                     <option name= "user_type" value="sales">Sales</option>
                     <option name= "user_type" value="accounts">Accounts</option>
                     <option name= "user_type" value="supplier">Supplier</option>
-                    <option name= "user_type" value="operation">Operation</option>
-                    <option name= "user_type" value="field_team">Field Team</option>
+                    <option name= "user_type" value="field_team" disabled>Field Team(TL)</option>
+                    <option name= "user_type" value="operation">Operation(PM)</option>
+                    <option name= "user_type" value="operation_head">Project Operation Head</option>
                     <option name= "user_type" value="data_center">Data Center</option>
                     <option name= "user_type" value="global_manager">Global Panel Manager</option>
                     <option name= "user_type" value="global_team">Global Panel Team</option>
@@ -335,9 +336,10 @@ table tfoot th {
                     <option name= "user_role" value="accounts">Accounts</option>
                     <option name= "user_role" value="supplier">Supplier</option>
                     <option name= "user_role" value="operation">Operation</option>
-                    <option name= "user_role" value="team_leader">Team Leader</option>
+                    <option name= "user_role" value="operation_head">Project Operation Head</option>
                     <option name= "user_role" value="project_manager">Project Manager</option>
-                    <option name= "user_role" value="quality_analyst">Quality Analyst</option>
+                    <option name= "user_role" value="team_leader" disabled>Team Leader</option>
+                    <option name= "user_role" value="quality_analyst" disabled>Quality Analyst</option>
                     <option name= "user_role" value="data_center">Data Center</option>
                     <option name= "user_role" value="global_manager">Global Panel Manager</option>
                     <option name= "user_role" value="global_team">Global Panel Team</option>

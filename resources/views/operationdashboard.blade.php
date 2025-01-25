@@ -196,26 +196,42 @@
                           </tr>
                         </thead>
                         <tbody>
-                         
-                            <td>
-                              <div class="progress">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                            </td>
-                            
-                            
-                            <td>
-                              <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                            </td>
-                            
-                            <td>
-                              <div class="progress">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
-                            </td>  
-                        </tbody>
+                          <tr>
+                              <td>
+                                  <div class="progress" style="position: relative;">
+                                      <div id="ongoingProgressBar" class="progress-bar bg-info" role="progressbar"
+                                           style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                      <span id="ongoingCount" class="progress-count" 
+                                            style="position: absolute; width: 100%; text-align: center; color: black; font-weight: bold; padding:7px;">
+                                            0
+                                      </span>
+                                  </div>
+                              </td>
+                              <td>
+                                  <div class="progress" style="position: relative;">
+                                      <div id="completedProgressBar" class="progress-bar bg-success" role="progressbar"
+                                           style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                      <span id="completedCount" class="progress-count" 
+                                            style="position: absolute; width: 100%; text-align: center; color: black; font-weight: bold; padding:7px;">
+                                            0
+                                      </span>
+                                  </div>
+                              </td>
+                              <td>
+                                  <div class="progress" style="position: relative;">
+                                      <div id="stoppedProgressBar" class="progress-bar bg-danger" role="progressbar"
+                                           style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                      </div>
+                                      <span id="stoppedCount" class="progress-count" 
+                                            style="position: absolute; width: 100%; text-align: center; color: black; font-weight: bold; padding:7px;">
+                                            0
+                                      </span>
+                                  </div>
+                              </td>
+                          </tr>
+                      </tbody>
                       </table>
                     </div>
                   </div>
@@ -241,20 +257,27 @@ $(function () {
         },
         opens: 'right'
     }, function (start, end, label) {
+        // Set the input value with the selected date range
         $('input[name="RFQs"]').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
+        // Fetch data based on the selected date range
         fetchRFQData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
     });
 
     // Clear Button
     $('#clear-daterange').on('click', function () {
+        // Clear the input value
         $('input[name="RFQs"]').val('');
+        // Fetch data with no date range filters
         fetchRFQData('', '');
     });
 
     // Load initial data (all data)
     fetchRFQData('', '');
 
+    // Function to fetch data and update the chart and progress bars
     function fetchRFQData(start_date, end_date) {
+        console.log(`Fetching data for range: Start - ${start_date}, End - ${end_date}`);
+
         $.ajax({
             url: "{{ route('operation.fieldoverviewChart') }}",
             type: "POST",
@@ -266,21 +289,39 @@ $(function () {
             success: function (data) {
                 console.log(data);
 
-                // Update card counts
-                $("#new").html(data.new || 0);
-                $("#existing").html(data.existing || 0);
-                $("#closed").html(data.closed || 0);
+                // Ensure data is valid
+                const newCount = data.new || 0;
+                const existingCount = data.existing || 0;
+                const closedCount = data.closed || 0;
 
-                // Update pie chart
-                renderPieChart(data.new, data.existing, data.closed);
+                // Total Projects
+                const totalProjects = newCount + existingCount + closedCount;
+
+                // Calculate percentages
+                const ongoingPercentage = totalProjects > 0 ? (existingCount / totalProjects) * 100 : 0;
+                const completedPercentage = totalProjects > 0 ? (closedCount / totalProjects) * 100 : 0;
+                const stopPercentage = totalProjects > 0 ? (newCount / totalProjects) * 100 : 0;
+
+                // Update Progress Bar
+                $("#ongoingProgressBar").css("width", ongoingPercentage + "%").attr("aria-valuenow", ongoingPercentage);
+                $("#completedProgressBar").css("width", completedPercentage + "%").attr("aria-valuenow", completedPercentage);
+                $("#stoppedProgressBar").css("width", stopPercentage + "%").attr("aria-valuenow", stopPercentage);
+
+                // Update Progress Bar Counts
+                $("#ongoingCount").html(existingCount);
+                $("#completedCount").html(closedCount);
+                $("#stoppedCount").html(newCount);
+
+                // Render Pie Chart
+                renderPieChart(newCount, existingCount, closedCount);
             },
             error: function () {
-                alert("Error fetching data");
+                alert("Error fetching data. Please try again.");
             }
         });
     }
 
-    // Render Pie Chart
+    // Function to render the pie chart
     function renderPieChart(newProjects, existingProjects, closedProjects) {
         var chartDom = document.getElementById('chartContainer');
         var myChart = echarts.init(chartDom);
@@ -305,29 +346,29 @@ $(function () {
                     name: 'Projects',
                     type: 'pie',
                     radius: ['40%', '70%'],
-                    top:'10%',
+                    top: '10%',
                     label: {
                         show: true,
                         position: 'outside',
                         formatter: '{b}: {c}'
                     },
                     data: [
-                    { 
-                        value: newProjects, 
-                        name: 'New Projects', 
-                        itemStyle: { color: '#ffc107' } // Primary color (blue) 
-                    },
-                    { 
-                        value: newProjects, 
-                        name: 'Existing Projects', 
-                        itemStyle: { color: '#17a2b8' } // Info color (teal)
-                    },
-                    { 
-                        value: closedProjects, 
-                        name: 'Closed Projects', 
-                        itemStyle: { color: '#28a745' } // Success color (green)
-                    }
-                ]
+                        {
+                            value: newProjects,
+                            name: 'New Projects',
+                            itemStyle: { color: '#ffc107' } // Yellow
+                        },
+                        {
+                            value: existingProjects,
+                            name: 'Existing Projects',
+                            itemStyle: { color: '#17a2b8' } // Teal
+                        },
+                        {
+                            value: closedProjects,
+                            name: 'Closed Projects',
+                            itemStyle: { color: '#28a745' } // Green
+                        }
+                    ]
                 }
             ]
         };
@@ -335,6 +376,8 @@ $(function () {
         myChart.setOption(option);
     }
 });
+
+
 
 </script>
 @endsection

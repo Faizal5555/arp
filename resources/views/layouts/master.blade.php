@@ -1006,6 +1006,29 @@ table tfoot th {
                 </ul>
               </div>
             </li>
+
+             
+            @elseif(auth()->user()->user_type == 'operation_head')
+             <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Operations</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu1">
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('operationNew.createWon')) ? 'active' : '' }} href="{{route('operationNew.createWon')}}">NEW PROJECT</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.index')}}">EXISTING PROJECTS </a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">CLOSED PROJECTS</a></li>
+                  <!--<li class="nav-item"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD TEAM</a></li>-->
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.operation')}}">PROJECT STATUS </a></li>
+                  @if(auth()->user()->user_type == "operation")
+                  <li class="nav-item d-none"> <a class="nav-link" href="{{route('dashboard')}}">OVERVIEW</a></li>
+                  @endif
+                  <!--<li class="nav-item"> <a class="nav-link" href="#">DATA CENTER</a></li>-->
+                </ul>
+              </div>
+            </li>
             
              @elseif((auth()->user()->user_type == 'field_team') || (auth()->user()->user_type == 'admin'))
              <li class="nav-item">

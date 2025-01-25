@@ -57,6 +57,10 @@ class DashboardController extends Controller
         $closed = "";
         $new = "";
         $operation = OperationNew::get();
+        if ($user->user_role === 'project_manager') {
+            // Get operations where the logged-in user is the project manager
+            $operation = OperationNew::where('project_manager_name', $user->id)->get();
+        }
         $country=Country::get();
         $speciality=Speciality::get();
         $datacenter=datacenternew::get();
@@ -141,9 +145,10 @@ class DashboardController extends Controller
             }
         }
         
-         $tl=User::where('user_role','team_leader')->get();
+        $tl=User::where('user_role','team_leader')->get();
         $pl=User::where('user_role','project_manager')->get();
         $ql=User::where('user_role','quality_analyst')->get();
+        $oh=User::where('user_role','operation_head')->get();
         
         
         //for accounts dashboard
@@ -206,7 +211,9 @@ class DashboardController extends Controller
             
             return view('dashboard',compact('bidrfq1','bidrfq','vendor','client','won_project','lost' ,'next','won','TotalRFQsBid','won_project_1','TotalClientvalue','TotalVendorValue',"TotalMarginValue","totalNoOfprojects","TotalLostProjects","pendingFollow","totalrevenue","totalmargin"));
         }elseif($user->user_type == ('operation')){
-            return view('operationdashboard',compact('new','closed','operation','tl','pl','ql'));
+            return view('operationdashboard',compact('new','closed','operation','tl','pl','ql','oh'));
+        }elseif($user->user_type == ('operation_head')){
+            return view('operation_head',compact('new','closed','operation','tl','pl','ql','oh'));
         }elseif($user->user_type == ('field_team')){
             return view('fielddashboard',compact('team_leader','quality_analyst_name','project_manager_name','fieldteam','total_close','total_open'));
         }elseif($user->user_type == ('accounts')){

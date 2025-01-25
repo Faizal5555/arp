@@ -15,4 +15,9 @@ class BidRfq extends Model
         'rfq_no', 'client_id', 'vendor_id','user_id', 'date', 'industry','currency','setup_cost', 'recruitment', 
         'incentives', 'moderation', 'transcript', 'others', 'sample_size', 'country','total_cost','comments','status'
     ];
+
+    public function operationNew()
+    {
+        return $this->hasMany(OperationNew::class, 'rfq', 'rfq_no'); // Adjust 'rfq' and 'rfq_no' as needed
+    }
 }

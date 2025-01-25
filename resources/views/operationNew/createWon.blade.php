@@ -918,6 +918,27 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Project Operation Head
+                                                    <span class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+                                                    {{-- <input name="quality_analyst_name" value=""
+                                             type="text" class="form-control" placeholder="Quality Analyst Name"> --}}
+                                                    <select class="form-control label-gray-3" name="project_operation_head">
+                                                        <option class="label-gray-3" value="" disabled selected>
+                                                            Select Project Operation Head</option>
+                                                        @if (count($user3) > 0)
+                                                            @foreach ($user3 as $item)
+                                                                <option class="label-gray-3" value="{{ $item->id }}">
+                                                                    {{ $item->name }}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project
@@ -2794,6 +2815,9 @@ $('#world_row').html(worldHtml);
                                 required: true,
                             },
                             project_manager_name: {
+                                required: true
+                            },
+                            project_operation_head: {
                                 required: true
                             },
                             quality_analyst_name: {

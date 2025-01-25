@@ -186,6 +186,7 @@ Route::post('/operationNew/add', 'App\Http\Controllers\OperationNewController@ad
 Route::post('/operationNew/tladd', 'App\Http\Controllers\OperationNewController@tladd')->name('operationNew.tladd');
 Route::post('/operationNew/pmadd', 'App\Http\Controllers\OperationNewController@pmadd')->name('operationNew.pmadd');
 Route::post('/operationNew/qladd', 'App\Http\Controllers\OperationNewController@qladd')->name('operationNew.qladd');
+Route::post('/operationNew/ohadd', 'App\Http\Controllers\OperationNewController@ohadd')->name('operationNew.ohadd');
 Route::post('/operationNew/middle', 'App\Http\Controllers\OperationNewController@middle')->name('operationNew.middle');
 Route::post('/operationNew/hold', 'App\Http\Controllers\OperationNewController@hold')->name('operationNew.hold');
 Route::post('/operationNew/getclose', 'App\Http\Controllers\OperationNewController@getclose')->name('operationNew.getclose');
@@ -205,6 +206,8 @@ Route::post('/operationNew/vendorrequestbalance', 'App\Http\Controllers\Operatio
 Route::post('/operationNew/clientfinal', 'App\Http\Controllers\OperationNewController@clientfinal')->name('operationNew.clientfinal');
 Route::post('/operationNew/vendorfinal', 'App\Http\Controllers\OperationNewController@vendorfinal')->name('operationNew.vendorfinal');
 Route::get('/operationNew/projectview/{id}', 'App\Http\Controllers\OperationNewController@projectview')->name('operationNew.projectview');
+
+
 
 // field perfomance
 Route::get('/operationNew/fieldteam/performance', 'App\Http\Controllers\OperationNewController@fieldperfomance')->name('operationNew.fieldperfomance');

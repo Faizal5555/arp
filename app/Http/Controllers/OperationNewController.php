@@ -44,6 +44,7 @@ class OperationNewController extends Controller
         $user=User::where('user_role','team_leader')->get();
         $user1=User::where('user_role','project_manager')->get();
         $user2=User::where('user_role','quality_analyst')->get();
+        $user3=User::where('user_role','operation_head')->get();
         $notification=Notification::where('status',0)->get();
         $notificationCount=Notification::where('status',0)->count();
         $rfq = array();
@@ -81,7 +82,7 @@ class OperationNewController extends Controller
         $project_no = 'PNO'.$unique_no. '-' .$dt->year;
        
         // dd($operation);
-        return view('operationNew.createWon',compact('wonproject','bidrfq','client','vendor1','vendor','operation','purchase_order_no','project_no','country','notification','fieldteam','notificationCount','user','user1','user2','operation_rfq','rfq'));
+        return view('operationNew.createWon',compact('wonproject','bidrfq','client','vendor1','vendor','operation','purchase_order_no','project_no','country','notification','fieldteam','notificationCount','user','user1','user2','user3','operation_rfq','rfq'));
     }
     public function change(Request $req,WonProject $wonProject){
         $wonProject = WonProject::where ('rfq_no',$req->id)->first();
@@ -294,6 +295,7 @@ class OperationNewController extends Controller
                 $operation->quality_analyst_name = $req->quality_analyst_name;
                 $operation->project_deliverable = $req->project_deliverable;
                 $operation->project_manager_name = $req->project_manager_name;
+                $operation->project_operation_head = $req->project_operation_head;
                 $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
                 $operation->country_name = implode(',',$req->country_name_0);
@@ -463,6 +465,7 @@ class OperationNewController extends Controller
         $user1=User::where('user_role','project_manager')->get();
         $user2=User::where('user_role','quality_analyst')->get();
         $user3 = Auth::user();
+        $user4=User::where('user_role','operation_head')->get();
         $operation=OperationNew::with('operationNewImage')->where('id',$id)->first();
         $client = Client::get();
         $wonproject = WonProject::where('rfq_no', $operation->rfq)->first();
@@ -473,7 +476,7 @@ class OperationNewController extends Controller
         $bid=$rfq1[0];
         $bidrfq = BidRfq::where('rfq_no', $bid)->first();
         // $user = Auth::user();
-        return view('operationNew.edit',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3'));
+        return view('operationNew.edit',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
     }
 
      public function closeedit($id,OperationNew $operation){
@@ -761,7 +764,30 @@ class OperationNewController extends Controller
 
     }
 
+     
+    public function ohadd(Request $req){
+        $validator =Validator::make($req->all(),
+            [
+               'comments'=>'required',
+            ]);
 
+            if(!$validator->fails()){
+                $operation = OperationNew::where('id',$req->id)->update(['oh_msg' => $req->comments]);
+                if($operation){
+                    $response_data=["success"=>1,"message"=>"comments success" ];
+                }
+                else{
+                    $response_data=["success"=>0,"message"=>"comments fail"];
+
+                }
+            }
+            else{
+                $response_data=["sucsess"=>0,"message"=>"please fill fileds", "error"=>$validator->errors()];
+            }
+
+            return response()->json($response_data);
+
+    }
     public function middle(Request $req){
       
         $v = $req->all();
@@ -1043,37 +1069,66 @@ class OperationNewController extends Controller
     
 public function fieldchart(Request $req)
 {
-    if (empty($req->start_1) && empty($req->end_1)) {
-        // Total counts without date filter
-        $new = OperationNew::where('status', 'hold')->count();
-        $existing = OperationNew::where('status', '!=', 'completed')
-            ->where('status', '!=', 'hold')->count();
-        $closed = OperationNew::where('status', 'completed')->count();
-    } else {
-        // Filtered counts
-        $new = OperationNew::where('status', 'hold')
-            ->whereDate('created_at', '>=', $req->start_1)
-            ->whereDate('created_at', '<=', $req->end_1)
-            ->count();
+    $new = 0;
+    $existing = 0;
+    $closed = 0;
+    $stop = 0;
 
-        $existing = OperationNew::where('status', '!=', 'completed')
-            ->where('status', '!=', 'hold')
-            ->whereDate('created_at', '>=', $req->start_1)
-            ->whereDate('created_at', '<=', $req->end_1)
-            ->count();
+    // Get the logged-in user's role and ID
+    $user = auth()->user();
+    $isProjectManager = $user->user_role === 'project_manager'; // Check if the user is a project manager
+    $userId = $user->id;
 
-        $closed = OperationNew::where('status', 'completed')
-            ->whereDate('created_at', '>=', $req->start_1)
-            ->whereDate('created_at', '<=', $req->end_1)
-            ->count();
+    // Query `BidRfq` table for new projects based on `type = 'next'`
+    $newQuery = BidRfq::where('type', 'next');
+
+    if (!empty($req->start_1) && !empty($req->end_1)) {
+        $newQuery->whereBetween('created_at', [$req->start_1, $req->end_1]);
     }
 
+    if ($isProjectManager) {
+        // If the user is a project manager, filter BidRfq projects based on allocated projects
+        $newQuery->whereHas('operationNew', function ($query) use ($userId) {
+            $query->where('project_manager_name', $userId);
+        });
+    }
+
+    $new = $newQuery->count(); // Count the "next" type projects
+
+    // Query `OperationNew` for all statuses
+    $operationQuery = OperationNew::query();
+
+    if (!empty($req->start_1) && !empty($req->end_1)) {
+        $operationQuery->whereBetween('created_at', [$req->start_1, $req->end_1]);
+    }
+
+    if ($isProjectManager) {
+        // If the user is a project manager, filter OperationNew projects based on allocated projects
+        $operationQuery->where('project_manager_name', $userId);
+    }
+
+    $operations = $operationQuery->get();
+
+    foreach ($operations as $operation) {
+        if ($operation->status == 'hold') {
+            $existing++; // Ongoing projects
+        } elseif ($operation->status == 'completed') {
+            $closed++; // Completed projects
+        } elseif ($operation->status == 'stop') {
+            $stop++; // Stop in middle projects
+        }
+    }
+
+    // Return counts as JSON
     return response()->json([
-        "new" => $new,
-        "existing" => $existing,
-        "closed" => $closed
+        "new" => $new,         // New projects from BidRfq
+        "existing" => $existing, // Existing (ongoing) projects from OperationNew
+        "closed" => $closed,   // Completed projects from OperationNew
+        "stop" => $stop        // Stop in middle projects from OperationNew
     ]);
 }
+
+
 
 
     // accounts
