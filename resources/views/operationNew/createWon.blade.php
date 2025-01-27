@@ -921,14 +921,14 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group row">
-                                                <label class="col-lg-3 col-form-label font-weight-semibold">Project Operation Head
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Project Operation Head Name
                                                     <span class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
                                                     {{-- <input name="quality_analyst_name" value=""
                                              type="text" class="form-control" placeholder="Quality Analyst Name"> --}}
                                                     <select class="form-control label-gray-3" name="project_operation_head">
                                                         <option class="label-gray-3" value="" disabled selected>
-                                                            Select Project Operation Head</option>
+                                                            Select Project Operation Head Name</option>
                                                         @if (count($user3) > 0)
                                                             @foreach ($user3 as $item)
                                                                 <option class="label-gray-3" value="{{ $item->id }}">
@@ -1132,7 +1132,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                            <a href="" id="add_reg" class="btn btn-outline-secondary">Back</a>
+                                            <a href="" id="add_reg1" class="btn btn-outline-secondary">Back</a>
                                             <button type="submit" id="addRegisterButton"
                                                 class="ml-2 btn btn-success">Submit</button>
                                         </div>
@@ -1553,7 +1553,7 @@
                         dataType: "json",
                         success: function(data) {
                             // console.log(data);
-                            var userName = data.user.name;
+                           var userName = data.user.name;
                             console.log("User Name:", userName);
                             var sampleSize = JSON.parse(data.bidrfq.sample_size);
                             // console.log(sampleSize);
@@ -1571,63 +1571,63 @@
                             let worldHtml = '<th>Country</th>';
                             let removeHtml = `<th><th>`;
 
-if (world.length != 0) {
-    $.each(world, function (kv, value) {
-        if (value != null) {
-            $.each(value, function (dataIndex, data) {
-                worldHtml += '<th class="data-country country_remove_' + kv + '">';
-                worldHtml += '<label class="form-group has-float-label">';
-                worldHtml +=
-                    '<select class="form-control label-gray-3" name="country_0[' +
-                    kv + '][]">';
-                worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
-                if(kv == 0)
-                {
+    if (world.length != 0) {
+        $.each(world, function (kv, value) {
+            if (value != null) {
+                $.each(value, function (dataIndex, data) {
+                    worldHtml += '<th class="data-country country_remove_' + kv + '">';
+                    worldHtml += '<label class="form-group has-float-label">';
+                    worldHtml +=
+                        '<select class="form-control label-gray-3" name="country_0[' +
+                        kv + '][]">';
+                    worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
+                    if(kv == 0)
+                    {
+                        removeHtml += `<th class="remove-country-${kv}"></th>`;
+                    }else{
+                        removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
+                                                            <i class="fa-solid fa-xmark"></i>
+                                        </button></th>`;
+                    }
                     removeHtml += `<th class="remove-country-${kv}"></th>`;
-                }else{
-                    removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
-                                                        <i class="fa-solid fa-xmark"></i>
-                                    </button></th>`;
-                }
-                removeHtml += `<th class="remove-country-${kv}"></th>`;
-                // Loop through countries passed from Blade
-                var countries = <?php echo json_encode($country); ?>;
-                if (countries.length > 0) {
-                    $.each(countries, function (index, country) {
-                        worldHtml += '<option value="' + country.name + '"';
-                        if (data === country.name) {
-                            worldHtml += ' selected';
-                        }
-                        worldHtml += '>' + country.name + '</option>';
-                    });
-                }
+                    // Loop through countries passed from Blade
+                    var countries = <?php echo json_encode($country); ?>;
+                    if (countries.length > 0) {
+                        $.each(countries, function (index, country) {
+                            worldHtml += '<option value="' + country.name + '"';
+                            if (data === country.name) {
+                                worldHtml += ' selected';
+                            }
+                            worldHtml += '>' + country.name + '</option>';
+                        });
+                    }
 
-                worldHtml += '</select>';
-                worldHtml += '<span>Country</span>';
+                    worldHtml += '</select>';
+                    worldHtml += '<span>Country</span>';
 
-                // Append Add Vendor and Remove Country buttons only once per country
-                // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
-                worldHtml +=
-                    '<th class="abcversion_' +
-                    kv +
-                    '_coun country_remove_' +
-                    kv +
-                    '_10">';
-                worldHtml +=
-                    '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
-                    kv +
-                    '" type="button">Add vendor</button>';
-                worldHtml +=
-                    '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
-                    kv +
-                    '" type="button"><i class="fa-solid fa-xmark"></i></button>';
-                worldHtml += '</th>';
-                worldHtml += '</label>';
-                worldHtml += '</th>';
-            });
-        }
-    });
-}
+                    // Append Add Vendor and Remove Country buttons only once per country
+                    // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
+                    worldHtml +=
+                        '<th class="abcversion_' +
+                        kv +
+                        '_coun country_remove_' +
+                        kv +
+                        '_10">';
+                    worldHtml +=
+                        '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
+                        kv +
+                        '" type="button">Add vendor</button>';
+                    worldHtml +=
+                        '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
+                        kv +
+                        '" type="button"><i class="fa-solid fa-xmark"></i></button>';
+                    worldHtml += '</th>';
+                    worldHtml += '</label>';
+                    worldHtml += '</th>';
+                });
+            }
+        });
+    }
 
 // Render the final HTML
 $('#remove_country_row').html(removeHtml);
@@ -2535,7 +2535,7 @@ $('#world_row').html(worldHtml);
                     $('#won-rfq-btn1').addClass('d-none');
                     $('.won-rfq-btn2').addClass('d-none');
                 });
-                $(document).on('click', '#add_reg', function() {
+                $(document).on('click', '#add_reg1', function() {
                     $('#edit-rfq').addClass('d-none');
                     $('#won-rfq').addClass('d-none');
                     $('#won-rfq1').addClass('d-none');

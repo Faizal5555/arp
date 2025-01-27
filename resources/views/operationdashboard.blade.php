@@ -257,126 +257,121 @@ $(function () {
         },
         opens: 'right'
     }, function (start, end, label) {
-        // Set the input value with the selected date range
         $('input[name="RFQs"]').val(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));
-        // Fetch data based on the selected date range
         fetchRFQData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
     });
 
     // Clear Button
     $('#clear-daterange').on('click', function () {
-        // Clear the input value
         $('input[name="RFQs"]').val('');
-        // Fetch data with no date range filters
         fetchRFQData('', '');
     });
 
     // Load initial data (all data)
     fetchRFQData('', '');
 
-    // Function to fetch data and update the chart and progress bars
     function fetchRFQData(start_date, end_date) {
-        console.log(`Fetching data for range: Start - ${start_date}, End - ${end_date}`);
+    $.ajax({
+        url: "{{ route('operation.fieldoverviewChart') }}",
+        type: "POST",
+        data: {
+            start_1: start_date,
+            end_1: end_date,
+            _token: "{{ csrf_token() }}"
+        },
+        success: function (data) {
+            console.log(data);
 
-        $.ajax({
-            url: "{{ route('operation.fieldoverviewChart') }}",
-            type: "POST",
-            data: {
-                start_1: start_date,
-                end_1: end_date,
-                _token: "{{ csrf_token() }}"
-            },
-            success: function (data) {
-                console.log(data);
+            // Counts
+            const newCount = data.new || 0;
+            const existingCount = data.existing || 0;
+            const closedCount = data.closed || 0;
+            const stopCount = data.stop || 0;
 
-                // Ensure data is valid
-                const newCount = data.new || 0;
-                const existingCount = data.existing || 0;
-                const closedCount = data.closed || 0;
+            // Total Projects
+            const totalProjects = newCount + existingCount + closedCount + stopCount;
 
-                // Total Projects
-                const totalProjects = newCount + existingCount + closedCount;
+            // Calculate percentages
+            const ongoingPercentage = totalProjects > 0 ? (existingCount / totalProjects) * 100 : 0;
+            const completedPercentage = totalProjects > 0 ? (closedCount / totalProjects) * 100 : 0;
+            const stopPercentage = totalProjects > 0 ? (stopCount / totalProjects) * 100 : 0;
 
-                // Calculate percentages
-                const ongoingPercentage = totalProjects > 0 ? (existingCount / totalProjects) * 100 : 0;
-                const completedPercentage = totalProjects > 0 ? (closedCount / totalProjects) * 100 : 0;
-                const stopPercentage = totalProjects > 0 ? (newCount / totalProjects) * 100 : 0;
+            // Update Progress Bar
+            $("#ongoingProgressBar").css("width", ongoingPercentage + "%").attr("aria-valuenow", ongoingPercentage);
+            $("#completedProgressBar").css("width", completedPercentage + "%").attr("aria-valuenow", completedPercentage);
+            $("#stoppedProgressBar").css("width", stopPercentage + "%").attr("aria-valuenow", stopPercentage);
 
-                // Update Progress Bar
-                $("#ongoingProgressBar").css("width", ongoingPercentage + "%").attr("aria-valuenow", ongoingPercentage);
-                $("#completedProgressBar").css("width", completedPercentage + "%").attr("aria-valuenow", completedPercentage);
-                $("#stoppedProgressBar").css("width", stopPercentage + "%").attr("aria-valuenow", stopPercentage);
+            // Update Progress Bar Counts
+            $("#ongoingCount").html(existingCount);
+            $("#completedCount").html(closedCount);
+            $("#stoppedCount").html(stopCount);
 
-                // Update Progress Bar Counts
-                $("#ongoingCount").html(existingCount);
-                $("#completedCount").html(closedCount);
-                $("#stoppedCount").html(newCount);
+            // Render Pie Chart
+            renderPieChart(newCount, existingCount, closedCount);
+        },
+        error: function () {
+            alert("Error fetching data");
+        }
+    });
+}
 
-                // Render Pie Chart
-                renderPieChart(newCount, existingCount, closedCount);
-            },
-            error: function () {
-                alert("Error fetching data. Please try again.");
-            }
-        });
-    }
 
-    // Function to render the pie chart
+    // Render Pie Chart
     function renderPieChart(newProjects, existingProjects, closedProjects) {
-        var chartDom = document.getElementById('chartContainer');
-        var myChart = echarts.init(chartDom);
+    var chartDom = document.getElementById('chartContainer');
+    var myChart = echarts.init(chartDom);
 
-        var option = {
-            title: {
-                text: 'Projects',
-                subtext: 'Completed, New, and Existing',
-                left: 'center'
-            },
-            tooltip: {
-                trigger: 'item',
-                formatter: '{b}: {c}'
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: ['New Projects', 'Existing Projects', 'Closed Projects']
-            },
-            series: [
-                {
-                    name: 'Projects',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    top: '10%',
-                    label: {
-                        show: true,
-                        position: 'outside',
-                        formatter: '{b}: {c}'
+    var option = {
+        title: {
+            text: 'Projects',
+            subtext: 'Completed, New, and Existing',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c}'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: ['New Projects', 'Existing Projects', 'Closed Projects']
+        },
+        series: [
+            {
+                name: 'Projects',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                top: '10%',
+                label: {
+                    show: true,
+                    position: 'outside',
+                    formatter: '{b}: {c}'
+                },
+                data: [
+                    {
+                        value: newProjects,
+                        name: 'New Projects',
+                        itemStyle: { color: '#ffc107' } // Yellow
                     },
-                    data: [
-                        {
-                            value: newProjects,
-                            name: 'New Projects',
-                            itemStyle: { color: '#ffc107' } // Yellow
-                        },
-                        {
-                            value: existingProjects,
-                            name: 'Existing Projects',
-                            itemStyle: { color: '#17a2b8' } // Teal
-                        },
-                        {
-                            value: closedProjects,
-                            name: 'Closed Projects',
-                            itemStyle: { color: '#28a745' } // Green
-                        }
-                    ]
-                }
-            ]
-        };
+                    {
+                        value: existingProjects,
+                        name: 'Existing Projects',
+                        itemStyle: { color: '#17a2b8' } // Teal
+                    },
+                    {
+                        value: closedProjects,
+                        name: 'Closed Projects',
+                        itemStyle: { color: '#28a745' } // Green
+                    }
+                ]
+            }
+        ]
+    };
 
-        myChart.setOption(option);
-    }
+    myChart.setOption(option);
+}
+
 });
-
 
 
 </script>
