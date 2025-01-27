@@ -458,7 +458,7 @@
                                                     <label class="col-lg-3 col-form-label font-weight-semibold">RFQ NO<span
                                                             class="text-danger">*</span></label>
                                                     <div class="col-lg-9">
-                                                        <input name="rfq_no" value="" type="text"
+                                                        <input name="rfq_no" value="{{ $value->rfq_no }}" type="text"
                                                             id="rfqno" class="form-control rfqno"
                                                             placeholder="rfq_no">
                                                     </div>
