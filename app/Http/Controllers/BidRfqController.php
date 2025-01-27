@@ -175,6 +175,7 @@ class BidRfqController extends Controller
                 $bidrfq->comments = $req->comments;
                 $bidrfq->follow_up_date = $req->follow_up_date;
                 $bidrfq->currency = $req->currency;
+                $bidrfq->company_name = $req->company_name;
                 $bidrfq->rfq_no = $req->rfq_no;
                 
                 $bidrfq->client_id =json_encode($req->client_id_0);

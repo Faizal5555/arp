@@ -111,26 +111,43 @@ class OperationNewController extends Controller
          * @return \Illuminate\Http\Response
          */
    
-       public function index(Request $request){
-           $user = Auth()->user();
-           $data=$request->all();
-           $operation=OperationNew::latest();
-           if(isset($data['startdate']) && $data['startdate']!='' && ($data['enddate']) && $data['enddate']!=''){
-               $operation->whereDate('created_at','>=',$data['startdate'])->whereDate('updated_at','<=',$data['enddate']);  
-            }
-            if(isset($data['pno']) && $data['pno']!=''){
-                $operation->where('project_no','Like','%'.$data['pno'].'%');  
-            }
-        if($request->ajax()){
-            return Datatables::of($operation->get())
-             ->addIndexColumn()
-             ->addColumn('action', function($row){
-   
-            })
-            ->rawColumns(['action'])
-             ->make(true);
+       public function index(Request $request)
+       {
+        $user = auth()->user(); // Get the currently logged-in user
+        $data = $request->all();
+    
+        // Base query: Only fetch 'hold' status records
+        $operation = OperationNew::where('status', 'hold');
+    
+        // If the logged-in user is a Project Manager, filter by their ID
+        if ($user->user_role === 'project_manager') {
+            $operation->where('project_manager_name', $user->id); // Filter by project manager
         }
-        return view('operationNew.indexoperation',compact('operation'));
+    
+        // Apply additional filters (start date, end date, project number) if provided
+        if (isset($data['startdate']) && $data['startdate'] !== '' && isset($data['enddate']) && $data['enddate'] !== '') {
+            $operation->whereDate('created_at', '>=', $data['startdate'])
+                      ->whereDate('updated_at', '<=', $data['enddate']);
+        }
+        if (isset($data['pno']) && $data['pno'] !== '') {
+            $operation->where('project_no', 'LIKE', '%' . $data['pno'] . '%');
+        }
+    
+        // Handle Ajax requests for Datatables
+        if ($request->ajax()) {
+            return Datatables::of($operation->get())
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    // Define your action buttons or links here
+                  
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        // Pass data to the view (use pagination for large datasets)
+   
+        return view('operationNew.indexoperation', compact('operation'));
        }
        
 
@@ -864,6 +881,11 @@ class OperationNewController extends Controller
         $user = Auth()->user();
         $data=$request->all();
          $operation=OperationNew::where('status','completed')->latest();
+
+         if ($user->user_role === 'project_manager') {
+            $operation->where('project_manager_name', $user->id); // Filter by project manager
+        }
+    
           if(isset($data['startdate']) && $data['startdate']!='' && ($data['enddate']) && $data['enddate']!=''){
               $operation->whereDate('created_at','>=',$data['startdate'])->whereDate('updated_at','<=',$data['enddate']);  
           }

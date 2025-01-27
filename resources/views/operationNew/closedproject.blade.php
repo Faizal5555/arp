@@ -205,7 +205,7 @@ input#po_no{
             <div class="card" style="margin-left: 1px;">
                 <!-- <div class="card-title">vendor List</div> -->
                 <div class="card-header header-elements-inline">
-                    <a class="ml-2 card-title">Existing Project</a>
+                    <a class="ml-2 card-title">Closed Project</a>
                     {{-- <a href="{{route('bidrfq.create')}}" class="ml-2 btn btn-primary">Add</a> --}}
                 </div>
                 <div class="card-body">

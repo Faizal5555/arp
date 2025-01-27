@@ -439,6 +439,9 @@
                 currency: {
                     required: true
                 },
+                company_name: {
+                    required: true
+                },
                 country: {
                     required: true
                 },
@@ -668,6 +671,21 @@
                                     </div>
                                 </div>
                             </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">
+                                        Choose Company<span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <select class="form-control label-gray-3" name="company_name" id="company_name" required>
+                                            <option class="label-gray-3" value="" disabled selected>Select Company</option>
+                                            <option value="Asia Research Partners">Asia Research Partners</option>
+                                            <option value="Universal Research Panels">Universal Research Panels</option>
+                                            <option value="Healthcare Panels India">Healthcare Panels India</option>                                                        </select>
+                                    </div>
+                                </div>
+                                </div>
+
 
                             <div class="col-md-12" style="overflow-x:auto;">
                                 <div class="form-group row">
