@@ -206,7 +206,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">RFQ No <span
                                                         class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="rfq_no" value="" id="rfqno" readonly="readonly"
+                                                    <input name="rfq_no" value="{{ $value->rfq_no }}" id="rfqno" readonly="readonly"
                                                         type="text" class="form-control rfqno"
                                                         placeholder="{{ $value->rfq_no }}">
                                                 </div>
@@ -1132,7 +1132,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                            <a href="" id="add_reg1" class="btn btn-outline-secondary">Back</a>
+                                            <a href="" id="add_reg1" class="btn btn-outline-secondary">Backs</a>
                                             <button type="submit" id="addRegisterButton"
                                                 class="ml-2 btn btn-success">Submit</button>
                                         </div>
@@ -2536,6 +2536,7 @@ $('#world_row').html(worldHtml);
                     $('.won-rfq-btn2').addClass('d-none');
                 });
                 $(document).on('click', '#add_reg1', function() {
+                    alert('jo');
                     $('#edit-rfq').addClass('d-none');
                     $('#won-rfq').addClass('d-none');
                     $('#won-rfq1').addClass('d-none');
