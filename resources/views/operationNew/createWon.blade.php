@@ -2536,7 +2536,6 @@ $('#world_row').html(worldHtml);
                     $('.won-rfq-btn2').addClass('d-none');
                 });
                 $(document).on('click', '#add_reg1', function() {
-                    alert('jo');
                     $('#edit-rfq').addClass('d-none');
                     $('#won-rfq').addClass('d-none');
                     $('#won-rfq1').addClass('d-none');
