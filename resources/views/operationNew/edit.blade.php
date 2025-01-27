@@ -992,6 +992,23 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+                             <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Project Operation Head Name <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                        {{-- <input name="quality_analyst_name" value=""
+                                             type="text" class="form-control" placeholder="Quality Analyst Name"> --}}
+                                            <select class="form-control label-gray-3" name="project_operation_head">
+                                                @if(count($user4)>0)
+                                                @foreach ($user4 as $item)
+                                                <option class="label-gray-3" value="{{$item->id}}"{{$operation->project_operation_head == $item->id ? 'selected' :''}}>{{$item->name}}</option>
+                                                @endforeach
+                                                @endif
+                                            </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Project Deliverables <span
