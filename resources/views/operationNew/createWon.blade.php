@@ -1132,7 +1132,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                            <a href="" id="add_reg1" class="btn btn-outline-secondary">Backs</a>
+                                            <a href="" id="add_reg1" class="btn btn-outline-secondary">Back</a>
                                             <button type="submit" id="addRegisterButton"
                                                 class="ml-2 btn btn-success">Submit</button>
                                         </div>
