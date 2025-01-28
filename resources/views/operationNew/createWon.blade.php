@@ -183,7 +183,9 @@
 
                                             @if (count($wonproject) > 0)
                                                 @foreach ($wonproject as $value)
-                                                    @if (!in_array($value->rfq_no, $rfq))
+                                                    @if (auth()->user()->user_type == "admin" && !in_array($value->rfq_no, $rfq))
+                                                        <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
+                                                    @elseif (auth()->user()->user_role == "project_manager" )
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
                                                     @endif
                                                 @endforeach
@@ -206,7 +208,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">RFQ No <span
                                                         class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="rfq_no" value="{{ $value->rfq_no }}" id="rfqno" readonly="readonly"
+                                                    <input name="rfq_no" value="" id="rfqno" readonly="readonly"
                                                         type="text" class="form-control rfqno"
                                                         placeholder="{{ $value->rfq_no }}">
                                                 </div>
@@ -333,27 +335,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group row">
-                                                <label class="col-lg-3 col-form-label font-weight-semibold">Choose
-                                                    Company Name<span class="text-danger">*</span></label>
-                                                <div class="col-lg-9">
-                                                    {{-- <input name="currency" value="" id="currency"
-                                                    type="text" class="form-control" placeholder="currency"> --}}
-                                                    <select class="form-control label-gray-3" name="company_name"
-                                                        id="company_name">
-                                                        <option class="label-gray-3" value="" disabled selected>
-                                                            Select Company Name</option>
-                                                        <option value="Asia Research Partners">Asia Research Partners</option>
-                                                        <option value="Universal Research Panels">Universal Research Panels</option>
-                                                        <option value="Healthcare Panels India">Healthcare Panels India</option>
-                                                       
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
 
                                         <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                             <div class="form-group row">
@@ -845,7 +826,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project No
                                                     <span class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="project_no" value="" type="text"
+                                                    <input name="project_no" value="{{ $project_no }}" type="text"
                                                         class="form-control">
                                                 </div>
                                             </div>
@@ -871,7 +852,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 d-none">
+                                        <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Assign Team
                                                     Leader
@@ -917,7 +898,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 d-none">
+                                        <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Quality Analyst
                                                     Name
@@ -1559,6 +1540,7 @@
                 $(document).on('change', '#rfq_no', function() {
                     // debugger
                     var id = $(this).val();
+                    
                     // var rfqNo = $(this).find('option:selected').data('rfqno');
 
                     // console.log("ID:", id);
@@ -1592,67 +1574,67 @@
                             let worldHtml = '<th>Country</th>';
                             let removeHtml = `<th><th>`;
 
-    if (world.length != 0) {
-        $.each(world, function (kv, value) {
-            if (value != null) {
-                $.each(value, function (dataIndex, data) {
-                    worldHtml += '<th class="data-country country_remove_' + kv + '">';
-                    worldHtml += '<label class="form-group has-float-label">';
-                    worldHtml +=
-                        '<select class="form-control label-gray-3" name="country_0[' +
-                        kv + '][]">';
-                    worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
-                    if(kv == 0)
-                    {
-                        removeHtml += `<th class="remove-country-${kv}"></th>`;
-                    }else{
-                        removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
-                                                            <i class="fa-solid fa-xmark"></i>
-                                        </button></th>`;
-                    }
-                    removeHtml += `<th class="remove-country-${kv}"></th>`;
-                    // Loop through countries passed from Blade
-                    var countries = <?php echo json_encode($country); ?>;
-                    if (countries.length > 0) {
-                        $.each(countries, function (index, country) {
-                            worldHtml += '<option value="' + country.name + '"';
-                            if (data === country.name) {
-                                worldHtml += ' selected';
-                            }
-                            worldHtml += '>' + country.name + '</option>';
-                        });
-                    }
+                                if (world.length != 0) {
+                                    $.each(world, function (kv, value) {
+                                        if (value != null) {
+                                            $.each(value, function (dataIndex, data) {
+                                                worldHtml += '<th class="data-country country_remove_' + kv + '">';
+                                                worldHtml += '<label class="form-group has-float-label">';
+                                                worldHtml +=
+                                                    '<select class="form-control label-gray-3" name="country_0[' +
+                                                    kv + '][]">';
+                                                worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
+                                                if(kv == 0)
+                                                {
+                                                    removeHtml += `<th class="remove-country-${kv}"></th>`;
+                                                }else{
+                                                    removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
+                                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </button></th>`;
+                                                }
+                                                removeHtml += `<th class="remove-country-${kv}"></th>`;
+                                                // Loop through countries passed from Blade
+                                                var countries = <?php echo json_encode($country); ?>;
+                                                if (countries.length > 0) {
+                                                    $.each(countries, function (index, country) {
+                                                        worldHtml += '<option value="' + country.name + '"';
+                                                        if (data === country.name) {
+                                                            worldHtml += ' selected';
+                                                        }
+                                                        worldHtml += '>' + country.name + '</option>';
+                                                    });
+                                                }
 
-                    worldHtml += '</select>';
-                    worldHtml += '<span>Country</span>';
+                                                worldHtml += '</select>';
+                                                worldHtml += '<span>Country</span>';
 
-                    // Append Add Vendor and Remove Country buttons only once per country
-                    // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
-                    worldHtml +=
-                        '<th class="abcversion_' +
-                        kv +
-                        '_coun country_remove_' +
-                        kv +
-                        '_10">';
-                    worldHtml +=
-                        '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
-                        kv +
-                        '" type="button">Add vendor</button>';
-                    worldHtml +=
-                        '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
-                        kv +
-                        '" type="button"><i class="fa-solid fa-xmark"></i></button>';
-                    worldHtml += '</th>';
-                    worldHtml += '</label>';
-                    worldHtml += '</th>';
-                });
-            }
-        });
-    }
+                                                // Append Add Vendor and Remove Country buttons only once per country
+                                                // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
+                                                worldHtml +=
+                                                    '<th class="abcversion_' +
+                                                    kv +
+                                                    '_coun country_remove_' +
+                                                    kv +
+                                                    '_10">';
+                                                worldHtml +=
+                                                    '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
+                                                    kv +
+                                                    '" type="button">Add vendor</button>';
+                                                worldHtml +=
+                                                    '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
+                                                    kv +
+                                                    '" type="button"><i class="fa-solid fa-xmark"></i></button>';
+                                                worldHtml += '</th>';
+                                                worldHtml += '</label>';
+                                                worldHtml += '</th>';
+                                            });
+                                        }
+                                    });
+                                }
 
-// Render the final HTML
-$('#remove_country_row').html(removeHtml);
-$('#world_row').html(worldHtml);
+                            // Render the final HTML
+                            $('#remove_country_row').html(removeHtml);
+                            $('#world_row').html(worldHtml);
 
 
 
@@ -1881,7 +1863,6 @@ $('#world_row').html(worldHtml);
                             console.log(data.bidrfq.industry);
                             $("#follow_up_date").val(data.bidrfq.follow_up_date);
                             $("#currency").val(data.bidrfq.currency);
-                            $("#company_name").val(data.bidrfq.company_name);
                             $(".user").val(data.user.name);
 
                             console.log(data);
@@ -1967,6 +1948,7 @@ $('#world_row').html(worldHtml);
                                 $('#otherField5').removeClass('required');
                                 $('#otherField5').removeClass('data-error');
                             }
+                                $("input[name=rfq_ no]").val(id);
 
                         }
                     });
@@ -2414,7 +2396,7 @@ $('#world_row').html(worldHtml);
                             }
 
 
-
+                            $("input[name=rfq_ no]").val(id);
 
 
                         }
@@ -2842,9 +2824,9 @@ $('#world_row').html(worldHtml);
                             project_operation_head: {
                                 required: true
                             },
-                            // quality_analyst_name: {
-                            //     required: true
-                            // },
+                            quality_analyst_name: {
+                                required: true
+                            },
                             project_deliverable: {
                                 required: true,
                             },
