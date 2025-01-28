@@ -122,7 +122,7 @@
 @section('page_title', 'WonProject Form')
 
 @section('content')
-
+<input type="hidden" id="rfq_no_hidden">
 
     {{-- won project --}}
     <div class="container-fluid">
@@ -854,7 +854,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-none">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Assign Team
                                                     Leader
@@ -900,7 +900,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-none">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Quality Analyst
                                                     Name
@@ -1468,6 +1468,7 @@
                             }
                         },
                         submitHandler: function(form) {
+                        $('.rfqno').val($('#rfq_no_hidden').val());
                             var data = new FormData(form);
                             $.ajax({
                                 type: "POST",
@@ -1542,7 +1543,7 @@
                 $(document).on('change', '#rfq_no', function() {
                     // debugger
                     var id = $(this).val();
-                    
+                    $('#rfq_no_hidden').val(id);
                     // var rfqNo = $(this).find('option:selected').data('rfqno');
 
                     // console.log("ID:", id);
@@ -1950,7 +1951,8 @@
                                 $('#otherField5').removeClass('required');
                                 $('#otherField5').removeClass('data-error');
                             }
-                                $("input[name=rfq_no]").val(id);
+                            console.log("id: "+ id);
+                               
 
                         }
                     });
@@ -2290,6 +2292,7 @@
 
                 $(document).on('change', '#rfq_no', function() {
                     var id = $(this).val();
+                    $('#rfq_no_hidden').val(id);
                     $.ajax({
                         type: "GET",
                         url: "{{ route('operationNew.change') }}",
@@ -2300,8 +2303,9 @@
                         success: function(data) {
 
                             console.log(data);
+                            
                             $("#id_no").val(data.wonProject.id);
-                            $(".rfqno").val(data.wonProject.rfq_no);
+                            $(".rfqno").val(id);
                             $("#client_id").val(data.wonProject.client_id);
                             $("#projectname").val(data.wonProject.project_name);
                             $("#projecttype").val(data.wonProject.project_type);
@@ -2396,9 +2400,7 @@
                                 $('#otherField5').removeClass('required');
                                 $('#otherField5').removeClass('data-error');
                             }
-
-
-                            $("input[name=rfq_no]").val(id);
+                            
 
 
                         }
@@ -2617,6 +2619,7 @@
                             }
                         },
                         submitHandler: function(form) {
+                        $('.rfqno').val($('#rfq_no_hidden').val());
                             var data = new FormData(form);
                             $.ajax({
                                 type: "POST",
