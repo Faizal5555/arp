@@ -364,7 +364,7 @@ class OperationNewController extends Controller
                 //     $dt = Carbon::now();
                 //     // var_dump($dt->year);
                 // }
-                $operation->project_no = 'PNO'.$unique_no. '-' .$dt->year;
+                $operation->project_no = $req->project_no;
                 
                 if ($operation->save()) {
                     if (count($req->other_document)> 0)

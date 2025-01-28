@@ -294,6 +294,7 @@ class BidRfqController extends Controller
                 $bidrfq->date = $req->date;
                 $bidrfq->industry = $req->industry;
                 $bidrfq->comments = $req->comments;
+                $bidrfq->company_name = $req->company_name;
                 $bidrfq->follow_up_date = $req->follow_up_date;
                 //  $bidrfq->industry_table = $req->industry_table;
                 // $bidrfq->client_id = implode(',',$req->$client_id);

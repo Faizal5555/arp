@@ -334,6 +334,27 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Choose
+                                                    Company Name<span class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+                                                    {{-- <input name="currency" value="" id="currency"
+                                                    type="text" class="form-control" placeholder="currency"> --}}
+                                                    <select class="form-control label-gray-3" name="company_name"
+                                                        id="company_name">
+                                                        <option class="label-gray-3" value="" disabled selected>
+                                                            Select Company Name</option>
+                                                        <option value="Asia Research Partners">Asia Research Partners</option>
+                                                        <option value="Universal Research Panels">Universal Research Panels</option>
+                                                        <option value="Healthcare Panels India">Healthcare Panels India</option>
+                                                       
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                             <div class="form-group row">
                                                 <button class="mb-4 ml-2 btn btn-success btn-country" type="button">Add
@@ -824,7 +845,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project No
                                                     <span class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="project_no" value="{{ $project_no }}" type="text"
+                                                    <input name="project_no" value="" type="text"
                                                         class="form-control">
                                                 </div>
                                             </div>
@@ -850,7 +871,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-none">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Assign Team
                                                     Leader
@@ -896,7 +917,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-none">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Quality Analyst
                                                     Name
@@ -1860,6 +1881,7 @@ $('#world_row').html(worldHtml);
                             console.log(data.bidrfq.industry);
                             $("#follow_up_date").val(data.bidrfq.follow_up_date);
                             $("#currency").val(data.bidrfq.currency);
+                            $("#company_name").val(data.bidrfq.company_name);
                             $(".user").val(data.user.name);
 
                             console.log(data);
@@ -2820,9 +2842,9 @@ $('#world_row').html(worldHtml);
                             project_operation_head: {
                                 required: true
                             },
-                            quality_analyst_name: {
-                                required: true
-                            },
+                            // quality_analyst_name: {
+                            //     required: true
+                            // },
                             project_deliverable: {
                                 required: true,
                             },

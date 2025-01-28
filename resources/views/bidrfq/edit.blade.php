@@ -317,7 +317,7 @@ height: 88px;
                       <tbody class="mytbody_${rar}">
                       <tr>
                       <th class="btn-length">
-                      <button class="btn btn-danger  ml-2 float-left btn-remove-country1" data-country1="${rar}"  type="button">
+                      <button class="float-left ml-2 btn btn-danger btn-remove-country1" data-country1="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                       </th>
                       </tr>
@@ -337,14 +337,14 @@ height: 88px;
                                         
                                 </th>
                                 <th>
-                                <button class="btn btn-success   float-left addvendor" data-button="${rar}" data-count="0"   type="button">
+                                <button class="float-left btn btn-success addvendor" data-button="${rar}" data-count="0"   type="button">
                                         Add vendor
                                     </button>
                                     
                                 </th>
                                 
                                 <th>
-                                <button class="btn btn-success   float-left btn-remove" data-remove="${rar}"  type="button">
+                                <button class="float-left btn btn-success btn-remove" data-remove="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                                 </th>
                             </tr>
@@ -607,7 +607,7 @@ $(document).ready(function () {
 
                 <div class="card-body">
                     <div class="row">
-                        <form id="{{ $bidrfq && $bidrfq->id ? 'update' : 'register'}}" class="form col-md-12 d-flex flex-wrap"
+                        <form id="{{ $bidrfq && $bidrfq->id ? 'update' : 'register'}}" class="flex-wrap form col-md-12 d-flex"
                             enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="id" value="{{$bidrfq && $bidrfq->id ? $bidrfq->id  : ''}}">
@@ -721,9 +721,25 @@ $(document).ready(function () {
                                 </div>
                             </div>
                             
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Choose Company Name<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                      
+                                        <select class="form-control label-gray-3" id="company_name" name="company_name">
+                                            <option value="Asia Research Partners"{{$bidrfq && $bidrfq->company_name == 'Asia Research Partners' ? 'selected' : ''}}>Asia Research Partners</option>
+                                            <option value="Universal Research Panels" {{$bidrfq && $bidrfq->company_name == 'Universal Research Panels' ? 'selected' : ''}}>Universal Research Panels</option>
+                                            <option value="Healthcare Panels India"{{$bidrfq && $bidrfq->company_name == 'Healthcare Panels India' ? 'selected' : ''}} >Healthcare Panels India</option>
+                                                
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                 <div class="form-group row">
-                                <button class="btn btn-success btn-country mb-4 ml-2" type="button">Add country</button>
+                                <button class="mb-4 ml-2 btn btn-success btn-country" type="button">Add country</button>
                                   
                                   
                                     <div class="col-lg-12 edit-table-bid d-flex">
@@ -748,7 +764,7 @@ $(document).ready(function () {
                                          @foreach($value as $data)
                                         
                                          <th class="country_remove_{{$kv}}_13">
-                                         <button class="btn btn-danger remove-country mb-4 ml-2"  data-remove="{{$kv}}" type="button">
+                                         <button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="{{$kv}}" type="button">
                                                             <i class="fa-solid fa-xmark"></i>
                                         </button>     
                                         </th>
@@ -806,10 +822,10 @@ $(document).ready(function () {
                                                
                                                 @endforeach
                                        
-                                                <th class="abcversion_{{$kv}}_coun country_remove_{{$kv}}_10"><button class="btn btn-success  ml-2 float-left addvendor" data-button="{{$kv}}" type="button">
+                                                <th class="abcversion_{{$kv}}_coun country_remove_{{$kv}}_10"><button class="float-left ml-2 btn btn-success addvendor" data-button="{{$kv}}" type="button">
                                                                                                 Add vendor
                                                                                             </button>
-                                                                                            <button class="btn btn-success btn-remove mb-4 ml-2"  data-remove="{{$kv}}" type="button"><i class="fa-solid fa-xmark"></i></button></th>
+                                                                                            <button class="mb-4 ml-2 btn btn-success btn-remove"  data-remove="{{$kv}}" type="button"><i class="fa-solid fa-xmark"></i></button></th>
                                                 @endforeach
                                                 @endforeach
                                             </tr>   
@@ -968,7 +984,7 @@ $(document).ready(function () {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <a href="{{route('bidrfq.index')}}" class=" btn btn-primary">Back</a>
                                 <button type="submit" id="addRegisterButton"
-                                    class="btn btn-success ml-2">Update</button>
+                                    class="ml-2 btn btn-success">Update</button>
                                    
                             </div>
                         </form>
@@ -982,7 +998,7 @@ $(document).ready(function () {
 <div class="modal fade"id="ajaxModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
-            <div class="modal-header text-center">
+            <div class="text-center modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Status</h5>
             </div>
             <div class="modal-body">
@@ -1132,7 +1148,7 @@ $(document).ready(function () {
 
                 <div class="card-body">
                     <div class="row">
-                        <form id="register1" class="form col-md-12 d-flex flex-wrap"
+                        <form id="register1" class="flex-wrap form col-md-12 d-flex"
                            enctype="multipart/form-data">
                            @csrf
                            <input type="hidden" value="rfq_no_id">
@@ -1316,7 +1332,7 @@ $(document).ready(function () {
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-9">
                                             <input name="client_contract" style="text-transform: capitalize;" 
-                                                id="otherField15" type="file" class="form-control p-1" placeholder="Attach Client Contract">
+                                                id="otherField15" type="file" class="p-1 form-control" placeholder="Attach Client Contract">
                                         </div>
                                     </div>
                                 </div>
@@ -1392,7 +1408,7 @@ $(document).ready(function () {
 
                                            
                                             <input name="vendor_contract_0[0]" style="text-transform: capitalize;" 
-                                                id="otherField16" type="file" class="form-control p-1" placeholder="Attach Vendor Contract">
+                                                id="otherField16" type="file" class="p-1 form-control" placeholder="Attach Vendor Contract">
                                         </div>
                                     </div>
                                 </div>
@@ -1406,7 +1422,7 @@ $(document).ready(function () {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <a href="{{route('bidrfq.index')}}" class=" btn btn-outline-secondary">Back</a>
                                 <button type="submit" id="addRegisterButton"
-                                    class="btn btn-success ml-2">Submit</button>
+                                    class="ml-2 btn btn-success">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -1685,8 +1701,8 @@ $(document).ready(function () {
                                       
                                         <div class="col-lg-12">
                                         <div class="count-vendor"  data-won="${woncount}">
-                                        <div class="icons float-right won-remove-vendor" data-wrap="${woncount}">
-                                        <i class="fa-solid fa-circle-minus float-left "></i>
+                                        <div class="float-right icons won-remove-vendor" data-wrap="${woncount}">
+                                        <i class="float-left fa-solid fa-circle-minus "></i>
                                         </div>
                                         </div>
                                         </div>
@@ -1751,7 +1767,7 @@ $(document).ready(function () {
 
                                            
                                             <input name="vendor_contract_0[${woncount}]" style="text-transform: capitalize;" 
-                                                id="otherField16" type="file" class="form-control p-1" placeholder="Attach Vendor Contract">
+                                                id="otherField16" type="file" class="p-1 form-control" placeholder="Attach Vendor Contract">
                                         </div>
                                     </div>
                                 </div>

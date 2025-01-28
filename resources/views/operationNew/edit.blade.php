@@ -109,7 +109,7 @@ input.form-control {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <form id="rfq" class="form col-md-12 d-flex flex-wrap update"
+                        <form id="rfq" class="flex-wrap form col-md-12 d-flex update"
                             enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="id" value="{{$bidrfq && $bidrfq->id ? $bidrfq->id  : ''}}">
@@ -223,10 +223,26 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Choose Company Name<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                      
+                                        <select class="form-control label-gray-3" id="company_name" name="company_name">
+                                            <option value="Asia Research Partners"{{$bidrfq && $bidrfq->company_name == 'Asia Research Partners' ? 'selected' : ''}}>Asia Research Partners</option>
+                                            <option value="Universal Research Panels" {{$bidrfq && $bidrfq->company_name == 'Universal Research Panels' ? 'selected' : ''}}>Universal Research Panels</option>
+                                            <option value="Healthcare Panels India"{{$bidrfq && $bidrfq->company_name == 'Healthcare Panels India' ? 'selected' : ''}} >Healthcare Panels India</option>
+                                                
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                 <div class="form-group row">
-                                <button class="btn btn-success btn-country mb-4 ml-2" type="button">Add country</button>
+                                <button class="mb-4 ml-2 btn btn-success btn-country" type="button">Add country</button>
                               
                                   
                                     <div class="col-lg-12 edit-table-bid d-flex">
@@ -251,7 +267,7 @@ input.form-control {
                                          @foreach($value as $data)
                                         
                                          <th class="country_remove_{{$kv}}_13">
-                                         <button class="btn btn-danger remove-country mb-4 ml-2"  data-remove="{{$kv}}" type="button">
+                                         <button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="{{$kv}}" type="button">
                                                             <i class="fa-solid fa-xmark"></i>
                                         </button>     
                                         </th>
@@ -309,10 +325,10 @@ input.form-control {
                                                
                                                 @endforeach
                                        
-                                                <th class="abcversion_{{$kv}}_coun country_remove_{{$kv}}_10"><button class="btn btn-success  ml-2 float-left addvendor" data-button="{{$kv}}" type="button">
+                                                <th class="abcversion_{{$kv}}_coun country_remove_{{$kv}}_10"><button class="float-left ml-2 btn btn-success addvendor" data-button="{{$kv}}" type="button">
                                                                                                 Add vendor
                                                                                             </button>
-                                                                                            <button class="btn btn-success btn-remove mb-4 ml-2"  data-remove="{{$kv}}" type="button"><i class="fa-solid fa-xmark"></i></button></th>
+                                                                                            <button class="mb-4 ml-2 btn btn-success btn-remove"  data-remove="{{$kv}}" type="button"><i class="fa-solid fa-xmark"></i></button></th>
                                                 @endforeach
                                                 @endforeach
                                             </tr>   
@@ -471,13 +487,13 @@ input.form-control {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <a href="{{route('operationNew.index')}}" class=" btn btn-outline-secondary" id="won-rfq-btn1">Back</a>
                                 <button type="submit" id="addRegisterButton"
-                                    class="btn btn-success ml-2 rfq-sub d-none">Update</button>
-                                <p id="nextrfq" class="btn btn-primary m-2 won-rfq-btn2">Next</button>
+                                    class="ml-2 btn btn-success rfq-sub d-none">Update</button>
+                                <p id="nextrfq" class="m-2 btn btn-primary won-rfq-btn2">Next</button>
                             </div>
                             <div class="col-md-12 d-flex align-items-end justify-content-end">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                                    <div class="col-lg-9 pl-2">
+                                    <div class="pl-2 col-lg-9">
                                         <input name="last_editor_by" id="user" value="{{$user3->name}}" type="text" class="form-control" placeholder="Last Editor Name" readonly>
                                     </div>
                                 </div>
@@ -500,7 +516,7 @@ input.form-control {
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <form id="won" class="form col-md-12 d-flex flex-wrap update"
+                                        <form id="won" class="flex-wrap form col-md-12 d-flex update"
                                        enctype="multipart/form-data">
                                        @csrf
                                         <input type="hidden" value="rfq_no_id">
@@ -731,7 +747,7 @@ input.form-control {
                                                         <input name="client_contract" style="text-transform: capitalize;"
                                                             id="otherField15" type="file"
                                                             value="{{ $wonproject->client_contract ? $wonproject->client_contract : '' }} "
-                                                            class="form-control p-1" placeholder="Attach Client Contract">
+                                                            class="p-1 form-control" placeholder="Attach Client Contract">
                                                     </div>
                                                 </div>
                                             </div>
@@ -853,7 +869,7 @@ input.form-control {
                                                                     <input name="vendor_contract_0[{{ $key }}]"
                                                                         style="text-transform: capitalize;" id="otherField16"
                                                                         type="file" value="{{ $value4 }}"
-                                                                        class="form-control p-1" placeholder="Attach Vendor Contract">
+                                                                        class="p-1 form-control" placeholder="Attach Vendor Contract">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -871,15 +887,15 @@ input.form-control {
             
                                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                                 <button id="Won_back" class="btn btn-outline-secondary">Back</button>
-                                                <button id="next" class="btn btn-success ml-2">Next</button>
+                                                <button id="next" class="ml-2 btn btn-success">Next</button>
                                                 {{-- <button type="submit" id="addRegisterButton"
                                             class="btn btn-success ">Submit</button>
-                                            <a href="{{route('operationNew.create')}}" class=" btn btn-primary ml-2">Next</a> --}}
+                                            <a href="{{route('operationNew.create')}}" class="ml-2 btn btn-primary">Next</a> --}}
                                             </div>
                                             <div class="col-md-12 d-flex align-items-end justify-content-end">
                                                 <div class="form-group row">
                                                     <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                                                    <div class="col-lg-9 pl-2">
+                                                    <div class="pl-2 col-lg-9">
                                                         <input name="last_edited_by" id="user" value="{{ $user3->name }}"
                                                             type="text" class="form-control user" placeholder="Last Editor by"
                                                             readonly>
@@ -906,7 +922,7 @@ input.form-control {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <form id="update" class="form col-md-12 d-flex flex-wrap"
+                        <form id="update" class="flex-wrap form col-md-12 d-flex"
                            enctype="multipart/form-data">
                            @csrf
                           <input type="hidden" name="id"  id="id" value="{{$operation && $operation->id ? $operation->id :''}}">
@@ -941,7 +957,7 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 d-none">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Assign Team Leader <span
                                             class="text-danger">*</span></label>
@@ -975,7 +991,7 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 d-none">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Quality Analyst Name <span
                                             class="text-danger">*</span></label>
@@ -1050,7 +1066,7 @@ input.form-control {
                                         
                                      @endforeach
                                     @endif
-                                        <i class="fa-solid fa-circle-plus add float-right mb-2 mt-1" style="color:green;" ></i>
+                                        <i class="float-right mt-1 mb-2 fa-solid fa-circle-plus add" style="color:green;" ></i>
                                         <input name="other_document[]"  value="{{$operation && $operation->other_document  ? $operation->other_document  : ''}}"
                                              type="file"  class="form-control" name="other_document[]" placeholder="Attach Other Documents">
                                              <div id="other_document"></div>
@@ -1090,7 +1106,7 @@ input.form-control {
                                 <div class="form-group row">
                                     <label class="col-lg-12 col-form-label font-weight-semibold">Target Table<span
                                             class="text-danger"></span></label>
-                                            <button class="btn btn-danger  ml-2"  style="float: right;"id="addBtn" type="button">
+                                            <button class="ml-2 btn btn-danger"  style="float: right;"id="addBtn" type="button">
                                                 Add New Country
                                             </button>
                                     <div class="col-md-12 table-responsive" style="overflow-x:auto;">
@@ -1103,7 +1119,7 @@ input.form-control {
                                         
                                         ?>  
                                        
-                                        {{-- <button class="btn btn-danger  ml-2" class="removeBtn" type="button">
+                                        {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
                                     <table border="1" name="" id="mtables">
@@ -1186,7 +1202,7 @@ input.form-control {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <button type="button" id="Operation" class="btn btn-primary">Back</button>
                                 <button type="submit" id="addRegisterButton"
-                                    class="btn btn-success ml-2">Update</button>
+                                    class="ml-2 btn btn-success">Update</button>
                                     
                             </div>
                         </form>
@@ -1374,7 +1390,7 @@ input.form-control {
             </div>
            </div>
            
-           <div class="msg-bubble mt-3">
+           <div class="mt-3 msg-bubble">
                  <div class="msg-info">
                   <div class="msg-info-name">Project Manager</div>
                 </div>
@@ -1384,7 +1400,7 @@ input.form-control {
             </div>
            </div>
            
-           <div class="msg-bubble mt-3">
+           <div class="mt-3 msg-bubble">
                  <div class="msg-info">
                   <div class="msg-info-name">Quality Analyst</div>
                 </div>
@@ -1394,7 +1410,7 @@ input.form-control {
             </div>
            </div>
 
-           <div class="msg-bubble mt-3">
+           <div class="mt-3 msg-bubble">
             <div class="msg-info">
              <div class="msg-info-name">Operation Head</div>
            </div>
@@ -1407,9 +1423,9 @@ input.form-control {
            
            
            @if($operation->comments!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1425,7 +1441,7 @@ input.form-control {
            
            
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
              <textarea name="comments" id="comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
             <button type="button" id="commentsubmit" class="msger-send-btn">Send</button>
@@ -1467,9 +1483,9 @@ input.form-control {
             </div>
            </div>
              @if($operation->tl_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1483,7 +1499,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
                <textarea name="tl_comments" id="tl_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="tlcommentsubmit" class="msger-send-btn">Send</button>
@@ -1528,9 +1544,9 @@ input.form-control {
            </div>
            
             @if($operation->pm_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1544,7 +1560,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
              <textarea name="pm_comments" id="pm_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="pmcommentsubmit" class="msger-send-btn">Send</button>
@@ -1584,9 +1600,9 @@ input.form-control {
                </div>
                
                 @if($operation->oh_msg!='')
-                <div class="right-msg mt-3 col-md-12">
+                <div class="mt-3 right-msg col-md-12">
                     <div class="col-md-3"></div>
-                    <div class="msg-bubble mt-3">
+                    <div class="mt-3 msg-bubble">
                         <div class="col-md-6">
                      <div class="msg-info">
                       <div class="msg-info-name">You</div>
@@ -1600,7 +1616,7 @@ input.form-control {
                </div>
                @endif
                
-               <div class="msger-inputarea mt-3">
+               <div class="mt-3 msger-inputarea">
                  <textarea name="oh_comments" id="oh_comments" value=""
                 class="form-control msger-input" placeholder="Comments here..." required></textarea>
                  <button type="button" id="ohcommentsubmit" class="msger-send-btn">Send</button>
@@ -1641,9 +1657,9 @@ input.form-control {
            </div>
            
            @if($operation->ql_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1657,7 +1673,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
             <textarea name="ql_comments" id="ql_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="qlcommentsubmit" class="msger-send-btn">Send</button>
@@ -1880,7 +1896,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="respondentfile" value=""
-                            id="respondentfile" type="file" class="form-control p-1" placeholder="Attach Respondent incentive file">
+                            id="respondentfile" type="file" class="p-1 form-control" placeholder="Attach Respondent incentive file">
                           
                         </div>
                     </div>
@@ -1890,7 +1906,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Invoice File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="clientinvoicefile" value=""
-                            id="clientinvoicefile" type="file" class="form-control p-1" placeholder="Attach Client invoice file">
+                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
                           
                         </div>
                     </div>
@@ -1899,7 +1915,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Invoice File <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="vendorinvoicefile" value=""
-                            id="vendorinvoicefile" type="file" class="form-control p-1" placeholder="Attach vendorinvoicefile">
+                            id="vendorinvoicefile" type="file" class="p-1 form-control" placeholder="Attach vendorinvoicefile">
                           
                         </div>
                     </div>
@@ -1909,7 +1925,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Confirmation Email <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="client_confirmation" value=""
-                            id="client_confirmation" type="file" class="form-control p-1" placeholder="Attach Client project Confirmation Email">
+                            id="client_confirmation" type="file" class="p-1 form-control" placeholder="Attach Client project Confirmation Email">
                           
                         </div>
                     </div>
@@ -1918,7 +1934,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="vendor_confirmation" value=""
-                            id="vendor_confirmation" type="file" class="form-control p-1" placeholder="Attach Vendor Confirmation Email">
+                            id="vendor_confirmation" type="file" class="p-1 form-control" placeholder="Attach Vendor Confirmation Email">
                           
                         </div>
                     </div>
@@ -1950,7 +1966,7 @@ input.form-control {
             <div class="modal-body">
                
                 <div class="row">
-                    <div class="col-md-12 d-flex justify-content-center text-center">
+                    <div class="text-center col-md-12 d-flex justify-content-center">
                         <div class="row">
                             <div class="col-md-6" id="project_hold">
                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenterhold">
@@ -2301,9 +2317,9 @@ input.form-control {
                 project_manager_name: {
                     required: true
                 },
-                quality_analyst_name: {
-                    required: true
-                },
+                // quality_analyst_name: {
+                //     required: true
+                // },
                 project_deliverable: {
                     required: true
                 },
@@ -2448,7 +2464,7 @@ $(document).on('click','.btn-country',function(){
                       <tbody class="mytbody_${rar}">
                       <tr>
                       <th class="btn-length">
-                      <button class="btn btn-danger  ml-2 float-left btn-remove-country1" data-country1="${rar}"  type="button">
+                      <button class="float-left ml-2 btn btn-danger btn-remove-country1" data-country1="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                       </th>
                       </tr>
@@ -2468,14 +2484,14 @@ $(document).on('click','.btn-country',function(){
                                         
                                 </th>
                                 <th>
-                                <button class="btn btn-success   float-left addvendor" data-button="${rar}" data-count="0"   type="button">
+                                <button class="float-left btn btn-success addvendor" data-button="${rar}" data-count="0"   type="button">
                                         Add vendor
                                     </button>
                                     
                                 </th>
                                 
                                 <th>
-                                <button class="btn btn-success   float-left btn-remove" data-remove="${rar}"  type="button">
+                                <button class="float-left btn btn-success btn-remove" data-remove="${rar}"  type="button">
                                         <i class="fa-solid fa-xmark"></i></button>
                                 </th>
                             </tr>
@@ -2711,7 +2727,7 @@ $(document).ready(function(){
             <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
         </td>
         <td>
-            <button class="btn btn-danger  ml-2" id="removeBtn" type="button">
+            <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
                                             Remove
                                         </button>
         </td>
@@ -3488,9 +3504,9 @@ $("#complete").validate({
                 
                         advancehtml+=`<div class="vendor_design vendor_design_${i} ${i != 0 ? 'd-none' :''}" ><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id"  value="${v}" class="form-control" id="vendor_id_${i}"></div>
                      <label>Vendor Advance</label><input type="type" name="vendor_advance" id="vendor_advance_${i}" value="${vendor_currency} ${vendor_advance[i]}" class="form-control">
-                     <div class="form-group mt-3"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mdi mdi-download mt-3" href="adminapp/public/                                                                                                     ${vendor_contract[i]}" id="version-1" download >download</a></div>
+                     <div class="mt-3 form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mt-3 mdi mdi-download" href="adminapp/public/                                                                                                     ${vendor_contract[i]}" id="version-1" download >download</a></div>
                       <div class="modal-footer d-flex justify-content-between"><button value="submit" class="btn btn-success vendor_advance_request" data-id="${i}">Submit</button></div>
-                    <div class="modal-footer d-flex justify-content-between"><button  class="btn btn-success  vendor_design_prev" data-prev="${i-1}">Prev</button><button  class="btn btn-success  vendor_design_next" data-next=${i+ 1}>Next</button></div></div>`;
+                    <div class="modal-footer d-flex justify-content-between"><button  class="btn btn-success vendor_design_prev" data-prev="${i-1}">Prev</button><button  class="btn btn-success vendor_design_next" data-next=${i+ 1}>Next</button></div></div>`;
                     $('#vendor-template').html(advancehtml);
                     });
                  }
@@ -3546,7 +3562,7 @@ $("#complete").validate({
                     let vendor_contract = data.wonproject.vendor_contract.split(',');  
                     let vendor_currency = data.wonproject.currency;
                   html += `<div class="vendor_sign vendor_sign_${i} ${i != 0 ? 'd-none' :''}"><div class="col-md-12"></div><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id" value="${v}" id="vendor_id1_${i}" class="form-control">
-               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="adminapp/public/${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success      vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="btn btn-success  float-right vendor_sign_next" data-nxt=${i+ 1}>Next</button>
+               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="adminapp/public/${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="float-right btn btn-success vendor_sign_next" data-nxt=${i+ 1}>Next</button>
                </div></div></div>`;
             });          
              $('#vendor_template1').html(html)
@@ -4023,7 +4039,7 @@ $("#complete").validate({
       $(document).on('click', '.add', function () {
         // alert("hi");
         $("#other_document").append(
-            `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[]" class="form-control mt-1"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
+            `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[]" class="mt-1 form-control"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
         );
         
     });
