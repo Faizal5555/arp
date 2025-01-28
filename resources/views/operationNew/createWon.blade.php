@@ -131,26 +131,28 @@
         <div id="won_noti">
             <div class="container col-md-11 d-flex justify-content-end">
                 <div class="dropdown">
-                    <a class="nav-link " href="#"><i class="fas fa-bell fa-lg"></i><span
-                            class="badge">{{ $notificationCount }}</span></a>
-                    <div class="dropdown-content " style="width: 200px;margin-left:-100px">
+                    <a class="nav-link " href="#"><i class="fas fa-bell fa-lg"></i>
+                        <span class="badge">{{ count($notification) }}</span> 
+                    </a>
+                    <div class="dropdown-content " style="width: 200px; margin-left:-100px">
                         <div class="btnn">
                             @if ($notificationCount > 0)
-                                <h6 class="text-center" style="color:rgb(183,110,255)"><button class="btn1"
-                                        style="all:unset">{{ $notificationCount }} New Won Project</button></h6>
+                                <h6 class="text-center" style="color:rgb(183,110,255)">
+                                    <button class="btn1" style="all:unset">{{ $notificationCount }} New Won Project</button>
+                                </h6>
                             @endif
                             <div class="dropdown-content-two" id="ui-notification">
                                 <ul class="nav flex-column sub-menu1">
                                     @if (count($notification) > 0)
                                         @foreach ($notification as $value)
                                             <li class="text-center notify-won" data-win="{{ $value->rfq_no }}">
-                                                {{ $value->rfq_no }}</li>
+                                                {{ $value->rfq_no }}
+                                            </li>
                                         @endforeach
                                     @endif
                                 </ul>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -1948,7 +1950,7 @@
                                 $('#otherField5').removeClass('required');
                                 $('#otherField5').removeClass('data-error');
                             }
-                                $("input[name=rfq_ no]").val(id);
+                                $("input[name=rfq_no]").val(id);
 
                         }
                     });
@@ -2396,7 +2398,7 @@
                             }
 
 
-                            $("input[name=rfq_ no]").val(id);
+                            $("input[name=rfq_no]").val(id);
 
 
                         }
