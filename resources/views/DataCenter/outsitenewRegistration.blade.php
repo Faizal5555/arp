@@ -152,8 +152,8 @@
                     <div class="form-group row mt-5" >  
                         <div class="main-country ">
                             <div class="main-sub-country d-flex">
-                        <label class="col-lg-4 col-form-label text-nowrap mt-1 px-0">Country Of Practice<span class="text-danger">*</span></label>
-                        <div class="col-lg-8 form-group">
+                        <label class="col-lg-3 col-form-label text-nowrap mt-1 px-0">Country Of Practice<span class="text-danger">*</span></label>
+                        <div class="col-lg-9 form-group">
                             <select class="form-control border border-secondary label-gray-3" name="country" id="country">
                                 <option class="label-gray-3" value="">Select Country<i class="fas fa-globe-asia"></i></option>
                                 @if(count($country_loop_1) > 0)
