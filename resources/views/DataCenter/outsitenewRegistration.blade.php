@@ -152,7 +152,7 @@
                     <div class="form-group row mt-5" >  
                         <div class="main-country ">
                             <div class="main-sub-country d-flex">
-                        <label class="col-lg-3 col-form-label  mt-1">COUNTRY<span class="text-danger">*</span></label>
+                        <label class="col-lg-3 col-form-label text-nowrap mt-1 pl-1">Country Of Practice<span class="text-danger">*</span></label>
                         <div class="col-lg-9 form-group">
                             <select class="form-control border border-secondary label-gray-3" name="country" id="country">
                                 <option class="label-gray-3" value="">Select Country<i class="fas fa-globe-asia"></i></option>
@@ -176,7 +176,7 @@
                     <input type="hidden" class="form-control" name="userid"  value="{{$user_id ? $user_id :''}}">
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row" >
-                            <label class="col-lg-3 col-form-label">Country<span class="text-danger">*</span></label>
+                            <label class="col-lg-3 col-form-label">Country Of Practice<span class="text-danger">*</span></label>
                             <div class="col-lg-9">
                                 <input type="text" id="country1" name="country1"  class="form-control border border-secondary"  readonly>
 
@@ -281,9 +281,9 @@
                                  <select  name="docterSpeciality"  class="form-control" id="docterSpecility" style="width:100%; outline:1px solid #646161 !important;">
                                  <option value="" disabled selected>Select Speciality</option>
                                  @if(count($speciality)>0)
-                                 @foreach($speciality as $s)
+                                 @foreach($speciality->sortBy('speciality') as $s)
                                  <option value="{{$s->speciality}}">{{$s->speciality}}</option>
-                                 @endforeach
+                             @endforeach
                                  @endif
                                   
                                  </select>
