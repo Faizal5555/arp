@@ -142,7 +142,7 @@ class BidRfqController extends Controller
     public function store(Request $req)
     {
         $response_data = [];
-        
+        // dd($req->all());
        
         
         $validator = Validator::make($req->all(), [ 
@@ -179,11 +179,12 @@ class BidRfqController extends Controller
                 $bidrfq->rfq_no = $req->rfq_no;
                 
                 $bidrfq->client_id =json_encode($req->client_id_0);
-                $bidrfq->client_id =json_encode($req->client_id_0);
+                // $bidrfq->client_id =json_encode($req->client_id_0);
                 $bidrfq->vendor_id = json_encode($req->vendor_id_0);
                 // dd($bidrfq->vendor_id);
                 $bidrfq->country = json_encode($req->country_0);
-                $bidrfq->sample_size = json_encode($req->sample_size_0);
+                $bidrfq->methodology = json_encode($req->methodology_0);
+                $bidrfq->sample_size = json_encode($req->sample_size_0);    
                 $bidrfq->setup_cost =json_encode($req->setup_cost_0);
                 $bidrfq->recruitment = json_encode($req->recruitment_0);
                 $bidrfq->incentives = json_encode($req->incentives_0);
@@ -231,6 +232,7 @@ class BidRfqController extends Controller
         {
             array_push($rfq,$wonproject[$i]['rfq_no']);
         }
+        // dd($bidrfq);
         return view('bidrfq.edit',compact('bidrfq','client','vendor','country','id','wonproject','rfq'));
     }
     
@@ -245,6 +247,7 @@ class BidRfqController extends Controller
         $validator = Validator::make($req->all(), [ 
             'country_0.*'  => 'required',
             'client_id_0.*' => 'required',
+            'methodology_0.*' => 'required',
             "vendor_id_0.*" => "required",
             'setup_cost_0.*' => 'required',
             'recruitment_0.*' => "required",
@@ -282,6 +285,7 @@ class BidRfqController extends Controller
                 $bidrfq->rfq_no = $bid;
                 $bidrfq->client_id =json_encode($req->client_id_0);
                 $bidrfq->vendor_id = json_encode($req->vendor_id_0);
+                $bidrfq->methodology = json_encode($req->methodology_0);
                 $bidrfq->country = json_encode($req->country_0);
                 $bidrfq->sample_size = json_encode($req->sample_size_0);
                 $bidrfq->setup_cost =json_encode($req->setup_cost_0);

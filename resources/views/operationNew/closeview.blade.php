@@ -100,6 +100,40 @@ input.form-control {
     opacity: 1;
     color: black;
 }
+.add-country {
+        flex: 1 1 30%;
+        min-width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    tr {
+        border: 1px solid #aaa;
+        border-color: rgb(0 123 255 / 25%);
+    }
+
+    .table-group {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    .country-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        /* background: #f8f9fa; */
+        position: relative;
+    }
+    .bid-table{
+        pointer-events:none;
+    }
 </style>
 @section('page_title', 'Operation New Project')
 @section('content')
@@ -114,7 +148,7 @@ input.form-control {
                 </div>
     <div class="card-body">
         <div class="row">
-            <form id="rfq" class="form col-md-12 d-flex flex-wrap update"
+            <form id="rfq" class="flex-wrap form col-md-12 d-flex update"
                 enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" value="{{$bidrfq && $bidrfq->id ? $bidrfq->id  : ''}}">
@@ -229,261 +263,1345 @@ input.form-control {
                     </div>
                 </div>
                 
-                <div class="col-md-12 table-responsive" style="overflow-x:auto;">
+                <div class="col-md-6">
                     <div class="form-group row">
-                    {{-- <button class="btn btn-success btn-country mb-4 ml-2" type="button">Add country</button> --}}
-                
-                    
-                        <div class="col-lg-12 edit-table-bid d-flex">
-                        <table id="mtable" class="table">
-                            <?php
-                            $arr=json_decode($bidrfq->sample_size,true); 
-                            $setup_cost=json_decode($bidrfq->setup_cost,true);
-                            $recruitment = json_decode($bidrfq->recruitment,true);
-                            $incentives = json_decode($bidrfq->incentives,true);
-                            $moderation = json_decode($bidrfq->moderation,true);
-                            $transcript = json_decode($bidrfq->transcript);
-                            $others = json_decode($bidrfq->others);
-                            $world = json_decode($bidrfq->country);
-                            $total_cost = json_decode($bidrfq->total_cost);
-                            $client_id =json_decode($bidrfq->client_id);
-                            $vendor_id = json_decode($bidrfq->vendor_id);
-                            ?>
-                            {{-- <tr>
-                            <th></th>
-                            @foreach($world as $kv=> $value)
-                            
-                            @foreach($value as $data)
-                            
-                            <th class="country_remove_{{$kv}}_13">
-                            <button class="btn btn-danger remove-country mb-4 ml-2"  data-remove="{{$kv}}" type="button">
-                                                <i class="fa-solid fa-xmark"></i>
-                            </button>     
-                            </th>
-                            
-                            
-                            @foreach($vendor_id as $k1=> $value)                  
-                        
-                                        @foreach($value as $k=> $data)
-                                            @if($kv == $k1)
-                                            <th class="country_remove_{{$kv}}_12 abcversion_{{$kv}}_11">
-                                            </th>
-                                            @endif
-                                        @endforeach
-                                
-                            @endforeach
-                            
-                        
-                            @endforeach
-                            @endforeach
-                            </tr> --}}
+                        <label class="col-lg-3 col-form-label font-weight-semibold">Choose Company
+                            Name<span class="text-danger">*</span></label>
+                        <div class="col-lg-9">
 
-                            <tr>                                           
-                                <th>Country</th>
+                            <select class="form-control label-gray-3" id="company_name"
+                                name="company_name" disabled>
+                                <option
+                                    value="Asia Research Partners"{{ $bidrfq && $bidrfq->company_name == 'Asia Research Partners' ? 'selected' : '' }}>
+                                    Asia Research Partners</option>
+                                <option value="Universal Research Panels"
+                                    {{ $bidrfq && $bidrfq->company_name == 'Universal Research Panels' ? 'selected' : '' }}>
+                                    Universal Research Panels</option>
+                                <option
+                                    value="Healthcare Panels India"{{ $bidrfq && $bidrfq->company_name == 'Healthcare Panels India' ? 'selected' : '' }}>
+                                    Healthcare Panels India</option>
 
-                                
-                                    @foreach($world as $kv=> $value)
-                                    @foreach($value as $data)
-                                
-                                    <th class="data-country country_remove_{{$kv}}">
-                                        <label class="form-group has-float-label">
-                                        <select class="form-control label-gray-3" name="country_0[{{$kv}}][]" disabled>
-                                            <option class="label-gray-3" value="{{$data}}">Country</option>
-                                
-                                        
-                                                @if(count($country) > 0)
-                                                @foreach($country as $v)
-                                            <option value="{{$v->name}}" {{$data == $v->name ? 'selected' : ''}}>{{$v->name}}</option>
-                                                @endforeach
-                                                @endif
-                                        </select>
-                                    
-                                        <span>Country</span>
-                                
-                                    @foreach($vendor_id as $k1=> $value)                  
-                                    
-                                        @foreach($value as $k=> $data)
-                                    
-                                            @if($kv == $k1)
-                                            @if($k !=0)
-                                            <td class="country_remove_{{$kv}}_11 "></td>
-                                            @endif
-                                            @endif
-                                            
-                                        @endforeach
-                                
-                                    @endforeach
-                        
-                                    <th class="abcversion_{{$kv}}_coun country_remove_{{$kv}}_10">
-                                        {{-- <button class="btn btn-success  ml-2 float-left addvendor" data-button="{{$kv}}" type="button">
-                                                                                    Add vendor
-                                                                                </button> --}}
-                                                                                {{-- <button class="btn btn-success btn-remove mb-4 ml-2"  data-remove="{{$kv}}" type="button"><i class="fa-solid fa-xmark"></i></button></th> --}}
-                                    @endforeach
-                                    @endforeach
-                                </tr>   
-                                
-                                <tr> 
-                                    <td>Client Name/Vendor Name</td>
-
-
-
-                                @foreach($client_id as $key=> $value)
-                                    
-                                    
-                                    @foreach($value as $data)
-                                
-                                    <td class="country_remove_{{$key}}_1">
-                                
-                                        <label class="form-group has-float-label">
-                                        <select class="form-control label-gray-3" name="client_id_0[{{$key}}][]" disabled>
-                                            <option class="label-gray-3" value="{{$data}}">Client</option>
-                                                @if(count($client) > 0)
-                                                @foreach($client as $v)
-                                            <option value="{{$v->client_name}}" {{$data == $v->client_name ? 'selected' : ''}}>{{$v->client_name}} </option>
-                                                @endforeach
-                                                @endif
-                                        </select>
-                                        <span>Client Name</span>
-                                
-                                    </td>
-                                @foreach($vendor_id as $k1=> $value)                  
-                                    @foreach($value as $k=> $data)
-                                    
-                                        @if($key == $k1)
-                                        <td class="abcversion_{{$key}} country_remove_{{$key}}_2" data-arr="{{$k1}}">
-                                            <label class="form-group has-float-label">
-                                            <select class="form-control label-gray-3" name="vendor_id_0[{{$key}}][]" disabled>
-                                                <option class="label-gray-3" value="{{$data}}">Vendor</option>
-                                                    @if(count($vendor) > 0)
-                                                    @foreach($vendor as $v)
-                                                <option value="{{$v->vendor_name}}"  {{$data == $v->vendor_name ? 'selected' : ''}}>{{$v->vendor_name}}</option>
-                                                    @endforeach
-                                                    @endif
-                                            </select>
-                                            <span>Vendor Name</span>
-                                    
-                                        </label>   
-                                        </td>  
-                                        @endif
-                                        
-                                        
-                                        @endforeach
-                                    
-                                        </td>
-                                        @endforeach
-                                    
-                                @endforeach
-                                
-                                @endforeach   
-
-                            </tr> 
-                            <tr>                     
-                                
-                                <td>Sample Size</td>
-                                    @php $i=2; @endphp
-                                    @foreach($arr as $key=> $value)
-                                    @foreach($value as $data)
-                                    <td class="abcversion_{{$key}}_1 my-samplesize country_remove_{{$key}}_3"  data-id="{{$i++}}">
-                                    <input type="number" class="border-0" value="{{$data}}"  name="sample_size_0[{{$key}}][]" disabled>   
-                                    </td>
-                                    @endforeach
-                                    
-                                    @endforeach
-                            </tr>
-                            <tr>
-                                <td>Setup Cost</td>
-                                
-                                    @php $i=2; @endphp
-                                    @foreach( $setup_cost as $key => $value)
-                                    @foreach($value as $k=>$data)
-                                        <td class="table_version abcversion_{{$key}}_2 country_remove_{{$key}}_3" data-id="{{$i++}}" data-cal="{{$k}}"  data-culation="{{$key}}">
-                                        <input type="number" class="cal_{{$key}}_{{$k}}" value="{{$data}}" name="setup_cost_0[{{$key}}][]" disabled>
-                                        </td> 
-                                    @endforeach
-                                    @endforeach
-                            </tr>
-                            <tr>
-                            <td>Recruitment</td>
-                                @php $i=2; @endphp
-                                @foreach($recruitment as $key=> $value)
-                                @foreach($value as $s=> $data)
-                <td class="table_version abcversion_{{$key}}_3 country_remove_{{$key}}_4" data-id="{{$i++}}" data-cal="{{$s}}" data-culation="{{$key}}">
-                                    <input type="number" class="cal_{{$key}}_{{$s}}" value="{{$data}}" name="recruitment_0[{{$key}}][]" disabled>
-                                </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>Incentives</td>
-                                @php $i=2; @endphp
-                                @foreach($incentives as $key=> $value)
-                                @foreach($value as $s=> $data)
-                                <td class="table_version abcversion_{{$key}}_4 country_remove_{{$key}}_5" data-id="{{$i++}}" data-cal="{{$s}}" data-culation="{{$key}}">
-                                    <input type="number" class="cal_{{$key}}_{{$s}}" value="{{$data}}" name="incentives_0[{{$key}}][]" disabled>
-                                </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>Moderation</td>
-                                @php $i=2; @endphp
-                                @foreach($moderation as $key=> $value)
-                                @foreach($value as $s=> $data)
-                                <td class="table_version abcversion_{{$key}}_5 country_remove_{{$key}}_6" data-id="{{$i++}}" data-cal="{{$s}}" data-culation="{{$key}}">
-                                    <input type="number" class="cal_{{$key}}_{{$s}}" value="{{$data}}" name="moderation_0[{{$key}}][]" disabled>
-                                    </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>Transcript</td>
-                                @php $i=2; $k=0 @endphp
-                                @foreach($transcript as $key=> $value)
-                                @foreach($value as $s=> $data)
-                                <td class="table_version abcversion_{{$key}}_6 country_remove_{{$key}}_7"  data-id="{{$i++}}" data-cal="{{$s}}" data-culation="{{$key}}">
-                                    <input type="number" class="cal_{{$key}}_{{$s}}" value="{{$data}}" name="transcript_0[{{$key}}][]" disabled>
-                                    </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>Others</td>
-                                @php $i=2;  @endphp
-                                @foreach($others as $key=> $value)
-                                @foreach($value as $s=> $data)
-                                <td class="table_version abcversion_{{$key}}_7 country_remove_{{$key}}_8" data-id="{{$i++}}" data-cal="{{$s}}" data-culation="{{$key}}">
-                                    <input type="number" class="cal_{{$key}}_{{$s}}" value="{{$data}}" name="others_0[{{$key}}][]" disabled>
-                                    </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>Total Cost</td>
-                            
-                                @foreach($total_cost as $key=> $value)
-                                @foreach($value as $s=> $data)
-                                <td class="table_version abcversion_{{$key}}_8 country_remove_{{$key}}_9">
-                                    <!-- <label class="my-currency">{{($bidrfq->currency)}}</label> -->
-                                    <input type="text" class="total_cost_{{$key}}_{{$s}}" value="{{$data}}" name="total_cost_0[{{$key}}][]" disabled>
-                                    </td>
-                                @endforeach
-                                @endforeach
-                            </tr>
-                        </table><br>
-                    </div>
+                            </select>
+                        </div>
                     </div>
                 </div>
+                
+                <?php
+                        $arr = json_decode($bidrfq->sample_size, true);
+                        $methodology = json_decode($bidrfq->methodology, true);
+                        $setup_cost = json_decode($bidrfq->setup_cost, true);
+                        $recruitment = json_decode($bidrfq->recruitment, true);
+                        $incentives = json_decode($bidrfq->incentives, true);
+                        $moderation = json_decode($bidrfq->moderation, true);
+                        $transcript = json_decode($bidrfq->transcript);
+                        $others = json_decode($bidrfq->others);
+                        $world = json_decode($bidrfq->country,true);
+                        $total_cost = json_decode($bidrfq->total_cost);
+                        $client_id = json_decode($bidrfq->client_id);
+                        $vendor_id = json_decode($bidrfq->vendor_id);
+                        ?>
+                            <div class="col-md-12 table-responsive" style="overflow-x:auto;">
+                                <div class="form-group row">
+
+
+                                    <div class="col-lg-6">
+                                        <div class="rfq-table">
+                                            <div class="btn-var"></div>
+                                            <div class="bid-table d-flex">
+                                                @if(count($world) > 0)
+                                                <table class="table table-striped add-country" id="main-table"
+                                                    data-by="0">
+                                                    <!-- Country Selection -->
+                                                    <tr>
+                                                        <td>
+                                                            <label class="form-group has-float-label">
+                                                                <select class="form-control label-gray-3"
+                                                                    name="country_0[0][]" required>
+                                                                    <option class="label-gray-3" value="">
+                                                                        Country</option>
+                                                                    @if (count($country) > 0)
+                                                                        @foreach ($country as $v)
+                                                                            <option value="{{ $v->name }}" {{ $world[0] && $v->name == $world[0][0] ? 'selected' : '' }}>
+                                                                                {{ $v->name }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                            </label>
+                                                        </td>
+                                                        <td></td>
+                                                      
+                                                    </tr>
+
+                                                    <!-- Client/Vendor Name -->
+                                                    <tr>
+                                                        <td>
+                                                            <div
+                                                                class="nested-table-group nested-table-group-0 d-flex flex-nowrap">
+                                                                <table class="sub-table">
+                                                                    <tbody class="sub-body_0">
+                                                                        <tr class="first-row">
+                                                                            <td>Client/Vendor Name</td>
+                                                                            <td>
+                                                                                <select
+                                                                                    class="form-control label-gray-3"
+                                                                                    name="client_id_0[0][]" required>
+                                                                                    <option class="label-gray-3"
+                                                                                        value="">Client</option>
+                                                                                    @if (count($client) > 0)
+                                                                                        @foreach ($client as $v)
+                                                                                            <option
+                                                                                                value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[0]) > 0 && $client_id[0][0] == $v->client_name ? 'selected' : '' }}>
+                                                                                                {{ $v->client_name }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </select>
+                                                                            </td>
+                                                                            <td class="v">
+                                                                                <select
+                                                                                    class="form-control label-gray-3"
+                                                                                    name="vendor_id_0[0][]" required>
+                                                                                    <option class="label-gray-3"
+                                                                                        value="">Vendor</option>
+                                                                                    @if (count($vendor) > 0)
+                                                                                        @foreach ($vendor as $v)
+                                                                                            <option
+                                                                                                value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[0]) > 0 && $vendor_id[0][0] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                {{ $v->vendor_name }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td class="sub-cost">Methodology</td>
+                                                                            <td class="remove">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $methodology && $methodology[0] && count($methodology[0]) > 0 ? $methodology[0][0] : 0  }}"
+                                                                                    name="methodology_0[0][]"
+                                                                                    placeholder="Methodology">
+                                                                            </td>
+                                                                            <td class="remove">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $methodology && $methodology[0] && count($methodology[0]) > 1 ? $methodology[0][1] : 0  }}"
+                                                                                    name="methodology_0[0][]"
+                                                                                    placeholder="Methodology">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Sample Size -->
+                                                                        <tr>
+                                                                            <td class="sub-cost">Sample Size</td>
+                                                                            <td class="remove">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $arr[0] && count($arr[0]) > 0 ? $arr[0][0] : 0  }}"
+                                                                                    name="sample_size_0[0][]"
+                                                                                    placeholder="Sample Size">
+                                                                            </td>
+                                                                            <td class="remove">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $arr[0] && count($arr[0]) > 1 ? $arr[0][1] : 0  }}"
+                                                                                    name="sample_size_0[0][]"
+                                                                                    placeholder="Sample Size">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Setup Cost -->
+                                                                        <tr>
+                                                                            <td>Setup Cost</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $setup_cost[0] && count($setup_cost[0]) > 0 ? $setup_cost[0][0] : 0  }}"
+                                                                                    placeholder="Setup Cost"
+                                                                                    name="setup_cost_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $setup_cost[0] && count($setup_cost[0]) > 1 ? $setup_cost[0][1] : 1  }}"
+                                                                                    placeholder="Setup Cost"
+                                                                                    name="setup_cost_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Recruitment -->
+                                                                        <tr>
+                                                                            <td>Recruitment</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $recruitment[0] && count($recruitment[0]) > 0 ? $recruitment[0][0] : 0  }}"
+                                                                                    placeholder="Recruitment"
+                                                                                    name="recruitment_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $recruitment[0] && count($recruitment[0]) > 1 ? $recruitment[0][1] : 0  }}"
+                                                                                    placeholder="Recruitment"
+                                                                                    name="recruitment_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Incentives -->
+                                                                        <tr>
+                                                                            <td>Incentives</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $incentives[0] && count($incentives[0]) > 0 ? $incentives[0][0] : 0  }}"
+                                                                                    placeholder="Incentives"
+                                                                                    name="incentives_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $incentives[0] && count($incentives[0]) > 1 ? $incentives[0][1] : 0  }}"
+                                                                                    placeholder="Incentives"
+                                                                                    name="incentives_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Moderation -->
+                                                                        <tr class="format-2">
+                                                                            <td>Moderation</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $moderation[0] && count($moderation[0]) > 0 ? $moderation[0][0] : 0  }}"
+                                                                                    placeholder="Moderation"
+                                                                                    name="moderation_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $moderation[0] && count($moderation[0]) > 1 ? $moderation[0][1] : 0  }}"
+                                                                                    placeholder="Moderation"
+                                                                                    name="moderation_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Transcript -->
+                                                                        <tr class="format-2">
+                                                                            <td>Transcript</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $transcript[0] && count($transcript[0]) > 0 ? $transcript[0][0] : 0  }}"
+                                                                                    placeholder="Transcript"
+                                                                                    name="transcript_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $transcript[0] && count($transcript[0]) > 1 ? $transcript[0][1] : 0  }}"
+                                                                                    placeholder="Transcript"
+                                                                                    name="transcript_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Others -->
+                                                                        <tr>
+                                                                            <td>Others</td>
+                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                <input type="text" class="txtCal"
+                                                                                    value="{{ $others[0] && count($others[0]) > 0 ? $others[0][0] : 0  }}"
+                                                                                    placeholder="Others"
+                                                                                    name="others_0[0][]">
+                                                                            </td>
+                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                <input type="text" class="txtbol"
+                                                                                    value="{{ $others[0] && count($others[0]) > 1 ? $others[0][1] : 0  }}"
+                                                                                    placeholder="Others"
+                                                                                    name="others_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Total Cost -->
+                                                                        <tr>
+                                                                            <td>Total Cost</td>
+                                                                            <td>
+                                                                                <label class="my-currency"></label>
+                                                                                <input type="text"
+                                                                                    value="{{ $total_cost[0] && count($total_cost[0]) > 0 ? $total_cost[0][0] : 0  }}"
+                                                                                    class="border total_cost"
+                                                                                    placeholder="Total Cost"
+                                                                                    name="total_cost_0[0][]">
+                                                                            </td>
+                                                                            <td>
+                                                                                <label class="my-currency"></label>
+                                                                                <input type="text"
+                                                                                    value="{{ $total_cost[0] && count($total_cost[0]) > 1 ? $total_cost[0][1] : 0  }}"
+                                                                                    class="border total_cost"
+                                                                                    placeholder="Total Cost"
+                                                                                    name="total_cost_0[0][]">
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    </tbody>
+                                                                </table>
+                                                                <?php $j = 1; ?>
+                                                                @if(count($total_cost[0])>2)
+                                                                @for($i = 2; $i < count($total_cost[0]); $i+=2 )
+                                                                <div class="table-group d-flex">
+                                                                    <table class="sub-table" data-by="1">
+                                                                        <tbody class="sub-body_0">
+                                                                            <tr class="first-row">
+                                                                                <td>Client/Vendor Name</td>
+                                                                                <td>
+                                                                                    <select
+                                                                                        class="form-control label-gray-3"
+                                                                                        name="client_id_0[0][]" required>
+                                                                                        <option class="label-gray-3"
+                                                                                            value="">Client</option>
+                                                                                        @if (count($client) > 0)
+                                                                                            @foreach ($client as $v)
+                                                                                                <option
+                                                                                                    value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[0]) > 0 && $client_id[0][$j] == $v->client_name ? 'selected' : '' }}>
+                                                                                                    {{ $v->client_name }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        @endif
+                                                                                    </select>
+                                                                                </td>
+                                                                                <td class="v">
+                                                                                    <select
+                                                                                        class="form-control label-gray-3"
+                                                                                        name="vendor_id_0[0][]" required>
+                                                                                        <option class="label-gray-3"
+                                                                                            value="">Vendor</option>
+                                                                                        @if (count($vendor) > 0)
+                                                                                            @foreach ($vendor as $v)
+                                                                                                <option
+                                                                                                    value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[0]) > 0 && $vendor_id[0][$j] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                    {{ $v->vendor_name }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        @endif
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            
+                                                                            <tr {{ $j++ }}>
+                                                                                <td class="sub-cost">Methodology</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $methodology &&  $methodology[0] && count($methodology[0]) > $i ? $methodology[0][$i] : 0  }}"
+                                                                                        name="methodology_0[0][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $methodology && $methodology[0] && count($methodology[0]) > $i + 1 ? $methodology[0][$i + 1] : 0  }}"
+                                                                                        name="methodology_0[0][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Sample Size -->
+                                                                            <tr>
+                                                                                <td class="sub-cost">Sample Size</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $arr[0] && count($arr[0]) > $i ? $arr[0][$i] : 0  }}"
+                                                                                        name="sample_size_0[0][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $arr[0] && count($arr[0]) > $i + 1 ? $arr[0][$i + 1] : 0  }}"
+                                                                                        name="sample_size_0[0][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Setup Cost -->
+                                                                            <tr>
+                                                                                <td>Setup Cost</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $setup_cost[0] && count($setup_cost[0]) > $i ? $setup_cost[0][$i] : 0  }}"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $setup_cost[0] && count($setup_cost[0]) > $i + 1 ? $setup_cost[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Recruitment -->
+                                                                            <tr>
+                                                                                <td>Recruitment</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $recruitment[0] && count($recruitment[0]) > $i ? $recruitment[0][$i] : 0  }}"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $recruitment[0] && count($recruitment[0]) > $i + 1 ? $recruitment[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Incentives -->
+                                                                            <tr>
+                                                                                <td>Incentives</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $incentives[0] && count($incentives[0]) > $i ? $incentives[0][$i] : 0  }}"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $incentives[0] && count($incentives[0]) > $i + 1 ? $incentives[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Moderation -->
+                                                                            <tr class="format-2">
+                                                                                <td>Moderation</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $moderation[0] && count($moderation[0]) > $i ? $moderation[0][$i] : 0  }}"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $moderation[0] && count($moderation[0]) > $i + 1 ? $moderation[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Transcript -->
+                                                                            <tr class="format-2">
+                                                                                <td>Transcript</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $transcript[0] && count($transcript[0]) > $i ? $transcript[0][$i] : 0  }}"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $transcript[0] && count($transcript[0]) > $i + 1 ? $transcript[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Others -->
+                                                                            <tr>
+                                                                                <td>Others</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Total Cost -->
+                                                                            <tr>
+                                                                                <td>Total Cost</td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                        value="{{ $total_cost[0] && count($total_cost[0]) > $i ? $total_cost[0][$i] : 0  }}"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[0][]">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                        value="{{ $total_cost[0] && count($total_cost[0]) > $i + 1 ? $total_cost[0][$i + 1] : 0  }}"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                    <?php $i += 2 ?>
+                                                                    <table class="sub-table" data-by="1">
+                                                                        <tbody class="sub-body_0">
+                                                                            <tr class="first-row">
+                                                                                <td>Client/Vendor Name</td>
+                                                                                <td>
+                                                                                    <select
+                                                                                        class="form-control label-gray-3"
+                                                                                        name="client_id_0[0][]" required>
+                                                                                        <option class="label-gray-3"
+                                                                                            value="">Client</option>
+                                                                                        @if (count($client) > 0)
+                                                                                            @foreach ($client as $v)
+                                                                                                <option
+                                                                                                    value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[0]) > 0 && $client_id[0][$j] == $v->client_name ? 'selected' : '' }}>
+                                                                                                    {{ $v->client_name }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        @endif
+                                                                                    </select>
+                                                                                </td>
+                                                                                <td class="v">
+                                                                                    <select
+                                                                                        class="form-control label-gray-3"
+                                                                                        name="vendor_id_0[0][]" required>
+                                                                                        <option class="label-gray-3"
+                                                                                            value="">Vendor</option>
+                                                                                        @if (count($vendor) > 0)
+                                                                                            @foreach ($vendor as $v)
+                                                                                                <option
+                                                                                                    value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[0]) > 0 && $vendor_id[0][$j] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                    {{ $v->vendor_name }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        @endif
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            
+                                                                            <tr {{ $j++ }}>
+                                                                                <td class="sub-cost">Methodology</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $methodology && $methodology[0] && count($methodology[0]) > $i ? $methodology[0][$i] : 0  }}"
+                                                                                        name="methodology_0[0][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $methodology && $methodology[0] && count($methodology[0]) > $i + 1 ? $methodology[0][$i + 1] : 0  }}"
+                                                                                        name="methodology_0[0][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Sample Size -->
+                                                                            <tr>
+                                                                                <td class="sub-cost">Sample Size</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $arr[0] && count($arr[0]) > $i ? $arr[0][$i] : 0  }}"
+                                                                                        name="sample_size_0[0][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $arr[0] && count($arr[0]) > $i + 1 ? $arr[0][$i + 1] : 0  }}"
+                                                                                        name="sample_size_0[0][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Setup Cost -->
+                                                                            <tr>
+                                                                                <td>Setup Cost</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $setup_cost[0] && count($setup_cost[0]) > $i ? $setup_cost[0][$i] : 0  }}"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $setup_cost[0] && count($setup_cost[0]) > $i + 1 ? $setup_cost[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Recruitment -->
+                                                                            <tr>
+                                                                                <td>Recruitment</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $recruitment[0] && count($recruitment[0]) > $i ? $recruitment[0][$i] : 0  }}"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $recruitment[0] && count($recruitment[0]) > $i + 1 ? $recruitment[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Incentives -->
+                                                                            <tr>
+                                                                                <td>Incentives</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $incentives[0] && count($incentives[0]) > $i ? $incentives[0][$i] : 0  }}"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $incentives[0] && count($incentives[0]) > $i + 1 ? $incentives[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Moderation -->
+                                                                            <tr class="format-2">
+                                                                                <td>Moderation</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $moderation[0] && count($moderation[0]) > $i ? $moderation[0][$i] : 0  }}"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $moderation[0] && count($moderation[0]) > $i + 1 ? $moderation[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Transcript -->
+                                                                            <tr class="format-2">
+                                                                                <td>Transcript</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $transcript[0] && count($transcript[0]) > $i ? $transcript[0][$i] : 0  }}"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $transcript[0] && count($transcript[0]) > $i + 1 ? $transcript[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Others -->
+                                                                            <tr>
+                                                                                <td>Others</td>
+                                                                                <td class="bidrfq-client"
+                                                                                    data-id="2">
+                                                                                    <input type="text"
+                                                                                        class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[0][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor"
+                                                                                    data-id="3">
+                                                                                    <input type="text"
+                                                                                        class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Total Cost -->
+                                                                            <tr>
+                                                                                <td>Total Cost</td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                    value="{{ $total_cost[0] && count($total_cost[0]) > $i ? $total_cost[0][$i] : 0  }}"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[0][]">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                    value="{{ $total_cost[0] && count($total_cost[0]) > $i + 1 ? $total_cost[0][$i + 1] : 0  }}"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[0][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                @endfor
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+                                                @endif
+                                                @if(count($world) > 1)
+                                                @foreach($world as $key => $value)
+                                                @if($key > 0)
+
+                                                <div class="country-wrapper" data-by="1">
+                                                    <div class="btn-var"></div>
+                                                    <div class=" d-flex">
+                                                        <table class="table table-striped add-country" id="main-table"
+                                                            data-by="1">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <label class="form-group has-float-label">
+                                                                            <select class="form-control label-gray-3"
+                                                                            name="country_0[{{ $key }}][]" required>
+                                                                            <option class="label-gray-3" value="">
+                                                                                Country</option>
+                                                                            @if (count($country) > 0)
+                                                                                @foreach ($country as $v)
+                                                                                    <option value="{{ $v->name }}" {{ $world[0] && $v->name == $world[$key][0] ? 'selected' : '' }}>
+                                                                                        {{ $v->name }}</option>
+                                                                                @endforeach
+                                                                            @endif
+                                                                        </select>
+                                                                        </label>
+                                                                    </td>
+                                                                    
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="3">
+                                                                        <div
+                                                                            class="nested-table-group nested-table-group-1 d-flex flex-nowrap">
+                                                                            <table class="sub-table">
+                                                                                <tbody class="sub-body_1">
+                                                                                    <tr class="first-row">
+                                                                                        <td>Client/Vendor Name</td>
+                                                                                        <td>
+                                                                                            <select
+                                                                                                class="form-control label-gray-3"
+                                                                                                name="client_id_0[{{ $key }}][]" required>
+                                                                                                <option class="label-gray-3"
+                                                                                                    value="">Client</option>
+                                                                                                @if (count($client) > 0)
+                                                                                                    @foreach ($client as $v)
+                                                                                                        <option
+                                                                                                            value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[$key]) > 0 && $client_id[$key][0] == $v->client_name ? 'selected' : '' }}>
+                                                                                                            {{ $v->client_name }}
+                                                                                                        </option>
+                                                                                                    @endforeach
+                                                                                                @endif
+                                                                                            </select>
+                                                                                        </td>
+                                                                                        <td class="v">
+                                                                                            <select
+                                                                                                class="form-control label-gray-3"
+                                                                                                name="vendor_id_0[{{ $key }}][]" required>
+                                                                                                <option class="label-gray-3"
+                                                                                                    value="">Vendor</option>
+                                                                                                @if (count($vendor) > 0)
+                                                                                                    @foreach ($vendor as $v)
+                                                                                                        <option
+                                                                                                            value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[$key]) > 0 && $vendor_id[$key][0] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                            {{ $v->vendor_name }}
+                                                                                                        </option>
+                                                                                                    @endforeach
+                                                                                                @endif
+                                                                                            </select>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Methodology</td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > 0 ? $methodology[$key][0] : 0  }}"
+                                                                                                name="methodology_0[{{ $key }}][]"
+                                                                                                placeholder="Methodology">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > 1 ? $methodology[$key][1] : 0  }}"
+                                                                                                name="methodology_0[{{ $key }}][]"
+                                                                                                placeholder="Methodology">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Sample Size</td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $arr[$key] && count($arr[$key]) > 0 ? $arr[$key][0] : 0  }}"
+                                                                                                name="sample_size_0[{{ $key }}][]"
+                                                                                                placeholder="Sample Size">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $arr[$key] && count($arr[$key]) > 1 ? $arr[$key][1] : 0  }}"
+                                                                                                name="sample_size_0[{{ $key }}][]"
+                                                                                                placeholder="Sample Size">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Setup Cost</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $setup_cost[$key] && count($setup_cost[$key]) > 0 ? $setup_cost[$key][0] : 0  }}"
+                                                                                                placeholder="Setup Cost"
+                                                                                                name="setup_cost_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="4"><input
+                                                                                                type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $setup_cost[$key] && count($setup_cost[$key]) > 1 ? $setup_cost[$key][1] : 0  }}"
+                                                                                                placeholder="Setup Cost"
+                                                                                                name="setup_cost_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Recruitment</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $recruitment[$key] && count($recruitment[$key]) > 0 ? $recruitment[$key][0] : 0  }}"
+                                                                                                placeholder="Recruitment"
+                                                                                                name="recruitment_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $recruitment[$key] && count($recruitment[$key]) > 1 ? $recruitment[$key][1] : 0  }}"
+                                                                                                placeholder="Recruitment"
+                                                                                                name="recruitment_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Incentives</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $incentives[$key] && count($incentives[$key]) > 0 ? $incentives[$key][0] : 0  }}"
+                                                                                                placeholder="Incentives"
+                                                                                                name="incentives_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $incentives[$key] && count($incentives[$key]) > 1 ? $incentives[$key][1] : 0  }}"
+                                                                                                placeholder="Incentives"
+                                                                                                name="incentives_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Moderation</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $moderation[$key] && count($moderation[$key]) > 0 ? $moderation[$key][0] : 0  }}"
+                                                                                                placeholder="Moderation"
+                                                                                                name="moderation_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $moderation[$key] && count($moderation[$key]) > 1 ? $moderation[$key][1] : 0  }}"
+                                                                                                placeholder="Moderation"
+                                                                                                name="moderation_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Transcript</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $transcript[$key] && count($transcript[$key]) > 0 ? $transcript[$key][0] : 0  }}"
+                                                                                                placeholder="Transcript"
+                                                                                                name="transcript_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $transcript[$key] && count($transcript[$key]) > 1 ? $transcript[$key][1] : 0  }}"
+                                                                                                placeholder="Transcript"
+                                                                                                name="transcript_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Others</td>
+                                                                                        <td class="bidrfq-client"
+                                                                                            data-id="3"><input
+                                                                                                type="text"
+                                                                                                class="txtCal"
+                                                                                                value="{{ $others[$key] && count($others[$key]) > 0 ? $others[$key][0] : 0  }}"
+                                                                                                placeholder="Others"
+                                                                                                name="others_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                                class="txtbol"
+                                                                                                value="{{ $others[$key] && count($others[$key]) > 1 ? $others[$key][1] : 0  }}"
+                                                                                                placeholder="Others"
+                                                                                                name="others_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td class="my-currency">Total
+                                                                                            Costs</td>
+                                                                                        <td><input type="text"
+                                                                                                value="{{ $total_cost[$key] && count($total_cost[$key]) > 0 ? $total_cost[$key][0] : 0  }}"
+                                                                                                class="border total_cost"
+                                                                                                placeholder="Total Cost"
+                                                                                                name="total_cost_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                        <td><input type="text"
+                                                                                            value="{{ $total_cost[$key] && count($total_cost[$key]) > 1 ? $total_cost[$key][1] : 0  }}"
+                                                                                                class="border total_cost"
+                                                                                                placeholder="Total Cost"
+                                                                                                name="total_cost_0[{{ $key }}][]">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                            <?php 
+                                                                                $j = 1; 
+                                                                            ?>
+                                                                            @if(count($total_cost[$key])>2)
+
+                                                                            @for($i = 2; $i < count($total_cost[$key]); $i+=2 )
+                                                                            <div class="table-group d-flex" >
+                                                                                <table class="sub-table"
+                                                                                    data-by="1">
+                                                                                    <tbody class="sub-body_1">
+                                                                                        <tr class="first-row">
+                                                                                            <td>Client/Vendor Name</td>
+                                                                                            <td>
+                                                                                                <select
+                                                                                                    class="form-control label-gray-3"
+                                                                                                    name="client_id_0[{{ $key }}][]" required>
+                                                                                                    <option class="label-gray-3"
+                                                                                                        value="">Client</option>
+                                                                                                    @if (count($client) > 0)
+                                                                                                        @foreach ($client as $v)
+                                                                                                            <option
+                                                                                                                value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[$key]) > 0 && $client_id[$key][$j] == $v->client_name ? 'selected' : '' }}>
+                                                                                                                {{ $v->client_name }}
+                                                                                                            </option>
+                                                                                                        @endforeach
+                                                                                                    @endif
+                                                                                                </select>
+                                                                                            </td>
+                                                                                            <td class="v">
+                                                                                                <select
+                                                                                                    class="form-control label-gray-3"
+                                                                                                    name="vendor_id_0[{{ $key }}][]" required>
+                                                                                                    <option class="label-gray-3"
+                                                                                                        value="">Vendor</option>
+                                                                                                    @if (count($vendor) > 0)
+                                                                                                        @foreach ($vendor as $v)
+                                                                                                            <option
+                                                                                                                value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[$key]) > 0 && $vendor_id[$key][$j] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                                {{ $v->vendor_name }}
+                                                                                                            </option>
+                                                                                                        @endforeach
+                                                                                                    @endif
+                                                                                                </select>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        
+                                                                                        <tr {{ $j++ }}>
+                                                                                            <td>Methodology</td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i ? $methodology[$key][$i] : 0  }}"
+                                                                                                    name="methodology_0[{{ $key }}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i + 1 ? $methodology[$key][$i + 1] : 0  }}"
+                                                                                                    name="methodology_0[{{ $key }}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Sample Size</td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $arr[$key] && count($arr[$key]) > $i ? $arr[$key][$i] : 0  }}"
+                                                                                                    name="sample_size_0[{{ $key }}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $arr[$key] && count($arr[$key]) > $i + 1 ? $arr[$key][$i + 1] : 0  }}"
+                                                                                                    name="sample_size_0[{{ $key }}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Setup Cost</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $setup_cost[$key] && count($setup_cost[$key]) > $i ? $setup_cost[$key][$i] : 0  }}"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="4"><input
+                                                                                                    type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $setup_cost[$key] && count($setup_cost[$key]) > $i + 1 ? $setup_cost[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Recruitment</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $recruitment[$key] && count($recruitment[$key]) > $i ? $recruitment[$key][$i] : 0  }}"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $recruitment[$key] && count($recruitment[$key]) > $i + 1 ? $recruitment[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Incentives</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $incentives[$key] && count($incentives[$key]) > $i ? $incentives[$key][$i] : 0  }}"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $incentives[$key] && count($incentives[$key]) > $i + 1 ? $incentives[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Moderation</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $moderation[$key] && count($moderation[$key]) > $i ? $moderation[$key][$i] : 0  }}"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $moderation[$key] && count($moderation[$key]) > $i + 1 ? $moderation[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Transcript</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $transcript[$key] && count($transcript[$key]) > $i ? $transcript[$key][$i] : 0  }}"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $transcript[$key] && count($transcript[$key]) > $i + 1 ? $transcript[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Others</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td class="my-currency">
+                                                                                                Total Costs</td>
+                                                                                            <td><input type="text"
+                                                                                                    value="{{ $total_cost[$key] && count($total_cost[$key]) > $i ? $total_cost[$key][$i] : 0  }}"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    value="{{ $total_cost[$key] && count($total_cost[$key]) > $i + 1 ? $total_cost[$key][$i + 1] : 0  }}"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                                <?php  $i += 2  ?>
+                                                                                <table class="sub-table"
+                                                                                    data-by="1">
+                                                                                    <tbody class="sub-body_1">
+                                                                                        <tr class="first-row">
+                                                                                            <td>Client/Vendor Name</td>
+                                                                                            <td>
+                                                                                                <select
+                                                                                                    class="form-control label-gray-3"
+                                                                                                    name="client_id_0[{{ $key }}][]" required>
+                                                                                                    <option class="label-gray-3"
+                                                                                                        value="">Client</option>
+                                                                                                    @if (count($client) > 0)
+                                                                                                        @foreach ($client as $v)
+                                                                                                            <option
+                                                                                                                value="{{ $v->client_name }}" {{ count($client_id) > 0 && count($client_id[$key]) > 0 && $client_id[$key][$j] == $v->client_name ? 'selected' : '' }}>
+                                                                                                                {{ $v->client_name }}
+                                                                                                            </option>
+                                                                                                        @endforeach
+                                                                                                    @endif
+                                                                                                </select>
+                                                                                            </td>
+                                                                                            <td class="v">
+                                                                                                <select
+                                                                                                    class="form-control label-gray-3"
+                                                                                                    name="vendor_id_0[{{ $key }}][]" required>
+                                                                                                    <option class="label-gray-3"
+                                                                                                        value="">Vendor</option>
+                                                                                                    @if (count($vendor) > 0)
+                                                                                                        @foreach ($vendor as $v)
+                                                                                                            <option
+                                                                                                                value="{{ $v->vendor_name }}" {{ count($vendor_id) > 0 && count($vendor_id[$key]) > 0 && $vendor_id[$key][$j] == $v->vendor_name ? 'selected' : '' }}>
+                                                                                                                {{ $v->vendor_name }}
+                                                                                                            </option>
+                                                                                                        @endforeach
+                                                                                                    @endif
+                                                                                                </select>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        
+                                                                                        <tr {{ $j++ }}>
+                                                                                            <td>Methodology</td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i ? $methodology[$key][$i] : 0  }}"
+                                                                                                    name="methodology_0[{{ $key }}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i + 1 ? $methodology[$key][$i + 1] : 0  }}"
+                                                                                                    name="methodology_0[{{ $key }}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Sample Size</td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $arr[$key] && count($arr[$key]) > $i ? $arr[$key][$i] : 0  }}"
+                                                                                                    name="sample_size_0[{{ $key }}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $arr[$key] && count($arr[$key]) > $i + 1 ? $arr[$key][$i + 1] : 0  }}"
+                                                                                                    name="sample_size_0[{{ $key }}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Setup Cost</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $setup_cost[$key] && count($setup_cost[$key]) > $i ? $setup_cost[$key][$i] : 0  }}"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="4"><input
+                                                                                                    type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $setup_cost[$key] && count($setup_cost[$key]) > $i + 1 ? $setup_cost[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Recruitment</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $recruitment[$key] && count($recruitment[$key]) > $i ? $recruitment[$key][$i] : 0  }}"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $recruitment[$key] && count($recruitment[$key]) > $i + 1 ? $recruitment[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Incentives</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $incentives[$key] && count($incentives[$key]) > $i ? $incentives[$key][$i] : 0  }}"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $incentives[$key] && count($incentives[$key]) > $i + 1 ? $incentives[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Moderation</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $moderation[$key] && count($moderation[$key]) > $i ? $moderation[$key][$i] : 0  }}"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $moderation[$key] && count($moderation[$key]) > $i + 1 ? $moderation[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Transcript</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $transcript[$key] && count($transcript[$key]) > $i ? $transcript[$key][$i] : 0  }}"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $transcript[$key] && count($transcript[$key]) > $i + 1 ? $transcript[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td>Others</td>
+                                                                                            <td class="bidrfq-client"
+                                                                                                data-id="3"><input
+                                                                                                    type="text"
+                                                                                                    class="txtCal"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    class="txtbol"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td class="my-currency">
+                                                                                                Total Costs</td>
+                                                                                            <td><input type="text"
+                                                                                                    value="{{ $total_cost[$key] && count($total_cost[$key]) > $i ? $total_cost[$key][$i] : 0  }}"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                            <td><input type="text"
+                                                                                                    value="{{ $total_cost[$key] && count($total_cost[$key]) > $i + 1 ? $total_cost[$key][$i + 1] : 0  }}"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[{{ $key }}][]">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                            @endfor
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                                @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                 <div class="col-md-12 d-flex align-items-center justify-content-center">
                     <a href="{{route('operationNew.indexclose')}}" class=" btn btn-outline-secondary" id="won-rfq-btn1">Back</a>
                     <button type="submit" id="addRegisterButton"
-                        class="btn btn-success ml-2 rfq-sub d-none">Update</button>
-                    <p id="nextrfq" class="btn btn-primary m-2 won-rfq-btn2">Next</button>
+                        class="ml-2 btn btn-success rfq-sub d-none">Update</button>
+                    <p id="nextrfq" class="m-2 btn btn-primary won-rfq-btn2">Next</button>
                 </div>
                 <div class="col-md-12 d-flex align-items-end justify-content-end">
                     <div class="form-group row">
                         <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                        <div class="col-lg-9 pl-2">
+                        <div class="pl-2 col-lg-9">
                             <input name="last_editor_by" id="user" value="{{$user3->name}}" type="text" class="form-control" placeholder="Last Editor Name" readonly>
                         </div>
                     </div>
@@ -506,7 +1624,7 @@ input.form-control {
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <form id="won" class="form col-md-12 d-flex flex-wrap update"
+                            <form id="won" class="flex-wrap form col-md-12 d-flex update"
                            enctype="multipart/form-data">
                            @csrf
                             <input type="hidden" value="rfq_no_id">
@@ -737,7 +1855,7 @@ input.form-control {
                                             <input name="client_contract" style="text-transform: capitalize;"
                                                 id="otherField15" type="file"
                                                 value="{{ $wonproject->client_contract ? $wonproject->client_contract : '' }} "
-                                                class="form-control p-1" placeholder="Attach Client Contract" disabled>
+                                                class="p-1 form-control" placeholder="Attach Client Contract" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -858,7 +1976,7 @@ input.form-control {
                                                         <input name="vendor_contract_0[{{ $key }}]"
                                                             style="text-transform: capitalize;" id="otherField16"
                                                             type="file" value="{{ $value4 }}"
-                                                            class="form-control p-1" placeholder="Attach Vendor Contract" disabled>
+                                                            class="p-1 form-control" placeholder="Attach Vendor Contract" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -876,15 +1994,15 @@ input.form-control {
 
                                 <div class="col-md-12 d-flex align-items-center justify-content-center">
                                     <button id="Won_back" class="btn btn-outline-secondary">Back</button>
-                                    <button id="next" class="btn btn-success ml-2">Next</button>
+                                    <button id="next" class="ml-2 btn btn-success">Next</button>
                                     {{-- <button type="submit" id="addRegisterButton"
                                 class="btn btn-success ">Submit</button>
-                                <a href="{{route('operationNew.create')}}" class=" btn btn-primary ml-2">Next</a> --}}
+                                <a href="{{route('operationNew.create')}}" class="ml-2 btn btn-primary">Next</a> --}}
                                 </div>
                                 <div class="col-md-12 d-flex align-items-end justify-content-end">
                                     <div class="form-group row">
                                         <label class="col-lg-3 col-form-label font-weight-semibold">Last Edited by</label>
-                                        <div class="col-lg-9 pl-2">
+                                        <div class="pl-2 col-lg-9">
                                             <input name="last_by_name" id="user" value="{{ $user3->name }}"
                                                 type="text" class="form-control user" placeholder="Last Edited by"
                                                 readonly>
@@ -912,7 +2030,7 @@ input.form-control {
 
                 <div class="card-body">
                     <div class="row">
-                        <form id="update" class="form col-md-12 d-flex flex-wrap"
+                        <form id="update" class="flex-wrap form col-md-12 d-flex"
                            enctype="multipart/form-data">
                            @csrf
                           <input type="hidden" name="id"  id="id" value="{{$operation && $operation->id ? $operation->id :''}}">
@@ -1031,7 +2149,7 @@ input.form-control {
                                         <div class="division_{{$value->id}} d-flex" >
                                      
                                           <input name="other_document[]"  value="{{$value && $value->other_documents  ? $value->other_documents  : ''}}"
-                                             type="text"  class="form-control mb-2" name="other_document[]" placeholder="Attach Other Documents"  readonly="readonly">
+                                             type="text"  class="mb-2 form-control" name="other_document[]" placeholder="Attach Other Documents"  readonly="readonly">
                                               <a download href="{{url($value && $value->other_documents  ? $value->other_documents  : '')}}" target="_blank" class="other_document_{{$k}} mdi mdi-download"style="
                                          margin-top: 10px;
                                      "></a>
@@ -1079,7 +2197,7 @@ input.form-control {
                                 <div class="form-group row">
                                     <label class="col-lg-12 col-form-label font-weight-semibold">Target Table<span
                                             class="text-danger"></span></label>
-                                            <!--<button class="btn btn-danger  ml-2"  style="float: right;"id="addBtn" type="button">-->
+                                            <!--<button class="ml-2 btn btn-danger"  style="float: right;"id="addBtn" type="button">-->
                                             <!--    Add New Country-->
                                             <!--</button>-->
                                     <div class="col-md-12 table-responsive" style="overflow-x:auto;">
@@ -1092,7 +2210,7 @@ input.form-control {
                                         
                                         ?>  
                                        
-                                        {{-- <button class="btn btn-danger  ml-2" class="removeBtn" type="button">
+                                        {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
                                     <table border="1" name="" id="mtable">
@@ -1175,7 +2293,7 @@ input.form-control {
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <button id="addRegister" class=" btn btn-primary">Back</button>
                                 <!--<button type="submit" id="addRegisterButton"-->
-                                <!--    class="btn btn-success ml-2">Update</button>-->
+                                <!--    class="ml-2 btn btn-success">Update</button>-->
                                     
                             </div>
                         </form>
@@ -1344,7 +2462,7 @@ input.form-control {
             </div>
            </div>
            
-           <div class="msg-bubble mt-3">
+           <div class="mt-3 msg-bubble">
                  <div class="msg-info">
                   <div class="msg-info-name">Project Manager</div>
                 </div>
@@ -1354,7 +2472,7 @@ input.form-control {
             </div>
            </div>
            
-           <div class="msg-bubble mt-3">
+           <div class="mt-3 msg-bubble">
                  <div class="msg-info">
                   <div class="msg-info-name">Quality Analyst</div>
                 </div>
@@ -1365,9 +2483,9 @@ input.form-control {
            </div>
            
            @if($operation->comments!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1383,7 +2501,7 @@ input.form-control {
            
            
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
              <textarea name="comments" id="comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
             <button type="button" id="commentsubmit" class="msger-send-btn">Send</button>
@@ -1425,9 +2543,9 @@ input.form-control {
             </div>
            </div>
              @if($operation->tl_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1441,7 +2559,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
                <textarea name="tl_comments" id="tl_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="tlcommentsubmit" class="msger-send-btn">Send</button>
@@ -1486,9 +2604,9 @@ input.form-control {
            </div>
            
             @if($operation->pm_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1502,7 +2620,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
              <textarea name="pm_comments" id="pm_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="pmcommentsubmit" class="msger-send-btn">Send</button>
@@ -1544,9 +2662,9 @@ input.form-control {
            </div>
            
            @if($operation->ql_msg!='')
-            <div class="right-msg mt-3 col-md-12">
+            <div class="mt-3 right-msg col-md-12">
                 <div class="col-md-3"></div>
-                <div class="msg-bubble mt-3">
+                <div class="mt-3 msg-bubble">
                     <div class="col-md-6">
                  <div class="msg-info">
                   <div class="msg-info-name">You</div>
@@ -1560,7 +2678,7 @@ input.form-control {
            </div>
            @endif
            
-           <div class="msger-inputarea mt-3">
+           <div class="mt-3 msger-inputarea">
             <textarea name="ql_comments" id="ql_comments" value=""
             class="form-control msger-input" placeholder="Comments here..." required></textarea>
              <button type="button" id="qlcommentsubmit" class="msger-send-btn">Send</button>
@@ -1783,7 +2901,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="respondentfile" value=""
-                            id="respondentfile" type="file" class="form-control p-1" placeholder="Attach Respondent incentive file">
+                            id="respondentfile" type="file" class="p-1 form-control" placeholder="Attach Respondent incentive file">
                           
                         </div>
                     </div>
@@ -1793,7 +2911,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Invoice File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="clientinvoicefile" value=""
-                            id="clientinvoicefile" type="file" class="form-control p-1" placeholder="Attach Client invoice file">
+                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
                           
                         </div>
                     </div>
@@ -1802,7 +2920,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Invoice File <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="vendorinvoicefile" value=""
-                            id="vendorinvoicefile" type="file" class="form-control p-1" placeholder="Attach vendorinvoicefile">
+                            id="vendorinvoicefile" type="file" class="p-1 form-control" placeholder="Attach vendorinvoicefile">
                           
                         </div>
                     </div>
@@ -1812,7 +2930,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Confirmation Email <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="client_confirmation" value=""
-                            id="client_confirmation" type="file" class="form-control p-1" placeholder="Attach Client project Confirmation Email">
+                            id="client_confirmation" type="file" class="p-1 form-control" placeholder="Attach Client project Confirmation Email">
                           
                         </div>
                     </div>
@@ -1821,7 +2939,7 @@ input.form-control {
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="vendor_confirmation" value=""
-                            id="vendor_confirmation" type="file" class="form-control p-1" placeholder="Attach Vendor Confirmation Email">
+                            id="vendor_confirmation" type="file" class="p-1 form-control" placeholder="Attach Vendor Confirmation Email">
                           
                         </div>
                     </div>
@@ -1853,7 +2971,7 @@ input.form-control {
             <div class="modal-body">
                
                 <div class="row">
-                    <div class="col-md-12 d-flex justify-content-center text-center">
+                    <div class="text-center col-md-12 d-flex justify-content-center">
                         <div class="row">
                             <div class="col-md-6" id="project_hold">
                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenterhold">
@@ -2327,7 +3445,7 @@ $(document).ready(function(){
             <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
         </td>
         <td>
-            <button class="btn btn-danger  ml-2" id="removeBtn" type="button">
+            <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
                                             Remove Country
                                         </button>
         </td>
@@ -2880,9 +3998,9 @@ $("#complete").validate({
                 
                         advancehtml+=`<div class="vendor_design vendor_design_${i} ${i != 0 ? 'd-none' :''}" ><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id"  value="${v}" class="form-control" id="vendor_id_${i}"></div>
                      <label>Vendor Advance</label><input type="type" name="vendor_advance" id="vendor_advance_${i}" value="${vendor_currency} ${vendor_advance[i]}" class="form-control">
-                     <div class="form-group mt-3"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mdi mdi-download mt-3" href="../../${vendor_contract[i]}" id="version-1" download >download</a></div>
+                     <div class="mt-3 form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract" id="vendor_contract_${i}" value="${vendor_contract[i]}" class="form-control"><a class="mt-3 mdi mdi-download" href="../../${vendor_contract[i]}" id="version-1" download >download</a></div>
                       <div class="modal-footer d-flex justify-content-between"><button value="submit" class="btn btn-success vendor_advance_request" data-id="${i}">Submit</button></div>
-                    <div class="modal-footer d-flex justify-content-between"><button  class="btn btn-success  vendor_design_prev" data-prev="${i-1}">Prev</button><button  class="btn btn-success  vendor_design_next" data-next=${i+ 1}>Next</button></div></div>`;
+                    <div class="modal-footer d-flex justify-content-between"><button  class="btn btn-success vendor_design_prev" data-prev="${i-1}">Prev</button><button  class="btn btn-success vendor_design_next" data-next=${i+ 1}>Next</button></div></div>`;
                     $('#vendor-template').html(advancehtml);
                     });
                  }
@@ -2938,7 +4056,7 @@ $("#complete").validate({
                     let vendor_contract = data.wonproject.vendor_contract.split(',');  
                     let vendor_currency = data.wonproject.currency;
                   html += `<div class="vendor_sign vendor_sign_${i} ${i != 0 ? 'd-none' :''}"><div class="col-md-12"></div><div class="form-group"><label>Vendor Name</label><input type="type" name="vendor_id" value="${v}" id="vendor_id1_${i}" class="form-control">
-               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success      vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="btn btn-success  float-right vendor_sign_next" data-nxt=${i+ 1}>Next</button>
+               </div><div class="form-group"><label>Vendor Balance</label><input type="type" name="vendor_balance" id="vendor_balance_${i}" value="${vendor_currency} ${vendor_balance[i]}" class="form-control"></div><div class="form-group"><label>Vendor Contract </label><input type="type" name="vendor_contract1" id="vendor_contract1_${i}" value="${vendor_contract[i]}" class="form-control"></div><a class="mdi mdi-download"  id="version-2" download href=''>download</a><div class="modal-footer d-flex justify-content-between"><a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a><button type="button" class="btn btn-success vendor_balance_request" data-id="${i}" >Submit</button></div><div><button type="button"  class="btn btn-success vendor_sign_pre" data-pre="${i-1}">Prev</button><button type="button" class="float-right btn btn-success vendor_sign_next" data-nxt=${i+ 1}>Next</button>
                </div></div></div>`;
             });          
              $('#vendor_template1').html(html)
@@ -3415,7 +4533,7 @@ $("#complete").validate({
       $(document).on('click', '.add', function () {
         // alert("hi");
         $("#other_document").append(
-            `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[]" class="form-control mt-1"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
+            `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[]" class="mt-1 form-control"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
         );
         
     });

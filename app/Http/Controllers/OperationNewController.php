@@ -96,13 +96,16 @@ class OperationNewController extends Controller
         //     // var_dump($dt->year);
         // }
         $project_no = 'PNO'.$unique_no. '-' .$dt->year;
-       
+        // dd($bidrfq);
         // dd($wonproject,$rfq);
         return view('operationNew.createWon',compact('wonproject','bidrfq','client','vendor1','vendor','operation','purchase_order_no','project_no','country','notification','fieldteam','notificationCount','user','user1','user2','user3','operation_rfq','rfq'));
     }
     public function change(Request $req,WonProject $wonProject){
         $wonProject = WonProject::where ('rfq_no',$req->id)->first();
         $user3 = Auth::user();
+        $all_country = Country::get();
+        $all_vendor = Vendor::get();
+        $all_client = Client::get();
 
         if($wonProject){
             $response_data = [
@@ -110,6 +113,9 @@ class OperationNewController extends Controller
                 "message" => "successfully",
                 "wonProject" => $wonProject,
                 "user3" => $user3,
+                "all_country" => $all_country,
+                "all_vendor" => $all_vendor,
+                "all_client" => $all_client,
             ];
         }
         else{
@@ -419,6 +425,9 @@ class OperationNewController extends Controller
         $country = Country::get();
         $vendor = Vendor::get();
         $client = Client::get();
+        $all_country = Country::get();
+        $all_vendor = Vendor::get();
+        $all_client = Client::get();
     
         // Get the currently authenticated user
         $user = Auth::user();
@@ -445,6 +454,9 @@ class OperationNewController extends Controller
                 "message" => "successfully",
                 "bidrfq" => $bidrfq,
                 "user" => $user,
+                "all_country" => $all_country,
+                "all_vendor" => $all_vendor,
+                "all_client" => $all_client,
             ];
         } else {
             $response_data = ["success" => 0, "message" => "server site error"];

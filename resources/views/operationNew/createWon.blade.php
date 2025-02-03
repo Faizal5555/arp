@@ -66,7 +66,7 @@
     }
 
     input.txtCal.valid {
-        padding-left: 20px;
+        /* padding-left: 20px; */
         z-index: 1;
     }
 
@@ -114,7 +114,55 @@
     .btnn:hover .dropdown-content-two {
         display: block;
     }
-    
+    .country-table{
+        flex: 1 1 30%;
+        min-width: 300px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-right:15px;
+    }
+
+    .nested-table-group {
+        position: relative;
+        /* ✅ Needed for absolute positioning of remove button */
+        display: flex;
+        flex-wrap: nowrap;
+        /* ✅ Keeps all tables in the same row */
+        gap: 10px;
+        /* ✅ Ensures spacing between tables */
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        white-space: nowrap;
+    }
+
+    .table-group {
+        display: flex;
+        flex-wrap: nowrap;
+        /* ✅ Prevents wrapping, keeps tables in the same row */
+        gap: 10px;
+        /* ✅ Ensures spacing between the two tables in a pair */
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+        position: relative;
+        /* ✅ Needed for correct placement of remove button */
+    }
+    .sub-table{
+        border: 1px solid #dee2e6;
+    }
+
+    .country-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        /* background: #f8f9fa; */
+        position: relative;
+    }
+
 
     /*for notification*/
 </style>
@@ -185,7 +233,7 @@
 
                                             @if (count($wonproject) > 0)
                                                 @foreach ($wonproject as $value)
-                                                    @if (auth()->user()->user_type == "admin" && !in_array($value->rfq_no, $rfq))
+                                                @if ((auth()->user()->user_type == "admin" || auth()->user()->user_type == "operation_head") && !in_array($value->rfq_no, $rfq))
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
                                                     @elseif (auth()->user()->user_role == "project_manager" )
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
@@ -339,91 +387,10 @@
                                         </div>
 
                                         <div class="col-md-12 table-responsive" style="overflow-x:auto;">
-                                            <div class="form-group row">
-                                                <button class="mb-4 ml-2 btn btn-success btn-country" type="button">Add
-                                                    country</button>
+                                            <div class="form-group row operation-data">
 
 
-                                                <div class="col-lg-12 edit-table-bid d-flex">
-                                                    <table id="mtable" class="table">
-                                                        <?php
-                                                        $arr = json_decode($bidrfq[0]->sample_size, true);
-                                                        $setup_cost = json_decode($bidrfq[0]->setup_cost, true);
-                                                        $recruitment = json_decode($bidrfq[0]->recruitment, true);
-                                                        $incentives = json_decode($bidrfq[0]->incentives, true);
-                                                        $moderation = json_decode($bidrfq[0]->moderation, true);
-                                                        $transcript = json_decode($bidrfq[0]->transcript);
-                                                        $others = json_decode($bidrfq[0]->others);
-                                                        $world = json_decode($bidrfq[0]->country);
-                                                        $total_cost = json_decode($bidrfq[0]->total_cost);
-                                                        $client_id = json_decode($bidrfq[0]->client_id);
-                                                        $vendor_id = json_decode($bidrfq[0]->vendor_id);
-                                                        ?>
-                                                        <tr id="remove_country_row">
-                                                            {{-- <th><th> --}}
-                                                            @if (!is_null($world))
-                                                                @foreach ($world as $kv => $value)
-                                                                    @if (!is_null($value))
-                                                                        @foreach ($value as $data)
-                                                                        <th class="country_remove_{{$kv}}_13">
-                                                                            <button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="{{$kv}}" type="button">
-                                                                                               <i class="fa-solid fa-xmark"></i> 
-                                                                           </button>     
-                                                                           </th>
-                                                                            @if (!is_null($vendor_id))
-                                                                                @foreach ($vendor_id as $k1 => $v1)
-                                                                                    @if (!is_null($v1))
-                                                                                        @foreach ($v1 as $k => $data)
-                                                                                            @if ($kv == $k1)
-                                                                                                <th
-                                                                                                    class="country_remove_{{ $kv }}_12 abcversion_{{ $kv }}_11">
-                                                                                                </th>
-                                                                                            @endif
-                                                                                        @endforeach
-                                                                                    @endif
-                                                                                @endforeach
-                                                                            @endif
-                                                                        @endforeach
-                                                                    @endif
-                                                                @endforeach
-                                                            @endif
-
-                                                        </tr>
-
-                                                        <tr id="world_row">
-
-                                                        </tr>
-
-                                                        <tr id="vendor_row">
-
-                                                        </tr>
-
-                                                        <tr id="sample_row">
-
-                                                        </tr>
-                                                        <tr id="setup_row">
-
-                                                        </tr>
-                                                        <tr id="recruitment_row">
-
-                                                        </tr>
-                                                        <tr id="incentives_row">
-
-                                                        </tr>
-                                                        <tr id="moderation_row">
-
-                                                        </tr>
-                                                        <tr id="transcript_row">
-
-                                                        </tr>
-                                                        <tr id="others_row">
-
-                                                        </tr>
-                                                        <tr id="totalCost_row">
-
-                                                        </tr>
-                                                    </table><br>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
@@ -654,14 +621,6 @@
             
                                                     <label class="col-lg-12 col-form-label font-weight-semibold"><u>Vendor Invoicing
                                                             Terms</u></label>
-            
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <div class="col-md-6"></div>
-                                                    <div class="col-md-6"> <button class="won-add-vendor btn btn-success d-none"
-                                                            type="button">Add Vendor</button> </div>
             
                                                 </div>
                                             </div>
@@ -1004,8 +963,8 @@
                                                 <div class="col-md-12 table-responsive" style="overflow-x:auto;">
 
                                                     {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
-                                            remove Industry
-                                        </button> --}}
+                                                    remove Industry
+                                                </button> --}}
                                                     <table border="1" name="" id="mtables">
                                                         <tr>
                                                         <tr>
@@ -1565,6 +1524,7 @@
                             // console.log(sampleSize);
                             var setupCost = JSON.parse(data.bidrfq.setup_cost);
                             var recruitment = JSON.parse(data.bidrfq.recruitment);
+                            var methodology = JSON.parse(data.bidrfq.methodology);
                             var incentives = JSON.parse(data.bidrfq.incentives);
                             var moderation = JSON.parse(data.bidrfq.moderation);
                             var transcript = JSON.parse(data.bidrfq.transcript);
@@ -1572,292 +1532,557 @@
                             var world = JSON.parse(data.bidrfq.country);
                             var totalCost = JSON.parse(data.bidrfq.total_cost);
                             var client_id = JSON.parse(data.bidrfq.client_id);
+                            console.log(client_id);
                             var vendor_id = JSON.parse(data.bidrfq.vendor_id);
-                            console.log("user", user);
-                            let worldHtml = '<th>Country</th>';
-                            let removeHtml = `<th><th>`;
+                            var all_country = data.all_country;
+                            var all_client = data.all_client;
+                            var all_vendor = data.all_vendor;
+                            var operation_data_html = "";
 
-                                if (world.length != 0) {
-                                    $.each(world, function (kv, value) {
-                                        if (value != null) {
-                                            $.each(value, function (dataIndex, data) {
-                                                worldHtml += '<th class="data-country country_remove_' + kv + '">';
-                                                worldHtml += '<label class="form-group has-float-label">';
-                                                worldHtml +=
-                                                    '<select class="form-control label-gray-3" name="country_0[' +
-                                                    kv + '][]">';
-                                                worldHtml += '<option class="label-gray-3" value="' + data + '">' + data + '</option>';
-                                                if(kv == 0)
-                                                {
-                                                    removeHtml += `<th class="remove-country-${kv}"></th>`;
-                                                }else{
-                                                    removeHtml += `<th class="remove-country-${kv}"><button class="mb-4 ml-2 btn btn-danger remove-country"  data-remove="${kv}" type="button">
-                                                                                        <i class="fa-solid fa-xmark"></i>
-                                                                    </button></th>`;
-                                                }
-                                                removeHtml += `<th class="remove-country-${kv}"></th>`;
-                                                // Loop through countries passed from Blade
-                                                var countries = <?php echo json_encode($country); ?>;
-                                                if (countries.length > 0) {
-                                                    $.each(countries, function (index, country) {
-                                                        worldHtml += '<option value="' + country.name + '"';
-                                                        if (data === country.name) {
-                                                            worldHtml += ' selected';
-                                                        }
-                                                        worldHtml += '>' + country.name + '</option>';
-                                                    });
-                                                }
+                            operation_data_html += `
+                                <div class="">
+                                    <div class="rfq-table">
+                                    <div class="btn-var"></div>
+                                        <div class="bid-table d-flex">`;
+                                        if(world.length > 0)
+                                        {
+                                            $.each(world, function(key, val){
+                                                operation_data_html += `
+                                                <div class="country-wrapper" data-by="${key}">
+                                                    <table class="table table-striped country-table" id="main-table" data-by="0">
+                                                        <tr>
+                                                            <td>
+                                                                <label class="form-group has-float-label">
+                                                                    <select class="form-control label-gray-3"
+                                                                        name="country_0[${key}][]" required>
+                                                                        <option class="label-gray-3" value="">
+                                                                            Country</option>
+                                                                        ${all_country.map(country => `
+                                                                            <option value="${country.name}" ${val[0] == country.name ? 'selected' : ''}>${country.name}</option>
+                                                                        `).join('')}
+                                                                    </select>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="nested-table-group nested-table-group-0 d-flex flex-nowrap">
+                                                                    <table class="sub-table">
+                                                                        <tbody class="sub-body_0">
+                                                                            <tr class="first-row">
+                                                                                <td>Client/Vendor Name</td>
+                                                                                <td>
+                                                                                    <select class="form-control label-gray-3" name="client_id_0[${key}][]" required>
+                                                                                        <option class="label-gray-3"value="">Client</option>
+                                                                                        ${all_client.map(client => `
+                                                                                            <option value="${client.client_name}" ${client_id[key][0] == client.client_name ? 'selected' : ''}>${client.client_name}</option>
+                                                                                        `).join('')}
+                                                                                    </select>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <select class="form-control label-gray-3" name="vendor_id_0[${key}][]" required>
+                                                                                        <option class="label-gray-3"value="">Vendor</option>
+                                                                                        ${all_vendor.map(vendor => `
+                                                                                            <option value="${vendor.vendor_name}" ${vendor_id[key][0] == vendor.vendor_name ? 'selected' : ''}>${vendor.vendor_name}</option>
+                                                                                        `).join('')}
+                                                                                    </select>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="sub-cost">Methodology</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text" class="txtCal" value="${methodology[key] && methodology[key].length > 0 ? methodology[key][0] : 0 }"
+                                                                                        name="methodology_0[${key}][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text" class="txtbol" value="${methodology[key] && methodology[key].length > 1 ? methodology[key][1] : 0 }"
+                                                                                        name="methodology_0[${key}][]"
+                                                                                        placeholder="Methodology">
+                                                                                </td>
+                                                                            </tr>
 
-                                                worldHtml += '</select>';
-                                                worldHtml += '<span>Country</span>';
+                                                                            <!-- Sample Size -->
+                                                                            <tr>
+                                                                                <td class="sub-cost">Sample Size</td>
+                                                                                <td class="remove">
+                                                                                    <input type="text" class="txtCal" value="${sampleSize[key] && sampleSize[key].length > 0 ? sampleSize[key][0] : 0 }"
+                                                                                        name="sample_size_0[${key}][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                                <td class="remove">
+                                                                                    <input type="text" class="txtbol" value="${sampleSize[key] && sampleSize[key].length > 1 ? sampleSize[key][1] : 0 }"
+                                                                                        name="sample_size_0[${key}][]"
+                                                                                        placeholder="Sample Size">
+                                                                                </td>
+                                                                            </tr>
 
-                                                // Append Add Vendor and Remove Country buttons only once per country
-                                                // worldHtml += '<td class="country_remove_' + kv + '_11"></td>';
-                                                worldHtml +=
-                                                    '<th class="abcversion_' +
-                                                    kv +
-                                                    '_coun country_remove_' +
-                                                    kv +
-                                                    '_10">';
-                                                worldHtml +=
-                                                    '<button class="float-left ml-2 btn btn-success addvendor" data-button="' +
-                                                    kv +
-                                                    '" type="button">Add vendor</button>';
-                                                worldHtml +=
-                                                    '<button class="mb-4 ml-2 btn btn-danger btn-remove" data-remove="' +
-                                                    kv +
-                                                    '" type="button"><i class="fa-solid fa-xmark"></i></button>';
-                                                worldHtml += '</th>';
-                                                worldHtml += '</label>';
-                                                worldHtml += '</th>';
-                                            });
+                                                                            <!-- Setup Cost -->
+                                                                            <tr>
+                                                                                <td>Setup Cost</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${setupCost[key] && setupCost[key].length > 0 ? setupCost[key][0] : 0 }"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${setupCost[key] && setupCost[key].length > 1 ? setupCost[key][1] : 0 }"
+                                                                                        placeholder="Setup Cost"
+                                                                                        name="setup_cost_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Recruitment -->
+                                                                            <tr>
+                                                                                <td>Recruitment</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${recruitment[key] && recruitment[key].length > 0 ? recruitment[key][0] : 0 }"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${recruitment[key] && recruitment[key].length > 1 ? recruitment[key][1] : 0 }"
+                                                                                        placeholder="Recruitment"
+                                                                                        name="recruitment_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Incentives -->
+                                                                            <tr>
+                                                                                <td>Incentives</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${incentives[key] && incentives[key].length > 0 ? incentives[key][0] : 0 }"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${incentives[key] && incentives[key].length > 1 ? incentives[key][1] : 0 }"
+                                                                                        placeholder="Incentives"
+                                                                                        name="incentives_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Moderation -->
+                                                                            <tr class="format-2">
+                                                                                <td>Moderation</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${moderation[key] && moderation[key].length > 0 ? moderation[key][0] : 0 }"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${moderation[key] && moderation[key].length > 1 ? moderation[key][1] : 0 }"
+                                                                                        placeholder="Moderation"
+                                                                                        name="moderation_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Transcript -->
+                                                                            <tr class="format-2">
+                                                                                <td>Transcript</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${transcript[key] && transcript[key].length > 0 ? transcript[key][0] : 0 }"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${transcript[key] && transcript[key].length > 1 ? transcript[key][1] : 0 }"
+                                                                                        placeholder="Transcript"
+                                                                                        name="transcript_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Others -->
+                                                                            <tr>
+                                                                                <td>Others</td>
+                                                                                <td class="bidrfq-client" data-id="2">
+                                                                                    <input type="text" class="txtCal" value="${others[key] && others[key].length > 0 ? others[key][0] : 0 }"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[${key}][]">
+                                                                                </td>
+                                                                                <td class="bidrfq-vendor" data-id="3">
+                                                                                    <input type="text" class="txtbol" value="${others[key] && others[key].length > 1 ? others[key][1] : 0 }"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[${key}][]">
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <!-- Total Cost -->
+                                                                            <tr>
+                                                                                <td>Total Cost</td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[${key}][]" 
+                                                                                        value="${totalCost[key] && totalCost[key].length > 0 ? totalCost[key][0] : 0 }" >
+                                                                                </td>
+                                                                                <td>
+                                                                                    <label class="my-currency"></label>
+                                                                                    <input type="text"
+                                                                                        class="border total_cost"
+                                                                                        placeholder="Total Cost"
+                                                                                        name="total_cost_0[${key}][]"
+                                                                                        value="${totalCost[key] && totalCost[key].length > 1 ? totalCost[key][1] : 0 }">
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>`
+                                                                    let j = 1;
+                                                                    if(totalCost[key].length > 2)
+                                                                    {
+                                                                        for(i=2; i < totalCost[key].length; i+=2)
+                                                                        {
+                                                                            operation_data_html += `
+                                                                            <div class="table-group d-flex">
+                                                                                <table class="sub-table" data-by="1">
+                                                                                    <tbody class="sub-body_0">
+                                                                                        <tr class="first-row">
+                                                                                            <td>Client/Vendor Name</td>
+                                                                                            <td>
+                                                                                                <select class="form-control label-gray-3" name="client_id_0[${key}][]" required>
+                                                                                                    <option class="label-gray-3"value="">Client</option>
+                                                                                                    ${all_client.map(client => `
+                                                                                                        <option value="${client.client_name}" ${client_id[key][j] == client.client_name ? 'selected' : ''}>${client.client_name}</option>
+                                                                                                    `).join('')}
+                                                                                                </select>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <select class="form-control label-gray-3" name="vendor_id_0[${key}][]" required>
+                                                                                                    <option class="label-gray-3"value="">Vendor</option>
+                                                                                                    ${all_vendor.map(vendor => `
+                                                                                                        <option value="${vendor.vendor_name}" ${vendor_id[key][j] == vendor.vendor_name ? 'selected' : ''}>${vendor.vendor_name}</option>
+                                                                                                    `).join('')}
+                                                                                                </select>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td class="sub-cost">Methodology</td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtCal" value="${methodology[key] && methodology[key].length > i ? methodology[key][i] : 0 }"
+                                                                                                    name="methodology_0[${key}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtbol" value="${methodology[key] && methodology[key].length > i+1 ? methodology[key][i+1] : 0 }"
+                                                                                                    name="methodology_0[${key}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Sample Size -->
+                                                                                        <tr>
+                                                                                            <td class="sub-cost">Sample Size</td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtCal" value="${sampleSize[key] && sampleSize[key].length > i ? sampleSize[key][i] : 0 }"
+                                                                                                    name="sample_size_0[${key}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtbol" value="${sampleSize[key] && sampleSize[key].length > i+1 ? sampleSize[key][i+1] : 0 }"
+                                                                                                    name="sample_size_0[${key}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Setup Cost -->
+                                                                                        <tr>
+                                                                                            <td>Setup Cost</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${setupCost[key] && setupCost[key].length > i ? setupCost[key][i] : 0 }"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${setupCost[key] && setupCost[key].length > i+1 ? setupCost[key][i+1] : 0 }"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Recruitment -->
+                                                                                        <tr>
+                                                                                            <td>Recruitment</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${recruitment[key] && recruitment[key].length > i ? recruitment[key][i] : 0 }"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${recruitment[key] && recruitment[key].length > i+1 ? recruitment[key][i+1] : 0 }"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Incentives -->
+                                                                                        <tr>
+                                                                                            <td>Incentives</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${incentives[key] && incentives[key].length > i ? incentives[key][i] : 0 }"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${incentives[key] && incentives[key].length > i+1 ? incentives[key][i+1] : 0 }"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Moderation -->
+                                                                                        <tr class="format-2">
+                                                                                            <td>Moderation</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${moderation[key] && moderation[key].length > i ? moderation[key][i] : 0 }"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${moderation[key] && moderation[key].length > i+1 ? moderation[key][i+1] : 0 }"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Transcript -->
+                                                                                        <tr class="format-2">
+                                                                                            <td>Transcript</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${transcript[key] && transcript[key].length > i ? transcript[key][i] : 0 }"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${transcript[key] && transcript[key].length > i+1 ? transcript[key][i+1] : 0 }"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Others -->
+                                                                                        <tr>
+                                                                                            <td>Others</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i ? others[key][i] : 0 }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i+1 ? others[key][i+1] : 0 }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Total Cost -->
+                                                                                        <tr>
+                                                                                            <td>Total Cost</td>
+                                                                                            <td>
+                                                                                                <label class="my-currency"></label>
+                                                                                                <input type="text"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[${key}][]" 
+                                                                                                    value="${totalCost[key] && totalCost[key].length > i ? totalCost[key][i] : 0 }" >
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <label class="my-currency"></label>
+                                                                                                <input type="text"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[${key}][]"
+                                                                                                    value="${totalCost[key] && totalCost[key].length > i+1 ? totalCost[key][i+1] : 0 }">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>`
+                                                                            j++;
+                                                                            i+=2;
+                                                                            operation_data_html += `
+                                                                                <table class="sub-table" data-by="1">
+                                                                                    <tbody class="sub-body_0">
+                                                                                        <tr class="first-row">
+                                                                                            <td>Client/Vendor Name</td>
+                                                                                            <td>
+                                                                                                <select class="form-control label-gray-3" name="client_id_0[${key}][]" required>
+                                                                                                    <option class="label-gray-3"value="">Client</option>
+                                                                                                    ${all_client.map(client => `
+                                                                                                        <option value="${client.client_name}" ${client_id[key][j] == client.client_name ? 'selected' : ''}>${client.client_name}</option>
+                                                                                                    `).join('')}
+                                                                                                </select>
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <select class="form-control label-gray-3" name="vendor_id_0[${key}][]" required>
+                                                                                                    <option class="label-gray-3"value="">Vendor</option>
+                                                                                                    ${all_vendor.map(vendor => `
+                                                                                                        <option value="${vendor.vendor_name}" ${vendor_id[key][j] == vendor.vendor_name ? 'selected' : ''}>${vendor.vendor_name}</option>
+                                                                                                    `).join('')}
+                                                                                                </select>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td class="sub-cost">Methodology</td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtCal" value="${methodology[key] && methodology[key].length > i ? methodology[key][i] : 0 }"
+                                                                                                    name="methodology_0[${key}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtbol" value="${methodology[key] && methodology[key].length > i+1 ? methodology[key][i+1] : 0 }"
+                                                                                                    name="methodology_0[${key}][]"
+                                                                                                    placeholder="Methodology">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Sample Size -->
+                                                                                        <tr>
+                                                                                            <td class="sub-cost">Sample Size</td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtCal" value="${sampleSize[key] && sampleSize[key].length > i ? sampleSize[key][i] : 0 }"
+                                                                                                    name="sample_size_0[${key}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                            <td class="remove">
+                                                                                                <input type="text" class="txtbol" value="${sampleSize[key] && sampleSize[key].length > i+1 ? sampleSize[key][i+1] : 0 }"
+                                                                                                    name="sample_size_0[${key}][]"
+                                                                                                    placeholder="Sample Size">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Setup Cost -->
+                                                                                        <tr>
+                                                                                            <td>Setup Cost</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${setupCost[key] && setupCost[key].length > i ? setupCost[key][i] : 0 }"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${setupCost[key] && setupCost[key].length > i+1 ? setupCost[key][i+1] : 0 }"
+                                                                                                    placeholder="Setup Cost"
+                                                                                                    name="setup_cost_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Recruitment -->
+                                                                                        <tr>
+                                                                                            <td>Recruitment</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${recruitment[key] && recruitment[key].length > i ? recruitment[key][i] : 0 }"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${recruitment[key] && recruitment[key].length > i+1 ? recruitment[key][i+1] : 0 }"
+                                                                                                    placeholder="Recruitment"
+                                                                                                    name="recruitment_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Incentives -->
+                                                                                        <tr>
+                                                                                            <td>Incentives</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${incentives[key] && incentives[key].length > i ? incentives[key][i] : 0 }"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${incentives[key] && incentives[key].length > i+1 ? incentives[key][i+1] : 0 }"
+                                                                                                    placeholder="Incentives"
+                                                                                                    name="incentives_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Moderation -->
+                                                                                        <tr class="format-2">
+                                                                                            <td>Moderation</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${moderation[key] && moderation[key].length > i ? moderation[key][i] : 0 }"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${moderation[key] && moderation[key].length > i+1 ? moderation[key][i+1] : 0 }"
+                                                                                                    placeholder="Moderation"
+                                                                                                    name="moderation_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Transcript -->
+                                                                                        <tr class="format-2">
+                                                                                            <td>Transcript</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${transcript[key] && transcript[key].length > i ? transcript[key][i] : 0 }"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${transcript[key] && transcript[key].length > i+1 ? transcript[key][i+1] : 0 }"
+                                                                                                    placeholder="Transcript"
+                                                                                                    name="transcript_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Others -->
+                                                                                        <tr>
+                                                                                            <td>Others</td>
+                                                                                            <td class="bidrfq-client" data-id="2">
+                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i ? others[key][i] : 0 }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">
+                                                                                            </td>
+                                                                                            <td class="bidrfq-vendor" data-id="3">
+                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i+1 ? others[key][i+1] : 0 }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">
+                                                                                            </td>
+                                                                                        </tr>
+
+                                                                                        <!-- Total Cost -->
+                                                                                        <tr>
+                                                                                            <td>Total Cost</td>
+                                                                                            <td>
+                                                                                                <label class="my-currency"></label>
+                                                                                                <input type="text"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[${key}][]" 
+                                                                                                    value="${totalCost[key] && totalCost[key].length > i ? totalCost[key][i] : 0 }" >
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                <label class="my-currency"></label>
+                                                                                                <input type="text"
+                                                                                                    class="border total_cost"
+                                                                                                    placeholder="Total Cost"
+                                                                                                    name="total_cost_0[${key}][]"
+                                                                                                    value="${totalCost[key] && totalCost[key].length > i+1 ? totalCost[key][i+1] : 0 }">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                            `
+                                                                            j++;
+                                                                        }
+                                                                    }
+                                                            
+                                                            operation_data_html += `
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>`;
+                                            })
                                         }
-                                    });
-                                }
-
-                            // Render the final HTML
-                            $('#remove_country_row').html(removeHtml);
-                            $('#world_row').html(worldHtml);
-
-
-
-                            let vendorRowHtml = '<tr>';
-
-                            vendorRowHtml += '<td>Client Name/Vendor Name</td>';
-
-                            client_id.forEach((value, key) => {
-                                value.forEach((data) => {
-                                    vendorRowHtml += `<td class="country_remove_${key}_1">`;
-                                    vendorRowHtml +=
-                                        '<label class="form-group has-float-label">';
-                                    vendorRowHtml +=
-                                        `<select class="form-control label-gray-3" name="client_id_0[${key}][]">`;
-                                    vendorRowHtml +=
-                                        `<option class="label-gray-3" value="${data}">Client</option>`;
-
-                                    // Loop through the client data passed from Blade using JavaScript
-                                    const clientData = <?= json_encode($client) ?>;
-                                    if (clientData.length > 0) {
-                                        $.each(clientData, function(index, clientItem) {
-                                            vendorRowHtml += '<option value="' +
-                                                clientItem.client_name + '"';
-                                            if (data === clientItem
-                                                .client_name) {
-                                                vendorRowHtml += ' selected';
-                                            }
-                                            vendorRowHtml += '>' + clientItem
-                                                .client_name + '</option>';
-                                        });
-                                    }
-
-                                    vendorRowHtml += '</select>';
-                                    vendorRowHtml += '<span>Client Name</span>';
-                                    vendorRowHtml += '</label>';
-                                    vendorRowHtml += '</td>';
-                                });
-
-                                vendor_id[key].forEach((data) => {
-                                    vendorRowHtml +=
-                                        `<td class="abcversion_${key} country_remove_${key}_2" data-arr="${key}">`;
-                                    vendorRowHtml +=
-                                        '<label class="form-group has-float-label">';
-                                    vendorRowHtml +=
-                                        `<select class="form-control label-gray-3" name="vendor_id_0[${key}][]">`;
-                                    vendorRowHtml +=
-                                        `<option class="label-gray-3" value="${data}">Vendor</option>`;
-
-                                    const vendorData = <?= json_encode($vendor) ?>;
-                                    if (vendorData.length > 0) {
-                                        $.each(vendorData, function(index, vendorItem) {
-                                            vendorRowHtml += '<option value="' +
-                                                vendorItem.vendor_name + '"';
-                                            if (data === vendorItem
-                                                .vendor_name) {
-                                                vendorRowHtml += ' selected';
-                                            }
-                                            vendorRowHtml += '>' + vendorItem
-                                                .vendor_name + '</option>';
-                                        });
-                                    }
-
-                                    vendorRowHtml += '</select>';
-                                    vendorRowHtml += '<span>Vendor Name</span>';
-                                    vendorRowHtml += '</label>';
-                                    vendorRowHtml += '</td>';
-                                });
-                            });
-
-                            vendorRowHtml += '</tr>';
-
-                            $('#vendor_row').replaceWith(vendorRowHtml);
-
-
-
-                            var sampleSizeHtml = '<td>Sample Size</td>';
-                            var i = 2;
-
-                            $.each(sampleSize, function(outerIndex, outerArray) {
-                                $.each(outerArray, function(innerIndex, value) {
-                                    sampleSizeHtml += '<td class="abcversion_' + outerIndex +
-                                        '_1 my-samplesize country_remove_' + outerIndex +
-                                        '_3" data-id="' + (i++) + '">';
-                                    sampleSizeHtml +=
-                                        '<input type="number" class="border-0" value="' +
-                                        parseInt(value, 10) + '" name="sample_size_0[' +
-                                        outerIndex + '][]">';
-                                    sampleSizeHtml += '</td>';
-                                });
-                            });
-
-                            $('#sample_row').html(sampleSizeHtml);
-
-                            var setupCostHtml = '<td>Setup Cost</td>';
-                            var i = 2;
-                            $.each(setupCost, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    setupCostHtml += '<td class="table_version abcversion_' +
-                                        key + '_2 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    setupCostHtml += '<input type="number" class="cal_' + key +
-                                        '_' + k + '" value="' + data + '" name="setup_cost_0[' +
-                                        key + '][]">';
-                                    setupCostHtml += '</td>';
-                                });
-                            });
-
-                            $('#setup_row').html(setupCostHtml);
-
-
-                            var RecruitmentHtml = '<td>recruitment</td>';
-                            var i = 2;
-                            $.each(recruitment, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    RecruitmentHtml += '<td class="table_version abcversion_' +
-                                        key + '_3 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    RecruitmentHtml += '<input type="number" class="cal_' +
-                                        key + '_' + k + '" value="' + data +
-                                        '" name="recruitment_0[' + key + '][]">';
-                                    RecruitmentHtml += '</td>';
-                                });
-                            });
-
-                            $('#recruitment_row').html(RecruitmentHtml);
-
-
-                            var IncentivesHtml = '<td>Incentives</td>';
-                            var i = 2;
-                            $.each(incentives, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    IncentivesHtml += '<td class="table_version abcversion_' +
-                                        key + '_4 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    IncentivesHtml += '<input type="number" class="cal_' + key +
-                                        '_' + k + '" value="' + data + '" name="incentives_0[' +
-                                        key + '][]">';
-                                    IncentivesHtml += '</td>';
-                                });
-                            });
-
-                            $('#incentives_row').html(IncentivesHtml);
-
-
-                            var ModerationHtml = '<td>Moderation</td>';
-                            var i = 2;
-                            $.each(moderation, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    ModerationHtml += '<td class="table_version abcversion_' +
-                                        key + '_5 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    ModerationHtml += '<input type="number" class="cal_' + key +
-                                        '_' + k + '" value="' + data + '" name="moderation_0[' +
-                                        key + '][]">';
-                                    ModerationHtml += '</td>';
-                                });
-                            });
-
-                            $('#moderation_row').html(ModerationHtml);
-
-                            var TranscriptHtml = '<td>Transcript</td>';
-                            var i = 2;
-                            $.each(transcript, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    TranscriptHtml += '<td class="table_version abcversion_' +
-                                        key + '_6 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    TranscriptHtml += '<input type="number" class="cal_' + key +
-                                        '_' + k + '" value="' + data + '" name="transcript_0[' +
-                                        key + '][]">';
-                                    TranscriptHtml += '</td>';
-                                });
-                            });
-
-                            $('#transcript_row').html(TranscriptHtml);
-
-
-
-                            var OtherstHtml = '<td>Others</td>';
-
-                            var i = 2;
-                            $.each(others, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    OtherstHtml += '<td class="table_version abcversion_' +
-                                        key + '_7 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    OtherstHtml += '<input type="number" class="cal_' + key +
-                                        '_' + k + '" value="' + data + '" name="others_0[' +
-                                        key + '][]">';
-                                    OtherstHtml += '</td>';
-                                });
-                            });
-
-                            $('#others_row').html(OtherstHtml);
-
-
-                            var totalCostHtml = '<td>totalCost</td>';
-
-                            var i = 2;
-                            $.each(totalCost, function(key, value) {
-                                $.each(value, function(k, data) {
-                                    totalCostHtml += '<td class="table_version abcversion_' +
-                                        key + '_8 country_remove_' + key + '_3" data-id="' + (
-                                            i++) + '" data-cal="' + k + '" data-culation="' +
-                                        key + '">';
-                                    totalCostHtml += '<input type="number" class="total_cost_' +
-                                        key + '_' + k + '" value="' + data +
-                                        '" name="total_cost_0[' + key + '][]">';
-                                    totalCostHtml += '</td>';
-                                });
-                            });
-
-                            $('#totalCost_row').html(totalCostHtml);
-
+                            operation_data_html += `
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            $('.operation-data').html(operation_data_html)
 
                             $("#id").val(data.bidrfq.id);
                             $(".rfqno").val(data.bidrfq.rfqno);
@@ -1867,7 +2092,7 @@
                             $("#follow_up_date").val(data.bidrfq.follow_up_date);
                             $("#currency").val(data.bidrfq.currency);
                             $(".user").val(data.user.name);
-
+                    // first page end
                             console.log(data);
                             console.log(data.bidrfq.vendor_id);
 
@@ -1960,6 +2185,29 @@
                    
                 });
 
+                $(document).on('keyup', '.bid-table td input:not(input[name^="sample_size"])', function() {
+                    let index = $(this).closest("td").index();
+                    let table = $(this).closest('table');
+                    let row = table.find("tr");
+                    let rowLength = row.length;
+                    var sum = 0;
+                    row.each(function(key){
+                        if(key > 2 && key < (rowLength - 1))
+                        {
+                            let val = parseInt($(this).children('td').eq(index).find('input').val());
+                            if(!isNaN(val))
+                            {
+                                sum = sum + val;
+                            }
+                        }
+                        if(key == (rowLength - 1))
+                        {
+                            console.log('hi');
+                            $(this).children('td').eq(index).find('input').val(sum)
+                        }
+                        
+                    });
+                });
 
                 $(document).on('click', '.addvendor', function() {
                     //debugger
@@ -2042,10 +2290,7 @@
                                         
                                 </th>
                                 <th>
-                                <button class="float-left btn btn-success addvendor" data-button="${rar}" data-count="0"   type="button">
-                                        Add vendor
-                                    </button>
-                                    
+                                
                                 </th>
                                 
                                 <th>
