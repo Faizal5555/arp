@@ -276,7 +276,9 @@ table tfoot th {
 {
    padding-left: 0px;
 }
-
+select.form-control{
+  color: #495057;
+}
     </style>
   </head>
   <body id="top-body" class=""> 
@@ -607,7 +609,7 @@ table tfoot th {
              
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic2" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title">Operations</span>
+                <span class="menu-title">Operations Head</span>
                 <i class="menu-arrow"></i>
                 <i class="fas fa-users-cog"></i>
               </a>
@@ -624,7 +626,7 @@ table tfoot th {
             </li>
              <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic3" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title">Field Project</span>
+                <span class="menu-title">Project Manager</span>
                 <i class="menu-arrow"></i>
                 <i class="fas fa-user-shield"></i>
               </a>

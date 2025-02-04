@@ -2153,7 +2153,7 @@ input.form-control {
                                         
                                      @endforeach
                                     @endif
-                                        <i class="float-right mt-1 mb-2 fa-solid fa-circle-plus add" style="color:green;" ></i>
+                                        <i class="float-right mt-1 mb-2 fa-solid fa-circle-plus add-file" style="color:green;" ></i>
                                         <input name="other_document[]"  value="{{$operation && $operation->other_document  ? $operation->other_document  : ''}}"
                                              type="file"  class="form-control" name="other_document[]" placeholder="Attach Other Documents">
                                              <div id="other_document"></div>
@@ -5138,8 +5138,9 @@ $("#complete").validate({
      $('.survey_link').remove();     
     });
     
-      $(document).on('click', '.add', function () {
+      $(document).on('click', '.add-file', function () {
         // alert("hi");
+        console.log('clicked')
         $("#other_document").append(
             `<div class="d-flex"><input type="file" style="width:100%;" name="other_document[]" class="mt-1 form-control"><i class="fa-solid fa-circle-minus minus" style="color:red;"></i> </div>`
         );
