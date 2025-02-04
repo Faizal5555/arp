@@ -1019,14 +1019,14 @@
                                                                                     <label class="my-currency"></label>
                                                                                     <input type="text"
                                                                                         class="border total_cost"
-                                                                                        placeholder="Total Cost"
+                                                                                        placeholder="Total Cost" value="0"
                                                                                         name="total_cost_0[0][]">
                                                                                 </td>
                                                                                 <td>
                                                                                     <label class="my-currency"></label>
                                                                                     <input type="text"
                                                                                         class="border total_cost"
-                                                                                        placeholder="Total Cost"
+                                                                                        placeholder="Total Cost" value="0"
                                                                                         name="total_cost_0[0][]">
                                                                                 </td>
                                                                             </tr>
