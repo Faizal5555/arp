@@ -811,13 +811,13 @@ class WonProjectController extends Controller
     }
     public function getstatus(Request $req){
         $wonproject=Wonproject::where('id',$req->id)->first();
-        $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
-        if(!$operation){
-            $response_data=["success"=>0,"message"=>"fail"]; 
-        }
-        else{
+        // $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
+        // if(!$operation){
+        //     $response_data=["success"=>0,"message"=>"fail"]; 
+        // }
+        // else{
             $response_data=["success"=>1,"message"=>"success","rfq"=>$wonproject->rfq_no ];
-        }
+        // }
         return response()->json($response_data);
     }
      public function getuser(){
@@ -834,21 +834,21 @@ class WonProjectController extends Controller
     public function salesperfomance(Request $request){
       if($request->id){
         if(is_numeric($request->id)){
-       $client=Client::whereDate('created_at','>=',$request->start)->whereDate('created_at','<=',$request->end)->where('user_id',$request->id)->count();
-       $total_vendor=Vendor::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->count();
-       $rfq=Bidrfq::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->count();
-       $rfq_follow=Bidrfq::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('type','next')->where('user_id',$request->id)->count();
-       $vendor_total1=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->select('vendor_total')->get();
-       $vendor_total1=str_replace('{"vendor_total":"','', $vendor_total1);
-       $vendor_total1=str_replace('"}','', $vendor_total1);
-       $vendor=explode(',',$vendor_total1);
-       $vendor_final= preg_replace("/^'|[^A-Za-z0-9\'-]|'$/", '', $vendor);
-       $vendor1=array_sum($vendor_final);
-       $total_margin=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->sum('total_margin');
-       $client_invoice=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->sum('client_total');
+            $client=Client::whereDate('created_at','>=',$request->start)->whereDate('created_at','<=',$request->end)->where('user_id',$request->id)->count();
+            $total_vendor=Vendor::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->count();
+            $rfq=Bidrfq::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->count();
+            $rfq_follow=Bidrfq::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('type','next')->where('user_id',$request->id)->count();
+            $vendor_total1=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->select('vendor_total')->get();
+            $vendor_total1=str_replace('{"vendor_total":"','', $vendor_total1);
+            $vendor_total1=str_replace('"}','', $vendor_total1);
+            $vendor=explode(',',$vendor_total1);
+            $vendor_final= preg_replace("/^'|[^A-Za-z0-9\'-]|'$/", '', $vendor);
+            $vendor1=array_sum($vendor_final);
+            $total_margin=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->sum('total_margin');
+            $client_invoice=WonProject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('user_id',$request->id)->sum('client_total');
         }
         else{
-    //   dd($request->id);
+        //   dd($request->id);
        $all=$request->id;
        $id=explode(",",$all);
        $client=Client::whereDate('created_at','>=',$request->start)->whereDate('created_at','<=',$request->end)->whereIn('user_id',$id)->count();
