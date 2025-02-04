@@ -567,7 +567,12 @@
                 submitHandler: function(form) {
                     var data = new FormData(form);
                     // loadButton('#addRegisterButton');
-
+                    $('.bid-table input[type="text"]').each(function(){
+                        if($(this).val().trim() == "")
+                        {
+                            $(this).val(0);
+                        }
+                    })
                     $.ajax({
                         type: "POST",
                         url: "{{ route('bidrfq.store') }}",

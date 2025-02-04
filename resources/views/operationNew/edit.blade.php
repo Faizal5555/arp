@@ -1022,13 +1022,13 @@ input.form-control {
                                                                                         <td>Methodology</td>
                                                                                         <td><input type="text"
                                                                                                 class="txtCal"
-                                                                                                value="{{ $methodology[$key] && count($methodology[$key]) > 0 ? $methodology[$key][0] : 0  }}"
+                                                                                                value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > 0 ? $methodology[$key][0] : 0  }}"
                                                                                                 name="methodology_0[{{ $key }}][]"
                                                                                                 placeholder="Methodology">
                                                                                         </td>
                                                                                         <td><input type="text"
                                                                                                 class="txtbol"
-                                                                                                value="{{ $methodology[$key] && count($methodology[$key]) > 1 ? $methodology[$key][1] : 0  }}"
+                                                                                                value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > 1 ? $methodology[$key][1] : 0  }}"
                                                                                                 name="methodology_0[{{ $key }}][]"
                                                                                                 placeholder="Methodology">
                                                                                         </td>
@@ -1220,13 +1220,13 @@ input.form-control {
                                                                                             <td>Methodology</td>
                                                                                             <td><input type="text"
                                                                                                     class="txtCal"
-                                                                                                    value="{{ $methodology[$key] && count($methodology[$key]) > $i ? $methodology[$key][$i] : 0  }}"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i ? $methodology[$key][$i] : 0  }}"
                                                                                                     name="methodology_0[{{ $key }}][]"
                                                                                                     placeholder="Methodology">
                                                                                             </td>
                                                                                             <td><input type="text"
                                                                                                     class="txtbol"
-                                                                                                    value="{{ $methodology[$key] && count($methodology[$key]) > $i + 1 ? $methodology[$key][$i + 1] : 0  }}"
+                                                                                                    value="{{ $methodology && $methodology[$key] && count($methodology[$key]) > $i + 1 ? $methodology[$key][$i + 1] : 0  }}"
                                                                                                     name="methodology_0[{{ $key }}][]"
                                                                                                     placeholder="Methodology">
                                                                                             </td>
