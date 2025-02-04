@@ -385,6 +385,27 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Choose Company 
+                                                    Name<span class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+                                                    {{-- <input name="currency" value="" id="currency"
+                                                    type="text" class="form-control" placeholder="currency"> --}}
+                                                    <select class="form-control label-gray-3" name="company_name"
+                                                        id="company_name">
+                                                        <option class="label-gray-3" value="" disabled selected>
+                                                            Select company</option>
+                                                        <option value="Asia Research Partners">Asia Research Partners</option>
+                                                        <option value="Universal Research Panels">Universal Research Panels</option>
+                                                        <option value="Healthcare Panels India">Healthcare Panels India</option>
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        
 
                                         <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                             <div class="form-group row operation-data">
@@ -2091,6 +2112,7 @@
                             console.log(data.bidrfq.industry);
                             $("#follow_up_date").val(data.bidrfq.follow_up_date);
                             $("#currency").val(data.bidrfq.currency);
+                            $("#company_name").val(data.bidrfq.company_name);
                             $(".user").val(data.user.name);
                     // first page end
                             console.log(data);
