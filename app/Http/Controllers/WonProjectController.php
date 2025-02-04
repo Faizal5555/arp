@@ -811,13 +811,13 @@ class WonProjectController extends Controller
     }
     public function getstatus(Request $req){
         $wonproject=Wonproject::where('id',$req->id)->first();
-        // $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
-        // if(!$operation){
-        //     $response_data=["success"=>0,"message"=>"fail"]; 
-        // }
-        // else{
+        $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
+        if(!$operation){
+            $response_data=["success"=>0,"message"=>"fail"]; 
+        }
+        else{
             $response_data=["success"=>1,"message"=>"success","rfq"=>$wonproject->rfq_no ];
-        // }
+        }
         return response()->json($response_data);
     }
      public function getuser(){
