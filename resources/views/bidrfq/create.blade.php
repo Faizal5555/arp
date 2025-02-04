@@ -399,8 +399,8 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="my-currency">Total Costs</td>
-                                                    <td><input type="text" class="border total_cost" placeholder="Total Cost" name="total_cost_0[${d}][]"></td>
-                                                    <td><input type="text" class="border total_cost" placeholder="Total Cost" name="total_cost_0[${d}][]"></td>
+                                                    <td><input type="text" class="border total_cost" placeholder="Total Cost" value="0" name="total_cost_0[${d}][]"></td>
+                                                    <td><input type="text" class="border total_cost" placeholder="Total Cost" value="0" name="total_cost_0[${d}][]"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
