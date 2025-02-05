@@ -36,14 +36,13 @@ class OperationNewController extends Controller
 
         // Base query for WonProject
         $wonproject = WonProject::query();
-
         // If the logged-in user is a Project Manager, filter by allocated RFQs
         if ($user->user_role === 'project_manager') {
             // Get the RFQ values allocated to this Project Manager
             $allocatedRfqList = OperationNew::where('project_manager_name', $user->id)
                 ->pluck('rfq')
                 ->toArray();
-
+            // dd($allocatedRfqList);
             // Ensure project managers only see their projects
             $wonproject->whereIn('rfq_no', $allocatedRfqList);
         } 
@@ -96,7 +95,7 @@ class OperationNewController extends Controller
         //     // var_dump($dt->year);
         // }
         $project_no = 'PNO'.$unique_no. '-' .$dt->year;
-        // dd($bidrfq);
+        // dd($rfq,$wonproject->pluck('rfq_no'));
         // dd($wonproject,$rfq);
         return view('operationNew.createWon',compact('wonproject','bidrfq','client','vendor1','vendor','operation','purchase_order_no','project_no','country','notification','fieldteam','notificationCount','user','user1','user2','user3','operation_rfq','rfq'));
     }
@@ -145,7 +144,7 @@ class OperationNewController extends Controller
         if ($user->user_role === 'project_manager') {
             $operation->where('project_manager_name', $user->id); // Filter by project manager
         }
-    
+        
         // Apply additional filters (start date, end date, project number) if provided
         if (isset($data['startdate']) && $data['startdate'] !== '' && isset($data['enddate']) && $data['enddate'] !== '') {
             $operation->whereDate('created_at', '>=', $data['startdate'])
@@ -533,6 +532,7 @@ class OperationNewController extends Controller
         $user1=User::where('user_role','project_manager')->get();
         $user2=User::where('user_role','quality_analyst')->get();
         $user3 = Auth::user();
+        $user4=User::where('user_role','operation_head')->get();
         $operation=OperationNew::with('operationNewImage')->where('id',$id)->first();
         $client = Client::get();
         $wonproject = WonProject::where('rfq_no', $operation->rfq)->first();
@@ -542,7 +542,7 @@ class OperationNewController extends Controller
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
         $bidrfq = BidRfq::where('rfq_no', $bid)->first();
-        return view('operationNew.closeview',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3'));
+        return view('operationNew.closeview',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
     }
     
     public function removeImage(Request $req){
