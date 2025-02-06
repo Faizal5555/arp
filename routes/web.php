@@ -337,6 +337,8 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
     Route::get('/get-recruitment-data', 'App\Http\Controllers\dataCenterController@getRecruitmentData')->name('get.recruitment.data');
     Route::get('/get-recruitment', 'App\Http\Controllers\dataCenterController@getRecruitment')->name('get.recruitment');
     Route::get('/get-recruitment-list', 'App\Http\Controllers\dataCenterController@getRecruitmentList')->name('get.recruitment.list');
+    Route::get('/export-recruitment', 'App\Http\Controllers\dataCenterController@exportRecruitmentData')->name('export.recruitment');
+    
     Route::get('/get-global-managers', 'App\Http\Controllers\dataCenterController@getGlobalManagers')->name('get.global.managers');
     Route::get('Data/popinvite', 'App\Http\Controllers\dataCenterController@popinvite')->name('popinvite');
     Route::post('Data/popinvite1', 'App\Http\Controllers\dataCenterController@popinvite1')->name('popinvite1');
