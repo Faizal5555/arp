@@ -27,6 +27,12 @@
         </div>
     </div>
 
+    <div class="row d-flex justify content start">
+        <div class="col-md-2 mt-3">
+            <button class="btn btn-info" id="downloadXlsx">Download</button>
+        </div>
+    </div>
+
     <div class="row">
         @if(auth()->user()->user_type == 'admin' || (auth()->user()->user_type == 'global_manager'))
         <div class="col-md-12 mt-4">
@@ -35,8 +41,8 @@
             <table class="table table-bordered text-center" id="recruitmentTable">
                 <thead>
                     <tr>
-                        <th rowspan="2">Specialty</th>
-                        <th colspan="{{ count($countries) + 1 }}">Countries</th>
+                        <td rowspan="2">Specialty</td>
+                        <td colspan="{{ count($countries) + 1 }}">Countries</td>
                     </tr>
                     <tr id="countryHeaders">
                         <!-- Country headers will be dynamically populated -->
@@ -84,7 +90,7 @@
     z-index: 1; /* Ensure header stays above the table body */
 }
 
-    .table td:first-child, .table th:first-child {
+    .table td:first-child{
     position: sticky;
     left: 0;
     background-color: #fff; /* White background for the sticky column */
@@ -177,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     type: 'pie',
                     radius: '50%',
+                    center: ['50%', '60%'],
                     data: labels.map((label, index) => ({ name: label, value: counts[index] })),
                     emphasis: {
                         itemStyle: {
@@ -292,56 +299,100 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderTable(countries, specialities, data) {
-        const tableBody = document.getElementById('tableBody');
-        const countryHeaders = document.getElementById('countryHeaders');
+    const tableBody = document.getElementById('tableBody');
+    const countryHeaders = document.getElementById('countryHeaders');
 
-        // Clear existing table headers and rows
-        countryHeaders.innerHTML = '';
-        tableBody.innerHTML = '';
+    // Clear existing table headers and rows
+    countryHeaders.innerHTML = '';
+    tableBody.innerHTML = '';
 
-        // Populate country headers
+    // Populate country headers
+    countries.forEach(country => {
+        const th = document.createElement('th');
+        th.textContent = country;
+        countryHeaders.appendChild(th);
+    });
+
+    // Add "Total Count" header
+    const totalHeader = document.createElement('th');
+    totalHeader.textContent = "Total Count";
+    totalHeader.style.backgroundColor = "#f8f9fa"; // Light gray for distinction
+    countryHeaders.appendChild(totalHeader);
+
+    // Initialize country-wise total counts
+    let countryTotals = {};
+    countries.forEach(country => {
+        countryTotals[country] = 0;
+    });
+    let overallTotal = 0; // Grand total across all specialties
+
+    // Add rows for each specialty
+    specialities.forEach(speciality => {
+        const row = document.createElement('tr');
+
+        // Specialty name column
+        const specialityCell = document.createElement('td');
+        specialityCell.textContent = speciality;
+        row.appendChild(specialityCell);
+
+        // Country count columns
+        let total = 0;
         countries.forEach(country => {
-            const th = document.createElement('th');
-            th.textContent = country;
-            countryHeaders.appendChild(th);
+            const cell = document.createElement('td');
+            const count = data[speciality] && data[speciality][country] ? data[speciality][country] : 0;
+            cell.textContent = count === 0 ? '-' : count;
+            row.appendChild(cell);
+
+            // Add count to country total
+            countryTotals[country] += count;
+            total += count;
         });
 
-        // Add "Total Count" header
-        const totalHeader = document.createElement('th');
-        totalHeader.textContent = "Total Count";
-        totalHeader.style.backgroundColor = "#f8f9fa"; // Light gray for distinction
-        countryHeaders.appendChild(totalHeader);
+        // Total count column
+        const totalCell = document.createElement('td');
+        totalCell.textContent = total;
+        totalCell.style.fontWeight = "bold"; // Highlight total
+        totalCell.style.backgroundColor = "#e9ecef"; // Light gray for distinction
+        row.appendChild(totalCell);
 
-        // Add rows for each specialty
-        specialities.forEach(speciality => {
-            const row = document.createElement('tr');
-            
-            // Specialty name column
-            const specialityCell = document.createElement('td');
-            specialityCell.textContent = speciality;
-            row.appendChild(specialityCell);
+        // Add specialty row total to overall total
+        overallTotal += total;
 
-            // Country count columns
-            let total = 0;
-            countries.forEach(country => {
-                const cell = document.createElement('td');
-                const count = data[speciality] && data[speciality][country] ? data[speciality][country] : 0;
-                cell.textContent = count === 0 ? '-' : count; 
-                row.appendChild(cell);
-                total += count;
-            });
+        // Append row to the table body
+        tableBody.appendChild(row);
+    });
 
-            // Total count column
-            const totalCell = document.createElement('td');
-            totalCell.textContent = total;
-            totalCell.style.fontWeight = "bold"; // Highlight total
-            totalCell.style.backgroundColor = "#e9ecef"; // Light gray for distinction
-            row.appendChild(totalCell);
+    // Add last row for country-wise totals
+    const totalRow = document.createElement('tr');
+    const totalLabelCell = document.createElement('td');
+    totalLabelCell.textContent = "Total";
+    totalLabelCell.style.fontWeight = "bold";
+    totalLabelCell.style.backgroundColor = "#f1f1f1"; // Light gray for distinction
+    totalRow.appendChild(totalLabelCell);
 
-            // Append row to the table body
-            tableBody.appendChild(row);
-        });
-    }
+    // Add total for each country
+    countries.forEach(country => {
+        const cell = document.createElement('td');
+        cell.textContent = countryTotals[country] === 0 ? '-' : countryTotals[country];
+        cell.style.fontWeight = "bold";
+        cell.style.backgroundColor = "#f1f1f1";
+        totalRow.appendChild(cell);
+    });
+
+    // Add last column total in the total row
+    const overallTotalCell = document.createElement('td');
+    overallTotalCell.textContent = overallTotal;
+    overallTotalCell.style.fontWeight = "bold";
+    overallTotalCell.style.backgroundColor = "#d1d1d1"; // Distinct color
+    totalRow.appendChild(overallTotalCell);
+
+    // Append total row at the bottom of the table
+    tableBody.appendChild(totalRow);
+}
+
+    document.getElementById('downloadXlsx').addEventListener('click', function () {
+        window.location.href = "{{ route('export.recruitment') }}";
+    });
 });
 
 </script>

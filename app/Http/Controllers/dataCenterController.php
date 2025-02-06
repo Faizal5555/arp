@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Events\SendInviteMail;
 use App\Events\SendMail;
 use App\Events\SendDoctorMail;
@@ -2240,6 +2241,71 @@ public function userconsumerlistData(Request $request)
         ]);
     }
     
+
+    public function exportRecruitmentData(Request $request)
+    {
+        // Call getRecruitmentList to get data
+        $recruitmentListResponse = $this->getRecruitmentList($request);
+        $responseData = $recruitmentListResponse->getData(true);
+    
+        $countries = $responseData['countries'];
+        $specialities = $responseData['specialities'];
+        $formattedData = $responseData['data'];
+    
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Set Header Row
+        $headerRow = array_merge(["Specialty/Country"], $countries, ["Total Count"]);
+        $sheet->fromArray([$headerRow], NULL, 'A1');
+    
+        // Initialize country-wise total counts
+        $countryTotals = array_fill_keys($countries, 0);
+        $overallTotal = 0; // Grand total across all specialties
+    
+        // Populate Data
+        $rowIndex = 2;
+        foreach ($specialities as $speciality) {
+            $rowData = [$speciality];
+            $totalCount = 0;
+    
+            foreach ($countries as $country) {
+                $count = isset($formattedData[$speciality][$country]) ? $formattedData[$speciality][$country] : 0;
+                $rowData[] = $count > 0 ? $count : "-";
+                $countryTotals[$country] += $count;
+                $totalCount += $count;
+            }
+    
+            $rowData[] = $totalCount; // Add total count column
+            $sheet->fromArray([$rowData], NULL, "A$rowIndex");
+            $rowIndex++;
+    
+            // Add specialty row total to overall total
+            $overallTotal += $totalCount;
+        }
+    
+        // Add last row for country-wise totals
+        $totalRow = ["Total"];
+        foreach ($countries as $country) {
+            $totalRow[] = $countryTotals[$country] > 0 ? $countryTotals[$country] : "-";
+        }
+        $totalRow[] = $overallTotal; // Grand total across all countries
+    
+        // Append the total row to the sheet
+        $sheet->fromArray([$totalRow], NULL, "A$rowIndex");
+    
+        // Generate the file for download
+        $writer = new Xlsx($spreadsheet);
+        $fileName = "recruitment_data.xlsx";
+    
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            "Content-Type" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Content-Disposition" => "attachment; filename=\"$fileName\"",
+        ]);
+    }
 
     
     
