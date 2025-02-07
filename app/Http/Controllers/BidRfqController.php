@@ -61,8 +61,15 @@ class BidRfqController extends Controller
        
         
         
-        $client = Client::get();
-        $vendor = Vendor::get();
+    if ($user->user_type == 'admin') {
+        // Admin sees all vendors and clients
+        $vendor = Vendor::all();
+        $client = Client::all();
+    } else {
+        // Sales users only see data linked to their user ID
+        $vendor = Vendor::where('user_id', $user->id)->get();
+        $client = Client::where('user_id', $user->id)->get();
+    }
         $country = Country::get();
         $user = Auth()->user();
         
