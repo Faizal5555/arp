@@ -276,7 +276,7 @@ $('#importForm').on('submit', function (e) {
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header header-elements-inline">
-                    <a class="ml-2 card-title">Client Data List</a>
+                    <a class="ml-2 card-title">Client Database</a>
                 </div>
                 @if (count($errors) > 0)
                 <div class="row">
