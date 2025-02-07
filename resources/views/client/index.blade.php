@@ -6,9 +6,7 @@
 }
 a.btn.btn-outline-secondary {
     float: right;
-    margin-bottom: 20
-px
-;
+    margin-bottom: 20px;
     border-color: #b66dff;
 }
 a.btn.btn-outline-secondary:hover {

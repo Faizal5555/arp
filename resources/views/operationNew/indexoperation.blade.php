@@ -166,7 +166,13 @@ input#po_no{
             {data:'country_name',name:'country_name'},
             // {data:'sample_target',name:'sample_target'},
             // {data:'sample_achieved',name:'sample_achieved'},
-            {data:'status',name:'status'},
+            { 
+            data: 'status', 
+            name: 'status',
+            render: function(data, type, row) {
+                return data === 'hold' ? 'live' : data; 
+            }
+        },
             {data:'',
                  render:(data,typr,row)=>{
                  return `<a href='/adminapp/operationNew/edit/${row.id}' class='mdi mdi-table-edit'></a>`     

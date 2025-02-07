@@ -997,8 +997,8 @@
                                 ?>
                                     <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                         <div class="form-group row">
-
-
+    
+    
                                             <div class="col-lg-6">
                                                 <div class="rfq-table">
                                                     <div class="btn-var"></div>
@@ -1024,9 +1024,14 @@
                                                                     </label>
                                                                 </td>
                                                                 <td></td>
-                                                            
+                                                                <td>
+                                                                    <button class="float-left ml-2 btn btn-success addvendor"
+                                                                        data-vendor="0" data-count="0" type="button">
+                                                                        Add table
+                                                                    </button>
+                                                                </td>
                                                             </tr>
-
+    
                                                             <!-- Client/Vendor Name -->
                                                             <tr>
                                                                 <td>
@@ -1069,7 +1074,7 @@
                                                                                         </select>
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <tr>
                                                                                     <td class="sub-cost">Methodology</td>
                                                                                     <td class="remove">
@@ -1080,12 +1085,12 @@
                                                                                     </td>
                                                                                     <td class="remove">
                                                                                         <input type="text" class="txtbol"
-                                                                                            value="{{ $methodology && $methodology[0] && count($methodology[0]) > 1 ? $methodology[0][1] : 0  }}"
+                                                                                            value="{{$methodology && $methodology[0] && count($methodology[0]) > 1 ? $methodology[0][1] : 0  }}"
                                                                                             name="methodology_0[0][]"
                                                                                             placeholder="Methodology">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Sample Size -->
                                                                                 <tr>
                                                                                     <td class="sub-cost">Sample Size</td>
@@ -1102,10 +1107,10 @@
                                                                                             placeholder="Sample Size">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Setup Cost -->
                                                                                 <tr>
-                                                                                    <td>Setup Cost</td>
+                                                                                    <td>Setup Cost/PM</td>
                                                                                     <td class="bidrfq-client" data-id="2">
                                                                                         <input type="text" class="txtCal"
                                                                                             value="{{ $setup_cost[0] && count($setup_cost[0]) > 0 ? $setup_cost[0][0] : 0  }}"
@@ -1119,7 +1124,7 @@
                                                                                             name="setup_cost_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Recruitment -->
                                                                                 <tr>
                                                                                     <td>Recruitment</td>
@@ -1136,7 +1141,7 @@
                                                                                             name="recruitment_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Incentives -->
                                                                                 <tr>
                                                                                     <td>Incentives</td>
@@ -1153,7 +1158,7 @@
                                                                                             name="incentives_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Moderation -->
                                                                                 <tr class="format-2">
                                                                                     <td>Moderation</td>
@@ -1170,7 +1175,7 @@
                                                                                             name="moderation_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Transcript -->
                                                                                 <tr class="format-2">
                                                                                     <td>Transcript</td>
@@ -1187,24 +1192,28 @@
                                                                                             name="transcript_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Others -->
                                                                                 <tr>
-                                                                                    <td>Others</td>
+                                                                                    <td>
+                                                                                        <input type="text" class="txtCal" attr="Others" value="{{ $others[0] && count($others[0]) > 0 ? $others[0][0] : 'Others' }}" attr="Others"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[0][]">
+                                                                                    </td>
                                                                                     <td class="bidrfq-client" data-id="2">
                                                                                         <input type="text" class="txtCal"
-                                                                                            value="{{ $others[0] && count($others[0]) > 0 ? $others[0][0] : 0  }}"
+                                                                                            value="{{ $others[0] && count($others[0]) > 1 ? $others[0][1] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
                                                                                     <td class="bidrfq-vendor" data-id="3">
                                                                                         <input type="text" class="txtbol"
-                                                                                            value="{{ $others[0] && count($others[0]) > 1 ? $others[0][1] : 0  }}"
+                                                                                            value="{{ $others[0] && count($others[0]) > 2 ? $others[0][2] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                                 <!-- Total Cost -->
                                                                                 <tr>
                                                                                     <td>Total Cost</td>
@@ -1225,7 +1234,7 @@
                                                                                             name="total_cost_0[0][]">
                                                                                     </td>
                                                                                 </tr>
-
+    
                                                                             </tbody>
                                                                         </table>
                                                                         <?php $j = 1; ?>
@@ -1274,7 +1283,7 @@
                                                                                         <td class="sub-cost">Methodology</td>
                                                                                         <td class="remove">
                                                                                             <input type="text"
-                                                                                                class="txtCal" value="{{ $methodology &&  $methodology[0] && count($methodology[0]) > $i ? $methodology[0][$i] : 0  }}"
+                                                                                                class="txtCal" value="{{  $methodology &&  $methodology[0] && count($methodology[0]) > $i ? $methodology[0][$i] : 0  }}"
                                                                                                 name="methodology_0[0][]"
                                                                                                 placeholder="Methodology">
                                                                                         </td>
@@ -1285,7 +1294,7 @@
                                                                                                 placeholder="Methodology">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Sample Size -->
                                                                                     <tr>
                                                                                         <td class="sub-cost">Sample Size</td>
@@ -1302,10 +1311,10 @@
                                                                                                 placeholder="Sample Size">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Setup Cost -->
                                                                                     <tr>
-                                                                                        <td>Setup Cost</td>
+                                                                                        <td>Setup Cost/PM</td>
                                                                                         <td class="bidrfq-client"
                                                                                             data-id="2">
                                                                                             <input type="text"
@@ -1321,7 +1330,7 @@
                                                                                                 name="setup_cost_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Recruitment -->
                                                                                     <tr>
                                                                                         <td>Recruitment</td>
@@ -1340,7 +1349,7 @@
                                                                                                 name="recruitment_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Incentives -->
                                                                                     <tr>
                                                                                         <td>Incentives</td>
@@ -1359,7 +1368,7 @@
                                                                                                 name="incentives_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Moderation -->
                                                                                     <tr class="format-2">
                                                                                         <td>Moderation</td>
@@ -1378,7 +1387,7 @@
                                                                                                 name="moderation_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Transcript -->
                                                                                     <tr class="format-2">
                                                                                         <td>Transcript</td>
@@ -1397,26 +1406,31 @@
                                                                                                 name="transcript_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Others -->
                                                                                     <tr>
-                                                                                        <td>Others</td>
+                                                                                        <td>
+                                                                                            <input type="text" 
+                                                                                                class="txtCal" attr="Others" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 'Others'  }}"
+                                                                                                placeholder="Others"
+                                                                                                name="others_0[0][]">
+                                                                                        </td>
                                                                                         <td class="bidrfq-client"
                                                                                             data-id="2">
                                                                                             <input type="text"
-                                                                                                class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                                class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 2 ? $others[0][$i + 2] : 0  }}"
                                                                                                 placeholder="Others"
                                                                                                 name="others_0[0][]">
                                                                                         </td>
                                                                                         <td class="bidrfq-vendor"
                                                                                             data-id="3">
                                                                                             <input type="text"
-                                                                                                class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                                class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 3 ? $others[0][$i + 3] : 0  }}"
                                                                                                 placeholder="Others"
                                                                                                 name="others_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Total Cost -->
                                                                                     <tr>
                                                                                         <td>Total Cost</td>
@@ -1437,7 +1451,7 @@
                                                                                                 name="total_cost_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                 </tbody>
                                                                             </table>
                                                                             <?php $i += 2 ?>
@@ -1494,7 +1508,7 @@
                                                                                                 placeholder="Methodology">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Sample Size -->
                                                                                     <tr>
                                                                                         <td class="sub-cost">Sample Size</td>
@@ -1511,10 +1525,10 @@
                                                                                                 placeholder="Sample Size">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Setup Cost -->
                                                                                     <tr>
-                                                                                        <td>Setup Cost</td>
+                                                                                        <td>Setup Cost/PM</td>
                                                                                         <td class="bidrfq-client"
                                                                                             data-id="2">
                                                                                             <input type="text"
@@ -1530,7 +1544,7 @@
                                                                                                 name="setup_cost_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Recruitment -->
                                                                                     <tr>
                                                                                         <td>Recruitment</td>
@@ -1549,7 +1563,7 @@
                                                                                                 name="recruitment_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Incentives -->
                                                                                     <tr>
                                                                                         <td>Incentives</td>
@@ -1568,7 +1582,7 @@
                                                                                                 name="incentives_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Moderation -->
                                                                                     <tr class="format-2">
                                                                                         <td>Moderation</td>
@@ -1587,7 +1601,7 @@
                                                                                                 name="moderation_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Transcript -->
                                                                                     <tr class="format-2">
                                                                                         <td>Transcript</td>
@@ -1606,26 +1620,31 @@
                                                                                                 name="transcript_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Others -->
                                                                                     <tr>
-                                                                                        <td>Others</td>
+                                                                                        <td>
+                                                                                            <input type="text" attr="Others"
+                                                                                                class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 2 ? $others[0][$i + 2] : "Other"  }}"
+                                                                                                placeholder="Others"
+                                                                                                name="others_0[0][]">
+                                                                                        </td>
                                                                                         <td class="bidrfq-client"
                                                                                             data-id="2">
                                                                                             <input type="text"
-                                                                                                class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                                class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 3 ? $others[0][$i + 3] : 0  }}"
                                                                                                 placeholder="Others"
                                                                                                 name="others_0[0][]">
                                                                                         </td>
                                                                                         <td class="bidrfq-vendor"
                                                                                             data-id="3">
                                                                                             <input type="text"
-                                                                                                class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                                class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 4 ? $others[0][$i + 4] : 0  }}"
                                                                                                 placeholder="Others"
                                                                                                 name="others_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                     <!-- Total Cost -->
                                                                                     <tr>
                                                                                         <td>Total Cost</td>
@@ -1646,22 +1665,35 @@
                                                                                                 name="total_cost_0[0][]">
                                                                                         </td>
                                                                                     </tr>
-
+    
                                                                                 </tbody>
-                                                                            </table>
+                                                                            </table><button
+                                                                                class="p-2 ml-2 btn btn-danger removetable"
+                                                                                type="button">
+                                                                                <svg class="svg-inline--fa fa-xmark"
+                                                                                    aria-hidden="true" focusable="false"
+                                                                                    data-prefix="fa-solid" data-icon="xmark"
+                                                                                    role="img"
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    viewBox="0 0 320 512" data-fa-i2svg="">
+                                                                                    <path fill="currentColor"
+                                                                                        d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z">
+                                                                                    </path>
+                                                                                </svg><!-- <i class="fa-solid fa-xmark"></i> Font Awesome fontawesome.com -->
+                                                                            </button>
                                                                         </div>
                                                                         @endfor
                                                                         @endif
                                                                     </div>
                                                                 </td>
                                                             </tr>
-
+    
                                                         </table>
                                                         @endif
                                                         @if(count($world) > 1)
                                                         @foreach($world as $key => $value)
                                                         @if($key > 0)
-
+    
                                                         <div class="country-wrapper" data-by="1">
                                                             <div class="btn-var"></div>
                                                             <div class=" d-flex">
@@ -1684,12 +1716,35 @@
                                                                                 </select>
                                                                                 </label>
                                                                             </td>
-                                                                            
+                                                                            <td>
+                                                                                <button class="ml-2 btn btn-success addvendor"
+                                                                                    data-vendor="1" data-count="{{ $key }}"
+                                                                                    type="button">
+                                                                                    Add table
+                                                                                </button>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button
+                                                                                    class="ml-2 btn btn-danger removecountry"
+                                                                                    type="button">
+                                                                                    <svg class="svg-inline--fa fa-xmark"
+                                                                                        aria-hidden="true" focusable="false"
+                                                                                        data-prefix="fa-solid"
+                                                                                        data-icon="xmark" role="img"
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                        viewBox="0 0 320 512"
+                                                                                        data-fa-i2svg="">
+                                                                                        <path fill="currentColor"
+                                                                                            d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z">
+                                                                                        </path>
+                                                                                    </svg><!-- <i class="fa-solid fa-xmark"></i> Font Awesome fontawesome.com -->
+                                                                                </button>
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td colspan="3">
                                                                                 <div
-                                                                                    class="nested-table-group nested-table-group-1 d-flex flex-nowrap">
+                                                                                    class="nested-table-group nested-table-group-{{$key}} d-flex flex-nowrap">
                                                                                     <table class="sub-table">
                                                                                         <tbody class="sub-body_1">
                                                                                             <tr class="first-row">
@@ -1758,7 +1813,7 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Setup Cost</td>
+                                                                                                <td>Setup Cost/PM</td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
@@ -1845,18 +1900,25 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Others</td>
+                                                                                                <td>
+                                                                                                    <input
+                                                                                                        type="text"
+                                                                                                        class="txtCal" attr="Others"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > 0 ? $others[$key][0] : "Others"  }}"
+                                                                                                        placeholder="Others"
+                                                                                                        name="others_0[{{ $key }}][]">
+                                                                                                </td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
                                                                                                         class="txtCal"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > 0 ? $others[$key][0] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > 1 ? $others[$key][1] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>
                                                                                                 <td><input type="text"
                                                                                                         class="txtbol"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > 1 ? $others[$key][1] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > 2 ? $others[$key][2] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>
@@ -1883,7 +1945,7 @@
                                                                                         $j = 1; 
                                                                                     ?>
                                                                                     @if(count($total_cost[$key])>2)
-
+    
                                                                                     @for($i = 2; $i < count($total_cost[$key]); $i+=2 )
                                                                                     <div class="table-group d-flex" >
                                                                                         <table class="sub-table"
@@ -1956,7 +2018,7 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td>Setup Cost</td>
+                                                                                                    <td>Setup Cost/PM</td>
                                                                                                     <td class="bidrfq-client"
                                                                                                         data-id="3"><input
                                                                                                             type="text"
@@ -2043,18 +2105,25 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td>Others</td>
+                                                                                                    <td>
+                                                                                                        <input
+                                                                                                            type="text"
+                                                                                                            class="txtCal" attr="Others"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 'Others'  }}"
+                                                                                                            placeholder="Others"
+                                                                                                            name="others_0[{{ $key }}][]">
+                                                                                                    </td>
                                                                                                     <td class="bidrfq-client"
                                                                                                         data-id="3"><input
                                                                                                             type="text"
                                                                                                             class="txtCal"
-                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 2 ? $others[$key][$i + 2] : 0  }}"
                                                                                                             placeholder="Others"
                                                                                                             name="others_0[{{ $key }}][]">
                                                                                                     </td>
                                                                                                     <td><input type="text"
                                                                                                             class="txtbol"
-                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 3 ? $others[$key][$i + 3] : 0  }}"
                                                                                                             placeholder="Others"
                                                                                                             name="others_0[{{ $key }}][]">
                                                                                                     </td>
@@ -2148,7 +2217,7 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td>Setup Cost</td>
+                                                                                                    <td>Setup Cost/PM</td>
                                                                                                     <td class="bidrfq-client"
                                                                                                         data-id="3"><input
                                                                                                             type="text"
@@ -2235,18 +2304,25 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                                 <tr>
-                                                                                                    <td>Others</td>
+                                                                                                    <td>
+                                                                                                        <input
+                                                                                                            type="text"
+                                                                                                            class="txtCal" attr="Others"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 2 ? $others[$key][$i + 2] : 'Others'  }}"
+                                                                                                            placeholder="Others"
+                                                                                                            name="others_0[{{ $key }}][]">
+                                                                                                    </td>
                                                                                                     <td class="bidrfq-client"
                                                                                                         data-id="3"><input
                                                                                                             type="text"
                                                                                                             class="txtCal"
-                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 3 ? $others[$key][$i + 3] : 0  }}"
                                                                                                             placeholder="Others"
                                                                                                             name="others_0[{{ $key }}][]">
                                                                                                     </td>
                                                                                                     <td><input type="text"
                                                                                                             class="txtbol"
-                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                            value="{{ $others[$key] && count($others[$key]) > $i + 4 ? $others[$key][$i + 4] : 0  }}"
                                                                                                             placeholder="Others"
                                                                                                             name="others_0[{{ $key }}][]">
                                                                                                     </td>
@@ -2268,7 +2344,23 @@
                                                                                                     </td>
                                                                                                 </tr>
                                                                                             </tbody>
-                                                                                        </table>
+                                                                                        </table><button
+                                                                                            class="p-2 ml-2 btn btn-danger removetable"
+                                                                                            type="button">
+                                                                                            <svg class="svg-inline--fa fa-xmark"
+                                                                                                aria-hidden="true"
+                                                                                                focusable="false"
+                                                                                                data-prefix="fa-solid"
+                                                                                                data-icon="xmark"
+                                                                                                role="img"
+                                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                                viewBox="0 0 320 512"
+                                                                                                data-fa-i2svg="">
+                                                                                                <path fill="currentColor"
+                                                                                                    d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z">
+                                                                                                </path>
+                                                                                            </svg><!-- <i class="fa-solid fa-xmark"></i> Font Awesome fontawesome.com -->
+                                                                                        </button>
                                                                                     </div>
                                                                                     @endfor
                                                                                     @endif

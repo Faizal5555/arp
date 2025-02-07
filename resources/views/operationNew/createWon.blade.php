@@ -235,7 +235,7 @@
                                                 @foreach ($wonproject as $value)
                                                 @if ((auth()->user()->user_type == "admin" || auth()->user()->user_type == "operation_head") && !in_array($value->rfq_no, $rfq))
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
-                                                    @elseif (auth()->user()->user_role == "project_manager" )
+                                                    @elseif (auth()->user()->user_role == "project_manager")
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
                                                     @endif
                                                 @endforeach
@@ -1715,14 +1715,18 @@
 
                                                                             <!-- Others -->
                                                                             <tr>
-                                                                                <td>Others</td>
+                                                                                <td>
+                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > 0 ? others[key][0] : 'Others' }"
+                                                                                        placeholder="Others"
+                                                                                        name="others_0[${key}][]">
+                                                                                </td>
                                                                                 <td class="bidrfq-client" data-id="2">
-                                                                                    <input type="text" class="txtCal" value="${others[key] && others[key].length > 0 ? others[key][0] : 0 }"
+                                                                                    <input type="text" class="txtCal" value="${others[key] && others[key].length > 1 ? others[key][1] : 0 }"
                                                                                         placeholder="Others"
                                                                                         name="others_0[${key}][]">
                                                                                 </td>
                                                                                 <td class="bidrfq-vendor" data-id="3">
-                                                                                    <input type="text" class="txtbol" value="${others[key] && others[key].length > 1 ? others[key][1] : 0 }"
+                                                                                    <input type="text" class="txtbol" value="${others[key] && others[key].length > 2 ? others[key][2] : 0 }"
                                                                                         placeholder="Others"
                                                                                         name="others_0[${key}][]">
                                                                                 </td>
@@ -1884,14 +1888,18 @@
 
                                                                                         <!-- Others -->
                                                                                         <tr>
-                                                                                            <td>Others</td>
+                                                                                            <td>
+                                                                                            <input type="text" class="txtCal" value="${others[key] && others[key].length > i + 1 ? others[key][i + 1] : 'Others' }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">    
+                                                                                            </td>
                                                                                             <td class="bidrfq-client" data-id="2">
-                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i ? others[key][i] : 0 }"
+                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i + 2 ? others[key][i + 2] : 0 }"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[${key}][]">
                                                                                             </td>
                                                                                             <td class="bidrfq-vendor" data-id="3">
-                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i+1 ? others[key][i+1] : 0 }"
+                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i + 3 ? others[key][i + 3] : 0 }"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[${key}][]">
                                                                                             </td>
@@ -2049,14 +2057,18 @@
 
                                                                                         <!-- Others -->
                                                                                         <tr>
-                                                                                            <td>Others</td>
+                                                                                            <td>
+                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i + 2 ? others[key][i + 2] : 0 }"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[${key}][]">    
+                                                                                            </td>
                                                                                             <td class="bidrfq-client" data-id="2">
-                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i ? others[key][i] : 0 }"
+                                                                                                <input type="text" class="txtCal" value="${others[key] && others[key].length > i + 3 ? others[key][i + 3] : 0 }"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[${key}][]">
                                                                                             </td>
                                                                                             <td class="bidrfq-vendor" data-id="3">
-                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i+1 ? others[key][i+1] : 0 }"
+                                                                                                <input type="text" class="txtbol" value="${others[key] && others[key].length > i+4 ? others[key][i+4] : 0 }"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[${key}][]">
                                                                                             </td>

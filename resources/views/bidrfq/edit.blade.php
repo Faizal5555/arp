@@ -327,7 +327,15 @@
                         }
                         if($(this).attr('type') == "text")
                         {
-                            $(this).val(0);
+                            if($(this).attr('type') == "text")
+                            {
+                                if($(this).attr('attr') == "Others")
+                                {
+                                    $(this).val("Others")   
+                                }else{
+                                    $(this).val(0);
+                                }
+                            }
                         }else{
 
                             $(this).val('');
@@ -510,7 +518,7 @@
                                                     <td><input type="text" class="txtbol" value="0" name="sample_size_0[${d}][]" placeholder="Sample Size"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Setup Cost</td>
+                                                    <td>Setup Cost/PM</td>
                                                     <td class="bidrfq-client" data-id="${o}"><input type="text" class='txtCal' value="0" placeholder="Setup Cost" name="setup_cost_0[${d}][]"></td>
                                                     <td class="bidrfq-client" data-id="${o + 1}"><input type="text" class="txtbol" value="0" placeholder="Setup Cost" name="setup_cost_0[${d}][]"></td>
                                                 </tr>
@@ -535,7 +543,11 @@
                                                     <td><input type="text" class="txtbol" value="0" placeholder="Transcript" name="transcript_0[${d}][]"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Others</td>
+                                                    <td>
+                                                        <input type="text" class="txtCal" value="Others" attr="Others"
+                                                        placeholder="Others"
+                                                        name="others_0[${d}][]">    
+                                                    </td>
                                                     <td class="bidrfq-client" data-id="${o}"><input type="text" class='txtCal' value="0" placeholder="Others" name="others_0[${d}][]"></td>
                                                     <td><input type="text" class="txtbol" value="0" placeholder="Others" name="others_0[${d}][]"></td>
                                                 </tr>
@@ -1020,7 +1032,7 @@
 
                                                                             <!-- Setup Cost -->
                                                                             <tr>
-                                                                                <td>Setup Cost</td>
+                                                                                <td>Setup Cost/PM</td>
                                                                                 <td class="bidrfq-client" data-id="2">
                                                                                     <input type="text" class="txtCal"
                                                                                         value="{{ $setup_cost[0] && count($setup_cost[0]) > 0 ? $setup_cost[0][0] : 0  }}"
@@ -1105,16 +1117,20 @@
 
                                                                             <!-- Others -->
                                                                             <tr>
-                                                                                <td>Others</td>
+                                                                                <td>
+                                                                                    <input type="text" class="txtCal" attr="Others" value="{{ $others[0] && count($others[0]) > 0 ? $others[0][0] : 'Others' }}" attr="Others"
+                                                                                    placeholder="Others"
+                                                                                    name="others_0[0][]">
+                                                                                </td>
                                                                                 <td class="bidrfq-client" data-id="2">
                                                                                     <input type="text" class="txtCal"
-                                                                                        value="{{ $others[0] && count($others[0]) > 0 ? $others[0][0] : 0  }}"
+                                                                                        value="{{ $others[0] && count($others[0]) > 1 ? $others[0][1] : 0  }}"
                                                                                         placeholder="Others"
                                                                                         name="others_0[0][]">
                                                                                 </td>
                                                                                 <td class="bidrfq-vendor" data-id="3">
                                                                                     <input type="text" class="txtbol"
-                                                                                        value="{{ $others[0] && count($others[0]) > 1 ? $others[0][1] : 0  }}"
+                                                                                        value="{{ $others[0] && count($others[0]) > 2 ? $others[0][2] : 0  }}"
                                                                                         placeholder="Others"
                                                                                         name="others_0[0][]">
                                                                                 </td>
@@ -1220,7 +1236,7 @@
 
                                                                                 <!-- Setup Cost -->
                                                                                 <tr>
-                                                                                    <td>Setup Cost</td>
+                                                                                    <td>Setup Cost/PM</td>
                                                                                     <td class="bidrfq-client"
                                                                                         data-id="2">
                                                                                         <input type="text"
@@ -1315,18 +1331,23 @@
 
                                                                                 <!-- Others -->
                                                                                 <tr>
-                                                                                    <td>Others</td>
+                                                                                    <td>
+                                                                                        <input type="text" 
+                                                                                            class="txtCal" attr="Others" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 'Others'  }}"
+                                                                                            placeholder="Others"
+                                                                                            name="others_0[0][]">
+                                                                                    </td>
                                                                                     <td class="bidrfq-client"
                                                                                         data-id="2">
                                                                                         <input type="text"
-                                                                                            class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                            class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 2 ? $others[0][$i + 2] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
                                                                                     <td class="bidrfq-vendor"
                                                                                         data-id="3">
                                                                                         <input type="text"
-                                                                                            class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                            class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 3 ? $others[0][$i + 3] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
@@ -1429,7 +1450,7 @@
 
                                                                                 <!-- Setup Cost -->
                                                                                 <tr>
-                                                                                    <td>Setup Cost</td>
+                                                                                    <td>Setup Cost/PM</td>
                                                                                     <td class="bidrfq-client"
                                                                                         data-id="2">
                                                                                         <input type="text"
@@ -1524,18 +1545,23 @@
 
                                                                                 <!-- Others -->
                                                                                 <tr>
-                                                                                    <td>Others</td>
+                                                                                    <td>
+                                                                                        <input type="text" attr="Others"
+                                                                                            class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 2 ? $others[0][$i + 2] : "Other"  }}"
+                                                                                            placeholder="Others"
+                                                                                            name="others_0[0][]">
+                                                                                    </td>
                                                                                     <td class="bidrfq-client"
                                                                                         data-id="2">
                                                                                         <input type="text"
-                                                                                            class="txtCal" value="{{ $others[0] && count($others[0]) > $i ? $others[0][$i] : 0  }}"
+                                                                                            class="txtCal" value="{{ $others[0] && count($others[0]) > $i + 3 ? $others[0][$i + 3] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
                                                                                     <td class="bidrfq-vendor"
                                                                                         data-id="3">
                                                                                         <input type="text"
-                                                                                            class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 1 ? $others[0][$i + 1] : 0  }}"
+                                                                                            class="txtbol" value="{{ $others[0] && count($others[0]) > $i + 4 ? $others[0][$i + 4] : 0  }}"
                                                                                             placeholder="Others"
                                                                                             name="others_0[0][]">
                                                                                     </td>
@@ -1640,7 +1666,7 @@
                                                                     <tr>
                                                                         <td colspan="3">
                                                                             <div
-                                                                                class="nested-table-group nested-table-group-1 d-flex flex-nowrap">
+                                                                                class="nested-table-group nested-table-group-{{$key}} d-flex flex-nowrap">
                                                                                 <table class="sub-table">
                                                                                     <tbody class="sub-body_1">
                                                                                         <tr class="first-row">
@@ -1709,7 +1735,7 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td>Setup Cost</td>
+                                                                                            <td>Setup Cost/PM</td>
                                                                                             <td class="bidrfq-client"
                                                                                                 data-id="3"><input
                                                                                                     type="text"
@@ -1796,18 +1822,25 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td>Others</td>
+                                                                                            <td>
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    class="txtCal" attr="Others"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > 0 ? $others[$key][0] : "Others"  }}"
+                                                                                                    placeholder="Others"
+                                                                                                    name="others_0[{{ $key }}][]">
+                                                                                            </td>
                                                                                             <td class="bidrfq-client"
                                                                                                 data-id="3"><input
                                                                                                     type="text"
                                                                                                     class="txtCal"
-                                                                                                    value="{{ $others[$key] && count($others[$key]) > 0 ? $others[$key][0] : 0  }}"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > 1 ? $others[$key][1] : 0  }}"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[{{ $key }}][]">
                                                                                             </td>
                                                                                             <td><input type="text"
                                                                                                     class="txtbol"
-                                                                                                    value="{{ $others[$key] && count($others[$key]) > 1 ? $others[$key][1] : 0  }}"
+                                                                                                    value="{{ $others[$key] && count($others[$key]) > 2 ? $others[$key][2] : 0  }}"
                                                                                                     placeholder="Others"
                                                                                                     name="others_0[{{ $key }}][]">
                                                                                             </td>
@@ -1907,7 +1940,7 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Setup Cost</td>
+                                                                                                <td>Setup Cost/PM</td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
@@ -1994,18 +2027,25 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Others</td>
+                                                                                                <td>
+                                                                                                    <input
+                                                                                                        type="text"
+                                                                                                        class="txtCal" attr="Others"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 'Others'  }}"
+                                                                                                        placeholder="Others"
+                                                                                                        name="others_0[{{ $key }}][]">
+                                                                                                </td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
                                                                                                         class="txtCal"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 2 ? $others[$key][$i + 2] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>
                                                                                                 <td><input type="text"
                                                                                                         class="txtbol"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 3 ? $others[$key][$i + 3] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>
@@ -2099,7 +2139,7 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Setup Cost</td>
+                                                                                                <td>Setup Cost/PM</td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
@@ -2186,18 +2226,25 @@
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
-                                                                                                <td>Others</td>
+                                                                                                <td>
+                                                                                                    <input
+                                                                                                        type="text"
+                                                                                                        class="txtCal" attr="Others"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 2 ? $others[$key][$i + 2] : 'Others'  }}"
+                                                                                                        placeholder="Others"
+                                                                                                        name="others_0[{{ $key }}][]">
+                                                                                                </td>
                                                                                                 <td class="bidrfq-client"
                                                                                                     data-id="3"><input
                                                                                                         type="text"
                                                                                                         class="txtCal"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i ? $others[$key][$i] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 3 ? $others[$key][$i + 3] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>
                                                                                                 <td><input type="text"
                                                                                                         class="txtbol"
-                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 1 ? $others[$key][$i + 1] : 0  }}"
+                                                                                                        value="{{ $others[$key] && count($others[$key]) > $i + 4 ? $others[$key][$i + 4] : 0  }}"
                                                                                                         placeholder="Others"
                                                                                                         name="others_0[{{ $key }}][]">
                                                                                                 </td>

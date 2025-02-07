@@ -94,6 +94,16 @@ Route::get('/client/export', 'App\Http\Controllers\ClientController@export')->na
 Route::get('/client/import', 'App\Http\Controllers\ClientController@importview');
 Route::post('/client/import', 'App\Http\Controllers\ClientController@import')->name('client.import');
 Route::get('/client/import1', 'App\Http\Controllers\ClientController@downloadclientSampleFile')->name('client.sample');
+
+Route::get('/client/data', 'App\Http\Controllers\ClientController@clientdata')->name('client.data');
+Route::get('/client/sample-download', 'App\Http\Controllers\ClientController@generateClientdataSampleFile')->name('clientdata.downloadSample');
+Route::get('/clientdata/fetch', 'App\Http\Controllers\ClientController@fetchClientData')->name('clientdata.fetch');
+Route::post('/clientdata/update', 'App\Http\Controllers\ClientController@updateClientDetails')->name('clientdata.update');
+Route::post('/clientdata/import', 'App\Http\Controllers\ClientController@clientdataimport')->name('clientdata.import');
+Route::get('/clientdata/details/{id}', 'App\Http\Controllers\ClientController@getClientDetails')->name('clientdata.details');
+Route::get('/clientdata/filters', 'App\Http\Controllers\ClientController@clientdataindex')->name('clientdata.index');
+Route::post('/clientdata/filter', 'App\Http\Controllers\ClientController@filterClientData')->name('clientdata.filter');
+
 //vendor
 
 Route::get('/vendor/index', 'App\Http\Controllers\VendorController@index')->name('vendor.index');

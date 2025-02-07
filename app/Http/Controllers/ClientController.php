@@ -12,9 +12,12 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Exports\ClientExport;
 use App\Imports\ClientImport;
+use App\Imports\ClientDataImport;
+use DB;
 use Auth;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\ValidationException;
+use App\Models\ClientData;
 
 class ClientController extends Controller
 {
@@ -43,7 +46,7 @@ class ClientController extends Controller
              $client=Client::where('user_id',$userId)->latest();
             
        
-        // dd($client);
+        //dd($client);
       
         if ($request->ajax()) {
 
@@ -329,6 +332,151 @@ public function downloadclientSampleFile()
     return response()->download($filePath)->deleteFileAfterSend(false);
 }
 
+    public function clientdata(Request $request)
+    {
+        return view('client.data');
+    }
+
+
+    public function fetchClientData()
+    {
+        $user = Auth::user();
+        $query = ($user->user_type == 'admin') 
+        ? ClientData::query() 
+        : ClientData::where('user_id', $user->id);
+
+    return Datatables::of($query->orderBy('id', 'desc'))->make(true);
+    }
+
+    public function getClientDetails($id)
+    {
+    $client = ClientData::findOrFail($id);
+    return response()->json($client);
+    }
+
+    public function updateClientDetails(Request $request)
+    {
+    $client = ClientData::findOrFail($request->client_id);
+    $client->update([
+        'comments' => $request->comments,
+        'followup_date' => $request->followup_date,
+    ]);
+    return response()->json(['message' => 'Updated Successfully']);
+    }
+
+
+    public function generateClientdataSampleFile()
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Define headers
+    $headers = [
+        'A1' => 'sr_no',
+        'B1' => 'company_name',
+        'C1' => 'client_firstname',
+        'D1' => 'client_lastname',
+        'E1' => 'title',
+        'F1' => 'linkedin_id',
+        'G1' => 'client_country',
+        'H1' => 'phone_number',
+        'I1' => 'email_address',
+        // 'J1' => 'comments',
+        // 'K1' => 'followup_date'
+    ];
+
+    // Apply headers to the first row
+    foreach ($headers as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // Add sample data
+    $sampleData = [
+        [1, 'Tech Solutions Ltd', 'John', 'Doe', 'Manager', 'https://linkedin.com/johndoe', 'USA', '1234567890', 'johndoe@example.com'],
+        [2, 'Global Corp', 'Jane', 'Smith', 'CEO', 'https://linkedin.com/janesmith', 'UK', '9876543210', 'janesmith@example.com'],
+    ];
+
+    // Populate sample rows
+    $rowIndex = 2;
+    foreach ($sampleData as $row) {
+        $colIndex = 'A';
+        foreach ($row as $cellValue) {
+            $sheet->setCellValue($colIndex . $rowIndex, $cellValue);
+            $colIndex++;
+        }
+        $rowIndex++;
+    }
+
+    // Define file path
+    $fileName = 'client-sample-file.xlsx';
+    $filePath = public_path("assets/$fileName");
+
+    // Save Excel file
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+
+    // Return file for download
+    return response()->download($filePath)->deleteFileAfterSend(false);
+}
+
+public function  clientdataimport(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
+    ]);
+
+    DB::beginTransaction();
+    try {
+        Excel::import(new ClientDataImport, $request->file('file'));
+        DB::commit();
+        return redirect()->back()->with('success', 'Clients imported successfully!');
+    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        DB::rollback();
+        $failures = $e->failures();
+        $validationErrors = [];
+
+        foreach ($failures as $failure) {
+            $row = $failure->row();
+            $attribute = $failure->attribute();
+            $errors = $failure->errors();
+            foreach ($errors as $error) {
+                $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
+            }
+        }
+
+        return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
+    } catch (\Exception $e) {
+        DB::rollback();
+        return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+    }
+}
+
+
+        public function clientdataindex()
+        {
+            return view('client.clientdata');
+        }
+
+        public function filterClientData(Request $request)
+        {   
+        
+            $query = ClientData::query();
+
+            // Check if a date range is provided
+            if (!empty($request->date_range)) {
+                $dates = explode(' to ', $request->date_range);
+                $startDate = $dates[0];
+                $endDate = $dates[1];
+        
+                // Filter records based on Follow-up Date
+                $query->whereBetween('followup_date', [$startDate, $endDate]);
+            } else {
+                // If no date is selected, return empty records
+                $query->whereNull('id');
+            }
+        
+            return DataTables::of($query)->make(true);
+        }
 
 
 }

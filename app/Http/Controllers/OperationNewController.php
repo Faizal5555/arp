@@ -925,13 +925,16 @@ class OperationNewController extends Controller
         if($request->ajax()){
             return Datatables::of($operation->get())
              ->addIndexColumn()
-             ->addColumn('action', function($row){
-   
+             ->addColumn('action', function ($row) use ($user) {
+                if ($user->user_type == 'admin') {
+                    return "<a href='/adminapp/operationNew/close/edit/{$row->id}'><i class='fas fa-eye'></i></a>";
+                }
+                return '';
             })
             ->rawColumns(['action'])
-             ->make(true);
+            ->make(true);
         }
-        return view('operationNew.closedproject',compact('operation'));
+        return view('operationNew.closedproject',compact('operation'))->with('user_type', $user->user_type);
     }
     public function fieldclose(Request $request){
         $id=Auth::user()->id;

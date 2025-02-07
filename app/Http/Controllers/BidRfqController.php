@@ -24,7 +24,17 @@ class BidRfqController extends Controller
       
         
         $data = $request->all();
-        $bidRfq = BidRfq::where('type','next')->latest();
+       $bidRfqQuery = BidRfq::where('type', 'next'); // Base query
+
+        $user = Auth::user(); // Get authenticated user
+
+        if ($user->user_type == 'sales') {
+            // Sales users see only their assigned BidRfq data
+            $bidRfqQuery->where('user_id', $user->id);
+        }
+
+        // Fetch latest records
+        $bidRfq = $bidRfqQuery->latest();
         if(isset($data['rfq_no']) && $data['rfq_no']!=''){
             $bidRfq->where('rfq_no','like','%'.$data['rfq_no'].'%');
             
@@ -107,12 +117,20 @@ class BidRfqController extends Controller
          * @return \Illuminate\Http\Response
          */
     public function create()
-    {
+    {   
+        $user = Auth::user(); 
         $bidrfq="";
         $bidrfq=[];
         $country = Country::get();
-        $vendor = Vendor::get();
-        $client = Client::get();
+        if ($user->user_type == 'admin') {
+            // Admin sees all vendors and clients
+            $vendor = Vendor::all();
+            $client = Client::all();
+        } else {
+            // Sales users only see data linked to their user ID
+            $vendor = Vendor::where('user_id', $user->id)->get();
+            $client = Client::where('user_id', $user->id)->get();
+        }
         $unique_no = BidRfq::orderBy('id', 'DESC')->with('rfq_no','rfq_no')->pluck('id')->first();
         if($unique_no == null or $unique_no == ""){
             #If Table is Empty
@@ -263,9 +281,13 @@ class BidRfqController extends Controller
          for($i=0; $i<$req->bidrfqCount; $i++)
          {
              // dd( implode(',',$req->$a));
-             $bidrfq = new BidRfq();
-             
-             $bidrfq = BidRfq::where('id', $req->id)->first();
+             if($req->id && $req->id != "")
+             {
+                 $bidrfq = BidRfq::where('id', $req->id)->first();
+             }else{
+                 $bidrfq = new BidRfq();
+                 $bidrfq->user_id = auth()->user()->id;
+             }
              $rfqNo = $req->rfq_no;
              $rfq_no = str_replace('{"rfq_no":"', '', $rfqNo);
                 $rfq_no1 = str_replace('"}', '', $rfq_no);
@@ -312,7 +334,7 @@ class BidRfqController extends Controller
                 // $bidrfq->others = implode(',',$req->$others);
                 // $bidrfq->country = implode(',',$req->$country);
                 // $bidrfq->total_cost = implode(',',$req->$total_cost);
-                $bidrfq->user_id = auth()->user()->id;
+                // $bidrfq->user_id = auth()->user()->id;
 
                 $unique_no = BidRfq::orderBy('id', 'DESC')->with('rfq_no','rfq_no')->pluck('id')->first();
                 if($unique_no == null or $unique_no == ""){
@@ -504,7 +526,21 @@ class BidRfqController extends Controller
     public function lostProject(Request $request)
     {
        $data=$request->all();
-       $bidrfq=Bidrfq::where('type','lost')->latest();
+     
+
+       $user = Auth::user(); // Get authenticated user
+       
+       // Base query for fetching 'lost' type BidRfq records
+       $bidrfq = Bidrfq::where('type', 'lost')->latest();
+       
+       // Apply filtering for sales users
+       if ($user->user_type == 'sales') {
+           $bidrfq->where('user_id', $user->id);
+       }
+       
+       // Execute the query
+       $bidrfq = $bidrfq;
+       
        if(isset($data['rfq_no'])&& $data['rfq_no']!= ''){
         $bidrfq->where('rfq_no','like','%'.$data['rfq_no'].'%');
         }

@@ -368,7 +368,7 @@
                                                     <td><input type="text" class="txtbol" value="0" name="sample_size_0[${d}][]" placeholder="Sample Size"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Setup Cost</td>
+                                                    <td>Setup Cost/PM</td>
                                                     <td class="bidrfq-client" data-id="${o}"><input type="text" class='txtCal' value="0" placeholder="Setup Cost" name="setup_cost_0[${d}][]"></td>
                                                     <td class="bidrfq-client" data-id="${o + 1}"><input type="text" class="txtbol" value="0" placeholder="Setup Cost" name="setup_cost_0[${d}][]"></td>
                                                 </tr>
@@ -393,7 +393,11 @@
                                                     <td><input type="text" class="txtbol" value="0" placeholder="Transcript" name="transcript_0[${d}][]"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Others</td>
+                                                    <td>
+                                                        <input type="text" class="txtCal" value="Others" attr="Others"
+                                                        placeholder="Others"
+                                                        name="others_0[${d}][]">
+                                                    </td>
                                                     <td class="bidrfq-client" data-id="${o}"><input type="text" class='txtCal' value="0" placeholder="Others" name="others_0[${d}][]"></td>
                                                     <td><input type="text" class="txtbol" value="0" placeholder="Others" name="others_0[${d}][]"></td>
                                                 </tr>
@@ -443,7 +447,12 @@
                         }
                         if($(this).attr('type') == "text")
                         {
-                            $(this).val(0);
+                            if($(this).attr('attr') == "Others")
+                            {
+                                $(this).val("Others")   
+                            }else{
+                                $(this).val(0);
+                            }
                         }
                         $(this).val();
                     });
@@ -929,7 +938,7 @@
     
                                                                             <!-- Setup Cost -->
                                                                             <tr>
-                                                                                <td>Setup Cost</td>
+                                                                                <td>Setup Cost/PM</td>
                                                                                 <td class="bidrfq-client" data-id="2">
                                                                                     <input type="text" class="txtCal" value="0"
                                                                                         placeholder="Setup Cost"
@@ -1004,7 +1013,11 @@
     
                                                                             <!-- Others -->
                                                                             <tr>
-                                                                                <td>Others</td>
+                                                                                <td>
+                                                                                    <input type="text" class="txtCal" value="Others" attr="Others"
+                                                                                    placeholder="Others"
+                                                                                    name="others_0[0][]">
+                                                                                </td>
                                                                                 <td class="bidrfq-client" data-id="2">
                                                                                     <input type="text" class="txtCal" value="0"
                                                                                         placeholder="Others"

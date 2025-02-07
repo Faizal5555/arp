@@ -368,7 +368,27 @@ $(document).ready(function() {
        from =start.format('YYYY-MM-DD');
        to =end.format('YYYY-MM-DD');
        var rfq_no= $('#client_id').val();
-      $.ajax({
+
+      getFigures(from,to,rfq_no);
+      
+   
+
+    });
+
+    
+  });
+  $('#client_id').change(function(){
+    var daterange = $('#daterange_1').val().split('-');
+    
+    var from = moment(daterange[0].trim(), "MM/DD/YYYY").format("YYYY-MM-DD");
+    var to = moment(daterange[1].trim(), "MM/DD/YYYY").format("YYYY-MM-DD");
+    console.log(daterange[1])
+    var rfq_no= $('#client_id').val();
+    getFigures(from,to,rfq_no);
+  });
+  function getFigures(from,to,rfq_no)
+  {
+    $.ajax({
         url: "{{url('/adminapp/wonproject/viewsalesfigures_invoice')}}",
         type:'post',
         data:{
@@ -418,7 +438,6 @@ $(document).ready(function() {
           alert("no response");
         }
       });
-
       $.ajax({
         url: "{{url('/adminapp/wonproject/downdata')}}",
         type:'post',
@@ -467,12 +486,7 @@ $(document).ready(function() {
           alert("Failed");
         }
       });
-   
-
-    });
-
-    
-  });
+  }
 });
 
 

@@ -108,6 +108,9 @@ input#po_no{
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script>
+    var userType = @json($user_type);
+</script>
 <script type="text/javascript">
     // $(function(){
     //     $.ajaxSetup({
@@ -168,10 +171,14 @@ input#po_no{
             // {data:'sample_achieved',name:'sample_achieved'},
             // {data:'status',name:'status'},
             {data:'',
-                 render:(data,typr,row)=>{
-                 return `<a href='/adminapp/operationNew/close/edit/${row.id}'><i class="fas fa-eye"></a>`     
-                 }
-        }
+                render:(data,typr,row)=>{
+                    if (userType === 'admin') {
+                        return `<a href='/adminapp/operationNew/close/edit/${row.id}'><i class="fas fa-eye"></i></a>`;
+                    } 
+                    $('.action-td').addClass('d-none');
+                    return ''   
+                }
+            }
           ]
       });
       
@@ -248,7 +255,7 @@ input#po_no{
                                         <!--<th>sample_target </th>-->
                                         <!--<th>sample_achieved</th>-->
                                         <!--<th>Status</th>-->
-                                        <th>Action</th>
+                                        <th class="action-td">Action</th>
 
                                     </tr>
                                 </thead>

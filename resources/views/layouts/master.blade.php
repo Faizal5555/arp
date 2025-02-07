@@ -177,7 +177,7 @@ $user_id = auth()->id();
 
 ul.nav.flex-column.sub-menu1 li.nav-item .nav-link.active {
     background: linear-gradient(45deg,#4982c2,#4982c2);
-    margin: 10px -35px 10px -39px;
+    margin: 10px -35px 10px -13px;
     padding-left: 34px;
     color: #fff;
 
@@ -274,7 +274,7 @@ table tfoot th {
 }
 .sidebar .nav .nav-item
 {
-   padding-left: 0px;
+   padding-left: 10px;
 }
 select.form-control{
   color: #495057;
@@ -577,7 +577,9 @@ select.form-control{
 
                 <ul class="nav flex-column sub-menu1">
                     <div data-aos="fade-right">
-
+                  
+                  <li class="nav-item" > <a class="nav-link {{ (Route::is('client.data')) ? 'active' : '' }}"  href="{{route('client.data')}}">Client Database</a></li>
+                  <li class="nav-item" > <a class="nav-link {{ (Route::is('client.clientdata')) ? 'active' : '' }}"  href="{{route('clientdata.index')}}">Client FollowUp Date</a></li>
                   <li class="nav-item"> <a class="nav-link {{ (Route::is('client.index')) ? 'active' : '' }} {{ (Route::is('client.create')) ? 'active' : '' }} {{ (Route::is('client.edit')) ? 'active' : '' }}" href="{{route('client.index')}}">Client Management</a></li>
                   <li class="nav-item" > <a class="nav-link {{ (Route::is('vendor.index')) ? 'active' : '' }} {{ (Route::is('vendor.create')) ? 'active' : '' }} {{ (Route::is('vendor.edit')) ? 'active' : '' }}" href="{{route('vendor.index')}}">Vendor Management</a></li>
                   <li class="nav-item" > <a class="nav-link {{ (Route::is('bidrfq.create')) ? 'active' : '' }}"  href="{{route('bidrfq.create')}}">Create RFQ</a></li>

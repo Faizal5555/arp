@@ -179,7 +179,7 @@ select.form-control {
                         return `<div class="text-center">
                                     <div class="list-icons d-flex">
                                        
-                                        <p class="project_status mt-1 mr-1" data-id=${row.id}><i class="fa-solid fa-eye"></i></p>
+                                        <p class="project_status mt-1 mr-1" data-id=${row.rfq}><i class="fa-solid fa-eye"></i></p>
                                       
                                          
       

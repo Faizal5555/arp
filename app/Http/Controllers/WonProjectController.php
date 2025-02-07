@@ -17,6 +17,7 @@ use Auth;
 use Session;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class WonProjectController extends Controller
 {
 
@@ -25,7 +26,18 @@ class WonProjectController extends Controller
         
         $data=$request->all();
         
-        $wonproject=WonProject::latest();
+        $user = Auth::user(); // Get authenticated user
+
+        // Base query for fetching WonProject data
+        $wonproject = WonProject::latest();
+        
+        // Apply filtering for sales users
+        if ($user->user_type == 'sales') {
+            $wonproject->where('user_id', $user->id);
+        }
+        
+        // Execute the query
+        $wonproject = $wonproject;
         if(isset($data['rfq_no']) && $data['rfq_no']!=''){
             $wonproject->where('rfq_no','like','%'.$data['rfq_no'].'%');
 
@@ -305,7 +317,7 @@ class WonProjectController extends Controller
             { 
                 // dd($vendor_array_1);
                 $wonproject = WonProject::where('id', $req->id)->first();
-            $wonproject->user_id = $user->id;
+            // $wonproject->user_id = $user->id;
             $rfq=explode('_',$req->rfq_no);
             $rfq1=$rfq[0];
             $client_id=$rfq[1];
@@ -380,14 +392,21 @@ class WonProjectController extends Controller
     }
       public function viewsalesfigures(Request $request)
     {
-        $user = WonProject::get();
-        $client=Wonproject::select('rfq_no')->get();
+        $user = WonProject::get(); 
+        $authUser = Auth::user();
+        $clientQuery = WonProject::select('rfq_no');
+        
+        if ($authUser->user_type == 'sales') {
+            $clientQuery->where('user_id', $authUser->id);
+        }
+        $client = $clientQuery->get();
         $wonproject="";
         $client_total="0";
         $vendor_toatl="0";
         $wonproject_total=array();
         $bidrfq = BidRfq::get();
         $viewsalesfigures = new WonProject();
+        // dd($client);
         return view('wonproject.viewsalesfigures', compact('viewsalesfigures','wonproject','wonproject_total','client_total','vendor_toatl','client'))
         ->with('i', (request()->input('page', 1) - 1) * 5);
     }
@@ -398,11 +417,15 @@ class WonProjectController extends Controller
     }
     public function viewsalesfigures_filter_invoice(Request $request)
     { 
-       
-    
+        // $authUser = Auth::user();
+        // dd($request->all());
       if($request->client_id && $request->start && $request->start){
-      $wonproject_total = WonProject::selectraw("SUM(client_total) as client_total,SUM(total_margin) as total_margin")->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('rfq_no','=',$request->client_id)->first()->toArray();
-      $vendor_total1=WonProject::where('rfq_no',$request->client_id)->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->select('vendor_total')->first();
+      $wonproject_total = WonProject::selectraw("SUM(client_total) as client_total,SUM(total_margin) as total_margin")->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('rfq_no','=',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->first()->toArray();
+      $vendor_total1=WonProject::where('rfq_no',$request->client_id)->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->select('vendor_total')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->first();
       $vendor_total1=str_replace('{"vendor_total":"','', $vendor_total1);
       $vendor_total1=str_replace('"}','', $vendor_total1);
       $vendor=explode(',',$vendor_total1);
@@ -423,14 +446,24 @@ class WonProjectController extends Controller
     //   $client_pound= intval($client_advance_pound+ $client_balance_pound);
     
     
-      $client_usd=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->sum('client_total');
-      $client_inr=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->sum('client_total');
-      $client_euro=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->sum('client_total');;
-      $client_pound=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','£')->where('rfq_no',$request->client_id)->sum('client_total');
+      $client_usd=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
+      $client_inr=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
+      $client_euro=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');;
+      $client_pound=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','£')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
     
     
       
-      $vendor_advance_usd1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->select('vendor_total')->get();
+      $vendor_advance_usd1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
      
       $vendor_sum1 = 0 ;
              for($i=0;$i<count($vendor_advance_usd1);$i++)
@@ -461,7 +494,9 @@ class WonProjectController extends Controller
       
       
    
-      $vendor_advance_inr1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->select('vendor_total')->get();
+      $vendor_advance_inr1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
     
      
       $vendor_sum3 = 0 ;
@@ -488,7 +523,9 @@ class WonProjectController extends Controller
       
       
       
-      $vendor_advance_euro1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->select('vendor_total')->get();
+      $vendor_advance_euro1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
       
        $vendor_sum5 = 0 ;
              for($i=0;$i<count($vendor_advance_euro1);$i++)
@@ -518,7 +555,9 @@ class WonProjectController extends Controller
       
       
       
-      $vendor_advance_pound1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('rfq_no',$request->client_id)->where('currency','£')->select('vendor_total')->get();
+      $vendor_advance_pound1=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('rfq_no',$request->client_id)->where('currency','£')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
       $vendor_sum7 = 0 ;
              for($i=0;$i<count($vendor_advance_pound1);$i++)
              {
@@ -547,10 +586,18 @@ class WonProjectController extends Controller
     //   $vendor_euro= intval($vendor_advance_euro+ $vendor_balance_euro);
     //   $vendor_pound= intval($vendor_advance_pound+ $vendor_balance_pound);
     
-      $total_usd=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->sum('total_margin');
-      $total_inr=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->sum('total_margin');
-      $total_euro=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->sum('total_margin');
-      $total_pound=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','£')->where('rfq_no',$request->client_id)->sum('total_margin');
+      $total_usd=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','$')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_inr=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','₹')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_euro=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','€')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_pound=Wonproject::where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->where('currency','£')->where('rfq_no',$request->client_id)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
       
       
       $total_usd1= intval($total_usd);
@@ -560,21 +607,33 @@ class WonProjectController extends Controller
             }
         else{
           
-      $vendor_total1=WonProject::select('vendor_total','rfq_no')->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->get();
+      $vendor_total1=WonProject::select('vendor_total','rfq_no')->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->get();
       $vendor_total1=str_replace('{"vendor_total":"','', $vendor_total1);
       $vendor_total1=str_replace('"}','', $vendor_total1);
       $vendor=explode(',',$vendor_total1);
       $vendor1=array_sum($vendor);
       
-       $wonproject_total = WonProject::selectraw("SUM(client_total) as client_total,SUM(total_margin) as total_margin")->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->first()->toArray();
+       $wonproject_total = WonProject::selectraw("SUM(client_total) as client_total,SUM(total_margin) as total_margin")->where('created_at','>=',$request->start)->where('created_at','<=',$request->end)->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->first()->toArray();
        
-      $client_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->sum('client_total');
+      $client_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
     
-      $client_inr=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->sum('client_total');
+      $client_inr=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
      
-      $client_euro=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->sum('client_total');
+      $client_euro=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
    
-      $client_pound=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->sum('client_total');
+      $client_pound=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('client_total');
  
     //   $client_advance_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->sum('client_advance');
     //   $client_balance_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->sum('client_balance');
@@ -600,7 +659,9 @@ class WonProjectController extends Controller
     //   $vendor_advance_pound=Wonproject::where('project_start_date','<=',$request->end)->where('currency','£')->sum('vendor_advance');
     //   $vendor_balance_pound=Wonproject::where('project_start_date','<=',$request->end)->where('currency','£')->sum('vendor_balance');
     
-     $vendor_advance_usd1=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->select('vendor_total')->get();
+     $vendor_advance_usd1=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
       $vendor_sum1 = 0 ;
              for($i=0;$i<count($vendor_advance_usd1);$i++)
              {
@@ -628,7 +689,9 @@ class WonProjectController extends Controller
       
       
    
-      $vendor_advance_inr1=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->select('vendor_total')->get();
+      $vendor_advance_inr1=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
     
      
       $vendor_sum3 = 0 ;
@@ -655,7 +718,9 @@ class WonProjectController extends Controller
       
       
       
-      $vendor_advance_euro1=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->select('vendor_total')->get();
+      $vendor_advance_euro1=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
       
        $vendor_sum5 = 0 ;
              for($i=0;$i<count($vendor_advance_euro1);$i++)
@@ -685,7 +750,9 @@ class WonProjectController extends Controller
       
       
       
-      $vendor_advance_pound1=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->select('vendor_total')->get();
+      $vendor_advance_pound1=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->select('vendor_total')->get();
       $vendor_sum7 = 0 ;
              for($i=0;$i<count($vendor_advance_pound1);$i++)
              {
@@ -715,10 +782,18 @@ class WonProjectController extends Controller
      
       
       
-      $total_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->sum('total_margin');
-      $total_inr=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->sum('total_margin');
-      $total_euro=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->sum('total_margin');
-      $total_pound=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->sum('total_margin');
+      $total_usd=Wonproject::where('created_at','<=',$request->end)->where('currency','$')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_inr=Wonproject::where('created_at','<=',$request->end)->where('currency','₹')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_euro=Wonproject::where('created_at','<=',$request->end)->where('currency','€')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
+      $total_pound=Wonproject::where('created_at','<=',$request->end)->where('currency','£')->when(auth()->user()->user_type == 'sales', function($query){
+        $query->where('user_id', auth()->user()->id);
+      })->sum('total_margin');
       
       $total_usd1= intval($total_usd);
       $total_inr1= intval($total_inr);
@@ -810,7 +885,7 @@ class WonProjectController extends Controller
         return view('wonproject.operationstatus',compact('operation','country'));
     }
     public function getstatus(Request $req){
-        $wonproject=Wonproject::where('id',$req->id)->first();
+        $wonproject=Wonproject::where('rfq_no',$req->id)->first();
         $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
         if(!$operation){
             $response_data=["success"=>0,"message"=>"fail"]; 
@@ -883,7 +958,20 @@ class WonProjectController extends Controller
         $data = $request->all();
     
         // Base query: Fetch only 'completed' projects
+       
+
+        $user = Auth::user(); // Get authenticated user
+        
+        // Base query for fetching completed OperationNew records
         $wonproject = OperationNew::where('status', 'completed');
+        
+        // Apply filtering for sales users
+        if ($user->user_type == 'sales') {
+            $wonproject->where('user_id', $user->id);
+        }
+        
+        // Execute the query
+        $wonproject = $wonproject;
     
         // Apply filters
         if (isset($data['rfq']) && !empty($data['rfq'])) {
