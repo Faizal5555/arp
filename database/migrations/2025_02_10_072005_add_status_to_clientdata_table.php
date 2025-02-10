@@ -21,6 +21,7 @@ class AddStatusToClientdataTable extends Migration
                       ->default('Client')
                       ->change();
             }
+            
         });
     }
 
