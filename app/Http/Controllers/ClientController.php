@@ -460,17 +460,32 @@ public function downloadclientSampleFile()
             'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
         ]);
     
+        if (!$request->hasFile('file')) {
+            return redirect()->back()->withErrors(['error' => 'No file uploaded']);
+        }
+    
+        $file = $request->file('file');
+    
+        if (!$file->isValid()) {
+            return redirect()->back()->withErrors(['error' => 'Invalid file upload']);
+        }
+    
+        // Debug: Log File Info
+        \Log::info('Uploaded File Details:', [
+            'Original Name' => $file->getClientOriginalName(),
+            'MIME Type' => $file->getMimeType(),
+            'Extension' => $file->getClientOriginalExtension(),
+            'Real Path' => $file->getRealPath(),
+        ]);
+    
         DB::beginTransaction();
         try {
-            // Debug: Check file content
-            $path = $request->file('file')->getRealPath();
-            $data = Excel::toArray([], $path);
-    
-            // Debug output (Check if status is read correctly)
+            $data = Excel::toArray([], $file);
             \Log::info('Imported Data:', $data);
     
-            Excel::import(new ClientDataImport, $request->file('file'));
+            Excel::import(new ClientDataImport, $file, null, \Maatwebsite\Excel\Excel::XLSX);
             DB::commit();
+    
             return redirect()->back()->with('success', 'Clients imported successfully!');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             DB::rollback();
@@ -492,6 +507,7 @@ public function downloadclientSampleFile()
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+    
 
 
         public function clientdataindex()
