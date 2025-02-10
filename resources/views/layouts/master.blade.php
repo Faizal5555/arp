@@ -486,6 +486,8 @@ select.form-control{
 
               <div class="collapse"  id="ui-basic">
                 <ul class="nav flex-column  sub-menu1">
+                  <li class="nav-item" > <a class="nav-link {{ (Route::is('client.data')) ? 'active' : '' }}"  href="{{route('client.data')}}">Client Database</a></li>
+                  <li class="nav-item" > <a class="nav-link {{ (Route::is('client.clientdata')) ? 'active' : '' }}"  href="{{route('clientdata.index')}}">Client FollowUp Date</a></li>
                   <li class="nav-item  {{ (Route::is('client.index')) ? 'active' : '' }} "  id="client_management"> <a class="nav-link " href="{{route('client.index')}}">Client Management</a></li>
                   <li class="nav-item  {{ (Route::is('vendor.index')) ? 'active' : '' }}" id="vendor_management"> <a class="nav-link" href="{{route('vendor.index')}}">Vendor Management</a></li>
                   <li class="nav-item {{ (Route::is('bidrfq.create')) ? 'active' : '' }}" id="create_rfq"> <a class="nav-link  " href="{{route('bidrfq.create')}}">Create RFQ</a></li>

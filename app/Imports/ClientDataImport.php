@@ -25,6 +25,8 @@ class ClientDataImport implements ToModel, WithHeadingRow, WithValidation
             'comments' => $row['comments'] ?? null,
             'followup_date' => $row['followup_date'] ?? null,
             'user_id' => Auth::id(), // Assign to logged-in user
+            'status' => isset($row['status']) ? trim($row['status']) : 'Client',
+            
         ]);
     }
 
@@ -37,7 +39,9 @@ class ClientDataImport implements ToModel, WithHeadingRow, WithValidation
             '*.client_country' => 'required|string|max:255',
             '*.email_address' => 'required|email|unique:clientdata,email_address',
             '*.phone_number' => 'nullable|numeric|digits_between:8,15|unique:clientdata,phone_number',
+            '*.status' => 'required|string|in:Client,Important,Normal,Not Responsive',
         ];
     }
+    
 }
 

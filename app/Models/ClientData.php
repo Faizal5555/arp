@@ -24,6 +24,8 @@ class ClientData extends Model
         'comments',
         'followup_date',
         'user_id',
+        'status',
+        
     ];
 
     public function user()

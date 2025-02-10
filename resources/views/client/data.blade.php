@@ -137,6 +137,20 @@ button.dt-button.buttons-excel.buttons-html5 {
 button.dt-button.buttons-excel.buttons-html5 {
     display: block;
 }
+
+#companyFilter, #countryFilter {
+    border: 1px solid #0b5dbb !important; /* Dark border color */
+    border-radius: 25px; /* Slightly rounded corners */
+    padding: 10px; /* Adjust padding for better appearance */
+    color: #333; /* Darker text color */
+    font-weight: 500; /* Slightly bolder font */
+    outline: none;
+}
+
+#companyFilter:focus, #countryFilter:focus {
+    border-color: #0b5dbb !important; /* Even darker on focus */
+    box-shadow: 0 0 5px rgba(52, 58, 64, 0.5); /* Soft glow effect */
+}
 /* @endif */
     </style>
 @section('page_title', 'Client List')
@@ -183,93 +197,133 @@ $('#importForm').on('submit', function (e) {
     });
 });
 
-     $(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-      });
-        var table = $('.data-table').DataTable({
-            dom: 'Blfrtip',
-            "lengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
-            buttons: [
-                {
-                    text: 'Export',
-                    extend: 'excelHtml5',
-                    exportOptions: { columns: [0,1,2,3,4,5,6,7] },
-                },
-            ],
-            processing: true,
-            serverSide: true,
-             ordering : false,
-            ajax: "{{ route('clientdata.fetch') }}",
-            columns: [
-                { data: 'company_name', name: 'company_name' },
-                { data: 'client_firstname', render: function(data, type, row) { return data + " " + row.client_lastname; }},
-                { data: 'title', name: 'title' },
-                { data: 'linkedin_id', name: 'linkedin_id' },
-                { data: 'client_country', name: 'client_country' },
-                { data: 'phone_number', name: 'phone_number' },
-                { data: 'email_address', name: 'email_address' },
-                //{ data: 'followup_date', name: 'followup_date' },
-                { data: 'id', render: function(data) {
-                    return `<button class="btn btn-info btn-sm details-btn" data-id="${data}">Details</button>`;
-                }}
-            ]
-        });
-
-        // Open Details Modal
-        $(document).on('click', '.details-btn', function () {
-            let id = $(this).data('id');
-            
-            $.ajax({
-                url: "{{ route('clientdata.details', ':id') }}".replace(':id', id),
-                type: "GET",
-                success: function (data) {
-                    $('#client_id').val(data.id);
-                    $('#comments').val(data.comments);
-                    $('#followup_date').val(data.followup_date);
-                    $('#detailsModal').modal('show');
-                },
-                error: function () {
-                    Swal.fire("Error", "Failed to load client details.", "error");
+        $(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
         });
 
-
-        // Submit Follow-Up Update
-        $('#updateForm').on('submit', function (e) {
-    e.preventDefault();
-    
-    $.ajax({
-        url: "{{ route('clientdata.update') }}",
-        type: "POST",
-        data: $(this).serialize(),
-        success: function (response) {
-            Swal.fire({
-                title: "Success!",
-                text: "Client details updated successfully.",
-                icon: "success",
-                timer: 2000, // Auto-close after 3 seconds
-                showConfirmButton: false
+        
+            var table = $('.data-table').DataTable({
+                dom: 'Blfrtip',
+                "lengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+                buttons: [
+                    {
+                        text: 'Export',
+                        extend: 'excelHtml5',
+                        exportOptions: { columns: [0,1,2,3,4,5,6,7] },
+                    },
+                ],
+                processing: true,
+                serverSide: true,
+                ordering : false,
+                ajax: {
+                    url: "{{ route('clientdata.fetch') }}",
+                    type: "GET",
+                    data: function (d) {
+                        d.status = $('#statusFilter').val(); 
+                        d.company_name = $('#companyFilter').val();
+                        d.client_country = $('#countryFilter').val(); 
+                        d._token = "{{ csrf_token() }}";
+                    }
+                },
+                columns: [
+                    { data: 'company_name', name: 'company_name' },
+                    { data: 'client_firstname', render: function(data, type, row) { return data + " " + row.client_lastname; }},
+                    { data: 'title', name: 'title' },
+                    { data: 'linkedin_id', name: 'linkedin_id' },
+                    { data: 'client_country', name: 'client_country' },
+                    { data: 'phone_number', name: 'phone_number' },
+                    { data: 'email_address', name: 'email_address' },
+                    { 
+                        data: 'status', 
+                        name: 'status',
+                        render: function(data, type, row) {
+                            let badgeClass = "";
+                            switch(data) {
+                                case "Client":
+                                    badgeClass = "badge-info"; // Blue
+                                    break;
+                                case "Important":
+                                    badgeClass = "badge-danger"; // Red
+                                    break;
+                                case "Normal":
+                                    badgeClass = "badge-success"; // Green
+                                    break;
+                                case "Not Responsive":
+                                    badgeClass = "badge-primary"; // Dark Blue
+                                    break;
+                                default:
+                                    badgeClass = "badge-secondary"; // Default Gray
+                            }
+                            return `<span class="badge ${badgeClass} rounded-pill px-3 py-2">${data}</span>`;
+                        }
+                    },
+                    //{ data: 'followup_date', name: 'followup_date' },
+                    { data: 'id', render: function(data) {
+                        return `<button class="btn btn-info btn-sm details-btn" data-id="${data}">Details</button>`;
+                    }}
+                ]
             });
 
-            $('#detailsModal').modal('hide');
-            $('.data-table').DataTable().ajax.reload();
-        },
-        error: function (xhr) {
-            Swal.fire({
-                title: "Error!",
-                text: "Something went wrong. Please try again.",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-        }
+            $('#statusFilter, #companyFilter, #countryFilter').on('change keyup', function () {
+        table.ajax.reload();
     });
-});
 
+            // Open Details Modal
+            $(document).on('click', '.details-btn', function () {
+                let id = $(this).data('id');
+                
+                $.ajax({
+                    url: "{{ route('clientdata.details', ':id') }}".replace(':id', id),
+                    type: "GET",
+                    success: function (data) {
+                        $('#client_id').val(data.id);
+                        $('#comments').val(data.comments);
+                        $('#followup_date').val(data.followup_date);
+                        $('#status').val(data.status);
+                        $('#detailsModal').modal('show');
+                    },
+                    error: function () {
+                        Swal.fire("Error", "Failed to load client details.", "error");
+                    }
+                });
+            });
+
+
+            // Submit Follow-Up Update
+            $('#updateForm').on('submit', function (e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: "{{ route('clientdata.update') }}",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (response) {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Client details updated successfully.",
+                    icon: "success",
+                    timer: 2000, // Auto-close after 3 seconds
+                    showConfirmButton: false
+                });
+
+                $('#detailsModal').modal('hide');
+                $('.data-table').DataTable().ajax.reload();
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
     });
+
+        });
 </script>
 <div class="container">
     <div class="row">
@@ -311,10 +365,10 @@ $('#importForm').on('submit', function (e) {
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <div>
-                                    @if(auth()->user()->user_type == 'admin')
+                                   
                                     <!-- Import Button -->
                                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#importModal">Import</button>
-                                    @endif  
+                                     
                                     
                                     <!-- Import Modal -->
                                     <div class="modal fade" id="importModal" tabindex="-1">
@@ -342,6 +396,30 @@ $('#importForm').on('submit', function (e) {
 
                                 </div>
 
+                                <div class="row mb-5 d-flex">
+                                    <div class="col-md-3 m-1">
+                                        <label for="statusFilter">Filter by Status:</label>
+                                        <select id="statusFilter" class="form-control">
+                                            <option value="">All</option>
+                                            <option value="Client">Client</option>
+                                            <option value="Important">Important</option>
+                                            <option value="Normal">Normal</option>
+                                            <option value="Not Responsive">Not Responsive</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 m-1 form-group">
+                                        <label for="statusFilter">Filter by Company:</label>
+                                        <input type="text" id="companyFilter" class="form-control" placeholder="Enter Company Name">
+                                    </div>
+                                
+                                    <!-- Country Filter -->
+                                    <div class="col-md-3 m-1 form-group">
+                                        <label for="countryFilter">Filter by Country:</label>
+                                        <input type="text" id="countryFilter" class="form-control" placeholder="Enter Country">
+                                    </div>
+                                </div>
+
                                 <!-- Client Data Table -->
                                 <table class="table datatable-button-html5-columns data-table">
                                     <thead>
@@ -353,6 +431,7 @@ $('#importForm').on('submit', function (e) {
                                             <th>Country</th>
                                             <th>Phone Number</th>
                                             <th>Email</th>
+                                            <th>Status</th>
                                             {{-- <th>Follow-Up Date</th> --}}
                                             <th>Action</th>
                                         </tr>
@@ -372,6 +451,17 @@ $('#importForm').on('submit', function (e) {
                                                 <form id="updateForm">
                                                     @csrf
                                                     <input type="hidden" id="client_id" name="client_id">
+
+                                                    <div class="form-group">
+                                                        <label for="status">Status</label>
+                                                        <select id="status" name="status" class="form-control" required>
+                                                            <option value="Client">Client</option>
+                                                            <option value="Important">Important</option>
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="Not Responsive">Not Responsive</option>
+                                                        </select>
+                                                    </div>
+
                                                     <div class="form-group">
                                                         <label for="comments">Comments</label>
                                                         <textarea id="comments" name="comments" class="form-control" required></textarea>

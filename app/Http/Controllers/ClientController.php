@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use App\Exports\ClientExport;
 use App\Imports\ClientImport;
 use App\Imports\ClientDataImport;
@@ -338,14 +340,30 @@ public function downloadclientSampleFile()
     }
 
 
-    public function fetchClientData()
+    public function fetchClientData(Request $request)
     {
         $user = Auth::user();
         $query = ($user->user_type == 'admin') 
         ? ClientData::query() 
         : ClientData::where('user_id', $user->id);
 
-    return Datatables::of($query->orderBy('id', 'desc'))->make(true);
+        // $query = ClientData::where('user_id', $user->id);
+
+    // Apply Status Filter
+    if ($request->has('status') && !empty($request->status)) {
+        $query->where('status', $request->status);
+    }
+
+    if ($request->has('company_name') && !empty($request->company_name)) {
+        $query->where('company_name', 'LIKE', "%{$request->company_name}%");
+    }
+
+    // Apply Country Filter
+    if ($request->has('client_country') && !empty($request->client_country)) {
+        $query->where('client_country', 'LIKE', "%{$request->client_country}%");
+    }
+
+    return Datatables::of($query->orderBy('id', 'Asc'))->make(true);
     }
 
     public function getClientDetails($id)
@@ -359,6 +377,7 @@ public function downloadclientSampleFile()
     $client = ClientData::findOrFail($request->client_id);
     $client->update([
         'comments' => $request->comments,
+        'status' => $request->status, // Update Status
         'followup_date' => $request->followup_date,
     ]);
     return response()->json(['message' => 'Updated Successfully']);
@@ -366,90 +385,113 @@ public function downloadclientSampleFile()
 
 
     public function generateClientdataSampleFile()
-{
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-
-    // Define headers
-    $headers = [
-        'A1' => 'sr_no',
-        'B1' => 'company_name',
-        'C1' => 'client_firstname',
-        'D1' => 'client_lastname',
-        'E1' => 'title',
-        'F1' => 'linkedin_id',
-        'G1' => 'client_country',
-        'H1' => 'phone_number',
-        'I1' => 'email_address',
-        // 'J1' => 'comments',
-        // 'K1' => 'followup_date'
-    ];
-
-    // Apply headers to the first row
-    foreach ($headers as $cell => $value) {
-        $sheet->setCellValue($cell, $value);
-    }
-
-    // Add sample data
-    $sampleData = [
-        [1, 'Tech Solutions Ltd', 'John', 'Doe', 'Manager', 'https://linkedin.com/johndoe', 'USA', '1234567890', 'johndoe@example.com'],
-        [2, 'Global Corp', 'Jane', 'Smith', 'CEO', 'https://linkedin.com/janesmith', 'UK', '9876543210', 'janesmith@example.com'],
-    ];
-
-    // Populate sample rows
-    $rowIndex = 2;
-    foreach ($sampleData as $row) {
-        $colIndex = 'A';
-        foreach ($row as $cellValue) {
-            $sheet->setCellValue($colIndex . $rowIndex, $cellValue);
-            $colIndex++;
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Define headers including 'status' column
+        $headers = [
+            'A1' => 'sr_no',
+            'B1' => 'company_name',
+            'C1' => 'client_firstname',
+            'D1' => 'client_lastname',
+            'E1' => 'title',
+            'F1' => 'linkedin_id',
+            'G1' => 'client_country',
+            'H1' => 'phone_number',
+            'I1' => 'email_address',
+            'J1' => 'status',
+        ];
+    
+        // Apply headers
+        foreach ($headers as $cell => $value) {
+            $sheet->setCellValue($cell, $value);
         }
-        $rowIndex++;
-    }
-
-    // Define file path
-    $fileName = 'client-sample-file.xlsx';
-    $filePath = public_path("assets/$fileName");
-
-    // Save Excel file
-    $writer = new Xlsx($spreadsheet);
-    $writer->save($filePath);
-
-    // Return file for download
-    return response()->download($filePath)->deleteFileAfterSend(false);
-}
-
-public function  clientdataimport(Request $request)
-{
-    $request->validate([
-        'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
-    ]);
-
-    DB::beginTransaction();
-    try {
-        Excel::import(new ClientDataImport, $request->file('file'));
-        DB::commit();
-        return redirect()->back()->with('success', 'Clients imported successfully!');
-    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-        DB::rollback();
-        $failures = $e->failures();
-        $validationErrors = [];
-
-        foreach ($failures as $failure) {
-            $row = $failure->row();
-            $attribute = $failure->attribute();
-            $errors = $failure->errors();
-            foreach ($errors as $error) {
-                $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
+    
+        // Sample data with 'status' column
+        $sampleData = [
+            [1, 'Tech Solutions Ltd', 'John', 'Doe', 'Manager', 'https://linkedin.com/johndoe', 'USA', '1234567890', 'johndoe@example.com', 'Client'],
+            [2, 'Global Corp', 'Jane', 'Smith', 'CEO', 'https://linkedin.com/janesmith', 'UK', '9876543210', 'janesmith@example.com', 'Client'],
+        ];
+    
+        // Populate sample rows
+        $rowIndex = 2;
+        foreach ($sampleData as $row) {
+            $colIndex = 'A';
+            foreach ($row as $cellValue) {
+                $sheet->setCellValue($colIndex . $rowIndex, $cellValue);
+                $colIndex++;
             }
+            $rowIndex++;
         }
-
-        return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
-    } catch (\Exception $e) {
-        DB::rollback();
-        return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+    
+        // Apply dropdown validation to "status" column (J2:J100)
+        $this->applyDropdownValidation($sheet, 2, 100);
+    
+        // Define file path
+        $fileName = 'client-sample-file.xlsx';
+        $filePath = public_path("assets/$fileName");
+    
+        // Save Excel file
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filePath);
+    
+        // Return file for download
+        return response()->download($filePath)->deleteFileAfterSend(false);
     }
-}
+    
+    private function applyDropdownValidation(Worksheet $sheet, $startRow, $endRow)
+    {
+        for ($row = $startRow; $row <= $endRow; $row++) {
+            $cell = "J$row";
+            $validation = $sheet->getCell($cell)->getDataValidation();
+            $validation->setType(DataValidation::TYPE_LIST);
+            $validation->setErrorStyle(DataValidation::STYLE_STOP);
+            $validation->setAllowBlank(false);
+            $validation->setShowDropDown(true);
+            $validation->setFormula1('"Client,Important,Normal,Not Responsive"'); // Dropdown options
+            $sheet->getCell($cell)->setDataValidation($validation);
+        }
+    }
+    
+    public function clientdataimport(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
+        ]);
+    
+        DB::beginTransaction();
+        try {
+            // Debug: Check file content
+            $path = $request->file('file')->getRealPath();
+            $data = Excel::toArray([], $path);
+    
+            // Debug output (Check if status is read correctly)
+            \Log::info('Imported Data:', $data);
+    
+            Excel::import(new ClientDataImport, $request->file('file'));
+            DB::commit();
+            return redirect()->back()->with('success', 'Clients imported successfully!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            DB::rollback();
+            $failures = $e->failures();
+            $validationErrors = [];
+    
+            foreach ($failures as $failure) {
+                $row = $failure->row();
+                $attribute = $failure->attribute();
+                $errors = $failure->errors();
+                foreach ($errors as $error) {
+                    $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
+                }
+            }
+    
+            return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
 
 
         public function clientdataindex()
@@ -459,8 +501,14 @@ public function  clientdataimport(Request $request)
 
         public function filterClientData(Request $request)
         {   
-        
-            $query = ClientData::query();
+            $user = Auth::user();
+            // $query = ClientData::where('user_id', $user->id);
+
+            $query = ($user->user_type == 'admin') 
+            ? ClientData::query()  // Admin sees all records
+            : ClientData::where('user_id', $user->id); // Normal user sees only their own
+            
+            //$query = ClientData::query();
 
             // Check if a date range is provided
             if (!empty($request->date_range)) {

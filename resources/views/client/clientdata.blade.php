@@ -141,17 +141,30 @@ button.dt-button.buttons-excel.buttons-html5 {
 }
 input#daterange, input#daterange_1 {
     padding: 0.4375rem 0.75rem;
-    outline: 2px solid #89b3e2;
-    color: #bbb5b5;
-    border: #000;
-    border-radius: 3px;
-    width: 80%;
+    outline: 2px solid #89b3e2 !important;
+    color: #bbb5b5 !important;
+    border: #000 !important;
+    border-radius: 3px important;
+    width: 80% !important;
 }
 input#dateRange::placeholder {
         color: #6c757d !important;
         opacity: 1 !important;
         font-weight: 500;
     }
+    #companyFilter, #countryFilter {
+    border: 1px solid #0b5dbb !important; /* Dark border color */
+    border-radius: 25px; /* Slightly rounded corners */
+    padding: 10px; /* Adjust padding for better appearance */
+    color: #333; /* Darker text color */
+    font-weight: 500; /* Slightly bolder font */
+    outline: none;
+}
+
+#companyFilter:focus, #countryFilter:focus {
+    border-color: #0b5dbb !important; /* Even darker on focus */
+    box-shadow: 0 0 5px rgba(52, 58, 64, 0.5); /* Soft glow effect */
+}
 /* @endif */
     </style>
 @push('css')
@@ -194,12 +207,50 @@ input#dateRange::placeholder {
                     <th>Country</th>
                     <th>Phone Number</th>
                     <th>Email Address</th>
+                    <th>status</th>
                     <th>Follow-up Date</th>
                     <th>Comments</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
+
+            <!-- Details Modal -->
+            <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel">Update Follow-Up Details</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateForm">
+                                @csrf
+                                <input type="hidden" id="client_id" name="client_id">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select id="status" name="status" class="form-control" required>
+                                        <option value="Client">Client</option>
+                                        <option value="Important">Important</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Not Responsive">Not Responsive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="comments">Comments</label>
+                                    <textarea id="comments" name="comments" class="form-control" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="followup_date">Follow-Up Date</label>
+                                    <input type="date" id="followup_date" name="followup_date" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 
@@ -209,6 +260,8 @@ input#dateRange::placeholder {
 @push('scripts')
 <!-- Include jQuery and Date Range Picker JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS (Ensure it's included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Include DataTables Core JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -231,18 +284,17 @@ input#dateRange::placeholder {
 
 <script type="text/javascript">
 $(document).ready(function () {
-    // Initialize Date Range Picker
+    // Initialize Date Range Picker (Only Calendar, No Preset Ranges)
     $('#dateRange').daterangepicker({
         autoUpdateInput: false,
-        locale: { cancelLabel: 'Clear' },
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
+        showDropdowns: true, // Allows year and month dropdown selection
+        linkedCalendars: false, // Prevents auto-selecting second date
+        locale: { 
+            format: 'YYYY-MM-DD', 
+            cancelLabel: 'Clear' 
+        },
+        alwaysShowCalendars: true, // Ensures only the calendar is visible
+        singleDatePicker: false // Allows range selection
     });
 
     // Initialize DataTable (Initially Empty)
@@ -277,6 +329,30 @@ $(document).ready(function () {
             { data: 'phone_number', name: 'phone_number' },
             { data: 'email_address', name: 'email_address' },
             { 
+                        data: 'status', 
+                        name: 'status',
+                        render: function(data, type, row) {
+                            let badgeClass = "";
+                            switch(data) {
+                                case "Client":
+                                    badgeClass = "badge-info"; // Blue
+                                    break;
+                                case "Important":
+                                    badgeClass = "badge-danger"; // Red
+                                    break;
+                                case "Normal":
+                                    badgeClass = "badge-success"; // Green
+                                    break;
+                                case "Not Responsive":
+                                    badgeClass = "badge-primary"; // Dark Blue
+                                    break;
+                                default:
+                                    badgeClass = "badge-secondary"; // Default Gray
+                            }
+                            return `<span class="badge ${badgeClass} rounded-pill px-3 py-2">${data}</span>`;
+                        }
+                    },
+                { 
                 data: 'followup_date', 
                 name: 'followup_date', 
                 render: function (data) {
@@ -284,13 +360,17 @@ $(document).ready(function () {
                     let followUpDate = moment(data, 'YYYY-MM-DD').format('YYYY-MM-DD');
 
                     if (followUpDate <= today) {
-                        return `<span class="badge badge-danger">${data}</span>`; // Red for today and past dates
+                        return `<span class="badge badge-danger rounded-pill px-3 py-2">${data}</span>`; // Red for today and past dates
                     } else {
-                        return `<span class="badge badge-primary">${data}</span>`; // Blue for future dates
+                        return `<span class="badge badge-primary rounded-pill px-3 py-2">${data}</span>`; // Blue for future dates
                     }
                 }
             },
-            { data: 'comments', name: 'comments' }
+            { data: 'comments', name: 'comments' },
+            { data: 'id', render: function(data) {
+                    return `<button class="btn btn-info btn-sm details-btn" data-id="${data}">Details</button>`;
+                }}
+
         ]
     });
 
@@ -305,11 +385,66 @@ $(document).ready(function () {
         $(this).val('');
         table.clear().draw(); // Clear the table when no date is selected
     });
+
     $('#clearBtn').click(function () {
         $('#dateRange').val('').trigger('cancel.daterangepicker'); // Clear the input field
         table.clear().draw(); // Reset the table
     });
+
+      $(document).on('click', '.details-btn', function () {
+            let id = $(this).data('id');
+            
+            $.ajax({
+                url: "{{ route('clientdata.details', ':id') }}".replace(':id', id),
+                type: "GET",
+                success: function (data) {
+                    $('#client_id').val(data.id);
+                    $('#comments').val(data.comments);
+                    $('#followup_date').val(data.followup_date);
+                    $('#status').val(data.status);
+                    $('#detailsModal').modal('show');
+                },
+                error: function () {
+                    Swal.fire("Error", "Failed to load client details.", "error");
+                }
+            });
+        });
+
+
+        // Submit Follow-Up Update
+        $('#updateForm').on('submit', function (e) {
+    e.preventDefault();
+    
+    $.ajax({
+        url: "{{ route('clientdata.update') }}",
+        type: "POST",
+        data: $(this).serialize(),
+        success: function (response) {
+            Swal.fire({
+                title: "Success!",
+                text: "Client details updated successfully.",
+                icon: "success",
+                timer: 2000, // Auto-close after 3 seconds
+                showConfirmButton: false
+            });
+
+            $('#detailsModal').modal('hide');
+            $('.data-table').DataTable().ajax.reload();
+        },
+        error: function (xhr) {
+            Swal.fire({
+                title: "Error!",
+                text: "Something went wrong. Please try again.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
 });
+
+});
+
+
 
 
 </script>
