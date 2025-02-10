@@ -18,10 +18,8 @@ class AddStatusToClientdataTable extends Migration
             if (!Schema::hasColumn('clientdata', 'status')) {
                 $table->enum('status', ['Client', 'Important', 'Normal', 'Not Responsive'])
                       ->after('email_address')
-                      ->default('Client')
-                      ->change();
+                      ->default('Client');
             }
-            
         });
     }
 
