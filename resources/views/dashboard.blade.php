@@ -108,7 +108,11 @@
                 <i class="mdi mdi-cash-multiple dashboard-icon"></i>
                 <h5>Total Margin</h5>
                 <h2 id="k3">{{ $totalmargin ?? 0 }}</h2>
-                <p class="mb-0">$<span class="total_usd"></span> | ₹<span class="total_inr"></span></p>
+                <p class="mb-0">$<span class="total_usd"></span> 
+                    | ₹<span class="total_inr"> </span>
+                    | €<span class="total_euro"> </span>
+                    | £<span class="total_pound"></span></p>
+                </p>
             </div>
         </div>
         <div class="col-md-4">
@@ -116,7 +120,10 @@
                 <i class="mdi mdi-currency-usd dashboard-icon"></i>
                 <h5>Total Revenue</h5>
                 <h2 id="k6">{{ $totalrevenue ?? 0 }}</h2>
-                <p class="mb-0">$<span class="revenue_usd"></span> | ₹<span class="revenue_inr"></span></p>
+                <p class="mb-0">$<span class="revenue_usd"></span> 
+                    | ₹<span class="revenue_inr"></span>
+                    | €<span class="revenue_euro"></span>
+                    | £<span class="revenue_pound"></span></p> 
             </div>
         </div>
         <div class="col-md-4">
