@@ -1,8 +1,66 @@
 @extends('layouts.master')
 
 <style>
-  .card .card-body {
-    padding: 1rem 1rem !important;
+.dashboard-card {
+    transition: all 0.3s ease-in-out;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    min-width: 180px;
+    min-height: 160px; /* Ensure all cards have the same height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Ensure all cards inside the row have equal height */
+.row .col-md-4 {
+    display: flex;
+}
+
+.card-footer {
+    width: 100%;
+    padding: 8px 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+/* Card Background Colors */
+.bg-client { background: linear-gradient(135deg, #9B59B6, #8E44AD); } /* Purple */
+.bg-margin { background: linear-gradient(135deg, #F39C12, #D68910); } /* Orange */
+.bg-revenue { background: linear-gradient(135deg, #16A085, #138D75); } /* Teal */
+.bg-vendor { background: linear-gradient(135deg, #E74C3C, #C0392B); } /* Red */
+.bg-pending { background: linear-gradient(135deg, #4A90E2, #357ABD); } /* Blue */
+.bg-payment { background: linear-gradient(135deg, #6ABF4B, #47A032); } /* Green */
+
+/* Icons */
+.dashboard-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+/* Hover Effect */
+.dashboard-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Footer (for amounts) */
+
+/* Chart Container */
+.chart-container {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 </style>
 
@@ -19,118 +77,77 @@
 {{-- for chartjs --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-<div class="content-wrapper">
-            <div class="page-header">
-              <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                  <i class="mdi mdi-home"></i>
-                </span> Account Dashboard
-              </h3>
-              <nav aria-label="breadcrumb">
-                <ul class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page">
-                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-                  </li>
-                </ul>
-              </nav>
+  <div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">
+            <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                <i class="mdi mdi-home"></i>
+            </span> Account Dashboard
+        </h3>
+    </div>
+
+    <!-- Date Range Picker -->
+    <div class="row mb-4">
+        <div class="col-md-4 d-flex align-items-center">
+            <label class="mr-2" style="font-weight: bold;">Date:</label>
+            <input type="text" name="RFQs" class="form-control" id="daterange" style="border-color: #237ee6;">
+        </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-card bg-pending">
+                <i class="mdi mdi-chart-line dashboard-icon"></i>
+                <h5>Total Client Invoice Pending</h5>
+                <h2 id="client_pending">{{$total_client_invoice_pendig ?? 0}}</h2>
+                <div class="card-footer">
+                    $<span id="usd"></span> | ₹<span id="inr"></span> | €<span id="euro"></span> | £<span id="pound"></span>
+                </div>
             </div>
-             {{-- date range picker --}}
-            <div class="row mb-4">
-              <div class="col-md-12 d-flex align-items-center">
-                <label class="start_1" style="margin-right:13px; font-size:15px; margin-left:46px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; color:#5c4949;">Date:</label>
-                <input type="text" name="RFQs" class="won_project " value="" id="daterange" style="max-width: 100%; max-height: 100%;  padding:auto; margin-top:-7px;  border-color: #237ee6 !important;">  
-              </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-vendor">
+                <i class="mdi mdi-store dashboard-icon"></i>
+                <h5>Total Vendor Invoice Pending</h5>
+                <h2 id="vendor_pending">{{$total_vendor_invoice_pending ?? 0}}</h2>
+                <div class="card-footer">
+                    $<span id="usd1"></span> | ₹<span id="inr1"></span> | €<span id="euro1"></span> | £<span id="pound1"></span>
+                </div>
             </div>
-            <div class="row">
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-normal mb-3">Total Client Invoice Pending<i class="mdi mdi-chart-line mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="client_pending">{{$total_client_invoice_pendig ? $total_client_invoice_pendig :0 }}</h2>
-                    <h5 class="card-text">$  <span id="usd"></span></h5>
-                    <h5 class="card-text">₹  <span id="inr"></span></h5>
-                    <h5 class="card-text">€  <span id="euro"></span></h5>
-                    <h5 class="card-text">£ <span id="pound"></span></h5>
-                    
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-normal mb-3">Total Vendor Invoice Pending<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="vendor_pending">{{$total_vendor_invoice_pending ? $total_vendor_invoice_pending :0 }}</h2>
-                    <h5 class="card-text">$  <span id="usd1"></span></h5>
-                    <h5 class="card-text">₹  <span id="inr1"></span></h5>
-                    <h5 class="card-text">€  <span id="euro1"></span></h5>
-                    <h5 class="card-text">£  <span id="pound1"></span></h5>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-normal mb-3">Total Payment Awaited<i class="mdi mdi-diamond mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="awaited">{{$total_client_invoice_awaited ? $total_client_invoice_awaited : 0 }} </h2>
-                    <!--<h6 class="card-text">Increased by 5%</h6>-->
-                  </div>
-                </div>
-              </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-payment">
+                <i class="mdi mdi-cash-multiple dashboard-icon"></i>
+                <h5>Total Payment Awaited</h5>
+                <h2 id="awaited">{{$total_client_invoice_awaited ?? 0}}</h2>
             </div>
-            
-            <div class="row">
-                
-                <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-normal mb-3">Total Client Payment Received<i class="mdi mdi-chart-line mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="Total_Client_Payment_Received">{{$total_client_invoice_pendig ? $total_client_invoice_pendig :0 }}</h2>
-                    <h5 class="card-text">$  <span id="tcr_usd"></span></h5>
-                    <h5 class="card-text">₹  <span id="tcr_inr"></span></h5>
-                    <h5 class="card-text">€  <span id="tcr_euro"></span></h5>
-                    <h5 class="card-text">£  <span id="tcr_pound"></span></h5>
-                    
-                  </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="dashboard-card bg-margin">
+                <i class="mdi mdi-cash-multiple dashboard-icon"></i>
+                <h5>Total Client Payment Received</h5>
+                <h2 id="Total_Client_Payment_Received">{{$total_client_invoice_pendig ?? 0}}</h2>
+                <div class="card-footer">
+                    $<span id="tcr_usd"></span> | ₹<span id="tcr_inr"></span> | €<span id="tcr_euro"></span> | £<span id="tcr_pound"></span>
                 </div>
-              </div>
-              
-              <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                  <div class="card-body">
-                    <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                    <h4 class="font-normal mb-3">Total Vendor Payment Made<i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
-                    </h4>
-                    <h2 class="mb-5" id="Total_Vendor_Payments_Received">{{$total_vendor_invoice_pending ? $total_vendor_invoice_pending :0 }}</h2>
-                    <h5 class="card-text">$  <span id="tvr_usd"></span></h5>
-                    <h5 class="card-text">₹  <span id="tvr_inr"></span></h5>
-                    <h5 class="card-text">€  <span id="tvr_euro"></span></h5>
-                    <h5 class="card-text">£  <span id="tvr_pound"></span></h5>
-                  </div>
-                </div>
-              </div>
             </div>
-              
-            <br>
-            
-            <!--for chart-->
-            <!-- <div class="card mb-3">-->
-            <!--  <div class="col-md-12">-->
-            <!--      <div class="canvas_append">-->
-            <!--        <canvas id="bar_chart" style="width:100% !important; height:400; " ></canvas>-->
-            <!--    </div>-->
-            <!--    </div>-->
-            <!--</div>-->
-        
-           
-         </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-revenue">
+              <i class="mdi mdi-store dashboard-icon"></i>
+                <h5>Total Vendor Payment Made</h5>
+                <h2 id="Total_Vendor_Payments_Received">{{$total_vendor_invoice_pending ?? 0}}</h2>
+                <div class="card-footer">
+                    $<span id="tvr_usd"></span> | ₹<span id="tvr_inr"></span> | €<span id="tvr_euro"></span> | £<span id="tvr_pound"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
  <script>
  $(document).ready(function(){
       var start_date = moment().format('YYYY-MM-DD');
