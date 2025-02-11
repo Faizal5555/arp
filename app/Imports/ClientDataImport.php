@@ -12,6 +12,9 @@ class ClientDataImport implements ToModel, WithHeadingRow, WithValidation
 {
     public function model(array $row)
     {
+        if(empty($row['company_name'])) {
+            return null;
+        }
         return new ClientData([
             'sr_no' => $row['sr_no'] ?? null,
             'company_name' => $row['company_name'],
@@ -33,13 +36,13 @@ class ClientDataImport implements ToModel, WithHeadingRow, WithValidation
     public function rules(): array
     {
         return [
-            '*.company_name' => 'required|string|max:255',
-            '*.client_firstname' => 'required|string|max:255',
-            '*.client_lastname' => 'required|string|max:255',
-            '*.client_country' => 'required|string|max:255',
-            '*.email_address' => 'required|email|unique:clientdata,email_address',
+            '*.company_name' => 'nullable|string|max:255',
+            '*.client_firstname' => 'nullable|string|max:255',
+            '*.client_lastname' => 'nullable|string|max:255',
+            '*.client_country' => 'nullable|string|max:255',
+            '*.email_address' => 'nullable|email|unique:clientdata,email_address',
             '*.phone_number' => 'nullable|numeric|digits_between:8,15|unique:clientdata,phone_number',
-            '*.status' => 'required|string|in:Client,Important,Normal,Not Responsive',
+            '*.status' => 'nullable|string|in:Client,Important,Normal,Not Responsive',
         ];
     }
     

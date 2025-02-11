@@ -454,60 +454,62 @@ public function downloadclientSampleFile()
         }
     }
     
-    public function clientdataimport(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
-        ]);
+   public function clientdataimport(Request $request)
+{   
     
-        if (!$request->hasFile('file')) {
-            return redirect()->back()->withErrors(['error' => 'No file uploaded']);
-        }
-    
-        $file = $request->file('file');
-    
-        if (!$file->isValid()) {
-            return redirect()->back()->withErrors(['error' => 'Invalid file upload']);
-        }
-    
-        // Debug: Log File Info
-        \Log::info('Uploaded File Details:', [
-            'Original Name' => $file->getClientOriginalName(),
-            'MIME Type' => $file->getMimeType(),
-            'Extension' => $file->getClientOriginalExtension(),
-            'Real Path' => $file->getRealPath(),
-        ]);
-    
-        DB::beginTransaction();
-        try {
-            $data = Excel::toArray([], $file);
-            \Log::info('Imported Data:', $data);
-    
-            Excel::import(new ClientDataImport, $file, null, \Maatwebsite\Excel\Excel::XLSX);
-            DB::commit();
-    
-            return redirect()->back()->with('success', 'Clients imported successfully!');
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            DB::rollback();
-            $failures = $e->failures();
-            $validationErrors = [];
-    
-            foreach ($failures as $failure) {
-                $row = $failure->row();
-                $attribute = $failure->attribute();
-                $errors = $failure->errors();
-                foreach ($errors as $error) {
-                    $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
-                }
-            }
-    
-            return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
-        }
+    $request->validate([
+        'file' => 'required|mimes:xlsx,csv|max:2048', // Max 2MB
+    ]);
+
+    if (!$request->hasFile('file')) {
+        return redirect()->back()->withErrors(['error' => 'No file uploaded']);
     }
-    
+
+    $file = $request->file('file');
+
+    if (!$file->isValid()) {
+        return redirect()->back()->withErrors(['error' => 'Invalid file upload']);
+    }
+
+    DB::beginTransaction();
+    try {
+        $data = Excel::toArray([], $file);
+        // dd($data);
+        \Log::info('Imported Data:', $data);
+         
+        // Ensure default status is "Client" if missing
+        foreach ($data[0] as &$row) {
+            if (!isset($row['status']) || empty(trim($row['status']))) {
+                $row['status'] = 'Client';
+            }
+        }
+
+        // Proceed with Import
+        Excel::import(new ClientDataImport, $file, null, \Maatwebsite\Excel\Excel::XLSX);
+        DB::commit();
+
+        return redirect()->back()->with('success', 'Clients imported successfully!');
+    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        DB::rollback();
+        $failures = $e->failures();
+        $validationErrors = [];
+
+        foreach ($failures as $failure) {
+            $row = $failure->row();
+            $attribute = $failure->attribute();
+            $errors = $failure->errors();
+            foreach ($errors as $error) {
+                $validationErrors[] = "Row {$row}, Column '{$attribute}': {$error}";
+            }
+        }
+
+        return redirect()->back()->withErrors(['validationErrors' => $validationErrors])->withInput();
+    } catch (\Exception $e) {
+        DB::rollback();
+        return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+    }
+}
+
 
 
         public function clientdataindex()
