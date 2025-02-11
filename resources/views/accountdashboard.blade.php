@@ -126,7 +126,7 @@
             <div class="dashboard-card bg-margin">
                 <i class="mdi mdi-cash-multiple dashboard-icon"></i>
                 <h5>Total Client Payment Received</h5>
-                <h2 id="Total_Client_Payment_Received">{{$total_client_invoice_pendig ?? 0}}</h2>
+                <h2 id="Total_Client_Payment_Received">{{$Total_Client_Payment_Received ?? 0}}</h2>
                 <div class="card-footer">
                     $<span id="tcr_usd"></span> | ₹<span id="tcr_inr"></span> | €<span id="tcr_euro"></span> | £<span id="tcr_pound"></span>
                 </div>
@@ -214,7 +214,7 @@
            $("#usd1").html(data.usd1);
            $("#euro1").html(data.euro1);
            $("#pound1").html(data.pound1);
-           $("#Total_Client_Payment_Received").html(data.TCPR);
+           $("#Total_Client_Payment_Received").html(data.tcpr_count);
            $("#tcr_inr").html(data.tcr_inr);
            $("#tcr_usd").html(data.tcr_usd);
            $("#tcr_euro").html(data.tcr_euro);

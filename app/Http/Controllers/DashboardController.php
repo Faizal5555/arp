@@ -168,7 +168,7 @@ class DashboardController extends Controller
         $client_advance_awaited =Clientrequest::where('status','awaited')->count();
         $total_vendor_invoice_awaited =$vendor_balance_awaited + $vendor_advance_awaited;
         $total_client_invoice_awaited = $client_balance_awaited + $client_advance_awaited + $vendor_balance_awaited + $vendor_advance_awaited;
-
+        $Total_Client_Payment_Received =Clientrequest::where('status','paid')->count();
         
         
         
@@ -217,7 +217,7 @@ class DashboardController extends Controller
         }elseif($user->user_type == ('field_team')){
             return view('fielddashboard',compact('team_leader','quality_analyst_name','project_manager_name','fieldteam','total_close','total_open'));
         }elseif($user->user_type == ('accounts')){
-           return view('accountdashboard',compact('total_client_invoice_pendig','total_vendor_invoice_pending','total_client_invoice_awaited','total_vendor_invoice_awaited'));
+           return view('accountdashboard',compact('total_client_invoice_pendig','total_vendor_invoice_pending','total_client_invoice_awaited','total_vendor_invoice_awaited','Total_Client_Payment_Received'));
         }elseif($user->user_type == ('supplier')){
             $countryFilter = $request->get('country');
     $countries = Country::all(); // Fetch all countries from the `countries` table
@@ -526,6 +526,7 @@ class DashboardController extends Controller
         if($request->start_1 == $request->end_1){
             
             // received
+        $Total_Client_Payment_Received_count =Clientrequest::where('created_at','>=',$request->start_1)->where('created_at','<=',$request->end_1)->where('status','paid')->count();
         $Total_Client_Payment_Received =Clientrequest::wheredate('created_at','=',$request->start_1)->where('status','paid')->sum('amount');
         $tcr_inr=Clientrequest::wheredate('created_at','=',$request->start_1)->where('currency','₹')->where('status','paid')->sum('amount');
         $tcr_usd=Clientrequest::wheredate('created_at','=',$request->start_1)->where('currency','$')->where('status','paid')->sum('amount');
@@ -570,7 +571,7 @@ class DashboardController extends Controller
             
         }else
         {
-        
+        $Total_Client_Payment_Received_count =Clientrequest::where('created_at','>=',$request->start_1)->where('created_at','<=',$request->end_1)->where('status','paid')->count();
         $Total_Client_Payment_Received =Clientrequest::where('created_at','>=',$request->start_1)->where('created_at','<=',$request->end_1)->where('status','paid')->sum('amount');
         
         $tcr_inr=Clientrequest::wheredate('created_at','>=',$request->start_1)->wheredate('created_at','<=',$request->end_1)->where('currency','₹')->where('status','paid')->sum('amount');
@@ -616,7 +617,7 @@ class DashboardController extends Controller
         }
         
         
-        return response()->json(["total_client_invoice_pendig"=>$total_client_invoice_pendig,"total_vendor_invoice_pending"=>$total_vendor_invoice_pending,"total_client_invoice_awaited"=>$total_client_invoice_awaited,"inr"=>$inr,"inr1"=>$inr1,"usd"=>$usd,"usd1"=>$usd1,"euro"=>$euro,"euro1"=>$euro1,"pound"=>$pound,"pound1"=>$pound1,"TVPR"=>$Total_Vendor_Payment_Received,"TCPR"=>$Total_Client_Payment_Received,"tcr_inr"=>$tcr_inr,"tcr_usd"=>$tcr_usd,"tcr_euro"=>$tcr_euro,"tcr_pound"=>$tcr_pound,"Total_Vendor_Payment_Received"=>$Total_Vendor_Payment_Received,"tvr_usd"=>$tcr_usd,"tvr_inr"=>$tcr_inr,"tvr_euro"=>$tcr_euro,"tcr_pound"=>$tcr_pound]);   
+        return response()->json(["total_client_invoice_pendig"=>$total_client_invoice_pendig,"total_vendor_invoice_pending"=>$total_vendor_invoice_pending,"total_client_invoice_awaited"=>$total_client_invoice_awaited,"inr"=>$inr,"inr1"=>$inr1,"usd"=>$usd,"usd1"=>$usd1,"euro"=>$euro,"euro1"=>$euro1,"pound"=>$pound,"pound1"=>$pound1,"TVPR"=>$Total_Vendor_Payment_Received,"TCPR"=>$Total_Client_Payment_Received,"tcr_inr"=>$tcr_inr,"tcr_usd"=>$tcr_usd,"tcr_euro"=>$tcr_euro,"tcr_pound"=>$tcr_pound,"Total_Vendor_Payment_Received"=>$Total_Vendor_Payment_Received,"tvr_usd"=>$tcr_usd,"tvr_inr"=>$tcr_inr,"tvr_euro"=>$tcr_euro,"tcr_pound"=>$tcr_pound,"tcpr_count"=>$Total_Client_Payment_Received_count]);   
         
     }
  
