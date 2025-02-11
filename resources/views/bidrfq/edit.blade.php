@@ -356,12 +356,12 @@
                 console.log("✅ Table pair successfully added inside the correct container"); //
 
 
-                $(document).on('click', '.removetable', function() {
-                    $(this).closest('.table-group').remove(); // ✅ Remove both tables together
-                });
+                
             });
 
-
+        $(document).on('click', '.removetable', function() {
+            $(this).closest('.table-group').remove(); // ✅ Remove both tables together
+        });
         $(document).on('click', '.btn-remove', function() {
             var key = $(this).attr('data-remove');
 
