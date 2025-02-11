@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 <style>
+/* Modern Corporate Dashboard Styles */
 .dashboard-card {
     transition: all 0.3s ease-in-out;
     border-radius: 12px;
@@ -9,59 +10,54 @@
     color: white;
     font-size: 16px;
     font-weight: bold;
-    min-width: 180px;
-    min-height: 160px; /* Ensure all cards have the same height */
+    min-width: 220px;
+    min-height: 180px; /* Uniform height */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     position: relative;
 }
 
-/* Ensure all cards inside the row have equal height */
-.row .col-md-4 {
-    display: flex;
-}
-
-.card-footer {
-    width: 100%;
-    padding: 8px 0;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-}
-/* Card Background Colors */
-.bg-client { background: linear-gradient(135deg, #9B59B6, #8E44AD); } /* Purple */
-.bg-margin { background: linear-gradient(135deg, #F39C12, #D68910); } /* Orange */
-.bg-revenue { background: linear-gradient(135deg, #16A085, #138D75); } /* Teal */
-.bg-vendor { background: linear-gradient(135deg, #E74C3C, #C0392B); } /* Red */
-.bg-pending { background: linear-gradient(135deg, #4A90E2, #357ABD); } /* Blue */
-.bg-payment { background: linear-gradient(135deg, #6ABF4B, #47A032); } /* Green */
+/* Updated Solid Background Colors */
+.bg-client { background-color: #3d83cb; } /* Blue */
+.bg-margin { background-color: #F39C12; } /* Orange */
+.bg-revenue { background-color: #16a085; } /* Cyan */
+.bg-vendor { background-color: #6F42C1; } /* Purple */
+.bg-pending { background-color: #3d83cb; } /* Green */
+.bg-payment { background-color: #343A40; } /* Dark Gray */
 
 /* Icons */
 .dashboard-icon {
-    font-size: 35px;
-    margin-bottom: 10px;
+    font-size: 40px;
+    margin-bottom: 12px;
 }
 
 /* Hover Effect */
 .dashboard-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Card Footer (for amounts) */
-
-/* Chart Container */
-.chart-container {
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+/* Card Footer (for currency details) */
+.card-footer {
+    width: 90%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
 }
+
+/* Row Fix for Equal Height */
+.row .col-md-4 {
+    display: flex;
+    align-items: stretch;
+}
+
 </style>
 
 
@@ -80,7 +76,7 @@
   <div class="content-wrapper">
     <div class="page-header">
         <h3 class="page-title">
-            <span class="page-title-icon bg-gradient-primary text-white mr-2">
+            <span class="page-title-icon bg-primary text-white mr-2">
                 <i class="mdi mdi-home"></i>
             </span> Account Dashboard
         </h3>
@@ -138,7 +134,7 @@
         </div>
         <div class="col-md-4">
             <div class="dashboard-card bg-revenue">
-              <i class="mdi mdi-store dashboard-icon"></i>
+                <i class="mdi mdi-currency-usd dashboard-icon"></i>
                 <h5>Total Vendor Payment Made</h5>
                 <h2 id="Total_Vendor_Payments_Received">{{$total_vendor_invoice_pending ?? 0}}</h2>
                 <div class="card-footer">
@@ -147,7 +143,7 @@
             </div>
         </div>
     </div>
-  </div>
+</div>
  <script>
  $(document).ready(function(){
       var start_date = moment().format('YYYY-MM-DD');
