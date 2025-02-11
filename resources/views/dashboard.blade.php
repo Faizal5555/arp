@@ -202,18 +202,30 @@ $(document).ready(function () {
 
     // ✅ Function to update Doughnut Chart dynamically
     function updateDoughnutChart(margin, revenue) {
-        var chart = echarts.init(document.getElementById('doughnutChart'));
-        chart.setOption({
-            series: [{
-                type: 'pie',
-                radius: ['50%', '70%'],
-                data: [
-                    { value: margin, name: 'Total Margin', itemStyle: { color: '#f39c12' } },
-                    { value: revenue, name: 'Total Revenue', itemStyle: { color: '#16a085' } }
-                ]
-            }]
-        });
-    }
+    var chart = echarts.init(document.getElementById('doughnutChart'));
+
+    chart.setOption({
+        series: [{
+            type: 'pie',
+            radius: ['50%', '70%'],
+            label: {
+                show: true, 
+                position: 'outside', // Ensures text is visible
+                formatter: function(params) {
+                    return `${params.name}\n${params.value.toLocaleString()}`; // Displays name & formatted amount
+                },
+                fontSize: 14
+            },
+            labelLine: {
+                show: true
+            },
+            data: [
+                { value: margin, name: 'Total Margin', itemStyle: { color: '#f39c12' } },
+                { value: revenue, name: 'Total Revenue', itemStyle: { color: '#16a085' } }
+            ]
+        }]
+    });
+}
 });
 </script>
 
