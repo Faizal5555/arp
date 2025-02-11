@@ -408,13 +408,13 @@ $('#importForm').on('submit', function (e) {
                                         </select>
                                     </div>
 
-                                    <div class="col-md-3 m-1 form-group">
+                                    <div class="col-md-3 m-1">
                                         <label for="statusFilter">Filter by Company:</label>
                                         <input type="text" id="companyFilter" class="form-control" placeholder="Enter Company Name">
                                     </div>
                                 
                                     <!-- Country Filter -->
-                                    <div class="col-md-3 m-1 form-group">
+                                    <div class="col-md-3 m-1">
                                         <label for="countryFilter">Filter by Country:</label>
                                         <input type="text" id="countryFilter" class="form-control" placeholder="Enter Country">
                                     </div>
