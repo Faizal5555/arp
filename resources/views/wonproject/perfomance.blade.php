@@ -36,6 +36,55 @@ h5 {
     color: #ebedf2;
 }
 }
+.my-client, .my-vendor, .my-total {
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 140px; /* Ensures uniform height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Solid Background Colors */
+.my-client { background-color: #007BFF !important; } /* Blue */
+.my-vendor { background-color: #FF9800 !important; } /* Orange */
+.my-total { background-color: #28A745 !important; } /* Green */
+.my-margin { background-color: #E74C3C !important; } /* Red */
+.my-followup { background-color: #17A2B8 !important; } /* Cyan */
+.my-invoice { background-color: #6C757D !important; } /* Dark Gray */
+.my-vendor-invoice { background-color: #03A9F4 !important; } /* Light Blue */
+
+/* Card Hover Effect */
+.my-client:hover, .my-vendor:hover, .my-total:hover, .my-margin:hover, .my-followup:hover, .my-invoice:hover, .my-vendor-invoice:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Amount Styling */
+.my-client h2, .my-vendor h2, .my-total h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Currency Labels */
+.my-client h5, .my-vendor h5, .my-total h5 {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+
+
+/* Row Fix for Equal Height */
 </style>
 @section('page_title', 'WonProject List')
 @section('content')
@@ -140,25 +189,25 @@ h5 {
 
     <div class="col-md-3">
      <div class="my-client" style="background-color: #0075f2 !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-      <h5>Total  Client</h5>
+      <p class="head">Total  Client</p>
      <h2> <label for="" class="total_client">0</label></h2>
     </div>
   </div>
     <div class="col-md-3">
-      <div class="my-vendor" style="background-color: #b5ab31 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-     <h5 >Total Vendor</h5>
+      <div class="my-vendor" style="background-color: #FF9800 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
+     <p class="head" >Total Vendor</p>
       <h2> <label for="" class="total_vendor">0</label></h2>
      </div>
     </div>
     <div class="col-md-3">
-      <div class="my-total" style="background-color: #28a745 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-      <h5 >Total Bidrfq </h5>
+      <div class="my-total" style="background-color: #28A745 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
+      <p class="head">Total Bidrfq </p>
       <h2> <label for="" class="total_rfq">0</label></h2>
     </div>
   </div>
   <div class="col-md-3">
-         <div class="my-client" style="background-color: #e77c80  !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-          <h5>Total  Margin</h5>
+         <div class="my-client" style="background-color: #6C757D   !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
+          <p class="head">Total  Margin</p>
          <h2> <label for="" class="total_margin">0</label></h2>
         </div>
         </div>
@@ -168,20 +217,20 @@ h5 {
     <div class="row">
         
        <div class="col-md-3">
-         <div class="my-client" style="background-color: #17a2b8 !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-          <h5>Rfq Followup</h5>
+         <div class="my-client" style="background-color: #9956b5 !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
+          <p class="head">Rfq Followup</p>
          <h2> <label for="" class="rfq_follow">0</label></h2>
         </div>
       </div>
         <div class="col-md-3">
-          <div class="my-vendor" style="background-color: var(--pink) !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-         <h5 >Total Client Invoice</h5>
+          <div class="my-vendor" style="background-color:#E74C3C !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
+         <p class="head">Total Client Invoice</p>
           <h2> <label for="" class="Total_client_invoice">0</label></h2>
          </div>
         </div>
         <div class="col-md-3">
           <div class="my-total" style="background-color: #03a9f4  !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-          <h5 >Total Vendor Invoice</h5>
+          <p class="head">Total Vendor Invoice</p>
           <h2> <label for="" class="Total_vendor_invoice">0</label></h2>
         </div>
       </div>

@@ -36,6 +36,60 @@ h5 {
     color: #ebedf2;
 }
 }
+/* Modern Corporate Cards */
+.my-client, .my-vendor {
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 160px; /* Ensures uniform height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Updated Solid Background Colors */
+.my-new { background-color: #007BFF !important; } /* Blue */
+.my-close { background-color: #16a085 !important; } /* Deep Orange */
+
+/* Hover Effect */
+.my-client:hover, .my-vendor:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Title */
+.my-client h5, .my-vendor h5 {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Card Amount Styling */
+.my-client h2, .my-vendor h2 {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* Row Fix for Equal Height */
+/* Container Styling */
+.content-wrapper {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.head{
+  font-size:20px;
+}
+
 </style>
 @section('page_title', 'WonProject List')
 @section('content')
@@ -224,9 +278,9 @@ h5 {
           </div>
           <div class="col-md-3 mt-3"> 
           <h4 class="card-title" style="margin-bottom:40px !important">Date</h4>
-            <input type="text" id="daterange" name="RFQs" /><br><br>
-            <input type="hidden" id="status" name="status"  value="completed"/><br><br>
-            <input type="hidden" id="status1" name="status"  value="hold"/><br><br>
+            <input type="text" id="daterange" name="RFQs" />
+            <input type="hidden" id="status" name="status"  value="completed"/>
+            <input type="hidden" id="status1" name="status"  value="hold"/>
           </div>
     </div>
   </div>
@@ -234,28 +288,33 @@ h5 {
 
   
 <div class="container mt-2 mb-5">
-<div class="content-wrapper mt-4" id="new-find">
-<div class="row">
-  <div class="col-md-12">
-    <div class="row">
-    <div class="col-md-4">
-     <div class="my-client my-new" style="background-color: #0075f2 !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-      <h5>Total  New Project</h5>
-     <h2> <label for="" class="total_new">0</label></h2>
-    </div>
-  </div>
-    <div class="col-md-4">
-      <div class="my-vendor my-close" style="background-color: #b5ab31 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-     <h5 >Total Closed Project</h5>
-      <h2> <label for="" class="total_close">0</label></h2>
-     </div>
-    </div>
-    </div>
+  <div class="content-wrapper mt-4" id="new-find">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="row">
 
+                  <!-- Total New Project -->
+                  <div class="col-md-4">
+                      <div class="my-client my-new">
+                          <p class="head">Total New Project</p>
+                          <h2><label class="total_new">0</label></h2>
+                      </div>
+                  </div>
+
+                  <!-- Total Closed Project -->
+                  <div class="col-md-4">
+                      <div class="my-vendor my-close">
+                          <p class="head">Total Closed Project</p>
+                          <h2><label class="total_close">0</label></h2>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+      </div>
   </div>
-</div>  
 </div>
-</div>
+
 
                         <div class="table-responsive d-none" id="new-table">
                              <div class="container">  

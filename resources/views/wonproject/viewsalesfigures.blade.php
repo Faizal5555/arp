@@ -36,6 +36,65 @@ h5 {
     color: #ebedf2;
 }
 }
+
+.my-client, .my-vendor, .my-total {
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 190px; /* Ensures uniform height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* New Solid Background Colors */
+.my-client { background-color: #0056b3 !important; } /* Dark Blue */
+.my-vendor { background-color: #ff9800 !important; } /* Orange */
+.my-total { background-color: #28a745 !important; } /* Green */
+
+/* Card Hover Effect */
+.my-client:hover, .my-vendor:hover, .my-total:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Amount Styling */
+.my-client h2, .my-vendor h2, .my-total h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Currency Labels */
+.my-client h5, .my-vendor h5, .my-total h5 {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Chart Box */
+#default_chart {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Row Fix for Equal Height */
+.row .col-md-3 {
+    display: flex;
+    align-items: stretch;
+}
 </style>
 @section('page_title', 'WonProject List')
 @section('content')
@@ -123,52 +182,56 @@ h5 {
 </div>
 {{-- end report --}}
 <div class="container">
-<div class="content-wrapper">
-<div class="row">
-  <div class="col-md-12">
-    <div class="row">
-        
-    
+  <div class="content-wrapper">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="row">
 
-    <div class="col-md-3">
-     <div class="my-client" style="background-color: #0075f2 !important; padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-      <h5>Total  Client Invoice </h5>
-     <h2> <label for="" class="total_client_invoice">{{$client_total ? $client_total : 0}}</label></h2>
-     <h5>$<span class="client_usd"></span></h5>
-     <h5>₹<span class="client_inr"></span></h5>
-     <h5>€<span class="client_euro"></span></h5>
-     <h5>£<span class="client_pound"></span></h5>
-    </div>
+                  <!-- Total Client Invoice -->
+                  <div class="col-md-4">
+                      <div class="my-client">
+                          <h5>Total Client Invoice</h5>
+                          <h2><label class="total_client_invoice">{{$client_total ? $client_total : 0}}</label></h2>
+                          <h5>$<span class="client_usd">0</span></h5>
+                          <h5>₹<span class="client_inr">0</span></h5>
+                          <h5>€<span class="client_euro">0</span></h5>
+                          <h5>£<span class="client_pound">0</span></h5>
+                      </div>
+                  </div>
+
+                  <!-- Total Vendor Invoice -->
+                  <div class="col-md-4">
+                      <div class="my-vendor">
+                          <h5>Total Vendor Invoice</h5>
+                          <h2><label class="total_vendor_invoice">{{$vendor_toatl ? $vendor_toatl : 0}}</label></h2>
+                          <h5>$<span class="vendor_usd">0</span></h5>
+                          <h5>₹<span class="vendor_inr">0</span></h5>
+                          <h5>€<span class="vendor_euro">0</span></h5>
+                          <h5>£<span class="vendor_pound">0</span></h5>
+                      </div>
+                  </div>
+
+                  <!-- Total Margin Values -->
+                  <div class="col-md-4">
+                      <div class="my-total">
+                          <h5>Total Margin Values</h5>
+                          <h2><label class="total_margin">{{$wonproject ? $wonproject : 0}}</label></h2>
+                          <h5>$<span class="total_usd">0</span></h5>
+                          <h5>₹<span class="total_inr">0</span></h5>
+                          <h5>€<span class="total_euro">0</span></h5>
+                          <h5>£<span class="total_pound">0</span></h5>
+                      </div>
+                  </div>
+
+                  <!-- Bar Chart -->
+                  <div class="col-md-4 mt-3 p-4" id="default_chart">
+                      <canvas id="bar_chart" width="100%" height="100%"></canvas>
+                  </div>
+
+              </div>
+          </div>
+      </div>
   </div>
-    <div class="col-md-3">
-      <div class="my-vendor" style="background-color: #b5ab31 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-     <h5 >Total Vendor Invoice </h5>
-      <h2> <label for="" class="total_vendor_invoice">{{$vendor_toatl ? $vendor_toatl : 0}}</label></h2>
-      
-     <h5>$<span class="vendor_usd"></span></h5>
-     <h5>₹<span class="vendor_inr"></span></h5>
-     <h5>€<span class="vendor_euro"></span></h5>
-     <h5>£<span class="vendor_pound"></span></h5>
-     </div>
-    </div>
-    <div class="col-md-3">
-      <div class="my-total" style="background-color: #28a745 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px; margin-top: 30px;">
-      <h5 >Total Margin Values </h5>
-      <h2> <label for="" class="total_margin">{{$wonproject ? $wonproject : 0}}</label></h2>
-      
-     <h5>$<span class="total_usd"></span></h5>
-     <h5>₹<span class="total_inr"></span></h5>
-     <h5>€<span class="total_euro"></span></h5>
-     <h5>£<span class="total_pound"></span></h5>
-    </div>
-  </div>
-    <div class="col-md-3" id="default_chart">
-      <canvas id="bar_chart" width="100%" height="100%"></canvas>
-    </div>
-    </div>
-  </div>
-</div>  
-</div>
 </div>
 
 <iframe id="txtArea1" style="display:none"></iframe>
