@@ -360,7 +360,7 @@ $(function () {
                     },
                     {
                         value: closedProjects,
-                        name: 'Closed Projects',
+                        name: 'Completed Projects',
                         itemStyle: { color: '#28a745' } // Green
                     }
                 ]

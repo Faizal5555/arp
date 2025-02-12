@@ -618,9 +618,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label id="otherField15"
-                                                        class="col-lg-3 col-form-label font-weight-semibold">Attach Client
-                                                        Contract
-                                                        / Email <span class="text-danger">*</span></label>
+                                                    class="col-lg-3 col-form-label font-weight-semibold">Attach Client
+                                                    Contract
+                                                    / Email <span class="text-danger">*</span></label>
                                                     <div class="col-lg-9">
                                                         <div id="client_contract_attachment">
                                                         </div>
@@ -629,6 +629,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <?php
                                             $vendor_id = explode(',', $wonproject[0]->vendor_id);
                                             $vendor_advance = explode(',', $wonproject[0]->vendor_advance);

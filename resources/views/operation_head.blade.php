@@ -334,7 +334,7 @@ $(function () {
         legend: {
             orient: 'vertical',
             left: 'left',
-            data: ['New Projects', 'Existing Projects', 'Closed Projects']
+            data: ['New Projects', 'Existing Projects', 'Completed Projects']
         },
         series: [
             {
