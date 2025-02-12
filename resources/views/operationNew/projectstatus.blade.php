@@ -41,6 +41,73 @@ h5 {
 .card-title{
     
 }
+}
+
+/* Modern Corporate Cards */
+.my-client, .my-vendor, .my-total {
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 160px; /* Ensures uniform height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Solid Background Colors */
+.my-client { background-color: #009688 !important; } /* Teal */
+.my-vendor { background-color: #007BFF !important; } /* Blue */
+.my-total { background-color: #8E44AD !important; } /* Purple */
+
+/* Card Hover Effect */
+.my-client:hover, .my-vendor:hover, .my-total:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Title */
+.my-client h5, .my-vendor h5, .my-total h5 {
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+/* Card Amount Styling */
+.my-client h2, .my-vendor h2, .my-total h2 {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* Select Dropdown Styling */
+.label-gray-3 {
+    background-color: #f8f9fa;
+    border: 1px solid #89b3e2 !important;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Row Fix for Equal Height */
+
+/* Container Styling */
+.content-wrapper {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.head{
+  font-size:20px;
+}
 </style>
 @section('page_title', 'WonProject List')
 @section('content')
@@ -58,7 +125,7 @@ h5 {
   <a class="ml-2 card-title" style="color:white;font-size: 1.125rem; font-family:'ubuntu-medium', sans-serif;">Project Status</a>
 </div>
 <!--Select Team Leader-->
- <div class="chart-title">
+ <div class="chart-title d-none">
   <div class="container">
     <div class="row mt-4">
           <div class="col-md-3">
@@ -79,7 +146,7 @@ h5 {
 </div>
 
 
-<div class="container">
+<div class="container d-none">
 <div class="content-wrapper" style="margin-top:40px">
 <div class="row">
   <div class="col-md-12">
@@ -114,58 +181,65 @@ h5 {
 
 <!--Project Manager Name-->
 <div class="container">
-    <div class="row mt-4">
-          <div class="col-md-3">
+  <div class="row mt-4">
+      <div class="col-md-3">
           <h4 class="card-title float-left" style="font-size:20px">Project Manager Name</h4>
-            <select class="form-control label-gray-3" name="project_manager_name" id="project_manager_name" style="outline: 1px solid #89b3e2 !important;">
-              <option class="label-gray-3" value="" disabled selected>Select Project Manager Name</option>
-                
-                @if(count($user1)>0)
-                @foreach ($user1 as $item)
-                <option value="{{$item->id}}">{{$item->name}}</option>
-                @endforeach
-                @endif
-                
-            </select>
-          </div>
-    </div>
+          <select class="form-control label-gray-3" name="project_manager_name" id="project_manager_name">
+              <option value="" disabled selected>Select Project Manager Name</option>
+              @if(count($user1)>0)
+              @foreach ($user1 as $item)
+              <option value="{{$item->id}}">{{$item->name}}</option>
+              @endforeach
+              @endif
+          </select>
+      </div>
   </div>
-  
-<div class="container">
-<div class="content-wrapper" style=" margin-top:40px">
-<div class="row">
-  <div class="col-md-12">
-    <div class="row">
-    <div class="col-md-3">
-     <div class="my-client" style="background-color: #00cccc !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px;">
-      <h5>Closed Project </h5>
-     <h2 class="PM_Closed_projects"> <label for="" ></label>{{$closed ? $closed : 0}}</h2>
-    </div>
-  </div>
-    <div class="col-md-3">
-      <div class="my-vendor" style="background-color: #0075f2 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px;">
-     <h5 >Live project</h5>
-      <h2 class="PM_Hold_project"> <label for="" ></label>{{$hold ? $hold : 0}} </h2>
-     </div>
-    </div>
-    <div class="col-md-3">
-      <div class="my-total" style="background-color: #6f42c1 !important;  padding: 10px; color: #ebedf2; margin-bottom: 12px;">
-      <h5 >Stop Project </h5>
-      <h2  class="PM_Stop_project"> <label for=""></label>{{$stop ? $stop : 0}}</h2>
-    </div>
-  </div>
-    <div class="col-md-3" id="default_chart">
-      <canvas id="PM_bar_chart" width="100%" height="100%"></canvas>
-    </div>
-    </div>
-  </div>
-</div>  
 </div>
+
+<div class="container">
+  <div class="content-wrapper mt-4">
+      <div class="row">
+          <div class="col-md-12">
+              <div class="row">
+
+                  <!-- Closed Project -->
+                  <div class="col-md-3">
+                      <div class="my-client">
+                          <p class="head">Closed Project</p>
+                          <h2 class="PM_Closed_projects">{{$closed ? $closed : 0}}</h2>
+                      </div>
+                  </div>
+
+                  <!-- Live Project -->
+                  <div class="col-md-3">
+                      <div class="my-vendor">
+                          <p class="head">Live Project</p>
+                          <h2 class="PM_Hold_project">{{$hold ? $hold : 0}}</h2>
+                      </div>
+                  </div>
+
+                  <!-- Stop Project -->
+                  <div class="col-md-3">
+                      <div class="my-total">
+                          <p class="head">Stop Project</p>
+                          <h2 class="PM_Stop_project">{{$stop ? $stop : 0}}</h2>
+                      </div>
+                  </div>
+
+                  <!-- Bar Chart -->
+                  <div class="col-md-3" id="default_chart">
+                      <canvas id="PM_bar_chart" width="100%" height="100%"></canvas>
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
 <!--End Project Manager Name-->
 
 <!--Quality Analyst Name-->
-<div class="container">
+<div class="container d-none">
     <div class="row mt-4">
           <div class="col-md-3">
           <h4 class="card-title float-left" style="font-size:20px">Quality Analyst Name</h4>
@@ -183,7 +257,7 @@ h5 {
     </div>
   </div>
   
-<div class="container">
+<div class="container d-none">
 <div class="content-wrapper" style="margin-bottom: 6.7rem; margin-top:40px">
 <div class="row">
   <div class="col-md-12">
@@ -291,7 +365,7 @@ $(document).on('change','#project_manager_name',function() {
           var total_data=[response.Completed,response.hold,response.stop];
           var bgColor=["#00CCCC","#0075F2","#5A1BD0"];
           var chartdata = {
-            labels:["Closed Project","Hold Project ","Stop Project"],
+            labels:["Closed Project","Live Project ","Stop Project"],
             datasets:[{
               label:"Total invoice values",
               backgroundColor:bgColor,
