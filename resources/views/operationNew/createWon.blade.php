@@ -425,7 +425,7 @@
         
                                                     <input name="interview_length"
                                                         value="" id="interview_length"
-                                                        type="text" class="form-control" placeholder="Respondent Title">
+                                                        type="text" class="form-control" placeholder="Interview Length">
                                                 </div>
                                             </div>
                                         </div>
