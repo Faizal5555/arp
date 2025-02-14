@@ -233,10 +233,10 @@
 
                                             @if (count($wonproject) > 0)
                                                 @foreach ($wonproject as $value)
-                                                @if ((auth()->user()->user_type == "admin" || auth()->user()->user_type == "operation_head") && !in_array($value->rfq_no, $rfq))
+                                                @if ((auth()->user()->user_type == "admin" || auth()->user()->user_type == "operation_head" || auth()->user()->user_role == "project_manager") && !in_array($value->rfq_no, $rfq))
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
-                                                    @elseif (auth()->user()->user_role == "project_manager" && !in_array($value->rfq_no, $rfq)) 
-                                                        <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
+                                                    {{-- @elseif (auth()->user()->user_role == "project_manager") 
+                                                        <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option> --}}
                                                     @endif
                                                 @endforeach
                                             @endif

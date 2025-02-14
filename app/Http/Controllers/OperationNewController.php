@@ -37,15 +37,15 @@ class OperationNewController extends Controller
         // Base query for WonProject
         $wonproject = WonProject::query();
         // If the logged-in user is a Project Manager, filter by allocated RFQs
-        if ($user->user_role === 'project_manager') {
-            // Get the RFQ values allocated to this Project Manager
-            $allocatedRfqList = OperationNew::where('project_manager_name', $user->id)
-                ->pluck('rfq')
-                ->toArray();
-            // dd($allocatedRfqList);
-            // Ensure project managers only see their projects
-            $wonproject->whereIn('rfq_no', $allocatedRfqList);
-        } 
+        // if ($user->user_role === 'project_manager') {
+        //     // Get the RFQ values allocated to this Project Manager
+        //     $allocatedRfqList = OperationNew::where('project_manager_name', $user->id)
+        //         ->pluck('rfq')
+        //         ->toArray();
+        //     // dd($allocatedRfqList);
+        //     // Ensure project managers only see their projects
+        //     $wonproject->whereIn('rfq_no', $allocatedRfqList);
+        // } 
         $wonproject=$wonproject->get();
         $vendor1=Vendor::get();
         $vendor = Vendor::get();
