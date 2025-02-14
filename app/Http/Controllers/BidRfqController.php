@@ -201,6 +201,9 @@ class BidRfqController extends Controller
                 $bidrfq->follow_up_date = $req->follow_up_date;
                 $bidrfq->currency = $req->currency;
                 $bidrfq->company_name = $req->company_name;
+                $bidrfq->respondent_title = $req->respondent_title;
+                $bidrfq->interview_length = $req->interview_length;
+                $bidrfq->others_field = $req->others_field;
                 $bidrfq->rfq_no = $req->rfq_no;
                 
                 $bidrfq->client_id =json_encode($req->client_id_0);
@@ -328,6 +331,9 @@ class BidRfqController extends Controller
                 $bidrfq->industry = $req->industry;
                 $bidrfq->comments = $req->comments;
                 $bidrfq->company_name = $req->company_name;
+                $bidrfq->respondent_title = $req->respondent_title;
+                $bidrfq->interview_length = $req->interview_length;
+                $bidrfq->others_field = $req->others_field;
                 $bidrfq->follow_up_date = $req->follow_up_date;
                 //  $bidrfq->industry_table = $req->industry_table;
                 // $bidrfq->client_id = implode(',',$req->$client_id);
@@ -664,7 +670,10 @@ class BidRfqController extends Controller
                 $bidrfq->date = $req->date;
                 $bidrfq->industry = $req->industry;
                 $bidrfq->comments = $req->comments;
-                $bidrfq->follow_up_date = $req->follow_up_date;
+                $bidrfq->company_name = $req->company_name;
+                $bidrfq->respondent_title = $req->respondent_title;
+                $bidrfq->interview_length = $req->interview_length;
+                $bidrfq->others_field = $req->others_field;
                 //  $bidrfq->industry_table = $req->industry_table;
                 // $bidrfq->client_id = implode(',',$req->$client_id);
                 // $bidrfq->vendor_id = implode(',',$req->$vendor_id);
@@ -705,8 +714,8 @@ class BidRfqController extends Controller
         return response()->json($response_data);
     }
      public function pdfview($id){
+        
         $biddownload=BidRfq::where('id',$id)->first();
-        // dd($biddownload);
         return view('bidrfq.pdfbidrfq',compact('biddownload'));
         
     }

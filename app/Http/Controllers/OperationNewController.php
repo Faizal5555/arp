@@ -53,7 +53,9 @@ class OperationNewController extends Controller
         $bidrfq=BidRfq::get();
         $operation="";
         $operation=[];
-        $operation_rfq = OperationNew::select('rfq')->get()->toArray();
+        $operation_rfq = [];
+        $rfq = OperationNew::select('rfq')->get()->pluck('rfq')->toArray();
+        // dd($operation_rfq);
         $country = Country::get();
         $fieldteam=Fieldteam::get();
         $user=User::where('user_role','team_leader')->get();
@@ -62,11 +64,12 @@ class OperationNewController extends Controller
         $user3=User::where('user_role','operation_head')->get();
         $notification=Notification::where('status',0)->get();
         $notificationCount=Notification::where('status',0)->count();
-        $rfq = array();
-        for($i=0; $i< count($operation_rfq);$i++)
-        {
-            array_push($rfq,$operation_rfq[$i]['rfq']);
-        }
+        // $rfq = array();
+        // for($i=0; $i< count($operation_rfq);$i++)
+        // {
+        //     array_push($rfq,$operation_rfq[$i]['rfq']);
+        // }
+        // dd($wonproject,$rfq);
         $unique_no = OperationNew::orderBy('id', 'DESC')->with('purchase_order_no','purchase_order_no')->pluck('id')->first();
         if($unique_no == null or $unique_no == ""){
             #If Table is Empty
@@ -96,7 +99,7 @@ class OperationNewController extends Controller
         // }
         $project_no = 'PNO'.$unique_no. '-' .$dt->year;
         // dd($rfq,$wonproject->pluck('rfq_no'));
-        // dd($wonproject,$rfq);
+        //dd($wonproject->pluck('rfq_no')->toArray(),$rfq);
         return view('operationNew.createWon',compact('wonproject','bidrfq','client','vendor1','vendor','operation','purchase_order_no','project_no','country','notification','fieldteam','notificationCount','user','user1','user2','user3','operation_rfq','rfq'));
     }
     public function change(Request $req,WonProject $wonProject){

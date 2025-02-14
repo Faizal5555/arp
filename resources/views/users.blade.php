@@ -313,7 +313,7 @@ table tfoot th {
                     <option name= "user_type" value="accounts">Accounts</option>
                     <option name= "user_type" value="supplier">Supplier</option>
                     <option name= "user_type" value="field_team" disabled>Field Team(TL)</option>
-                    <option name= "user_type" value="operation">Operation(PM)</option>
+                    <option name= "user_type" value="operation">Project Manager(PM)</option>
                     <option name= "user_type" value="operation_head">Project Operation Head</option>
                     <option name= "user_type" value="data_center">Data Center</option>
                     <option name= "user_type" value="global_manager">Global Panel Manager</option>

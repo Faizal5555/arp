@@ -235,7 +235,7 @@
                                                 @foreach ($wonproject as $value)
                                                 @if ((auth()->user()->user_type == "admin" || auth()->user()->user_type == "operation_head") && !in_array($value->rfq_no, $rfq))
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
-                                                    @elseif (auth()->user()->user_role == "project_manager")
+                                                    @elseif (auth()->user()->user_role == "project_manager" && !in_array($value->rfq_no, $rfq)) 
                                                         <option value="{{ $value->rfq_no }}">{{ $value->rfq_no }}</option>
                                                     @endif
                                                 @endforeach
@@ -401,6 +401,43 @@
                                                         <option value="Healthcare Panels India">Healthcare Panels India</option>
                                                         
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Respondent Titile<span
+                                                        class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+        
+                                                    <input name="respondent_title"
+                                                        value="" id="respondent_title"
+                                                        type="text" class="form-control" placeholder="Respondent Title">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Interview Length<span
+                                                        class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+        
+                                                    <input name="interview_length"
+                                                        value="" id="interview_length"
+                                                        type="text" class="form-control" placeholder="Respondent Title">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-lg-3 col-form-label font-weight-semibold">Others<span
+                                                        class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+        
+                                                    <input name="others_field"
+                                                        value="" id="others_field"
+                                                        type="text" class="form-control" placeholder="Others ">
                                                 </div>
                                             </div>
                                         </div>
@@ -809,7 +846,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project No
                                                     <span class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="project_no" value="{{ $project_no }}" type="text"
+                                                    <input name="project_no" value="" type="text"
                                                         class="form-control">
                                                 </div>
                                             </div>
@@ -904,6 +941,7 @@
                                             </div>
                                         </div>
 
+                                        @if (auth()->user()->user_type == "admin")
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project Operation Head Name
@@ -924,6 +962,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        @endif
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">Project
@@ -2126,6 +2165,9 @@
                             $("#follow_up_date").val(data.bidrfq.follow_up_date);
                             $("#currency").val(data.bidrfq.currency);
                             $("#company_name").val(data.bidrfq.company_name);
+                            $("#respondent_title").val(data.bidrfq.respondent_title);
+                            $("#interview_length").val(data.bidrfq.interview_length);
+                            $("#others_field").val(data.bidrfq.others_field);
                             $(".user").val(data.user.name);
                     // first page end
                             console.log(data);

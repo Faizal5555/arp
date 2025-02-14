@@ -548,6 +548,15 @@
                     company_name: {
                         required: true
                     },
+                    respondent_title: {
+                        required: true
+                    },
+                    interview_length: {
+                        required: true
+                    },
+                    others_field: {
+                        required: true
+                    },
                     country: {
                         required: true
                     },
@@ -814,6 +823,53 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Respondent title<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+
+                                            <input name="respondent_title" value="" type="text"
+                                                class="form-control " placeholder="Respondent title">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Interview Length<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+
+                                            <input name="interview_length" value="" type="text"
+                                                class="form-control " placeholder="Interview Length">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Others<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+
+                                            <input name="others_field" value="" type="text"
+                                                class="form-control " placeholder="Others">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                
+
+
 
 
                                 <div class="col-md-12" style="overflow-x:auto;">

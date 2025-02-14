@@ -885,7 +885,7 @@ class WonProjectController extends Controller
         return view('wonproject.operationstatus',compact('operation','country'));
     }
     public function getstatus(Request $req){
-        $wonproject=Wonproject::where('rfq_no',$req->id)->first();
+        $wonproject=Wonproject::where('id',$req->id)->first();
         $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
         if(!$operation){
             $response_data=["success"=>0,"message"=>"fail"]; 

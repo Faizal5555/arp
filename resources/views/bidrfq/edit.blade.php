@@ -897,7 +897,47 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Respondent Titile<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
 
+                                            <input name="respondent_title"
+                                                value="{{ $bidrfq && $bidrfq->respondent_title ? $bidrfq->respondent_title : '' }}"
+                                                type="text" class="form-control" placeholder="Respondent Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Interview Length<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+
+                                            <input name="interview_length"
+                                                value="{{ $bidrfq && $bidrfq->interview_length ? $bidrfq->interview_length : '' }}"
+                                                type="text" class="form-control" placeholder="Respondent Title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-lg-3 col-form-label font-weight-semibold">Others<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+
+                                            <input name="others_field"
+                                                value="{{ $bidrfq && $bidrfq->others_field ? $bidrfq->others_field : '' }}"
+                                                type="text" class="form-control" placeholder="Others ">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                </div>
+
+                                
                                 
                                 <?php
                                     $arr = json_decode($bidrfq->sample_size, true);
@@ -913,6 +953,7 @@
                                     $client_id = json_decode($bidrfq->client_id);
                                     $vendor_id = json_decode($bidrfq->vendor_id);
                                     ?>
+                                    
                                     <button class="ml-2 btn btn-success addBtn" id="addBtn" attr="{{ count($world) }}" type="button"
                                     data-count="0">
                                     Add Country
