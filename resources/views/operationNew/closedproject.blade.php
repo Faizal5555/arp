@@ -172,7 +172,7 @@ input#po_no{
             // {data:'status',name:'status'},
             {data:'',
                 render:(data,typr,row)=>{
-                    if (userType === 'admin') {
+                    if (userType === 'admin' || userType === 'operation_head') {
                         return `<a href='/adminapp/operationNew/close/edit/${row.id}'><i class="fas fa-eye"></i></a>`;
                     } 
                     $('.action-td').addClass('d-none');

@@ -294,7 +294,7 @@ input.form-control {
 
                             <input name="respondent_title"
                                 value="{{ $bidrfq && $bidrfq->respondent_title ? $bidrfq->respondent_title : '' }}"
-                                type="text" class="form-control" placeholder="Respondent Title">
+                                type="text" class="form-control" placeholder="Respondent Title" readonly>
                         </div>
                     </div>
                 </div>
@@ -306,7 +306,7 @@ input.form-control {
 
                             <input name="interview_length"
                                 value="{{ $bidrfq && $bidrfq->interview_length ? $bidrfq->interview_length : '' }}"
-                                type="text" class="form-control" placeholder="Interview length">
+                                type="text" class="form-control" placeholder="Interview length" readonly>
                         </div>
                     </div>
                 </div>
@@ -318,7 +318,7 @@ input.form-control {
 
                             <input name="others_field"
                                 value="{{ $bidrfq && $bidrfq->others_field ? $bidrfq->others_field : '' }}"
-                                type="text" class="form-control" placeholder="Others ">
+                                type="text" class="form-control" placeholder="Others" readonly>
                         </div>
                     </div>
                 </div>
