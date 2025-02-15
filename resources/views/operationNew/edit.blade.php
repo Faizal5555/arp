@@ -308,6 +308,8 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                            </div>
                             
                             <?php
                             $arr = json_decode($bidrfq->sample_size, true);
@@ -2190,7 +2192,7 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
-                            @if (auth()->user()->user_role != "project_manager")
+
                             <div class="col-md-6">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Project Manager Name <span
@@ -2208,7 +2210,7 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
-                            @endif
+                           
                             <div class="col-md-6 d-none">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Quality Analyst Name <span
@@ -2278,6 +2280,7 @@ input.form-control {
                                         <div class="division_{{$value->id}}" >
                                       <a download href="{{ url($value && $value->other_documents ? 'adminapp/public/'.$value->other_documents : '') }}" target="_blank" class="other_document_{{$k}}">
                                         {{ $value && $value->other_documents ? 'adminapp/public/'.$value->other_documents : '' }}
+                                        
                                     </a>
                                          
                                          @if($k != 0)<i class="fa-solid fa-circle-minus removebutton" style="color:red;" data-id="{{$value->id}}"></i>

@@ -856,7 +856,7 @@
                                                 <label class="col-lg-3 col-form-label font-weight-semibold">PO Number <span
                                                         class="text-danger">*</span></label>
                                                 <div class="col-lg-9">
-                                                    <input name="purchase_order_no" value="{{ $purchase_order_no }}"
+                                                    <input name="purchase_order_no" value=""
                                                         type="text" class="form-control">
                                                 </div>
                                             </div>

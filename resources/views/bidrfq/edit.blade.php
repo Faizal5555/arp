@@ -917,7 +917,7 @@
 
                                             <input name="interview_length"
                                                 value="{{ $bidrfq && $bidrfq->interview_length ? $bidrfq->interview_length : '' }}"
-                                                type="text" class="form-control" placeholder="Interview length>
+                                                type="text" class="form-control" placeholder="Interview length">
                                         </div>
                                     </div>
                                 </div>

@@ -173,6 +173,46 @@ class OperationNewController extends Controller
    
         return view('operationNew.indexoperation', compact('operation'));
        }
+
+
+       public function indexpm(Request $request)
+       {
+        $user = auth()->user(); // Get the currently logged-in user
+        $data = $request->all();
+    
+        // Base query: Only fetch 'hold' status records
+        $operation = OperationNew::where('status', 'hold');
+    
+        // If the logged-in user is a Project Manager, filter by their ID
+        if ($user->user_role === 'project_manager') {
+            $operation->where('project_manager_name', $user->id); // Filter by project manager
+        }
+        
+        // Apply additional filters (start date, end date, project number) if provided
+        if (isset($data['startdate']) && $data['startdate'] !== '' && isset($data['enddate']) && $data['enddate'] !== '') {
+            $operation->whereDate('created_at', '>=', $data['startdate'])
+                      ->whereDate('updated_at', '<=', $data['enddate']);
+        }
+        if (isset($data['pno']) && $data['pno'] !== '') {
+            $operation->where('project_no', 'LIKE', '%' . $data['pno'] . '%');
+        }
+    
+        // Handle Ajax requests for Datatables
+        if ($request->ajax()) {
+            return Datatables::of($operation->get())
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    // Define your action buttons or links here
+                  
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+    
+        // Pass data to the view (use pagination for large datasets)
+   
+        return view('operationNew.indexoperationpm', compact('operation'));
+       }
        
 
         public function field(Request $request){
@@ -526,6 +566,29 @@ class OperationNewController extends Controller
         return view('operationNew.edit',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
     }
 
+    public function editpm($id,OperationNew $operation){
+        $bidrfq = BidRfq ::get();
+        $country = Country::get();
+        $vendor = Vendor::get();
+        $fieldteam=Fieldteam::get();
+        $user=User::where('user_role','team_leader')->get();
+        $user1=User::where('user_role','project_manager')->get();
+        $user2=User::where('user_role','quality_analyst')->get();
+        $user3 = Auth::user();
+        $user4=User::where('user_role','operation_head')->get();
+        $operation=OperationNew::with('operationNewImage')->where('id',$id)->first();
+        $client = Client::get();
+        $wonproject = WonProject::where('rfq_no', $operation->rfq)->first();
+        $rfq= WonProject::where('id', $id)->select('rfq_no')->first();
+        $rfq_no=str_replace('{"rfq_no":"','', $operation->rfq);
+        $rfq_no1=str_replace('"}','',$rfq_no);
+        $rfq1=explode('_',$rfq_no1);
+        $bid=$rfq1[0];
+        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
+        // $user = Auth::user();
+        return view('operationNew.editpm',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
+    }
+
      public function closeedit($id,OperationNew $operation){
         $bidrfq = BidRfq ::get();
         $country = Country::get();
@@ -557,6 +620,7 @@ class OperationNewController extends Controller
 
 
     public function update(Request $req){
+        //dd($req);
         $response_data = [];
         $validator = Validator::make($req->all(), [
             'sample_achieved_0.*'=>'required',
@@ -577,7 +641,6 @@ class OperationNewController extends Controller
                 $sample_target = 'sample_target_'.$i;
                 $sample_achieved = 'sample_achieved_'.$i;
                 $country_name = 'country_name_'.$i;
-
                 $operation->respondent_incentives = $req->respondent_incentives;
                 $operation->team_leader = $req->team_leader;
                 $operation->quality_analyst_name = $req->quality_analyst_name;

@@ -179,6 +179,7 @@ Route::get('/admin/salesperformance', 'App\Http\Controllers\WonProjectController
 //Operation New Project
 Route::get('operationNew/editoper','App\Http\Controllers\OperationNewController@editoper')->name('operationNew.editoper');
 Route::get('/operationNew/index', 'App\Http\Controllers\OperationNewController@index')->name('operationNew.index');
+Route::get('/operationNew/index/pm', 'App\Http\Controllers\OperationNewController@indexpm')->name('operationNew.indexpm');
 Route::get('/operationNew/field', 'App\Http\Controllers\OperationNewController@field')->name('operationNew.field');
 Route::get('/operationNew/createWon', 'App\Http\Controllers\OperationNewController@createWon')->name('operationNew.createWon');
 Route::get('/operationNew/change', 'App\Http\Controllers\OperationNewController@change')->name('operationNew.change');
@@ -186,6 +187,7 @@ Route::post('/operationNew/storeWon', 'App\Http\Controllers\OperationNewControll
 Route::get('/operationNew/create', 'App\Http\Controllers\OperationNewController@create')->name('operationNew.create');
 Route::post('/operationNew/store', 'App\Http\Controllers\OperationNewController@store')->name('operationNew.store');
 Route::get('operationNew/edit/{id}','App\Http\Controllers\OperationNewController@edit')->name('operationNew.edit');
+Route::get('operationNew/editpm/{id}','App\Http\Controllers\OperationNewController@editpm')->name('operationNew.editpm');
 Route::get('operationNew/close/edit/{id}','App\Http\Controllers\OperationNewController@closeedit')->name('operationNew.closeedit');
 Route::post('operationNew/update','App\Http\Controllers\OperationNewController@update')->name('operationNew.update');
 Route::post('operation/remove/image','App\Http\Controllers\OperationNewController@removeImage')->name('remove_Image');
