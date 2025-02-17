@@ -727,7 +727,7 @@ class BidRfqController extends Controller
     public function downloadpdf($id){
         // dd($id);
         $biddownload=BidRfq::where('id',$id)->first();
-        $path = 'assets/images/logo-3.png';
+        $path = 'assets/images/logo-2.png';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
