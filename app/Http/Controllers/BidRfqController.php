@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Auth;
 use DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+
 
 use Yajra\DataTables\DataTables;
 
@@ -727,7 +731,7 @@ class BidRfqController extends Controller
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        $pdf = PDF::loadView('bidrfq.pdfdownload',compact('biddownload','data','logo'))->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('biddownload','data','logo'))->setOptions(['defaultFont' => 'sans-serif']);
         return $pdf->download('pdf_file.pdf');
 
     }

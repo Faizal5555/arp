@@ -1,462 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.rawgit.com/tonystar/bootstrap-float-label/v4.0.1/dist/bootstrap-float-label.min.css">
-
-
-<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!-- plugins:css -->
-<link rel="stylesheet" href="{{asset('assets/vendors/mdi/css/materialdesignicons.min.css')}}">
-<link rel="stylesheet" href="{{asset('assets/vendors/css/vendor.bundle.base.css')}}">
-<!-- endinject -->
-<!-- Plugin css for this page -->
-<!-- End plugin css for this page -->
-<!-- inject:css -->
-<!-- endinject -->
-<!-- Layout styles -->
-<link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
-<!-- End layout styles -->
-
-<link rel="shortcut icon" href="{{asset('assets/images/favicon.ico')}}" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"
-integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg=="
-crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{{asset('assets/vendors/js/vendor.bundle.base.js')}}"></script>
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</head>
 <style>
 
-img{
-    width: 30%;
-    float: right;
-}
- body 
- { font-family: DejaVu Sans, sans-serif; }
- h3,h4{
-     color:#0b5dbb;
- }
+      img {
+            width: 30%;
+            float: right;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h3, h4 {
+            color: #0b5dbb;
+        }
+        .table th, .table td {
+            text-align: center;
+        }
+        .company-header {
+            font-weight: bold;
+            color: red;
+        }
+        .subtitle {
+            color: #0b5dbb;
+            font-weight: bold;
+        }
+        .rfq-table th, .rfq-table td {
+            font-size: 15px;
+            padding-bottom: 10px;
+        }
+
+        .rfq-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rfq-details {
+            font-weight: bold;
+        }
+        .table-bordered td,
+    .table-bordered th {
+        border: 1px solid #dee2e6;
+        padding-left: 33px;
+        padding-right: 23px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-container img {
+            width: 150px;
+        }
 </style>
 <body>
-<div class="container">
-<div class="row">
-   
-
-    <div class="col-md-4"></div>
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <div class="logo" >
-        <img  src="{{$logo}}">
-        </div>
+<div class="container mt-4">
+  <div class="header-container">
+    <div>
+        <p class="company-header">ASIA Research Partners LLP</p>
+        <p class="subtitle">Accurate Solutions & Insightful Analysis</p>
     </div>
-    
-   
+    <img src="{{$logo}}" alt="Company Logo" style="margin-top:-85px">
 </div>
-</div>
+<br>
 
-                                       <?php
-                                        $sample_size=json_decode($biddownload->sample_size,true); 
-                                        $setup_cost=json_decode($biddownload->setup_cost,true);
-                                        $recruitment = json_decode($biddownload->recruitment,true);
-                                        $incentives = json_decode($biddownload->incentives,true);
-                                        $moderation = json_decode($biddownload->moderation,true);
-                                        $transcript = json_decode($biddownload->transcript);
-                                        $others = json_decode($biddownload->others);
-                                        $world = json_decode($biddownload->country); 
-                                        $country = implode(',',array_merge(...$world));
-                                        $total_cost = json_decode($biddownload->total_cost);
-                                        $client_id =json_decode($biddownload->client_id);
-                                        $vendor_id = json_decode($biddownload->vendor_id);
-                                        ?>
-<div class="container mt-5" >
-<div class=" col-md-12" >
-   
-    <table style="margin-bottom: 10px;">
-        <thead>
-        <tr style="margin-bottom: 5px;">
-            <th class="sub" style=" padding-left: 16px;
-            padding-bottom:10px;
-            font-size:15px;
-            "> <label class="col-form-label font-weight-semibold">Company Name:</label></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th style="
-            padding-left: 6px;
-            padding-bottom:10px;
-            font-size:15px;
-            ">Asia Research Partners</th>
-         </tr>
-         
-         <tr style="margin-bottom:5px;">
-            <th class="sub" style="margin-right:10px;
-            padding-bottom:10px;
-            font-size:15px;
-            "> <label class="col-form-label font-weight-semibold text-align-start" style="margin-left:-55px;">RFQ No:</label></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th align="start" style="
-            padding-bottom:10px;
-            font-size:15px;
-            "> {{$biddownload->rfq_no}}</th>
-         </tr>
+                                
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 50%; text-align: left;"><strong>RFQ No:</strong> {{ $biddownload->rfq_no }}</td>
+                    <td style="width: 50%;"><strong>Date:</strong> </td>
+                </tr>
+              </table>
+              <br>
+              <br>
+                <?php
+                $sample_size=json_decode($biddownload->sample_size,true); 
+                $setup_cost=json_decode($biddownload->setup_cost,true);
+                $methodology=json_decode($biddownload->methodology,true);
+                $recruitment = json_decode($biddownload->recruitment,true);
+                $incentives = json_decode($biddownload->incentives,true);
+                $moderation = json_decode($biddownload->moderation,true);
+                $transcript = json_decode($biddownload->transcript);
+                $others = json_decode($biddownload->others);
+                $world = json_decode($biddownload->country);
+                $total_cost = json_decode($biddownload->total_cost);
+                $client_id =json_decode($biddownload->client_id);
+                $vendor_id = json_decode($biddownload->vendor_id);
 
-         <tr style="margin-bottom: 5px;">
-            <th class="sub" style="padding-right:10px;
-            padding-bottom:10px;
-            font-size:15px;
-            "><label class="col-form-label font-weight-semibold" style="margin-left:-43px;">Country:</label></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th class="sub-country" style="
-            padding-bottom:10px;
-            font-size:15px;
-            ">
-            {{$country}}
-            </th>
-         </tr>
-
-         <tr style="margin-right:10px">
-            <th class="sub" style="margin-right:10px;
-            padding-bottom:10px;
-            font-size:15px;
-            "><label class="col-form-label font-weight-semibold"style="margin-left:-43px;">Currency:</label></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            @if($biddownload->currency == '$')
-            <th style="
-            padding-left: 6px;
-            font-size:15px;
-            "> 
-            (USD)</th>
-            @elseif($biddownload->currency == '₹')
-              <th style="
-            padding-left: 6px;
-            font-size:15px;
-            "> 
-            (INR)</th>
-            @elseif($biddownload->currency == '€')
-                <th style="
-            padding-left: 6px;
-            font-size:15px;
-            "> 
-            (EUR)</th>
-            @esle 
-            <th style="
-            padding-left: 6px;
-            font-size:15px;
-            "> 
-            </th>
-            @endif
-            
-         </tr>
-         
-        <tr style="margin-bottom: 5px;justify-content:flex-start;">
-            <th class="sub" style="
-            padding-bottom:36px;
-            font-size:15px;
-            "><label class="col-form-label font-weight-semibold" style="margin-left:10px;"> Manager Name:</label></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th style="
-            padding-left: 6px;
-            padding-bottom:36px;
-            font-size:15px;
-            ">
-                
-                {{$username[0]['name']}} </th>
-         </tr>
-</thead>
-    </table>
+                $costItems = [
+                    'Methodology' => $methodology,
+                    'Sample Size' => $sample_size,
+                    'Setup Cost' => $setup_cost,
+                    'Recruitment' => $recruitment,
+                    'Incentives' => $incentives,
+                    'Moderation' => $moderation,
+                    'Transcript' => $transcript,
+                    'Others' => $others
+                ];
+?>
 
     <!-- ARP Sales Manager Name -->
     
    <!--content-->
-  <h3>Dear Sir / Madam,</h3>	
-    <p>Based on the specifications in the RFQ, below you will see the costs and the timelines.</p> 	
-    <p>We hope that the costs will be in-line with your expectations and if not please feel free to let us know.</p>	
+   <h3>Dear Client,</h3>
+   <p>We thank you for sending us the project specifications. Our operations team has checked feasibility, and the project is feasible with us. Below, you will find our costs. If you have any different considerations regarding the costs, please do not hesitate to contact us back.</p>
+   <p>We have strong panels and use multi-dimension approach for recruitments such as using
+    proprietary panels, phone recruitments, social media, LinkedIn, Snowball, Industry contact and
+    other ways.</p>
+   <p>We have strong experience in this industry and would be happy to send you case studies.</p> 
+   <p>Also for qualitative research, please note that we only use 10+ years of native moderators
+    operating from their respective countries.</p>
    <!--End content-->
 
    
 
- <div class="container mt-5" style="border-top:1px solid; margin-top:10px;">
-  <div class=" col-md-12" >
-     @foreach($world as  $main=> $country1)
-     @foreach($sample_size as $k1=> $value)     
-     @if($k1==$main)    
-     @foreach($country1 as $cou=> $countries)
-     <h5  style="
-            padding-left: 7px;
-            padding-left: 10px;
-            
-            ">Country:{{$countries}}</h5>
-      @endforeach
-    
-     
-<div class="container ml-2 pl-2"> 
-
-    <table class="table table-bordered border-primary add-country"  style="
-            padding-left: 5px;
-            ">
-        <thead style="border-top:1px solid; border-left:1px solid; border-right:1px solid; border-bottom:1px solid;">
-      <tr style="background-color:#0b5dbb;color:white;" >
-        <th style="
-    padding: 0.75rem;
-    vertical-align: top;
-
-    font-size:15px;background-color:#0b5dbb;color:white;"
-    ">
-           Client Name 
-            <!--Client Name/ Vendor Name-->
-            
-        </th>
-
-        <th style="
-          padding: 0.75rem;
-          vertical-align: top;
-          font-size:15px; background-color:#0b5dbb;color:white;
-        ">
-            <div class="div ml-2" style="background-color:#0b5dbb;color:white;boder:1px solid black">
-              Client
-            </div>
-
-        </th>
-
-    
-        </thead>
-      </tr>
-    <!-- Sample Size -->
-    <tbody style="border-left:1px solid; border-right:1px solid; border-bottom:1px solid;">
-    <tr>
-        
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-right:1px solid;">Sample Size</td>
-             
-                                      
-            @foreach($value as $k=> $data)   
-              @if($k==0)     
-                        <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top:1px solid;
-           border-right:1px solid;
-         ">
-                            {{$data}}
-                        </td>    
-            @endif
-            @endforeach
-    
-                                                               
-    </tr>
-    <!-- Setup Cost -->
-    <tr>
-    <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top:1px solid;
-          border-right:1px solid;
-         ">Setup Cost</td>
-     @foreach($value as $k=> $data)  
-       @if($k==0)     
-         <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">
-             {{$setup_cost[$k1][$k]}}
-        </td>  
-        @endif
-     @endforeach                                                                                         
-    </tr>
-
-    <!-- Incentives -->
-    <tr>
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">Incentives</td>
-        @foreach($value as $k=> $data)  
-          @if($k==0)     
-            <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">
-                {{$incentives[$k1][$k]}}
-            </td>  
-        @endif
-        @endforeach                                            
-    </tr>
-
-    <!-- Moderation -->
-    <tr>
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-          border-right:1px solid;
-         ">Moderation</td>
-        @foreach($value as $k=> $data)  
-          @if($k==0)     
-            <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">
-                {{$moderation[$k1][$k]}}
-            </td>  
-         @endif
-        @endforeach 
-                                           
-    </tr>
-
-    <!-- Transcript -->
-
-    <tr>
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-          border-right:1px solid;
-         ">Transcript</td>
-        @foreach($value as $k=> $data)  
-          @if($k==0)     
-            <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-          border-right:1px solid;
-         ">
-                {{$transcript[$k1][$k]}}
-            </td>  
-         @endif
-        @endforeach           
-    </tr>
-
-    <!-- Others -->
-
-    <tr>
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-          border-right:1px solid;
-         ">Others</td>
-        @foreach($value as $k=> $data)  
-          @if($k==0)     
-            <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-          border-right:1px solid;
-         ">
-                {{$others[$k1][$k]}}
-            </td>  
-          @endif   
-        @endforeach            
-    </tr>
+ 
+   <div class="container mt-5">
+    <div class=" col-md-12">
+        @foreach ($world as $key => $country)
+        <h3>Country:{{$country[0]}}</h3>
+        <table class="table table-bordered border-primary add-country">
+            <tr>
+                <th>Client Name</th>
+                @foreach ($client_id[$key] as  $data)
+                    <th>{{$data}}</th>
+                @endforeach
+            </tr>
+            @foreach ($costItems as $label => $costArray)
+            <tr>
+                <td class="sub-cost">{{ $label }}</td>
+                @foreach ($costArray[$key] as $key1 => $data)
+                    @if ($label == 'Others')
+                        @if ($key1 % 3 == 1) 
+                            <td>{{ $data }}</td>
+                        @endif
+                    @else
+                        @if ($key1 % 2 == 0)
+                            <td>{{ $data }}</td>
+                        @endif
+                    @endif
+                @endforeach
+            </tr>
+        @endforeach
+        </table>
+        @endforeach
+    </div>
 
 
-    <tr>
-     <td class="sub-cost" style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">Total Cost</td>
-
-     
-     @foreach($value as $k3=> $data) 
-       @if($k3==0)     
-                <td style="
-          padding: 0.75rem;
-          vertical-align: top;
-          border-top: 1px solid;
-           border-right:1px solid;
-         ">
-                    {{$total_cost[$k1][$k3]}}
-   
-                </td>  
-     @endif
-     @endforeach    
-                                           
-    </tr>
-  </tbody>
-</table>
-</div><br>
-@endif
-@endforeach
-@endforeach
-
- <h3>Asia Research Partners.Differentiators - A Snap Shot.</h3>
+ <h3 style="text-decoration:underline">About - Asia Research Partners LLP</h3>
   
- <h4>Project Resources</h4>
- <p>All Qual projects are executed by Native resources including interviewers and recruiters. All moderators are very well experienced with such target group and have minimum 12+ years of experience in Moderation. In case you need the moderator profiles, please do not hesitate to ask.</p>
- <p>A dedicated project manager will be allocated to Clients.</p>
+ <p>Asia Research Partners LLP is an award-winning and ISO 9001:2015 & ISO/IEC 27001:2013
+  certified global market research agency, providing state-of-the-art business intelligence
+  solutions to companies across industries and regions. Our custom research solutions are
+  tailored to our client’s strategic and informative knowledge needs. We have extensive
+  experience in various industries and geographic locations, including APAC, Europe, Middle
+  East, AMERICAS and Africa.</p>
+ <p style="font-family: DejaVu Sans;">• For more information, Please visit https://www.asiaresearchpartners.com</p>
  
- <h3>ARP Operational Timings (GMT / EST / IST)</h3>
- <p>04.30 AM GMT till . 18.30 GMT</p>
- <p>12.30 AM EST .till . 14.30 EST</p>
- <p>10.00 AM IST . till . 12.00 AM IST</p>
- 
- <h3>Real Time Project Update</h3>
- <p>Clients will be given access to ARP portal where they can get live project updates. This way clients are not dependent or wait for project updates from ARP team.</p>
- 
- <h3>Sample Databases./ Data Quality</h3>
- <p>All projects are executed using in-house databases or Panels. In case we fall short of our panels then we take support from partners panels however in case of support, we keep clients updated.</p>		
- <p>All Panels are Double opt in panels and cleaned on quarterly basis.</p>	
- <p>All Bad Ids are removed post highlighted by clients and confirmed by internal panel teams.</p>	
- <p>We expect 10 to 20% bad IDs in some projects on online studies, this is industry Standards. All bad IDs are replaced with fresh IDs for no extra costs however we would need the data file for Bad IDs.</p>	
- 
- <h3>Standard Quality Measures.</h3>
- <p>Online Projects.<p>
-<p>If links are programmed by clients then quality checks should be implemented from Client ends.</p>
-<p>If links are programmed by ARP then we will implement checks such as IP / Geo IP trackers, Time Stamps, Quality Questions, Pre Screening Questions etc</p>
-<p>F2F /Mystery Shopping Projects</p>
-<p>All F2F surveys are executed using tablets with with GEO IP Tracers.</p>
-<p>Field Supervisors travel with interviewers and ensure strict quality controls</p>
-<p>50% field surveys are back checked by phone calls and recorded.</p>
-<p>Phone numbers are available for respondents in case of quality checks required.</p>
-<p>Phone Surveys</p>
-<p>CATI Surveys are recorded for quality controls post taking respondent permissions. During quality checks if survey is rejected then the survey is replaced and client is informed.</p>
-<p>Live listening of the surveys by quality check teams and real time feedback is given to interviewers.</p>
-<p>A percentage of Call recordings sent to clients for quality control measures if required.</p>
-<p>Phone numbers are available for respondents in case of quality checks required.</p>
-
-<h3>Project Pricing and Payment Terms</h3>
-<p>ARP holds low margins on projects to remain competitive.</p>
-<p>For New Clients, we need advance 50% Project payments and our credit limit policy is upto USD $15,000.</p>
-<p>In case of Multi-country projects, please do check for project discounts.</p>
-
-<h3>ARP Client Reference</h3>
-<p>Request for client references anywhere across globe is most welcome. We would love to make you hear what our client thinks about us.</p>
+ <h3 style="text-decoration: underline; color:black;">Terms and Conditions for the proposal</h3>
+ <p style="font-family: DejaVu Sans;">• Quotation is valid only for three months.</p>
+ <p style="font-family: DejaVu Sans;">• 100% payment to be made within 30 days of project completion.</p>
+ <p style="font-family: DejaVu Sans;">• In case client delays payment determined in the Agreement hereto, Asia Research Partners
+  is entitled to claim penalty at the rate of 4% of the invoice value each month.</p>
+ <p style="font-family: DejaVu Sans;">• The parties acknowledge that the purpose of the relationship created will be that of an
+  independent contractor relationship only (Asia Research Partners as independent
+  contractor of Client). Client and Asia Research Partners as mutually agree as to the
+  objectives, scope of services and the Service Level Agreements set forth. Asia Research
+  Partners as shall use client methodology to complete the research fieldwork however Asia
+  Research Partners as is also free to use its own methodology if needed to accomplish the
+  tasks outlined in the scope of work.</p>
+ <p style="font-family: DejaVu Sans;">• The parties recognize and agree that no joint venture or partnership agreement is intended
+  or created hereby. No agent, employee or servant of client shall be or deemed to be the
+  agent, employee or servant of Asia Research Partners nor shall any agent, employee or
+  servant of ARP be or deemed to be the agent, employee or servant of client. ARP will have
+  full power and authority to select the means, manner and the method of performing the
+  work and accomplishing the tasks outlined in the scope of work. Neither Asia Research
+  Partners nor client shall act on behalf or represent itself directly or by implication as having
+  authority to act on behalf of the other party except as specifically set forth in this
+  Agreement. Neither party shall have the authority to create any obligation for, on behalf of,
+  or in the name of the other party except as specifically set forth herein.</p>		
+ <p style="font-family: DejaVu Sans;">• The parties acknowledge that client will disclose to Asia Research Partners certain
+  information (Confidential Information) relating to the business of client’s client. Asia
+  Research Partners agrees that it shall not use such information except in the pursuit of Asia
+  Research Partners’s responsibilities and rights under this Agreement.</p>	
+ <p style="font-family: DejaVu Sans;">• Asia Research Partners will retain the project documents, project data and other
+  information only for 3 (three) months from the date of project completion.</p>	
+ <p style="font-family: DejaVu Sans;">• Any re-contacts with respondents will happen on best effort basis only.</p>	
+ <p style="font-family: DejaVu Sans;">• The information contained in the data collection will be based on the responses
+  collected by individual respondents.<p>
+<p style="font-family: DejaVu Sans;">• Asia Research Partners LLP will make no warranty (express, implied, or otherwise),
+  nor assumes any legal liability or responsibility of the information that will come from
+  respondents. The opinion that will be expressed in the data collection will be the
+  opinion based on the responses given by individual respondents at the time of data
+  collection and is subject to change from time to time.</p>
 </body>
 </html>

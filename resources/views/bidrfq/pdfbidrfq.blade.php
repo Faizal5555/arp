@@ -218,9 +218,9 @@
             <h6>Country:{{$country[0]}}</h6>
             <table class="table table-bordered border-primary add-country">
                 <tr>
-                    <th>Client Name/Vendor Name</th>
+                    <th>Client Name</th>
                     @foreach ($client_id[$key] as  $data)
-                        <th>Client</th>
+                        <th>{{$data}}</th>
                     @endforeach
                 </tr>
                 @foreach ($costItems as $label => $costArray)
@@ -358,7 +358,7 @@
 
         </div>
 
-        <a href="{{ URL::to('/adminapp/bidrfq/downloadpdf/'.$biddownload->id) }}" class="btn btn-download">Download
+        <a href="{{ URL::to('/adminapp/bidrfq/downloadpdf/'.$biddownload->id) }}" class="btn btn-primary">Download
             PDF</a>
 
         @endsection
