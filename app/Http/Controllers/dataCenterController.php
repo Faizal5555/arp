@@ -260,11 +260,13 @@ class dataCenterController extends Controller
             // var_dump($dt->year);
         }
          $pno_no = 'RNOD'.$unique_no. '-' .$dt->year;
-        return view('DataCenter.outsitenewRegistration', compact('country_loop_1','speciality','pno_no','user_id'));
+         $today_date = $dt->format('d/m/Y');
+        return view('DataCenter.outsitenewRegistration', compact('country_loop_1','speciality','pno_no','user_id','today_date'));
     }
     
     public function NewForm(Request $req)
-    {
+    {   
+        //dd($req->all());
         $v = $req->all();
          //dd($v);
         $response_data = [];
@@ -278,7 +280,6 @@ class dataCenterController extends Controller
         if (!$validator->fails()) {
             $random_no=uniqid();
             $create = new User();
-            
             $create->name = $req->firstname;
             $create->email = $req->email;
             $create->user_type = 'doctor';
@@ -289,6 +290,7 @@ class dataCenterController extends Controller
                     //dd($create->id);
                 $new = new datacenternew();
                 $new->pno = $req->pno;
+                $new->date = date('Y-m-d');
                 $encrypted = Crypt::encryptString($req->email);
                 
                 // dd($random_no);
@@ -1764,6 +1766,9 @@ public function hcpPanelInviteData(Request $request)
 
     return Datatables::of($hcpInvite)
         ->addIndexColumn()
+        ->editColumn('date', function ($row) {
+            return $row->date ? Carbon::parse($row->date)->format('d/m/Y') : Carbon::parse($row->created_at)->format('d/m/Y');
+        })
         ->addColumn('action', function ($row) {
             return '
                 <button class="btn btn-sm btn-warning edit-btn" data-id="' . $row->id . '">Edit</button>
@@ -1956,6 +1961,9 @@ public function sendEmailToUsers(Request $request)
 
         return Datatables::of($hcpInvite)
             ->addIndexColumn()
+            ->editColumn('date', function ($row) {
+                return $row->date ? Carbon::parse($row->date)->format('d/m/Y') : Carbon::parse($row->created_at)->format('d/m/Y');
+            })
             ->make(true);
     }
 
@@ -2068,10 +2076,12 @@ public function userconsumerlistData(Request $request)
                 $query = DB::table('datacenternews')
                     ->leftJoin('users as referrers', 'datacenternews.datacenter_id', '=', 'referrers.id') // Join to fetch referrer name
                     ->select(
+                        'datacenternews.date',
                         'datacenternews.docterSpeciality', 
                         'datacenternews.firstname', 
                         'datacenternews.email', 
                         'datacenternews.country1 as country', 
+                        'datacenternews.created_at',
                         'referrers.name as referral' // Fetch referrer name
                     );
 
@@ -2086,7 +2096,7 @@ public function userconsumerlistData(Request $request)
                     ->leftJoin('users as referrers', 'ques.user_id', '=', 'referrers.id') // Join to fetch referrer name
                     ->select(
                         'ques.id as user_id', 
-                        'ques.fname as fname', 
+                        'ques.fname as firstname', 
                         'ques.lname as lname', 
                         'ques.email', 
                         'ques.country', 
@@ -2123,6 +2133,21 @@ public function userconsumerlistData(Request $request)
                 }
             })
             ->addIndexColumn()
+            ->editColumn('date', function ($row) {
+                if (request()->get('user_type') === 'doctor') { // Only format for HCP
+                    if (property_exists($row, 'date') && !empty($row->date)) {
+                        return \Carbon\Carbon::parse($row->date)->format('d/m/Y');
+                    }
+                
+                    if (property_exists($row, 'created_at') && !empty($row->created_at)) {
+                        return \Carbon\Carbon::parse($row->created_at)->format('d/m/Y');
+                    }
+                
+                    return '-'; // Default if both are missing
+                }
+            
+                return null; // Consumer users should not have a date field at all
+            })
             ->editColumn('referral', function ($row) {
                 return $row->referral ?? '-'; // Show referral name or hyphen if null
             })

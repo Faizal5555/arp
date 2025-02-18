@@ -23,6 +23,7 @@ $(function () {
         },
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'date', name: 'date' },
             { data: 'firstname', name: 'firstname' },
             { data: 'lastname', name: 'lastname' },
             { data: 'email', name: 'email' },
@@ -207,6 +208,7 @@ $('#hcpTable').on('click', '.delete-btn', function() {
                     <thead>
                         <tr class="table_background">
                             <th>S.No</th>
+                            <th>Date</th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>

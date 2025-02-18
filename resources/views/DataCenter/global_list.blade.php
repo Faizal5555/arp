@@ -24,6 +24,10 @@ $(function () {
 
     // Common columns
     headerRow.append("<th>S.No</th>");
+
+    if (userType === 'doctor') {
+            headerRow.append("<th>Date</th>");
+        }
     headerRow.append("<th>First Name</th>");
 
     // Conditional columns
@@ -41,18 +45,54 @@ $(function () {
 
     // Function to initialize the DataTable with dynamic columns
     function initTable(userType) {
-    // Update table header dynamically
-    updateTableHeader(userType);
-
-    // Destroy any existing DataTable instance
-    if (table) {
-        table.destroy();
+    // Destroy and remove the old DataTable instance
+    if ($.fn.DataTable.isDataTable('#globalManagerTable')) {
+        $('#globalManagerTable').DataTable().clear().destroy();
     }
 
-    // Initialize DataTable
-    table = $('#globalManagerTable').DataTable({
+    // Update the table header dynamically
+    updateTableHeader(userType);
+
+    // Define the base columns
+    let columns = [
+        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false }
+    ];
+
+    // Add Date column ONLY for doctors
+    if (userType === 'doctor') {
+        columns.push({ data: 'date', name: 'date' }); // Date column for doctors
+    }
+
+    // First Name column (always included)
+    columns.push({ data: 'firstname', name: 'firstname' });
+
+    // Conditional column: Speciality for Doctors, Last Name for Consumers
+    if (userType === 'doctor') {
+        columns.push({ data: 'docterSpeciality', name: 'docterSpeciality' }); // Speciality for doctors
+    } else {
+        columns.push({ data: 'lname', name: 'lname' }); // Last Name for consumers
+    }
+
+    // Common columns
+    columns.push(
+        { data: 'country', name: 'country' },
+        { data: 'referral', name: 'referral' },
+        {
+            data: null,
+            name: 'action',
+            orderable: false,
+            searchable: false,
+            render: function (data, type, row) {
+                return `<button class="btn btn-info send-email-btn" data-email="${row.email}">Send Email</button>`;
+            }
+        }
+    );
+
+    // Reinitialize the DataTable
+    $('#globalManagerTable').DataTable({
         processing: true,
         serverSide: true,
+        destroy: true,
         ajax: {
             url: "{{ route('globalManagerListData') }}",
             data: function (data) {
@@ -60,60 +100,24 @@ $(function () {
                 data.user_type = userType;
             },
         },
-        destroy: true,
-        columns: userType === 'doctor' ? [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'firstname', name: 'firstname' },
-            { data: 'docterSpeciality', name: 'docterSpeciality' }, // Speciality column for HCP
-            { data: 'country', name: 'country' },
-            { data: 'referral', name: 'referral' }, // Referral column
-            {
-                data: null,
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function (data, type, row) {
-                    return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
-                            Send Email
-                        </button>`;
-                }
-            }
-        ] : [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'fname', name: 'fname' },
-            { data: 'lname', name: 'lname' }, // Last Name column for Consumer
-            { data: 'country', name: 'country' },
-            { data: 'referral', name: 'referral' }, // Referral column
-            {
-                data: null,
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function (data, type, row) {
-                    return `<button class="btn btn-info send-email-btn" data-email="${row.email}">
-                            Send Email
-                        </button>`;
-                }
-            }
-        ],
+        columns: columns // Use dynamically built columns array
     });
 }
 
-    // Initialize the table for HCP by default
-    initTable('doctor');
+// Initialize the table for HCP by default
+initTable('doctor');
 
-    // Handle tab click
-    $('.tab-btn').click(function () {
-        const userType = $(this).data('user-type');
-        initTable(userType);
-    });
+// Handle tab click
+$('.tab-btn').click(function () {
+    const userType = $(this).data('user-type');
+    initTable(userType);
+});
 
-    // Handle country change filter
-    $('#country').change(function () {
-        if (table) {
-            table.draw();
-        }
-    });
+// Handle country change filter
+$('#country').change(function () {
+    $('#globalManagerTable').DataTable().draw();
+});
+
 });
 
 $(document).ready(function () {

@@ -13,6 +13,6 @@ class datacenternew extends Model
     protected $fillable = [
         'firstname', 'lastname', 'cityname', 'citycode', 
         'PhNumber', 'email', 'whatdsappNumber', 'docterSpeciality', 'totalExperience', 
-        'practice', 'licence', 'PatientsMonth','country1',
+        'practice', 'licence', 'PatientsMonth','country1','date',
     ];
 }

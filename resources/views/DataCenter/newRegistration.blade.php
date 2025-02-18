@@ -180,7 +180,7 @@
                     </div>
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row d-flex justify-content-center align-items-center">
-                            <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Doctor Speciality<span class="text-danger">*</span></label>
+                            <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Speciality<span class="text-danger">*</span></label>
                             <div class="col-md-9 form-group mt-2">
                               <select  name="docterSpeciality"  class="form-control" id="docterSpeciality" style="width:100%; outline:1px solid #646161 !important;">
                                  <option value="" disabled selected>Select Speciality</option>
