@@ -299,7 +299,7 @@ class BidRfqController extends Controller
             "errors" => $validator->errors()
         ], 422);
     }
-         // dd($req->bidrfqCount);
+        //   dd($request->all());
         $rfq = RfqDetailsTable::find($request->id);
         $rfq->date = $request->date;
         $rfq->industry = $request->industry;
@@ -312,6 +312,11 @@ class BidRfqController extends Controller
             if($request->single_form == 1)
             {
                 $single = RfqSingleCountry::where('rfq_details_id', $rfq->id)->first();
+
+                if(!isset($single))
+                {
+                    $single = new RfqSingleCountry();
+                }
                 if ($single) {
                     $single->rfq_details_id = $rfq->id;
                     $single->single_methodology = json_encode($request->single_methodology);
@@ -326,10 +331,17 @@ class BidRfqController extends Controller
                     $single->user_id = auth()->user()->id;
                     $single->save();
                 }
+            }else{
+                RfqSingleCountry::where('rfq_details_id', $rfq->id)->delete();
             }
             if($request->multiple_form == 1)
             {
                 $multiple = RfqMultipleCountry::where('rfq_details_id', $rfq->id)->first();
+                if(!isset($multiple))
+                {
+                    $multiple = new RfqMultipleCountry();
+                }
+                //dd($multiple);
                 if ($multiple) {
                
                 $multiple->rfq_details_id = $rfq->id;
@@ -343,11 +355,17 @@ class BidRfqController extends Controller
                 $multiple->user_id = auth()->user()->id;
                 $multiple->save();
                 }
+            }else{
+                RfqMultipleCountry::where('rfq_details_id', $rfq->id)->delete();
             }
             if($request->interview_form == 1)
             {
-
+                
                 $interview = RfqInterviewDepth::where('rfq_details_id', $rfq->id)->first();
+                if(!isset($interview))
+                {
+                    $interview = new RfqInterviewDepth();
+                }
                 if($interview){
                 $interview->rfq_details_id = $rfq->id;
                 $interview->interview_depth_methodology = json_encode($request->interview_depth_methodology);
@@ -368,10 +386,16 @@ class BidRfqController extends Controller
                 $interview->user_id = auth()->user()->id;
                 $interview->save();
                 }
+            }else{
+                RfqInterviewDepth::where('rfq_details_id', $rfq->id)->delete();
             }
             if($request->online_form == 1)
             {
                 $online= RfqOnlineCommunity::where('rfq_details_id', $rfq->id)->first();
+                if(!isset($online))
+                {
+                    $online = new RfqOnlineCommunity();
+                }
                 if($online)
                 {
                 $online->rfq_details_id = $rfq->id;
@@ -390,6 +414,8 @@ class BidRfqController extends Controller
                 $online->user_id = auth()->user()->id;
                 $online->save();
                 }
+            }else{
+                RfqOnlineCommunity ::where('rfq_details_id', $rfq->id)->delete();
             }
             return response()->json([
                 "success" => 1,

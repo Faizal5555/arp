@@ -660,46 +660,48 @@
 
         // new script
 
-        // $(document).on('click',".tab-button",function () {
-        //     let target = $(this).attr("data-target");
-        //     console.log('hi');
-        //     if ($(this).hasClass("active")) {
-        //         // If already active, deactivate it
-        //         $(this).removeClass("active").css("background-color", "#6c757d");
-        //         $(target).addClass("d-none");
-        //         if(target == "#multiple-country")
-        //         {
-        //             $('#single_form').val(0);
-        //         }else if(target == "#mulitple-country"){
-        //             $('#multiple_form').val(0);
-        //         }else if(target == "#interview-depth"){
-        //             $('#interview_form').val(0);
-        //         }else if(target == "#online-community"){
-        //             $('#online_form').val(0);
-        //         }
-        //     } else {
-        //         // Activate the clicked tab and show its section
-        //         $(this).addClass("active").css("background-color", "#0047ff");
-        //         $(target).removeClass("d-none");
-        //         if(target == "#single-country")
-        //         {
-        //             $('#single_form').val(1);
-        //         }else if(target == "#mulitple-country"){
-        //             $('#multiple_form').val(1);
-        //         }else if(target == "#interview-depth"){
-        //             $('#interview_form').val(1);
-        //         }else if(target == "#online-community"){
-        //             $('#online_form').val(1);
-        //         }
+        $(document).on('click',".tab-button",function () {
+            let target = $(this).attr("data-target");
+            console.log('hi');
+            if ($(this).hasClass("active")) {
+                // If already active, deactivate it
+                $(this).removeClass("active").css("background-color", "#6c757d");
+                $(target).addClass("d-none");
+                if(target == "#multiple-country")
+                {
+                    $('#single_form').val(0);
+                }else if(target == "#mulitple-country"){
+                    $('#multiple_form').val(0);
+                }else if(target == "#interview-depth"){
+                    $('#interview_form').val(0);
+                }else if(target == "#online-community"){
+                    $('#online_form').val(0);
+                }
+            } else {
+                // Activate the clicked tab and show its section
+                $(this).addClass("active").css("background-color", "#0047ff");
+                $(target).removeClass("d-none");
+                if(target == "#single-country")
+                {
+                    $('#single_form').val(1);
+                }else if(target == "#mulitple-country"){
+                    $('#multiple_form').val(1);
+                }else if(target == "#interview-depth"){
+                    $('#interview_form').val(1);
+                }else if(target == "#online-community"){
+                    $('#online_form').val(1);
+                }
 
                 
-        //     }
-        //     if ($(".tab-button.active").length > 0) {
-        //         $(".button-container").removeClass("d-none").addClass("d-flex");
-        //     } else {
-        //         $(".button-container").addClass("d-none").removeClass("d-flex");
-        //     }
-        // });
+            }
+            if ($(".tab-button.active").length > 0) {
+                $(".button-container").removeClass("d-none").addClass("d-flex");
+            } else {
+                $(".button-container").addClass("d-none").removeClass("d-flex");
+            }
+        });
+
+
 
         $(document).ready(function() {
             // Add More Columns to All Rows (with remove button)
@@ -1026,7 +1028,7 @@
                     var count = $('.remove_interview_depth').length + 1;
                     if (index === 0) {
                         newRow += `<td class="d-flex ${className ? className : ''}">
-                            <button type="button" class="btn btn-danger btn-sm remove_interview_depth" style=">x</button> 
+                            <button type="button" class="btn btn-danger btn-sm remove_interview_depth">x</button> 
                             <input type="text" class="form-control" name="interview_depth_other[${count}][]" placeholder="Other">
                         </td>`;
                     } else {
@@ -1230,10 +1232,10 @@
                                 <input type="hidden" name="id"
                                     value="{{ $newrfq && $newrfq->id ? $newrfq->id : '' }}">
                                 <input id="bidrfqCount" type="hidden" value="1" name="bidrfqCount">
-                                <input type="hidden" name="single_form"   value="1" id="single_form">
-                                <input type="hidden" name="multiple_form"   value="1"id="multiple_form">
-                                <input type="hidden" name="interview_form"  value="1" id="interview_form">
-                                <input type="hidden" name="online_form"  value="1" id="online_form">
+                                <input type="hidden" name="single_form"   value="{{isset($newrfq) && isset($newrfq->single) ? 1 : 0}}" id="single_form">
+                                <input type="hidden" name="multiple_form"   value="{{isset($newrfq) && isset($newrfq->multiple) ? 1 : 0}}"id="multiple_form">
+                                <input type="hidden" name="interview_form"  value="{{isset($newrfq) && isset($newrfq->interview) ? 1 : 0}}" id="interview_form">
+                                <input type="hidden" name="online_form"  value="{{isset($newrfq) && isset($newrfq->online) ? 1 : 0}}" id="online_form">
 
                                 <div class="col-md-6">
                                     <div class="form-group row">
@@ -1484,7 +1486,7 @@
                                 
                                 <div class="w-100">
                                     <div class="container mt-5">
-                                        <div class="tab-container">
+                                        {{-- <div class="tab-container">
                                             @if(isset($newrfq) && isset($newrfq->single))
                                                 <button class="tab-button active" type="button" data-target="#single-country">
                                                     CATI / CAPI / Online Research Single Country
@@ -1508,9 +1510,27 @@
                                                     Online Community - Costing Sheet
                                                 </button>
                                             @endif
-                                        </div>
+                                        </div> --}}
+
+
+
+                                <div class="tab-container">
+                                    <button class="tab-button {{ isset($newrfq) && isset($newrfq->single) ? 'active' : 'inactive' }}" type="button" data-target="#single-country">CATI / CAPI / Online Research Single Country</button>
+                                    <button class="tab-button {{ isset($newrfq) && isset($newrfq->multiple) ? 'active' : 'inactive' }}" type="button" data-target="#mulitple-country">CATI / CAPI / Online Research Multiple Countries</button>
+                                    <button class="tab-button {{ isset($newrfq) && isset($newrfq->interview) ? 'active' : 'inactive' }}" type="button" data-target="#interview-depth">In-Depth Interviews / Focus Groups</button>
+                                    <button class="tab-button {{ isset($newrfq) && isset($newrfq->online) ? 'active' : 'inactive' }}" type="button" data-target="#online-community">Online Community - Costing Sheet</button>
+                                </div>
                                         <div class="{{ isset($newrfq) && isset($newrfq->single) ? '' : 'd-none' }}" id="single-country">
                                             <?php
+                                            $single_methodology = [];
+                                            $single_currency = [];
+                                            $single_loi = [];
+                                            $single_country = [];
+                                            $single_client = [];
+                                            $single_sample = [];
+                                            $single_fieldwork = [];
+                                            $single_other = [];
+                                            $single_total_cost = [];
                                             if(isset($newrfq) && isset($newrfq->single)){
                                                 $single_methodology = json_decode($newrfq->single->single_methodology);
                                                 $single_currency = json_decode($newrfq->single->single_currency);
@@ -1528,7 +1548,7 @@
                                             <div class="append-controls">
                                                 <button type="button" class="btn btn-success btn-sm" id="addMore">Add More</button>
                                             </div>
-                                            @if(isset($newrfq) && isset($newrfq->single))
+                                            {{-- @if(isset($newrfq) && isset($newrfq->single)) --}}
                                             <div class="table-container mt-2">
                                                 <table class="" id="costingTable">
                                                     <tbody>
@@ -1536,42 +1556,52 @@
                                                             <td class="static-field">Methodology</td>
                                                             @if(count($single_methodology) > 0)
                                                             @foreach($single_methodology as $key => $methodology)
-                                                                <td class="relative remove-other_{{$key - 1}}">
+                                                                <td class="relative ">
                                                                 @if($key > 0)
                                                                     <button type="button" class="btn btn-danger btn-sm remove-column" attr="{{$key - 1}}">x</button>
                                                                 @endif
                                                                 <input type="text" class="form-control" name="single_methodology[]" value="{{$methodology}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="relative ">
+                                                            <input type="text" class="form-control" name="single_methodology[]" value=""></td>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
-                                                            <td class="static-field remove-other_{{$key - 1}}">Currency</td>
+                                                            <td class="static-field ">Currency</td>
                                                             @if(count($single_currency) > 0)
                                                             @foreach($single_currency as $currency)
-                                                                <td><input type="text" class="form-control" name="single_currency[]"value="{{$currency}}" ></td>
+                                                                <td class=""><input type="text" class="form-control" name="single_currency[]"value="{{$currency}}" ></td>
                                                             @endforeach
+                                                            @else
+                                                            <td class=""><input type="text" class="form-control" name="single_currency[]"value="" ></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
-                                                            <td class="static-field remove-other_{{$key - 1}}">LOI</td>
+                                                            <td class="static-field ">LOI</td>
                                                             @if(count($single_loi) > 0)
                                                             @foreach($single_loi as $loi)
                                                                 <td><input type="text" class="form-control" name="single_loi[]" value="{{$loi}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control" name="single_loi[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                         
                                                         <tr>
-                                                            <td class="static-field remove-other_{{$key - 1}}">Country</td>
+                                                            <td class="static-field ">Country</td>
                                                             @if(count($single_country) > 0)
                                                             @foreach($single_country as $country)
                                                                 <td><input type="text" class="form-control" name="single_country[]" value="{{$country}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control" name="single_country[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                         
                                                         <tr>
-                                                        <td class="static-field remove-other_{{$key - 1}}">Client</td>
+                                                        <td class="static-field ">Client</td>
                                                         @if(count($single_client) > 0)
                                                         @foreach($single_client as $value)
                                                             <td>
@@ -1590,25 +1620,45 @@
                                                                 </select>
                                                             </td>
                                                         @endforeach
+                                                        @else
+                                                        <td>
+                                                            <select class="form-control"
+                                                                name="single_client[]">
+                                                                <option class=""
+                                                                    value="">Client</option>
+                                                                @if (count($client) > 0)
+                                                                    @foreach ($client as $v)
+                                                                        <option
+                                                                            value="{{ $v->client_name }}">
+                                                                            {{ $v->client_name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </td>
                                                         @endif
                                                         </tr>
                                                         
                                                         <tr>
-                                                        <td class="static-field remove-other_{{$key - 1}}">Sample</td>
+                                                        <td class="static-field ">Sample</td>
                                                         @if(count($single_sample) > 0)
                                                         @foreach($single_sample as $sample)
                                                             <td><input type="text" class="form-control" name="single_sample[]" value="{{$sample}}"></td>
                                                         @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_sample[]" value=""></td>
                                                         @endif
                                                         </tr>
                                                         <tr>
-                                                            <td class="static-field remove-other_{{$key - 1}}">Fieldwork CPI</td>
+                                                            <td class="static-field ">Fieldwork CPI</td>
                                                             @if(count($single_fieldwork) > 0)
                                                             @foreach($single_fieldwork as $fieldwork)
-                                                                <td><input type="text" class="form-control" name="single_fieldwork[]" value="{{$fieldwork}}">
+                                                                <td><input type="text" class="form-control" name="single_fieldwork[]" value="{{$fieldwork}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control" name="single_fieldwork[]" value=""></td>
                                                             @endif
-                                                            </td>
+                                                            
                                                         </tr>
                                                         
                                                         @if(count($single_other) > 0)
@@ -1629,6 +1679,14 @@
                                                         @endif
                                                         </tr>
                                                         @endforeach
+                                                        @else
+                                                        <tr id="otherFields">
+                                                            <td class="d-flex">
+                                                                <button type="button" class="btn btn-sm add-other btn-light">+</button> 
+                                                                <input type="text" class="form-control" placeholder="Others" name="single_other[0][]">
+                                                            </td>
+                                                            <td><input type="text" class="form-control" placeholder="" name="single_other[0][]"></td>
+                                                        </tr>
                                                         @endif
                                                         <tr>
                                                             <td>Total Cost</td>
@@ -1636,12 +1694,14 @@
                                                             @foreach($single_total_cost as $total_cost)
                                                                 <td><input type="text" class="form-control" name="single_total_cost[]" value="{{$total_cost}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control" name="single_total_cost[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            @endif
+                                            {{-- @endif --}}
                                         </div>
                                     </div>
 
@@ -1651,6 +1711,13 @@
                                         <div class="{{ isset($newrfq) && isset($newrfq->multiple) ? '' : 'd-none' }}" id="mulitple-country">
                                             <h5>CATI / CAPI / Online Research Multiple Country</h5>
                                             <?php
+                                            $multiple_methodology = [];
+                                            $multiple_currency = [];
+                                            $multiple_loi = [];
+                                            $multiple_client = [];
+                                            $multiple_countries = [];
+                                            $multiple_other = [];
+                                            $multiple_total_cost = [];
                                             if(isset($newrfq) && isset($newrfq->multiple)){
                                                 $multiple_methodology = json_decode($newrfq->multiple->multiple_methodology);
                                                 $multiple_currency = json_decode($newrfq->multiple->multiple_currency);
@@ -1664,7 +1731,7 @@
                                             <div class="tab-container">
                                                 <button type="button" class="btn btn-success btn-sm" id="addMultipleCountryBtn">Add More</button>
                                             </div>
-                                             @if(isset($newrfq) && isset($newrfq->multiple))
+                                             {{-- @if(isset($newrfq) && isset($newrfq->multiple)) --}}
                                             <div class="table-container mt-2">
                                                 <table class="" id="MultipleCountry">
                                                     <tbody>
@@ -1679,33 +1746,51 @@
                                                                     <label class="mb-0 label">
                                                                     <input type="text" class="form-control" name="multiple_methodology[]" value="{{$methodology}}" placeholder="Online">
                                                                     </label>
+                                                                    </td>
                                                                 @endforeach
-                                                            @endif
+                                                            @else
+                                                            <td class="editable-field relative"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control" name="multiple_methodology[]" value="" placeholder="Online">
+                                                            </label>
                                                             </td>
+                                                            @endif
                                                         </tr>
                                                         <tr>
                                                         <td class="static-field relative ">Currency</td>
-                                                         @if(count($multiple_currency) > 0)
-                                                             @foreach($multiple_currency as $key => $currency)
-                                                                <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
-                                                                <label class="mb-0 label">
-                                                                <input type="text" class="form-control" name="multiple_currency[]" value="{{$currency}}" placeholder="currency">
-                                                                </label>
-                                                             @endforeach
-                                                         @endif
-                                                            </td>
+                                                        @if(count($multiple_currency) > 0)
+                                                            @foreach($multiple_currency as $key => $currency)
+                                                            <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control" name="multiple_currency[]" value="{{$currency}}" placeholder="currency">
+                                                            </label>
+                                                        </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field relative"  colspan="3">
+                                                        <label class="mb-0 label">
+                                                        <input type="text" class="form-control" name="multiple_currency[]" value="" placeholder="currency">
+                                                        </label>
+                                                        </td>
+                                                        @endif
                                                         </tr>
                                                         <tr>
                                                         <td class="static-field relative ">LOI</td>
-                                                          @if(count($multiple_loi) > 0)
+                                                        @if(count($multiple_loi) > 0)
                                                            @foreach($multiple_loi as $key => $loi)
                                                             <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
                                                                 <label class="mb-0 label">
                                                                 <input type="text" class="form-control" name="multiple_loi[]" value="{{$loi}}" placeholder="mins">
                                                                 </label>
+                                                            </td>
                                                             @endforeach
-                                                           @endif
-                                                          </td>
+                                                        @else
+                                                        <td class="editable-field relative"  colspan="3">
+                                                        <label class="mb-0 label">
+                                                        <input type="text" class="form-control" name="multiple_loi[]" value="" placeholder="mins">
+                                                        </label>
+                                                        </td>
+                                                        @endif
                                                         </tr>
                                                         <tr>
                                                         <td class="static-field relative ">Client</td>
@@ -1724,6 +1809,19 @@
                                                                 </label>
                                                             </td>
                                                             @endforeach
+                                                        @else
+                                                        <td class="editable-field relative"  colspan="3">
+                                                        <label class="mb-0 label"> 
+                                                        <select class="form-control label-gray-3" name="multiple_client[]">
+                                                            <option class="label-gray-3" value="">Client</option>
+                                                            @foreach ($client as $v)
+                                                                <option value="{{ $v->client_name }}"> 
+                                                                {{ $v->client_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        </label>
+                                                        </td>
                                                         @endif
                                                         </tr>
                                                         <tr>
@@ -1734,6 +1832,10 @@
                                                             <td class="static-field removeMultipleCountry_{{$key - 1}}">CPI</td>
                                                             <td class="static-field removeMultipleCountry_{{$key - 1}}">Total</td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="static-field relative ">Sample</td>
+                                                            <td class="static-field relative ">CPI</td>
+                                                            <td class="static-field relative ">Total</td>
                                                             @endif
                                                         </tr>
                                                         @if(count($multiple_countries) > 0)
@@ -1758,9 +1860,23 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            
                                                             @endif
                                                             </tr>
                                                         @endforeach
+                                                        @else
+                                                        <tr>
+                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="country"></td>
+                                                            <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
+                                                            <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
+                                                            <td><input type="text" class="form-control" name="multiple_countries[0][]" attr="total" value=""></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="country"></td>
+                                                            <td><input type="text" class="form-control sample"  name="multiple_countries[1][]"></td>
+                                                            <td><input type="text" class="form-control cpi"  name="multiple_countries[1][]"></td>
+                                                            <td><input type="text" class="form-control cpi" attr="total"  name="multiple_countries[1][]"></td>
+                                                        </tr>
                                                         @endif
                                                         @if(count($multiple_other) > 0)
                                                         @foreach($multiple_other as $k => $value)
@@ -1797,6 +1913,13 @@
                                                         @endif
                                                         </tr>
                                                         @endforeach
+                                                        @else
+                                                        <tr id="otherFieldMultipleCountry">
+                                                            <td class="d-flex"><button type="button" class="btn btn-sm btn-light multiple_country_other">+</button> <input type="text" name="multiple_other[0][]" class="form-control" placeholder="Others"></td>
+                                                            <td><input type="text" class="form-control" name="multiple_other[0][]"></td>
+                                                            <td><input type="text" class="form-control" name="multiple_other[0][]"></td>
+                                                            <td> <input type="text" class="form-control" name="multiple_other[0][]" attr="total"></td>
+                                                        </tr>
                                                         @endif
                                                         <tr>
                                                             <td class="total-cost relative ">Total project cost</td>
@@ -1806,12 +1929,16 @@
                                                             <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
                                                             <td class="removeMultipleCountry_{{$key - 1}}"><input type="text" class="form-control " name="multiple_total_cost[]" value="{{$value}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="total-cost"></td>
+                                                            <td class="total-cost"></td>
+                                                            <td><input type="text" class="form-control" name="multiple_total_cost[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            @endif
+                                            {{-- @endif --}}
                                         </div>
                                     </div>
 
@@ -1821,6 +1948,21 @@
                                         <div class="{{ isset($newrfq) && isset($newrfq->interview) ? '' : 'd-none' }}" id="interview-depth">
                                             <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Cenetral Location Tests Costing Sheet</h5>
                                             <?php
+                                            $interview_depth_methodology = [];
+                                            $interview_depth_currency = [];
+                                            $interview_depth_loi = [];
+                                            $interview_depth_client = [];
+                                            $interview_depth_no_fgd = [];
+                                            $interview_depth_sample_fgd = [];
+                                            $interview_depth_countries = [];
+                                            $interview_depth_requirements = [];
+                                            $interview_depth_incentives = [];
+                                            $interview_depth_moderation = [];
+                                            $interview_depth_transcripts = [];
+                                            $interview_depth_project_management = [];
+                                            $interview_depth_other = [];
+                                            $interview_depth_total_cost_1 = [];
+                                            $interview_depth_total_cost_2 = [];
                                             if(isset($newrfq) && isset($newrfq->interview)){
                                                 $interview_depth_methodology = json_decode($newrfq->interview->interview_depth_methodology);
                                                 $interview_depth_currency = json_decode($newrfq->interview->interview_depth_currency);
@@ -1839,7 +1981,7 @@
                                                 $interview_depth_total_cost_2 = json_decode($newrfq->interview->interview_depth_total_cost_2);
                                             }   
                                             ?>
-                                            @if(isset($newrfq) && isset($newrfq->interview))
+                                            {{-- @if(isset($newrfq) && isset($newrfq->interview)) --}}
                                             <div class="tab-container">
                                                 <button type="button" class="btn btn-success btn-sm" id="addInterviewDepthBtn">Add More</button>
                                             </div>
@@ -1860,6 +2002,12 @@
                                                                         </label>
                                                                     </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control" name="interview_depth_methodology[]" value="" placeholder="Online FGDs">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                             
                                                         </tr>
@@ -1873,6 +2021,12 @@
                                                                         </label>
                                                                     </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control" name="interview_depth_currency[]" value=""  placeholder="currency">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                             
                                                         </tr>
@@ -1886,6 +2040,12 @@
                                                                         </label>
                                                                     </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="interview_depth_loi[]" value=""  placeholder="mins">
+                                                                </label>
+                                                                </td>
                                                             @endif
                                                             
                                                         </tr>
@@ -1904,6 +2064,17 @@
                                                                     </label>
                                                                     </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label"> 
+                                                                    <select class="form-control label-gray-3" name="interview_depth_client[]">
+                                                                    <option class="label-gray-3" value="">Client</option>
+                                                                    @foreach ($client as $v)
+                                                                        <option value="{{ $v->client_name }}">{{ $v->client_name }}</option>
+                                                                    @endforeach
+                                                                    </select>
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                             
                                                         </tr>
@@ -1917,6 +2088,12 @@
                                                                         </label>
                                                                     </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="interview_depth_fgd[]" value=""  placeholder="value">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -1929,6 +2106,12 @@
                                                                     </label>
                                                                 </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="interview_depth_sample_fgd[]" value=""  placeholder="value">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -1941,6 +2124,12 @@
                                                                 </label>
                                                                 </td>
                                                                 @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="country">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -1951,6 +2140,10 @@
                                                                 <td class="static-field removeInterviewDepth_{{$key - 1}}">CPI</td>
                                                                 <td class="static-field removeInterviewDepth_{{$key - 1}}">Total</td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="static-field">Sample</td>
+                                                            <td class="static-field">CPI</td>
+                                                            <td class="static-field">Total</td>
                                                             @endif
                                                         </tr>
 
@@ -1975,6 +2168,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_requirement[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_requirement[]" value=""></td>
+                                                            <td><input type="text" class="form-control total" name="interview_depth_requirement[]" attr="total" value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -1998,6 +2195,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_incentives[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_incentives[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_incentives[]" attr="total" value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2021,6 +2222,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_moderation[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_moderation[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_moderation[]" attr="total" value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2044,6 +2249,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_transcripts[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_transcripts[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_transcripts[]" attr="total" value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2067,6 +2276,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_project_management[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_project_management[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_project_management[]" attr="total" value=""></td>
                                                             @endif
                                                         </tr>
                                                         @if(count($interview_depth_other) > 0)
@@ -2103,6 +2316,13 @@
                                                         @endif
                                                         </tr>
                                                         @endforeach
+                                                        @else
+                                                        <tr id="otherFieldsInterview">
+                                                            <td class="d-flex"><button type="button" class="btn btn-sm btn-light interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
+                                                            <td><input type="text" class="form-control sample" name="interview_depth_other[0][]"></td>
+                                                            <td><input type="text" class="form-control cpi" name="interview_depth_other[0][]"></td>
+                                                            <td> <input type="text" class="form-control cpi" name="interview_depth_other[0][]" attr="total" value=""></td>
+                                                        </tr>
                                                         @endif
                                                         {{-- <tr id="otherFieldsInterview">
                                                             <td class="d-flex"><button type="button" class="btn btn-sm interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
@@ -2120,6 +2340,11 @@
                                                             <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"><input type="text" class="form-control cpi" name="interview_depth_total_cost_1[]" attr="total1" value="{{$value}}"></td>
                                                             @endif
                                                             @endforeach
+                                                        @else
+                                                        <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_1[]" placeholder="Total cost for 1 FGD"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"><input type="text" class="form-control cpi" name="interview_depth_total_cost_1[]" attr="total1" value=""></td>
                                                         @endif
                                                         </tr>
                                                         <tr>
@@ -2133,6 +2358,11 @@
                                                             
                                                             @endif
                                                             @endforeach
+                                                        @else
+                                                        <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value=""></td>
                                                         @endif
                                                             {{-- <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
                                                             <td class="total-cost"></td>
@@ -2142,7 +2372,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            @endif
+                                            {{-- @endif --}}
                                         </div>
                                     </div>
 
@@ -2154,12 +2384,25 @@
 
                                         <div class="{{ isset($newrfq) && isset($newrfq->online) ? '' : 'd-none' }}" id="online-community">
                                             <h5>Online Community - Costing Sheet</h5>
-                                             <?php
+                                            <?php
+                                            $online_community_methodology = [];
+                                            $online_community_currency = [];
+                                            $online_community_client = [];
+                                            $online_community_duration = [];
+                                            $online_community_loi_screener = [];
+                                            $online_community_sample_loi_month = [];
+                                            $online_community_countries = [];
+                                            $online_community_requirements = [];
+                                            $online_community_incentives = [];
+                                            $online_community_pmfree = [];
+                                            $online_community_project_management = [];
+                                            $online_community_other = [];
+                                            $online_community_total_cost = [];
                                             if(isset($newrfq) && isset($newrfq->online)){
                                                 $online_community_methodology = json_decode($newrfq->online->online_community_methodology);
                                                 $online_community_currency = json_decode($newrfq->online->online_community_currency);
                                                 $online_community_client = json_decode($newrfq->online->online_community_client);
-                                                 $online_community_duration = json_decode($newrfq->online->online_community_duration);
+                                                $online_community_duration = json_decode($newrfq->online->online_community_duration);
                                                 $online_community_loi_screener = json_decode($newrfq->online->online_community_loi_screener);
                                                 $online_community_sample_loi_month = json_decode($newrfq->online->online_community_sample_loi_month);
                                                 $online_community_countries = json_decode($newrfq->online->online_community_countries);
@@ -2172,7 +2415,7 @@
                                                
                                             }   
                                             ?>
-                                            @if(isset($newrfq) && isset($newrfq->online))
+                                            {{-- @if(isset($newrfq) && isset($newrfq->online)) --}}
                                             <div class="tab-container">
                                                 <button type="button" class="btn btn-success btn-sm" id="OnlineCommunityBtn">Add More</button>
                                             </div>
@@ -2192,6 +2435,11 @@
                                                                 <input type="text" class="form-control sample" name="online_community_methodology[]" value="{{$methodology}}"  placeholder="Online Community"></label>
                                                                 </td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_methodology[]" value="" placeholder="Online Community"></label>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2204,6 +2452,12 @@
                                                             </label>
                                                             </td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_currency[]" value=""  placeholder="currency">
+                                                                </label>
+                                                            </td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2222,14 +2476,25 @@
                                                                         </select>
                                                                         </label>
                                                                     </td>
-                                                                    @endforeach
+                                                                @endforeach
+                                                                @else
+                                                                <td class="editable-field"  colspan="3">
+                                                                    <label class="mb-0 label">
+                                                                    <select class="form-control label-gray-3" name="online_community_client[]">
+                                                                        <option class="label-gray-3" value="">Client</option>
+                                                                        @foreach ($client as $v)
+                                                                            <option value="{{ $v->client_name }}">{{ $v->client_name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    </label>
+                                                                </td>
                                                                 @endif
                                                             
                         
                                                         </tr>
                                                         <tr>
                                                             <td class="static-field ">Duration</td>
-                                                              @if(count($online_community_duration) > 0)
+                                                            @if(count($online_community_duration) > 0)
                                                                 @foreach($online_community_duration as $key => $duration)
                                                                     <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                                     <label class="mb-0 label">
@@ -2237,56 +2502,84 @@
                                                                     </label>
                                                                     </td>
                                                                 @endforeach
-                                                             @endif
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control" name="online_community_duration[]"  placeholder="Year" value="">
+                                                                </label>
+                                                            </td>
+                                                            @endif
 
                                                         </tr>
                                                         <tr>
                                                             <td class="static-field ">LOI screener</td>
-                                                             @if(count($online_community_loi_screener) > 0)
-                                                                @foreach($online_community_loi_screener as $key => $screener)
-                                                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
-                                                                    <label class="mb-0 label">
-                                                                    <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value="{{$screener}}"  placeholder="mins">
-                                                                    </label>
-                                                                    </td>
-                                                             @endforeach
-                                                             @endif
+                                                            @if(count($online_community_loi_screener) > 0)
+                                                            @foreach($online_community_loi_screener as $key => $screener)
+                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value="{{$screener}}"  placeholder="mins">
+                                                                </label>
+                                                            </td>
+                                                            @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value=""  placeholder="mins">
+                                                                </label>
+                                                            </td>
+                                                            @endif
 
                                                         </tr>
                                                         <tr>
                                                             <td class="static-field ">LOI/Month</td>
-                                                               @if(count($online_community_sample_loi_month) > 0)
-                                                                @foreach($online_community_sample_loi_month as $key => $sample_loi_month)
-                                                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
-                                                                    <label class="mb-0 label">
-                                                                    <input type="text" class="form-control sample" name="online_community_loi_month[]" value="{{$sample_loi_month}}"  placeholder="mins">
-                                                                    </label>
-                                                                    </td>
-                                                                 @endforeach
-                                                             @endif
+                                                            @if(count($online_community_sample_loi_month) > 0)
+                                                            @foreach($online_community_sample_loi_month as $key => $sample_loi_month)
+                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_loi_month[]" value="{{$sample_loi_month}}"  placeholder="mins">
+                                                                </label>
+                                                            </td>
+                                                            @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_loi_month[]" value=""  placeholder="mins">
+                                                                </label>
+                                                            </td>
+                                                            @endif
 
                                                         </tr>
                                                         <tr>
                                                             <td class="static-field ">country</td>
-                                                               @if(count($online_community_countries) > 0)
-                                                                @foreach($online_community_countries as $key => $countries)
-                                                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
-                                                                    <label class="mb-0 label">
-                                                                    <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="country">
-                                                                    </label>
-                                                                    </td>
-                                                                 @endforeach
-                                                             @endif
+                                                            @if(count($online_community_countries) > 0)
+                                                            @foreach($online_community_countries as $key => $countries)
+                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="country">
+                                                                </label>
+                                                            </td>
+                                                            @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="country">
+                                                                </label>
+                                                            </td>
+                                                            @endif
 
                                                         </tr>
                                                         <tr>
                                                             <td class="static-field"></td>
-                                                             @if(count($online_community_countries) > 0)
-                                                                @foreach($online_community_countries as $key=> $online)
+                                                            @if(count($online_community_countries) > 0)
+                                                            @foreach($online_community_countries as $key=> $online)
                                                                 <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
                                                                 <td class="static-field removeOnlineCommunity_{{$key - 1}}">CPI</td>
                                                                 <td class="static-field removeOnlineCommunity_{{$key - 1}}">Total</td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="static-field">Sample</td>
+                                                            <td class="static-field">CPI</td>
+                                                            <td class="static-field">Total</td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2310,6 +2603,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample" name="online_community_requirements[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi"  name="online_community_requirements[]"  value=""></td>
+                                                            <td><input type="text" class="form-control total" attr="total"   name="online_community_requirements[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2333,6 +2630,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample"  name="online_community_incentives[]"  value=""></td>
+                                                            <td><input type="text" class="form-control cpi"  name="online_community_incentives[]"  value=""></td>
+                                                            <td><input type="text" class="form-control cpi" attr="total"   name="online_community_incentives[]"  value=""></td>
                                                             @endif
                                                         </tr>
                                                         <tr>
@@ -2356,6 +2657,10 @@
                                                                 }
                                                                 ?>
                                                             @endforeach
+                                                            @else
+                                                            <td><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value=""></td>
+                                                            <td><input type="text" class="form-control cpi"  name="online_community_pmfree[]" value=""></td>
+                                                            <td><input type="text" class="form-control cpi" attr="total"   name="online_community_pmfree[]" value=""></td>
                                                             @endif
                                                         </tr>
                                                         @if(count($online_community_other) > 0)
@@ -2392,6 +2697,13 @@
                                                         @endif
                                                         </tr>
                                                         @endforeach
+                                                        @else
+                                                        <tr id="otherFieldsOnline">
+                                                            <td class="d-flex"><button type="button" class="btn btn-sm btn-light online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
+                                                            <td><input type="text" class="form-control sample"  name="online_community_other[0][]"></td>
+                                                            <td><input type="text" class="form-control cpi" name="online_community_other[0][]"></td>
+                                                            <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
+                                                        </tr>
                                                         @endif
                                                         {{-- <tr id="otherFieldsOnline">
                                                             <td class="d-flex"><button type="button" class="btn btn-sm online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
@@ -2407,12 +2719,16 @@
                                                             <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
                                                             <td class="removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"><input type="text" class="form-control" name="online_community_total_cost[]" value="{{$value}}"></td>
                                                             @endforeach
+                                                            @else
+                                                            <td class="total-cost"></td>
+                                                            <td class="total-cost"></td>
+                                                            <td><input type="text" class="form-control cpi"  name="online_community_total_cost[]"  value=""></td>
                                                             @endif
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            @endif
+                                            {{-- @endif --}}
                                         </div>
                                     </div>
                                 </div>    

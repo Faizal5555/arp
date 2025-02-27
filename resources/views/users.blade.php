@@ -138,7 +138,12 @@ table tfoot th {
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             {data:'name',name:'name'},
             {data:'email',name:'email'},
-            {data:'user_type',name:'user_type'},
+            {data:'user_type',
+             name:'user_type',
+             render: function(data, type, row) {
+                    return (data === 'operation') ? 'Project Manager' : data;
+                }
+            },
             
         
             {data:'',
