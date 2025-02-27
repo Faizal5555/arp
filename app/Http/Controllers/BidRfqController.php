@@ -468,11 +468,30 @@ class BidRfqController extends Controller
     {
         // $id=$req->data;
 
-        $school= BidRfq::where('id',$id)->firstorfail()->delete();
+        $rfq = RfqDetailsTable::with(['single', 'multiple', 'interview', 'online'])
+        ->where('id', $id)
+        ->firstOrFail();
 
-        if($school)
+            // Delete related records manually if they exist
+            if ($rfq->single) {
+                $rfq->single()->delete();
+            }
+            if ($rfq->multiple) {
+                $rfq->multiple()->delete();
+            }
+            if ($rfq->interview) {
+                $rfq->interview()->delete();
+            }
+            if ($rfq->online) {
+                $rfq->online()->delete();
+            }
+
+            // Now delete the main record
+            $rfq->delete();
+
+        if($rfq)
         {
-            $response_data = ["success" => 1, "message" => "School Deleted Successfully"];
+            $response_data = ["success" => 1, "message" => "RFQ Deleted Successfully"];
             return redirect()->route('bidrfq.index');
         }else{
             $response_data = ["success" => 0, "message" => "Site Server Error"];
