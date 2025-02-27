@@ -10,6 +10,7 @@ use App\Models\Vendor;
 use App\Models\WonProject;
 use App\Models\OperationNew;
 use App\Models\Notification;
+use App\Models\RfqDetailsTable;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -57,7 +58,7 @@ class WonProjectController extends Controller
          
         $client = Client::get();
         $vendor = Vendor::get();
-        $bidRfq =BidRfq::get();
+        $bidRfq =RfqDetailsTable::get();
 
          
          
@@ -166,7 +167,7 @@ class WonProjectController extends Controller
     {
       
         $v = $req->all();
-        // dd($v);
+         //ssdd($v);
     
         $response_data = [];
         $validator = Validator::make(
@@ -240,10 +241,42 @@ class WonProjectController extends Controller
             // dd($wonproject);
             if ($wonproject->save()) {
                 $rfqwon = WonProject::where('rfq',$rfq1)->count();
-                $rfqstatus = BidRfq::where('rfq_no',$rfq1)->first();
-                $rfq = BidRfq::where('rfq_no',$rfq1)->select('client_id')->first();
-                $rfq1 = json_decode($rfq->client_id,true);
-                $rfq2 = count($rfq1);
+                $rfqstatus = RfqDetailsTable::where('rfq_no',$rfq1)->first();
+                $rfq = RfqDetailsTable::with([
+                  'single' => function ($query) {
+                      $query->select('rfq_details_id', 'single_client');
+                  },
+                  'multiple' => function ($query) {
+                      $query->select('rfq_details_id', 'multiple_client');
+                  },
+                  'interview' => function ($query) {
+                      $query->select('rfq_details_id', 'interview_depth_client');
+                  },
+                  'online' => function ($query) {
+                      $query->select('rfq_details_id', 'online_community_client');
+                  }
+              ])->where('rfq_no', $rfq1)->first();
+              
+              $clients = [];
+              
+              // Collect client names from each related table
+              if ($rfq) {
+                  if ($rfq->single && $rfq->single->single_client) {
+                      $clients[] = $rfq->single->single_client;
+                  }
+                  if ($rfq->multiple && $rfq->multiple->multiple_client) {
+                      $clients[] = $rfq->multiple->multiple_client;
+                  }
+                  if ($rfq->interview && $rfq->interview->interview_depth_client) {
+                      $clients[] = $rfq->interview->interview_depth_client;
+                  }
+                  if ($rfq->online && $rfq->online->online_community_client) {
+                      $clients[] = $rfq->online->online_community_client;
+                  }
+              }
+              
+              $rfq1 = json_encode($clients); // Convert array to JSON if needed
+              $rfq2 = count($clients); // Get the count of clients
                if($rfq2 == $rfqwon)
                {
                 $rfqstatus->type = 'won';
@@ -291,15 +324,17 @@ class WonProjectController extends Controller
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
         $bidrfq = BidRfq::where('rfq_no', $bid)->first();
-        // dd($bidrfq);
+         $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
+        //dd($newrfq);
         
-        return view('wonproject.edit', compact('wonproject','bidrfq','vendor1','client','vendor','country'));
+        return view('wonproject.edit', compact('wonproject','bidrfq','newrfq','vendor1','client','vendor','country'));
        }
     
+
     public function update(Request $req)
     {
         $v = $req->all();
-        // dd($v);
+        //dd($v);
     
         $response_data = [];
         $validator = Validator::make(
@@ -333,7 +368,7 @@ class WonProjectController extends Controller
             $wonproject->client_total =  $req->client_total;       
             $wonproject->client_advance = $req->client_advance;
             $wonproject->client_balance =  $req->client_balance;
-            // $wonproject->vendor_id=implode(',',$req->vendor_id_0);
+            $wonproject->vendor_id=implode(',',$req->vendor_id_0);
             $wonproject->vendor_total = implode(',',$req->vendor_total_0); 
             $wonproject->vendor_advance =  implode(',',$req->vendor_advance_0);
             $wonproject->vendor_balance =  implode(',',$req->vendor_balance_0);

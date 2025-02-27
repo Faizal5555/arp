@@ -141,7 +141,10 @@ Route::get('bidrfq/pdfview/{id}', 'App\Http\Controllers\BidRfqController@pdfview
 Route::get('bidrfq/downloadpdf/{id}', 'App\Http\Controllers\BidRfqController@downloadpdf');
 
 
-
+//new Rfq 
+Route::get('/newrfq/index', 'App\Http\Controllers\NewRfqController@index')->name('newrfq.index');
+Route::post('/newrfq/store','App\Http\Controllers\NewRfqController@store')->name('newrfq.store');
+//Route::get('/newrfq/view/{id}','App\Http\Controllers\NewRfqController@view')->name('newrfq.store');
 
 //wonproject
 Route::get('/wonproject/index', 'App\Http\Controllers\WonProjectController@index')->name('wonproject.index');

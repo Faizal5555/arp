@@ -14,6 +14,7 @@ use App\Models\Vendorrequestadvance;
 use App\Models\Vendorrequestbalance;
 use App\Models\Clientpayment;
 use App\Models\VendorPayment;
+use App\Models\RfqDetailsTable;
 use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Validator;
@@ -184,7 +185,7 @@ class AccountsController extends Controller
 
 
     public function clientview($id, OperationNew $operation){
-        $bidrfq = BidRfq ::get();
+        $newrfq = RfqDetailsTable ::get();
         $country = Country::get();
         $vendor = Vendor::get();
         $fieldteam=Fieldteam::get();
@@ -200,9 +201,9 @@ class AccountsController extends Controller
         $rfq_no1=str_replace('"}','',$rfq_no);
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
-        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
         // dd($rfq_no);
-        return view('accounts.client_advance_view',compact('clientrequest','wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3'));
+        return view('accounts.client_advance_view',compact('clientrequest','wonproject','newrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3'));
     }
 
 

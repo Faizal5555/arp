@@ -214,20 +214,49 @@ svg.svg-inline--fa.fa-eye {
          columns: [
              {data: 'rfq_no',  name: 'rfq_no'},
              {data: 'industry', name: 'industry'},
-             {data: 'vendor_id', "render": function (data, type,row) {
-                var data = data.replaceAll('[','');
-                data = data.replaceAll(']','');
-                data = data.replaceAll('&quot;','');
-                console.log(data);
-                return data;
-            }},
-            {data: 'client_id', "render": function (data, type,row) {
-                var data = data.replaceAll('[','');
-                data = data.replaceAll(']','');
-                data = data.replaceAll('&quot;','');
-                console.log(data);
-                return data;
-            }},
+            //  {data: 'vendor_id', "render": function (data, type,row) {
+            //     var data = data.replaceAll('[','');
+            //     data = data.replaceAll(']','');
+            //     data = data.replaceAll('&quot;','');
+            //     console.log(data);
+            //     return data;
+            // }},
+            // {data: 'client_id', "render": function (data, type,row) {
+            //     var data = data.replaceAll('[','');
+            //     data = data.replaceAll(']','');
+            //     data = data.replaceAll('&quot;','');
+            //     console.log(data);
+            //     return data;
+            // }},
+            { 
+                data: null, 
+                "render": function (data, type, row) {
+                    let clients = [];
+                    function cleanClientData(value) {
+                        if (!value) return []; 
+
+                        try {
+                            let parsed = JSON.parse(value);
+                            if (Array.isArray(parsed)) {
+                                return parsed; 
+                            }
+                        } catch (e) {
+                            // If parsing fails, return as a single-item array after cleaning
+                            return [value.replaceAll('[', '').replaceAll(']', '').replaceAll('&quot;', '')];
+                        }
+                        return [value]; 
+                    }
+                    // Extract and clean client names from relationships
+                    if (row.single && row.single.single_client) clients.push(...cleanClientData(row.single.single_client));
+                    if (row.multiple && row.multiple.multiple_client) clients.push(...cleanClientData(row.multiple.multiple_client));
+                    if (row.interview && row.interview.interview_depth_client) clients.push(...cleanClientData(row.interview.interview_depth_client));
+                    if (row.online && row.online.online_community_client) clients.push(...cleanClientData(row.online.online_community_client));
+
+                    // Return formatted client names (no brackets or extra characters)
+                    return clients.length ? clients.join(', ') : 'No Clients';
+                }
+            },
+            {data:'company_name'  ,name:'company_name'},
              {data:'date'  ,name:'date'},
              {data:'industry',name:'industry'},
             //  {data:'country'  ,name:'country'},
@@ -449,8 +478,9 @@ svg.svg-inline--fa.fa-eye {
                                     <tr class="my-row">
                                         <th>RFQ No </th>
                                         <th>Industry</th>
-                                        <th>Vendor Name</th>
+                                        {{-- <th>Vendor Name</th> --}}
                                         <th>Client Name</th>
+                                        <th>Company Name</th>
                                         <th>Date</th>
                                         <th>Industry</th>
                                         <!--<th>Country Name</th>-->

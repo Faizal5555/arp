@@ -9,6 +9,11 @@ use App\Models\Client;
 use App\Models\ProjectsComments;
 use App\Models\WonProject;
 use App\Models\BidRfq;
+use App\Models\RfqDetailsTable;
+use App\Models\RfqSingleCountry;
+use App\Models\RfqMultipleCountry;
+use App\Models\RfqInterviewDepth;
+use App\Models\RfqOnlineCommunity;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Auth;
@@ -28,8 +33,8 @@ class BidRfqController extends Controller
       
         
         $data = $request->all();
-       $bidRfqQuery = BidRfq::where('type', 'next'); // Base query
-
+       $bidRfqQuery = RfqDetailsTable::with('single', 'multiple', 'interview', 'online')->where('type', 'next'); // Base query
+        // dd($bidRfqQuery->get());
         $user = Auth::user(); // Get authenticated user
 
         if ($user->user_type == 'sales') {
@@ -96,7 +101,7 @@ class BidRfqController extends Controller
                     ->make(true);
                     
         }else{
-            $unique_no = BidRfq::orderBy('id', 'DESC')->pluck('id')->first();
+            $unique_no = RfqDetailsTable::orderBy('id', 'DESC')->pluck('id')->first();
          if($unique_no == null or $unique_no == ""){
             #If Table is Empty
             $unique_no = 1;
@@ -260,123 +265,145 @@ class BidRfqController extends Controller
         $client = Client::get();
         $bidrfq = BidRfq::where('id', $id)->first();
         $rfq = array();
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('id',$id)->first();
+        // dd($newrfq);
         for($i=0; $i< count($wonproject);$i++)
         {
             array_push($rfq,$wonproject[$i]['rfq_no']);
         }
         // dd($bidrfq);
-        return view('bidrfq.edit',compact('bidrfq','client','vendor','country','id','wonproject','rfq'));
+        return view('bidrfq.edit',compact('bidrfq','client','vendor','country','id','wonproject','rfq','newrfq'));
     }
     
-    public function update(Request $req)
+    public function update(Request $request)
     {
-        // dd($req->all());
+         //dd($request->all());
         
         // dd($v);
-      $v = $req->all();
+      $v = $request->all();
         
         $response_data = [];
-        $validator = Validator::make($req->all(), [ 
-            'country_0.*'  => 'required',
-            'client_id_0.*' => 'required',
-            'methodology_0.*' => 'required',
-            "vendor_id_0.*" => "required",
-            'setup_cost_0.*' => 'required',
-            'recruitment_0.*' => "required",
-            'incentives_0.*' => 'required',
-            'moderation_0.*' => "required",
-            'transcript_0.*' => 'required',
-            'others_0.*' => "required",
-            'total_cost_0.*' => 'required',
+        $validator = Validator::make($request->all(), [ 
+          
+            'date' => 'required|date',
+            'industry' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'follow_up_date' => 'nullable|date',
       
      ]);
-     if (!$validator->fails()) {
-         // dd($req->bidrfqCount);
-         for($i=0; $i<$req->bidrfqCount; $i++)
-         {
-             // dd( implode(',',$req->$a));
-             if($req->id && $req->id != "")
-             {
-                 $bidrfq = BidRfq::where('id', $req->id)->first();
-             }else{
-                 $bidrfq = new BidRfq();
-                 $bidrfq->user_id = auth()->user()->id;
-             }
-             $rfqNo = $req->rfq_no;
-             $rfq_no = str_replace('{"rfq_no":"', '', $rfqNo);
-                $rfq_no1 = str_replace('"}', '', $rfq_no);
-                $rfq1 = explode('_', $rfq_no1);
-                $bid = $rfq1[0];
-             $client_id = 'client_id_'.$i;
-             $vendor_id = 'vendor_id_'.$i;
-             $sample_size = 'sample_size_'.$i;
-                $setup_cost = 'setup_cost_'.$i;
-                $recruitment = 'recruitment_'.$i;
-                $incentives = 'incentives_'.$i;
-                $moderation = 'moderation_'.$i;
-                $transcript = 'transcript_'.$i;
-                $others = 'others_'.$i;
-                $country = 'country_'.$i;
-                $total_cost = 'total_cost_'.$i;
-                $bidrfq->rfq_no = $bid;
-                $bidrfq->client_id =json_encode($req->client_id_0);
-                $bidrfq->vendor_id = json_encode($req->vendor_id_0);
-                $bidrfq->methodology = json_encode($req->methodology_0);
-                $bidrfq->country = json_encode($req->country_0);
-                $bidrfq->sample_size = json_encode($req->sample_size_0);
-                $bidrfq->setup_cost =json_encode($req->setup_cost_0);
-                $bidrfq->recruitment = json_encode($req->recruitment_0);
-                $bidrfq->incentives = json_encode($req->incentives_0);
-                $bidrfq->moderation  = json_encode($req->moderation_0);
-                $bidrfq->transcript = json_encode($req->transcript_0);
-                $bidrfq->others = json_encode($req->others_0);
-                $bidrfq->total_cost = json_encode($req->total_cost_0);
-                $bidrfq->date = $req->date;
-                $bidrfq->industry = $req->industry;
-                $bidrfq->comments = $req->comments;
-                $bidrfq->company_name = $req->company_name;
-                $bidrfq->respondent_title = $req->respondent_title;
-                $bidrfq->interview_length = $req->interview_length;
-                $bidrfq->others_field = $req->others_field;
-                $bidrfq->follow_up_date = $req->follow_up_date;
-                //  $bidrfq->industry_table = $req->industry_table;
-                // $bidrfq->client_id = implode(',',$req->$client_id);
-                // $bidrfq->vendor_id = implode(',',$req->$vendor_id);
-                // $bidrfq->sample_size = implode(',',$req->$sample_size);
-                // $bidrfq->setup_cost = implode(',',$req->$setup_cost);
-                // $bidrfq->recruitment = implode(',',$req->$recruitment);
-                // $bidrfq->incentives = implode(',',$req->$incentives);
-                // $bidrfq->moderation = implode(',',$req->$moderation);
-                // $bidrfq->transcript = implode(',',$req->$transcript);
-                // $bidrfq->others = implode(',',$req->$others);
-                // $bidrfq->country = implode(',',$req->$country);
-                // $bidrfq->total_cost = implode(',',$req->$total_cost);
-                // $bidrfq->user_id = auth()->user()->id;
-
-                $unique_no = BidRfq::orderBy('id', 'DESC')->with('rfq_no','rfq_no')->pluck('id')->first();
-                if($unique_no == null or $unique_no == ""){
-                    #If Table is Empty
-                    $unique_no = 1;
-                    $dt = Carbon::now();
-                }
-                else{
-                    #If Table has Already some Data
-                    $unique_no = $unique_no + 1;
-                    $dt = Carbon::now();
-                }
-                $rfq_no = 'RFQ'.$unique_no. '-' .$dt->year;
         
-                if ($bidrfq->save()) {
-                    $response_data = ["success" => 1, "message" => "RfqBid Updated Successfully"];
-                } else {
-                    $response_data = ["success" => 0, "message" => "Site Server Error"];
+     if ($validator->fails()) {
+        return response()->json([
+            "success" => 0,
+            "message" => "Validation Error",
+            "errors" => $validator->errors()
+        ], 422);
+    }
+         // dd($req->bidrfqCount);
+        $rfq = RfqDetailsTable::find($request->id);
+        $rfq->date = $request->date;
+        $rfq->industry = $request->industry;
+        $rfq->follow_up_date = $request->follow_up_date;
+        $rfq->company_name = $request->company_name;
+        $rfq->rfq_no = $request->rfq_no;
+        $rfq->user_id = auth()->user()->id;
+        if ($rfq->save()) {
+         
+            if($request->single_form == 1)
+            {
+                $single = RfqSingleCountry::where('rfq_details_id', $rfq->id)->first();
+                if ($single) {
+                    $single->rfq_details_id = $rfq->id;
+                    $single->single_methodology = json_encode($request->single_methodology);
+                    $single->single_currency = json_encode($request->single_currency);
+                    $single->single_loi = json_encode($request->single_loi);
+                    $single->single_country = json_encode($request->single_country);
+                    $single->single_client = json_encode($request->single_client);
+                    $single->single_sample = json_encode($request->single_sample);
+                    $single->single_fieldwork = json_encode($request->single_fieldwork);
+                    $single->single_other = json_encode($request->single_other);
+                    $single->single_total_cost = json_encode($request->single_total_cost);
+                    $single->user_id = auth()->user()->id;
+                    $single->save();
                 }
             }
-        } else {
-            $response_data = ["success" => 0, "message" => "Site Server Error", "error" => $validator->errors()];
-        }
-    
-        return response()->json($response_data);
+            if($request->multiple_form == 1)
+            {
+                $multiple = RfqMultipleCountry::where('rfq_details_id', $rfq->id)->first();
+                if ($multiple) {
+               
+                $multiple->rfq_details_id = $rfq->id;
+                $multiple->multiple_methodology = json_encode($request->multiple_methodology);
+                $multiple->multiple_currency = json_encode($request->multiple_currency);
+                $multiple->multiple_loi = json_encode($request->multiple_loi);
+                $multiple->multiple_client = json_encode($request->multiple_client);
+                $multiple->multiple_countries = json_encode($request->multiple_countries);
+                $multiple->multiple_other = json_encode($request->multiple_other);
+                $multiple->multiple_total_cost = json_encode($request->multiple_total_cost);
+                $multiple->user_id = auth()->user()->id;
+                $multiple->save();
+                }
+            }
+            if($request->interview_form == 1)
+            {
+
+                $interview = RfqInterviewDepth::where('rfq_details_id', $rfq->id)->first();
+                if($interview){
+                $interview->rfq_details_id = $rfq->id;
+                $interview->interview_depth_methodology = json_encode($request->interview_depth_methodology);
+                $interview->interview_depth_currency = json_encode($request->interview_depth_currency);
+                $interview->interview_depth_loi = json_encode($request->interview_depth_loi);
+                $interview->interview_depth_client = json_encode($request->interview_depth_client);
+                $interview->interview_depth_no_fgd = json_encode($request->interview_depth_fgd);
+                $interview->interview_depth_sample_fgd = json_encode($request->interview_depth_sample_fgd);
+                $interview->interview_depth_countries = json_encode($request->interview_depth_countries);
+                $interview->interview_depth_requirements = json_encode($request->interview_depth_requirement);
+                $interview->interview_depth_incentives = json_encode($request->interview_depth_incentives);
+                $interview->interview_depth_moderation = json_encode($request->interview_depth_moderation);
+                $interview->interview_depth_transcripts = json_encode($request->interview_depth_transcripts);
+                $interview->interview_depth_project_management = json_encode($request->interview_depth_project_management);
+                $interview->interview_depth_other = json_encode($request->interview_depth_other);
+                $interview->interview_depth_total_cost_1 = json_encode($request->interview_depth_total_cost_1);
+                $interview->interview_depth_total_cost_2 = json_encode($request->interview_depth_total_cost_2);
+                $interview->user_id = auth()->user()->id;
+                $interview->save();
+                }
+            }
+            if($request->online_form == 1)
+            {
+                $online= RfqOnlineCommunity::where('rfq_details_id', $rfq->id)->first();
+                if($online)
+                {
+                $online->rfq_details_id = $rfq->id;
+                $online->online_community_methodology = json_encode($request->online_community_methodology);
+                $online->online_community_currency = json_encode($request->online_community_currency);
+                $online->online_community_duration = json_encode($request->online_community_duration);
+                $online->online_community_loi_screener = json_encode($request->online_community_loi_screener);
+                $online->online_community_sample_loi_month = json_encode($request->online_community_loi_month);
+                $online->online_community_client = json_encode($request->online_community_client);
+                $online->online_community_countries = json_encode($request->online_community_countries);
+                $online->online_community_requirements = json_encode($request->online_community_requirements);
+                $online->online_community_incentives = json_encode($request->online_community_incentives);
+                $online->online_community_pmfree = json_encode($request->online_community_pmfree);
+                $online->online_community_other = json_encode($request->online_community_other);
+                $online->online_community_total_cost = json_encode($request->online_community_total_cost);
+                $online->user_id = auth()->user()->id;
+                $online->save();
+                }
+            }
+            return response()->json([
+                "success" => 1,
+                "message" => "RFQ saved successfully",
+                "rfq_id" => $rfq->id
+            ], 200);
+         } 
+        
+                return response()->json([
+                    "success" => 0,
+                    "message" => "Failed to save RFQ"
+                ], 500);
+
+        
     }
 
     
@@ -392,7 +419,7 @@ class BidRfqController extends Controller
         );
         if (!$validator->fails()) {
             // dd($req->bidrfqCount);
-                $bidrfq = Bidrfq::where('id', $req->id) 
+                $bidrfq = RfqDetailsTable::where('id', $req->id) 
                 ->update(['comments' => $req->comments,'follow_up_date' => $req->follow_up_date,'type'=>'lost']); 
                 
                 // $value = Bidrfq::get();
@@ -420,7 +447,7 @@ class BidRfqController extends Controller
         );
         if (!$validator->fails()) {
             // dd($req->bidrfqCount);
-                $bidrfq = Bidrfq::where('id', $req->id) 
+                $bidrfq = RfqDetailsTable::where('id', $req->id) 
                 ->update(['comments' => $req->comments,'follow_up_date' => $req->follow_up_date,'type'=>'next']); 
                 
                 // $value = Bidrfq::get();
@@ -619,101 +646,133 @@ class BidRfqController extends Controller
         }
         return view('bidrfq.lostview',compact('bidrfq','client','vendor','country','id','wonproject','rfq'));
     }
-     public function wonupdate(Request $req)
+     public function wonupdate(Request $request)
     {
-        // dd($req->all());
+         //dd($request->all());
         
         // dd($v);
-      $v = $req->all();
+        $v = $request->all();
         
         $response_data = [];
-        $validator = Validator::make($req->all(), [ 
-            'country_0.*'  => 'required',
-            'client_id_0.*' => 'required',
-            "vendor_id_0.*" => "required",
-            'setup_cost_0.*' => 'required',
-            'recruitment_0.*' => "required",
-            'incentives_0.*' => 'required',
-            'moderation_0.*' => "required",
-            'transcript_0.*' => 'required',
-            'others_0.*' => "required",
-            'total_cost_0.*' => 'required',
+        $validator = Validator::make($request->all(), [ 
+          
+            'date' => 'required|date',
+            'industry' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'follow_up_date' => 'nullable|date',
       
      ]);
-    
-        if (!$validator->fails()) {
-            // dd($req->bidrfqCount);
-            for($i=0; $i<$req->bidrfqCount; $i++)
-            {
-                // dd( implode(',',$req->$a));
-                $bidrfq = new BidRfq();
-                $bidrfq = BidRfq::where('id', $req->id)->first();
-                $client_id = 'client_id_'.$i;
-                $vendor_id = 'vendor_id_'.$i;
-                $sample_size = 'sample_size_'.$i;
-                $setup_cost = 'setup_cost_'.$i;
-                $recruitment = 'recruitment_'.$i;
-                $incentives = 'incentives_'.$i;
-                $moderation = 'moderation_'.$i;
-                $transcript = 'transcript_'.$i;
-                $others = 'others_'.$i;
-                $country = 'country_'.$i;
-                $total_cost = 'total_cost_'.$i;
-                $bidrfq->rfq_no = $req->rfq_no;
-                $bidrfq->client_id =json_encode($req->client_id_0);
-                $bidrfq->vendor_id = json_encode($req->vendor_id_0);
-                $bidrfq->country = json_encode($req->country_0);
-                $bidrfq->sample_size = json_encode($req->sample_size_0);
-                $bidrfq->setup_cost =json_encode($req->setup_cost_0);
-                $bidrfq->recruitment = json_encode($req->recruitment_0);
-                $bidrfq->incentives = json_encode($req->incentives_0);
-                $bidrfq->moderation  = json_encode($req->moderation_0);
-                $bidrfq->transcript = json_encode($req->transcript_0);
-                $bidrfq->others = json_encode($req->others_0);
-                $bidrfq->total_cost = json_encode($req->total_cost_0);
-                $bidrfq->date = $req->date;
-                $bidrfq->industry = $req->industry;
-                $bidrfq->comments = $req->comments;
-                $bidrfq->company_name = $req->company_name;
-                $bidrfq->respondent_title = $req->respondent_title;
-                $bidrfq->interview_length = $req->interview_length;
-                $bidrfq->others_field = $req->others_field;
-                //  $bidrfq->industry_table = $req->industry_table;
-                // $bidrfq->client_id = implode(',',$req->$client_id);
-                // $bidrfq->vendor_id = implode(',',$req->$vendor_id);
-                // $bidrfq->sample_size = implode(',',$req->$sample_size);
-                // $bidrfq->setup_cost = implode(',',$req->$setup_cost);
-                // $bidrfq->recruitment = implode(',',$req->$recruitment);
-                // $bidrfq->incentives = implode(',',$req->$incentives);
-                // $bidrfq->moderation = implode(',',$req->$moderation);
-                // $bidrfq->transcript = implode(',',$req->$transcript);
-                // $bidrfq->others = implode(',',$req->$others);
-                // $bidrfq->country = implode(',',$req->$country);
-                // $bidrfq->total_cost = implode(',',$req->$total_cost);
-                $bidrfq->user_id = auth()->user()->id;
-
-                $unique_no = BidRfq::orderBy('id', 'DESC')->with('rfq_no','rfq_no')->pluck('id')->first();
-                if($unique_no == null or $unique_no == ""){
-                    #If Table is Empty
-                    $unique_no = 1;
-                    $dt = Carbon::now();
-                }
-                else{
-                    #If Table has Already some Data
-                    $unique_no = $unique_no + 1;
-                    $dt = Carbon::now();
-                }
-                $rfq_no = 'RFQ'.$unique_no. '-' .$dt->year;
         
-                if ($bidrfq->save()) {
-                    $response_data = ["success" => 1, "message" => "RfqBid Updated Successfully"];
-                } else {
-                    $response_data = ["success" => 0, "message" => "Site Server Error"];
+     if ($validator->fails()) {
+        return response()->json([
+            "success" => 0,
+            "message" => "Validation Error",
+            "errors" => $validator->errors()
+        ], 422);
+    }
+         // dd($req->bidrfqCount);
+        $rfq = RfqDetailsTable::find($request->id);
+        $rfq->date = $request->date;
+        $rfq->industry = $request->industry;
+        $rfq->follow_up_date = $request->follow_up_date;
+        $rfq->company_name = $request->company_name;
+        $rfq->rfq_no = $request->rfq_no;
+        $rfq->user_id = auth()->user()->id;
+        if ($rfq->save()) {
+         
+            if($request->single_form == 1)
+            {
+                $single = RfqSingleCountry::where('rfq_details_id', $rfq->id)->first();
+                if ($single) {
+                    $single->rfq_details_id = $rfq->id;
+                    $single->single_methodology = json_encode($request->single_methodology);
+                    $single->single_currency = json_encode($request->single_currency);
+                    $single->single_loi = json_encode($request->single_loi);
+                    $single->single_country = json_encode($request->single_country);
+                    $single->single_client = json_encode($request->single_client);
+                    $single->single_sample = json_encode($request->single_sample);
+                    $single->single_fieldwork = json_encode($request->single_fieldwork);
+                    $single->single_other = json_encode($request->single_other);
+                    $single->single_total_cost = json_encode($request->single_total_cost);
+                    $single->user_id = auth()->user()->id;
+                    $single->save();
                 }
             }
-        } else {
-            $response_data = ["success" => 2, "message" => "Site Server Error", "error" => $validator->errors()];
-        }
+            if($request->multiple_form == 1)
+            {
+                $multiple = RfqMultipleCountry::where('rfq_details_id', $rfq->id)->first();
+                if ($multiple) {
+               
+                $multiple->rfq_details_id = $rfq->id;
+                $multiple->multiple_methodology = json_encode($request->multiple_methodology);
+                $multiple->multiple_currency = json_encode($request->multiple_currency);
+                $multiple->multiple_loi = json_encode($request->multiple_loi);
+                $multiple->multiple_client = json_encode($request->multiple_client);
+                $multiple->multiple_countries = json_encode($request->multiple_countries);
+                $multiple->multiple_other = json_encode($request->multiple_other);
+                $multiple->multiple_total_cost = json_encode($request->multiple_total_cost);
+                $multiple->user_id = auth()->user()->id;
+                $multiple->save();
+                }
+            }
+            if($request->interview_form == 1)
+            {
+
+                $interview = RfqInterviewDepth::where('rfq_details_id', $rfq->id)->first();
+                if($interview){
+                $interview->rfq_details_id = $rfq->id;
+                $interview->interview_depth_methodology = json_encode($request->interview_depth_methodology);
+                $interview->interview_depth_currency = json_encode($request->interview_depth_currency);
+                $interview->interview_depth_loi = json_encode($request->interview_depth_loi);
+                $interview->interview_depth_client = json_encode($request->interview_depth_client);
+                $interview->interview_depth_no_fgd = json_encode($request->interview_depth_fgd);
+                $interview->interview_depth_sample_fgd = json_encode($request->interview_depth_sample_fgd);
+                $interview->interview_depth_countries = json_encode($request->interview_depth_countries);
+                $interview->interview_depth_requirements = json_encode($request->interview_depth_requirement);
+                $interview->interview_depth_incentives = json_encode($request->interview_depth_incentives);
+                $interview->interview_depth_moderation = json_encode($request->interview_depth_moderation);
+                $interview->interview_depth_transcripts = json_encode($request->interview_depth_transcripts);
+                $interview->interview_depth_project_management = json_encode($request->interview_depth_project_management);
+                $interview->interview_depth_other = json_encode($request->interview_depth_other);
+                $interview->interview_depth_total_cost_1 = json_encode($request->interview_depth_total_cost_1);
+                $interview->interview_depth_total_cost_2 = json_encode($request->interview_depth_total_cost_2);
+                $interview->user_id = auth()->user()->id;
+                $interview->save();
+                }
+            }
+            if($request->online_form == 1)
+            {
+                $online= RfqOnlineCommunity::where('rfq_details_id', $rfq->id)->first();
+                if($online)
+                {
+                $online->rfq_details_id = $rfq->id;
+                $online->online_community_methodology = json_encode($request->online_community_methodology);
+                $online->online_community_currency = json_encode($request->online_community_currency);
+                $online->online_community_duration = json_encode($request->online_community_duration);
+                $online->online_community_loi_screener = json_encode($request->online_community_loi_screener);
+                $online->online_community_sample_loi_month = json_encode($request->online_community_loi_month);
+                $online->online_community_client = json_encode($request->online_community_client);
+                $online->online_community_countries = json_encode($request->online_community_countries);
+                $online->online_community_requirements = json_encode($request->online_community_requirements);
+                $online->online_community_incentives = json_encode($request->online_community_incentives);
+                $online->online_community_pmfree = json_encode($request->online_community_pmfree);
+                $online->online_community_other = json_encode($request->online_community_other);
+                $online->online_community_total_cost = json_encode($request->online_community_total_cost);
+                $online->user_id = auth()->user()->id;
+                $online->save();
+                }
+            }
+            return response()->json([
+                "success" => 1,
+                "message" => "RFQ saved successfully",
+                "rfq_id" => $rfq->id
+            ], 200);
+         } 
+        
+                return response()->json([
+                    "success" => 0,
+                    "message" => "Failed to save RFQ"
+                ], 500);
     
         return response()->json($response_data);
     }

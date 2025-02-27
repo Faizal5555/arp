@@ -187,10 +187,6 @@ class DashboardController extends Controller
             // var_dump($dt->year);
         }
          $pno_no = 'RNOD'.$unique_no. '-' .$dt->year;
-       
- 
-          
-        
         
         
         

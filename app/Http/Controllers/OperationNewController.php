@@ -25,6 +25,7 @@ use Auth;
 use Session;
 use DataTables;
 use App\Models\operationImage;
+use App\Models\RfqDetailsTable;
 use DB;
 
 class OperationNewController extends Controller
@@ -50,7 +51,7 @@ class OperationNewController extends Controller
         $vendor1=Vendor::get();
         $vendor = Vendor::get();
         $client = Client::get();
-        $bidrfq=BidRfq::get();
+        $bidrfq=RfqDetailsTable::get();
         $operation="";
         $operation=[];
         $operation_rfq = [];
@@ -487,9 +488,10 @@ class OperationNewController extends Controller
         $rfq1 = explode('_', $rfq_no1);
         $bid = $rfq1[0];
     
-        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
-    
-        if ($bidrfq) {
+        $bidrfq = RfqDetailsTable::where('rfq_no', $bid)->first();
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
+        if ($newrfq) {
+            $operation_data = view('operationNew.operation_data',compact('newrfq','client','vendor'))->render();
             // Compact the necessary data and pass it to the view
             $response_data = [
                 "success" => 1,
@@ -499,6 +501,7 @@ class OperationNewController extends Controller
                 "all_country" => $all_country,
                 "all_vendor" => $all_vendor,
                 "all_client" => $all_client,
+                "operation_data" => $operation_data
             ];
         } else {
             $response_data = ["success" => 0, "message" => "server site error"];
@@ -544,8 +547,8 @@ class OperationNewController extends Controller
     //    }
 
     public function edit($id,OperationNew $operation){
-        $bidrfq = BidRfq ::get();
-        $country = Country::get();
+        $newrfq = RfqDetailsTable ::get();
+        $country_fetch = Country::get();
         $vendor = Vendor::get();
         $fieldteam=Fieldteam::get();
         $user=User::where('user_role','team_leader')->get();
@@ -561,14 +564,14 @@ class OperationNewController extends Controller
         $rfq_no1=str_replace('"}','',$rfq_no);
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
-        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
         // $user = Auth::user();
-        return view('operationNew.edit',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
+        return view('operationNew.edit',compact('wonproject','newrfq','client','vendor','country_fetch','id','operation','fieldteam','user','user1','user2','user3','user4'));
     }
 
     public function editpm($id,OperationNew $operation){
-        $bidrfq = BidRfq ::get();
-        $country = Country::get();
+        $newrfq = RfqDetailsTable ::get();
+        $country_fetch = Country::get();
         $vendor = Vendor::get();
         $fieldteam=Fieldteam::get();
         $user=User::where('user_role','team_leader')->get();
@@ -584,14 +587,14 @@ class OperationNewController extends Controller
         $rfq_no1=str_replace('"}','',$rfq_no);
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
-        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
         // $user = Auth::user();
-        return view('operationNew.editpm',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
+        return view('operationNew.editpm',compact('wonproject','newrfq','client','vendor','country_fetch','id','operation','fieldteam','user','user1','user2','user3','user4'));
     }
 
      public function closeedit($id,OperationNew $operation){
-        $bidrfq = BidRfq ::get();
-        $country = Country::get();
+        $newrfq = RfqDetailsTable ::get();
+        $country_fetch = Country::get();
         $vendor = Vendor::get();
         $fieldteam=Fieldteam::get();
         $user=User::where('user_role','team_leader')->get();
@@ -607,8 +610,8 @@ class OperationNewController extends Controller
         $rfq_no1=str_replace('"}','',$rfq_no);
         $rfq1=explode('_',$rfq_no1);
         $bid=$rfq1[0];
-        $bidrfq = BidRfq::where('rfq_no', $bid)->first();
-        return view('operationNew.closeview',compact('wonproject','bidrfq','client','vendor','country','id','operation','country','fieldteam','user','user1','user2','user3','user4'));
+        $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('rfq_no', $bid)->first();
+        return view('operationNew.closeview',compact('wonproject','newrfq','client','vendor','country_fetch','id','operation','fieldteam','user','user1','user2','user3','user4'));
     }
     
     public function removeImage(Request $req){
