@@ -646,7 +646,7 @@
                                                 </tr>
 
                                                 <tr>
-                                                    <td class="static-field">Requirements</td>
+                                                    <td class="static-field">Recruitment</td>
                                                     <td><input type="text" class="form-control sample" name="interview_depth_requirement[]" value=""></td>
                                                     <td><input type="text" class="form-control cpi" name="interview_depth_requirement[]" value=""></td>
                                                     <td><input type="text" class="form-control total" name="interview_depth_requirement[]" attr="total" value=""></td>
@@ -794,7 +794,7 @@
                                                     <td><input type="text" class="form-control cpi" attr="total"   name="online_community_incentives[]"  value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">PM Free</td>
+                                                    <td class="static-field">PM Fee</td>
                                                     <td><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value=""></td>
                                                     <td><input type="text" class="form-control cpi"  name="online_community_pmfree[]" value=""></td>
                                                     <td><input type="text" class="form-control cpi" attr="total"   name="online_community_pmfree[]" value=""></td>

@@ -1225,7 +1225,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field">PM Free</td>
+                            <td class="static-field">PM Fee</td>
                             @if(count($online_community_pmfree) > 0)
                             @foreach($online_community_pmfree as $key => $value)
                                 <?php 
