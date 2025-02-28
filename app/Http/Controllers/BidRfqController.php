@@ -266,12 +266,10 @@ class BidRfqController extends Controller
         $bidrfq = BidRfq::where('id', $id)->first();
         $rfq = array();
         $newrfq = RfqDetailsTable::with('single','multiple','interview','online')->where('id',$id)->first();
-        // dd($newrfq);
         for($i=0; $i< count($wonproject);$i++)
         {
             array_push($rfq,$wonproject[$i]['rfq_no']);
         }
-        // dd($bidrfq);
         return view('bidrfq.edit',compact('bidrfq','client','vendor','country','id','wonproject','rfq','newrfq'));
     }
     
@@ -620,7 +618,7 @@ class BidRfqController extends Controller
        $user = Auth::user(); // Get authenticated user
        
        // Base query for fetching 'lost' type BidRfq records
-       $bidrfq = Bidrfq::where('type', 'lost')->latest();
+       $bidrfq = RfqDetailsTable::where('type', 'lost')->latest();
        
        // Apply filtering for sales users
        if ($user->user_type == 'sales') {
