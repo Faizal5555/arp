@@ -1000,7 +1000,7 @@ select.form-control{
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu1">
-                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('operationNew.createWon')) ? 'active' : '' }} href="{{route('operationNew.createWon')}}">NEW PROJECT</a></li>
+                   {{-- <li class="nav-item"> <a class="nav-link" {{ (Route::is('operationNew.createWon')) ? 'active' : '' }} href="{{route('operationNew.createWon')}}">NEW PROJECT</a></li> --}}
                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexpm')}}">EXISTING PROJECTS </a></li>
                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">CLOSED PROJECTS</a></li>
                   <!--<li class="nav-item"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD TEAM</a></li>-->
