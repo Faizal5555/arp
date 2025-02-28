@@ -490,7 +490,7 @@ select.form-control{
                   <li class="nav-item" > <a class="nav-link {{ (Route::is('client.clientdata')) ? 'active' : '' }}"  href="{{route('clientdata.index')}}">Client FollowUp Date</a></li>
                   <li class="nav-item  {{ (Route::is('client.index')) ? 'active' : '' }} "  id="client_management"> <a class="nav-link " href="{{route('client.index')}}">Client Management</a></li>
                   <li class="nav-item  {{ (Route::is('vendor.index')) ? 'active' : '' }}" id="vendor_management"> <a class="nav-link" href="{{route('vendor.index')}}">Vendor Management</a></li>
-                  <li class="nav-item {{ (Route::is('newrfq.index')) ? 'active' : '' }}" id="create_rfq"> <a class="nav-link  " href="{{route('bidrfq.create')}}">Create RFQ</a></li>
+                  <li class="nav-item {{ (Route::is('newrfq.index')) ? 'active' : '' }}" id="create_rfq"> <a class="nav-link  " href="{{route('newrfq.index')}}">Create RFQ</a></li>
                   <li class="nav-item {{ (Route::is('bidrfq.index')) ? 'active' : '' }}" id="view_rfq"> <a class="nav-link  "href="{{route('bidrfq.index')}}">View RFQ</a></li>
                   <li class="nav-item {{ (Route::is('wonproject.viewsalesfigures')) ? 'active' : '' }}" id="view_sales_figure">  <a class="nav-link " href="{{route('wonproject.viewsalesfigures')}}">View Sales Figures</a></li>
                   <!--<li class="nav-item {{ (Route::is('dashboard')) ? 'active' : '' }}" id="overview"> <a class="nav-link" href="{{route('salesdashboard')}}">Overview</a></li>-->
