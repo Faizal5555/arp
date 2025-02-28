@@ -656,7 +656,7 @@ class BidRfqController extends Controller
                     
         }
         else{
-        $unique_no = BidRfq::where('user_id',$user)->orderBy('id', 'DESC')->pluck('id')->first();
+        $unique_no = RfqDetailsTable::where('user_id',$user)->orderBy('id', 'DESC')->pluck('id')->first();
         if($unique_no == null or $unique_no == ""){
             #If Table is Empty
             $unique_no = 1;
@@ -681,7 +681,7 @@ class BidRfqController extends Controller
         $country = Country::get();
         $vendor = Vendor::get();
         $client = Client::get();
-        $bidrfq = BidRfq::where('id', $id)->first();
+        $bidrfq = RfqDetailsTable::where('id', $id)->first();
         $rfq = array();
         for($i=0; $i< count($wonproject);$i++)
         {
