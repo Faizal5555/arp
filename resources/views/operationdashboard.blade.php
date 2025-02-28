@@ -21,7 +21,7 @@
               <h3 class="page-title">
                 <span class="mr-2 text-white page-title-icon bg-gradient-primary">
                   <i class="mdi mdi-home"></i>
-                </span> Operation Dashboard
+                </span> Project Manager Dashboard
               </h3>
               <nav aria-label="breadcrumb">
                 <ul class="breadcrumb">
