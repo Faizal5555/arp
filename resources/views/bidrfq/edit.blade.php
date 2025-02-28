@@ -2178,7 +2178,7 @@
                                                             <?php 
                                                                 $i = "";
                                                             ?>
-                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Incentives</td>
+                                                            <td class="static-field ">Incentives</td>
                                                             @if(count($interview_depth_incentives) > 0)
                                                             @foreach($interview_depth_incentives as $key => $value)
                                                                 <?php
@@ -2205,7 +2205,7 @@
                                                             <?php 
                                                                 $i = "";
                                                             ?>
-                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Moderation</td>
+                                                            <td class="static-field">Moderation</td>
                                                             @if(count($interview_depth_moderation) > 0)
                                                             @foreach($interview_depth_moderation as $key => $value)
                                                             <?php 
@@ -2232,7 +2232,7 @@
                                                             <?php 
                                                                 $i = "";
                                                             ?>
-                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Transcripts</td>
+                                                            <td class="static-field">Transcripts</td>
                                                             @if(count($interview_depth_transcripts) > 0)
                                                             @foreach($interview_depth_transcripts as $key => $value)
                                                             <?php 
@@ -2259,7 +2259,7 @@
                                                         <?php 
                                                                 $i = "";
                                                             ?>
-                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Project Management</td>
+                                                            <td class="static-field ">Project Management</td>
                                                             @if(count($interview_depth_project_management) > 0)
                                                             @foreach($interview_depth_project_management as $key => $value)
                                                                 <?php
