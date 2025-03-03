@@ -955,7 +955,7 @@ input.form-control {
                                                             @foreach($interview_depth_countries as $key => $country)
                                                             <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
                                                             <label class="mb-0 label">
-                                                            <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="country">
+                                                            <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="Country">
                                                             </label>
                                                             </td>
                                                             @endforeach
@@ -1280,12 +1280,12 @@ input.form-control {
                             
                                                     </tr>
                                                     <tr>
-                                                        <td class="static-field ">country</td>
+                                                        <td class="static-field ">Country</td>
                                                             @if(count($online_community_countries) > 0)
                                                             @foreach($online_community_countries as $key => $countries)
                                                                 <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                                 <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="country">
+                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="Country">
                                                                 </label>
                                                                 </td>
                                                                 @endforeach

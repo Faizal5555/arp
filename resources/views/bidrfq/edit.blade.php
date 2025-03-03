@@ -1866,13 +1866,13 @@
                                                         @endforeach
                                                         @else
                                                         <tr>
-                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="country"></td>
+                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="Country"></td>
                                                             <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
                                                             <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
                                                             <td><input type="text" class="form-control" name="multiple_countries[0][]" attr="total" value=""></td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="country"></td>
+                                                            <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="Country"></td>
                                                             <td><input type="text" class="form-control sample"  name="multiple_countries[1][]"></td>
                                                             <td><input type="text" class="form-control cpi"  name="multiple_countries[1][]"></td>
                                                             <td><input type="text" class="form-control cpi" attr="total"  name="multiple_countries[1][]"></td>
@@ -2120,14 +2120,14 @@
                                                                 @foreach($interview_depth_countries as $key => $country)
                                                                 <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
                                                                 <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="country">
+                                                                <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="Country">
                                                                 </label>
                                                                 </td>
                                                                 @endforeach
                                                             @else
                                                             <td class="editable-field"  colspan="3">
                                                                 <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="country">
+                                                                <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="Country">
                                                                 </label>
                                                             </td>
                                                             @endif
@@ -2550,19 +2550,19 @@
 
                                                         </tr>
                                                         <tr>
-                                                            <td class="static-field ">country</td>
+                                                            <td class="static-field ">Country</td>
                                                             @if(count($online_community_countries) > 0)
                                                             @foreach($online_community_countries as $key => $countries)
                                                             <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                                 <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="country">
+                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="Country">
                                                                 </label>
                                                             </td>
                                                             @endforeach
                                                             @else
                                                             <td class="editable-field"  colspan="3">
                                                                 <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="country">
+                                                                <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="Country">
                                                                 </label>
                                                             </td>
                                                             @endif

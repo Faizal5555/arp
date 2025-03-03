@@ -523,13 +523,13 @@
                                                     <td class="static-field">Total</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="country"></td>
+                                                    <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="Country"></td>
                                                     <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
                                                     <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
                                                     <td><input type="text" class="form-control" name="multiple_countries[0][]" attr="total" value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="country"></td>
+                                                    <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="Country"></td>
                                                     <td><input type="text" class="form-control sample"  name="multiple_countries[1][]"></td>
                                                     <td><input type="text" class="form-control cpi"  name="multiple_countries[1][]"></td>
                                                     <td><input type="text" class="form-control cpi" attr="total"  name="multiple_countries[1][]"></td>
@@ -634,7 +634,7 @@
                                                     <td class="static-field">Country</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
-                                                    <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="country">
+                                                    <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="Country">
                                                     </label>
                                                     </td>
                                                 </tr>
@@ -771,7 +771,7 @@
                                                     <td class="static-field">country</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
-                                                    <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="country">
+                                                    <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="Country">
                                                     </label>
                                                     </td>
                                                 </tr>

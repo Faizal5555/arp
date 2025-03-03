@@ -1275,7 +1275,7 @@ input.form-control {
                 
                                         </tr>
                                         <tr>
-                                            <td class="static-field ">country</td>
+                                            <td class="static-field ">Country</td>
                                                 @if(count($online_community_countries) > 0)
                                                 @foreach($online_community_countries as $key => $countries)
                                                     <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
