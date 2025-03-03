@@ -716,11 +716,15 @@
                                             </div>
 
                                             <?php
-                                            $vendor_id = explode(',', $wonproject[0]->vendor_id);
-                                            $vendor_advance = explode(',', $wonproject[0]->vendor_advance);
-                                            $vendor_balance = explode(',', $wonproject[0]->vendor_balance);
-                                            $vendor_total = explode(',', $wonproject[0]->vendor_total);
-                                            $vendor_contract = explode(',', $wonproject[0]->vendor_contract);
+                                            $vendor_id = $vendor_advance = $vendor_balance = $vendor_total = $vendor_contract = []; // Default empty arrays
+                                            
+                                            if (isset($wonproject[0])) {
+                                                $vendor_id = explode(',', $wonproject[0]->vendor_id);
+                                                $vendor_advance = explode(',', $wonproject[0]->vendor_advance);
+                                                $vendor_balance = explode(',', $wonproject[0]->vendor_balance);
+                                                $vendor_total = explode(',', $wonproject[0]->vendor_total);
+                                                $vendor_contract = explode(',', $wonproject[0]->vendor_contract);
+                                            }
                                             ?>
                                             {{-- {{dd($vendor_id)}} --}}
                                             <div class="col-md-6">
