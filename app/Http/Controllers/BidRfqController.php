@@ -49,10 +49,18 @@ class BidRfqController extends Controller
             
 
         }
-        if(isset($data['client_id']) && $data['client_id']!=''){
-            $bidRfq->where('client_id','like','%'.$data['client_id'].'%');
-            
-
+        if (!empty($data['client_name'])) {
+            $bidRfq->where(function ($query) use ($data) {
+                $query->orWhereHas('singleClient', function ($q) use ($data) {
+                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%'); 
+                })->orWhereHas('multipleClient', function ($q) use ($data) {
+                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
+                })->orWhereHas('interviewDepthClient', function ($q) use ($data) {
+                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
+                })->orWhereHas('onlineCommunityClient', function ($q) use ($data) {
+                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
+                });
+            });
         }
          if(isset($data['startdate']) && $data['startdate']!='' && ($data['enddate']) && $data['enddate']!=''){
             $bidRfq->whereBetween('date',[$data['startdate'],$data['enddate']]);
