@@ -2586,7 +2586,7 @@
                                                             <?php 
                                                                 $i = "";
                                                             ?>
-                                                            <td class="static-field ">Requirements</td>
+                                                            <td class="static-field ">Recruitment</td>
                                                             @if(count($online_community_requirements) > 0)
                                                             @foreach($online_community_requirements as $key => $value)
                                                                 <?php 

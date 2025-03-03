@@ -18,6 +18,7 @@ use App\Models\Clientrequest;
 use App\Models\datacenternew;
 use App\Models\sendmoneynotification;
 use App\Models\Country;
+use App\Models\RfqDetailsTable;
 use App\Models\User;
 use App\Models\adminMoneysend;
 use App\Models\adminvoucher;
@@ -195,12 +196,12 @@ class DashboardController extends Controller
                  $userId = auth()->user()->id;
                  $vendor = Vendor::where('user_id',$userId)->count();
                  $client = Client::where('user_id',$userId)->count();
-                 $lost=  BidRfq::where('user_id',$userId)->where('type','lost')->count();
-                 $next=  BidRfq::where('user_id',$userId)->where('type','next')->count();
-                 $won=  BidRfq::where('user_id',$userId)->where('type','won')->count();
-                 $bidrfq=bidrfq::get();
-                 $bidrfq1=Bidrfq::where('user_id',$userId)->count();
-                 $bid=Bidrfq::where('user_id',$userId)->count();
+                 $lost=  RfqDetailsTable::where('user_id',$userId)->where('type','lost')->count();
+                 $next=  RfqDetailsTable::where('user_id',$userId)->where('type','next')->count();
+                 $won=  RfqDetailsTable::where('user_id',$userId)->where('type','won')->count();
+                 $bidrfq=RfqDetailsTable::get();
+                 $bidrfq1=RfqDetailsTable::where('user_id',$userId)->count();
+                 $bid=RfqDetailsTable::where('user_id',$userId)->count();
                  $won_project = WonProject::where('user_id',$userId)->count();
                  $totalrevenue=WonProject::where('user_id',$userId)->sum('client_total','+','vendor_total');
                  $totalmargin=Wonproject::where('user_id',$userId)->sum('total_margin');
@@ -436,15 +437,15 @@ class DashboardController extends Controller
     }
     public function sales(){
         // dd("hi");
-         $bidrfq1=Bidrfq::count();
-         $bidrfq=bidrfq::get();
+         $bidrfq1=RfqDetailsTable::count();
+         $bidrfq=RfqDetailsTable::get();
          $vendor = Vendor::count();
          $client = Client::count();
         //  /dd($client);
          $won_project = WonProject::count();
-         $lost=  BidRfq::where('type','lost')->count();
-         $next=  BidRfq::where('type','next')->count();
-         $won=  BidRfq::where('type','won')->count();
+         $lost=  RfqDetailsTable::where('type','lost')->count();
+         $next=  RfqDetailsTable::where('type','next')->count();
+         $won=  RfqDetailsTable::where('type','won')->count();
          $TotalRFQsBid="";
         $won_project_1="";
         $TotalClientvalue="";

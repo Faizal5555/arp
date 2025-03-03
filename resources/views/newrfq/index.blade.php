@@ -782,7 +782,7 @@
                                                     <td class="static-field">Total</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">Requirements</td>
+                                                    <td class="static-field">Recruitment</td>
                                                     <td><input type="text" class="form-control sample" name="online_community_requirements[]" value=""></td>
                                                     <td><input type="text" class="form-control cpi"  name="online_community_requirements[]"  value=""></td>
                                                     <td><input type="text" class="form-control total" attr="total"   name="online_community_requirements[]" value=""></td>
