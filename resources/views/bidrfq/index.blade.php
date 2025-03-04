@@ -205,7 +205,7 @@ svg.svg-inline--fa.fa-eye {
                
                 'data': function(data){
                    data.rfq_no=$('#rfq_no').val();
-                     data.client_id=$('#client_id').val();
+                   data.client_id = $('#client_id').val() || null; 
                      data.industry=$('#industry').val();
                      data.startdate=$('#start').val();
                      data.enddate=$('#end').val();
