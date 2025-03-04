@@ -25,6 +25,7 @@ class ProjectFeasibility extends Model
         'total_incentive_paid',
         'incentive_paid_date',
         'mode_of_payment',
+        'status',
 
 
     ];

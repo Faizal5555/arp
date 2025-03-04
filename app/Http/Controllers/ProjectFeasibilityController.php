@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\ProjectFeasibility;
+use Auth;
 
 use Illuminate\Http\Request;
 
@@ -38,6 +39,7 @@ class ProjectFeasibilityController extends Controller
         'total_incentive_paid' => 'required|string', // New field
         'incentive_paid_date' => 'required|date', // New field
         'mode_of_payment' => 'required|string|max:255', // New field
+        
     ]);
 
     //dd($request->all());
@@ -58,6 +60,7 @@ class ProjectFeasibilityController extends Controller
     'total_incentive_paid' => $validated['total_incentive_paid'], // New field
     'incentive_paid_date' => $validated['incentive_paid_date'], // New field
     'mode_of_payment' => $validated['mode_of_payment'], // New field
+    'status' => 'next',
 ]);
 
     // Check if the request is AJAX
@@ -212,6 +215,50 @@ public function destroy($id)
         ], 500);
     }
 }
+
+
+   public function existing(Request $request)
+   {
+    
+    if ($request->ajax()) {
+        $projects = ProjectFeasibility::where('status', 'next')
+            // ->where('user_id', Auth::id()) // Ensure user-based data retrieval
+            ->get();
+
+        return response()->json(['data' => $projects, 'user_type' =>  auth()->user()->user_type]);
+    }
+
+    return view('project_feasibility.existing_list');
+   }
+
+
+   public function changeStatus($id)
+{
+    $project = ProjectFeasibility::where('id', $id)->where('status', 'next')->first();
+
+    if (!$project) {
+        return response()->json(['success' => false, 'message' => 'Project not found or already closed'], 404);
+    }
+
+    // Update status to "closed"
+    $project->update(['status' => 'closed']);
+
+    return response()->json(['success' => true, 'message' => 'Project status updated to closed successfully!']);
+}
+
+    public function closedList(Request $request)
+    {
+        if ($request->ajax()) {
+            // Fetch all projects where status is "closed"
+            $projects = ProjectFeasibility::where('status', 'closed')
+                //->where('user_id', Auth::id()) // Ensure user-based data retrieval
+                ->get();
+
+            return response()->json(['data' => $projects, 'user_type' => auth()->user()->user_type]);
+        }
+
+        return view('project_feasibility.closed_list');
+    }
 
 
 

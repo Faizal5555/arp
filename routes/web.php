@@ -62,6 +62,11 @@ Route::get('/', function () {
     Route::get('/project-feasibility/{id}/edit', 'App\Http\Controllers\ProjectFeasibilityController@edit');
     Route::put('/project-feasibility/{id}', 'App\Http\Controllers\ProjectFeasibilityController@update')->name('project-feasibility.update');
     Route::delete('/project-feasibility/{id}', 'App\Http\Controllers\ProjectFeasibilityController@destroy')->name('project-feasibility.destroy');
+    Route::get('/project-feasibility/existing', 'App\Http\Controllers\ProjectFeasibilityController@existing')->name('project.existing');
+    Route::put('/project-feasibility/{id}/change-status', 'App\Http\Controllers\ProjectFeasibilityController@changeStatus')->name('projectFeasibility.changeStatus');
+    Route::get('/project-feasibility/closed', 'App\Http\Controllers\ProjectFeasibilityController@closedList')->name('projectFeasibility.closed');
+
+
 
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
