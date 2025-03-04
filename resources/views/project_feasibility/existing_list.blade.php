@@ -243,6 +243,8 @@ label.mb-0.not-expired {
                         render: function (data) {
                             return `
                                 <button class="btn btn-primary btn-sm status-btn" data-id="${data}">Status</button>
+                                
+
                             `;
                         }
                     }
@@ -570,14 +572,13 @@ $(document).on('click', '.status-btn', function () {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: `project-feasibility/${id}/change-status`,
+                url: "{{ route('projectFeasibility.changeStatus', ':id') }}".replace(':id', id),
                 method: 'PUT',
                 data: { _token: '{{ csrf_token() }}' },
                 success: function (response) {
                     if (response.success) {
                         Swal.fire('Closed!', response.message, 'success');
                         $('#existing-feasibility-table').DataTable().ajax.reload(null, false);
-
                     } else {
                         Swal.fire('Error!', response.message, 'error');
                     }

@@ -234,16 +234,32 @@ public function destroy($id)
 
    public function changeStatus($id)
 {
-    $project = ProjectFeasibility::where('id', $id)->where('status', 'next')->first();
+    
+ $project = ProjectFeasibility::where('id', $id)->first();
 
+    // If project does not exist, return error
     if (!$project) {
-        return response()->json(['success' => false, 'message' => 'Project not found or already closed'], 404);
+        return response()->json([
+            'success' => false,
+            'message' => 'Project not found'
+        ], 404);
+    }
+
+    // If project is already closed, return error
+    if ($project->status === 'closed') {
+        return response()->json([
+            'success' => false,
+            'message' => 'Project is already closed'
+        ], 400); // Use status code 400 (Bad Request)
     }
 
     // Update status to "closed"
     $project->update(['status' => 'closed']);
 
-    return response()->json(['success' => true, 'message' => 'Project status updated to closed successfully!']);
+    return response()->json([
+        'success' => true,
+        'message' => 'Project status updated to closed successfully!'
+    ]);
 }
 
     public function closedList(Request $request)
