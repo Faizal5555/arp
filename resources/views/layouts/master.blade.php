@@ -978,6 +978,12 @@ select.form-control{
                         <li class="nav-item">
                           <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.list') }}">Search Feasibility Projects</a>
                         </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('project.existing') }}">Existing Feasibility Projects</a>
+                        </li>
+                        <li class="nav-item">
+                          <li class="nav-item" > <a class="nav-link" href="{{ route('projectFeasibility.closed') }}">Closed Feasibility Projects</a>
+                        </li>
                       </ul>
                     </div>
                   </li>
