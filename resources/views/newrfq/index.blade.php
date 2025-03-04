@@ -553,7 +553,7 @@
                                                     <td> <input type="text" class="form-control" name="multiple_other[0][]" attr="total"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="total-cost">Total project cost</td>
+                                                    <td class="total-cost">Total project Cost</td>
                                                     <td class="total-cost"></td>
                                                     <td class="total-cost"></td>
                                                     <td><input type="text" class="form-control" name="multiple_total_cost[]" value=""></td>
@@ -568,7 +568,7 @@
                             <div class="container">
 
                                 <div class="d-none" id="interview-depth">
-                                    <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Cenetral Location Tests Costing Sheet</h5>
+                                    <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Central Location Tests Costing Sheet</h5>
                                 
                                     <div class="tab-container">
                                         <button type="button" class="btn btn-success btn-sm" id="addInterviewDepthBtn">Add More</button>
@@ -615,7 +615,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">No of FGDs</td>
+                                                    <td class="static-field">No of FGDs/IDI</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
                                                     <input type="text" class="form-control sample" name="interview_depth_fgd[]" value=""  placeholder="value">
@@ -623,7 +623,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">Samples per FGD</td>
+                                                    <td class="static-field">Samples per FGD/IDI</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
                                                     <input type="text" class="form-control sample" name="interview_depth_sample_fgd[]" value=""  placeholder="value">
@@ -752,7 +752,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">LOI screener</td>
+                                                    <td class="static-field">LOI</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
                                                     <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value=""  placeholder="mins">
@@ -768,7 +768,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">country</td>
+                                                    <td class="static-field">Country</td>
                                                     <td class="editable-field"  colspan="3">
                                                     <label class="mb-0 label">
                                                     <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="Country">
@@ -794,7 +794,7 @@
                                                     <td><input type="text" class="form-control cpi" attr="total"   name="online_community_incentives[]"  value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="static-field">PM Fee</td>
+                                                    <td class="static-field">Project Management</td>
                                                     <td><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value=""></td>
                                                     <td><input type="text" class="form-control cpi"  name="online_community_pmfree[]" value=""></td>
                                                     <td><input type="text" class="form-control cpi" attr="total"   name="online_community_pmfree[]" value=""></td>
@@ -806,7 +806,7 @@
                                                     <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="total-cost">Total Project cost</td>
+                                                    <td class="total-cost">Total Project Cost</td>
                                                     <td class="total-cost"></td>
                                                     <td class="total-cost"></td>
                                                     <td><input type="text" class="form-control cpi"  name="online_community_total_cost[]"  value=""></td>

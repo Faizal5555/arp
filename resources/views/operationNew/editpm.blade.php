@@ -856,7 +856,7 @@ input.form-control {
                                                     @endforeach
                                                     @endif
                                                     <tr>
-                                                        <td class="total-cost relative ">Total project cost</td>
+                                                        <td class="total-cost relative ">Total project Cost</td>
                                                         @if(count($multiple_total_cost) > 0)
                                                         @foreach ($multiple_total_cost as $key => $value)
                                                         <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
@@ -876,7 +876,7 @@ input.form-control {
                                 <div class="container">
                             
                                     <div class="{{ isset($newrfq) && isset($newrfq->interview) ? '' : 'd-none' }}" id="interview-depth">
-                                        <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Cenetral Location Tests Costing Sheet</h5>
+                                        <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Central Location Tests Costing Sheet</h5>
                                         <?php
                                         if(isset($newrfq) && isset($newrfq->interview)){
                                             $interview_depth_methodology = json_decode($newrfq->interview->interview_depth_methodology);
@@ -960,7 +960,7 @@ input.form-control {
                                                         
                                                     </tr>
                                                     <tr>
-                                                        <td class="static-field">No of FGDs</td>
+                                                        <td class="static-field">No of FGDs/IDI</td>
                                                         @if(count($interview_depth_no_fgd) > 0)
                                                             @foreach($interview_depth_no_fgd as $key => $fgd)
                                                                 <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -972,7 +972,7 @@ input.form-control {
                                                         @endif
                                                     </tr>
                                                     <tr>
-                                                        <td class="static-field">Samples per FGD</td>
+                                                        <td class="static-field">Samples per FGD/IDI</td>
                                                         @if(count($interview_depth_sample_fgd) > 0)
                                                             @foreach($interview_depth_sample_fgd as $key => $fgd)
                                                             <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -1288,7 +1288,7 @@ input.form-control {
                             
                                                     </tr>
                                                     <tr>
-                                                        <td class="static-field ">LOI screener</td>
+                                                        <td class="static-field ">LOI</td>
                                                             @if(count($online_community_loi_screener) > 0)
                                                             @foreach($online_community_loi_screener as $key => $screener)
                                                                 <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1386,7 +1386,7 @@ input.form-control {
                                                         <?php 
                                                             $i = "";
                                                         ?>
-                                                        <td class="static-field">PM Fee</td>
+                                                        <td class="static-field">Project Management</td>
                                                         @if(count($online_community_pmfree) > 0)
                                                         @foreach($online_community_pmfree as $key => $value)
                                                             <?php 
@@ -1447,7 +1447,7 @@ input.form-control {
                                                         <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
                                                     </tr> --}}
                                                     <tr>
-                                                        <td class="total-cost">Total Project cost</td>
+                                                        <td class="total-cost">Total Project Cost</td>
                                                         @if(count($online_community_total_cost) > 0)
                                                         @foreach ($online_community_total_cost as $key => $value)
                                                         <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
