@@ -552,7 +552,7 @@ $('#permonth').on('keypress', function (e) {
                     number:true,
                     minlength: 10
                 },
-                docter:{
+                docterSpeciality:{
                     required:true
                 },
                 Experience:{
