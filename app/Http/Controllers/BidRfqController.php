@@ -829,19 +829,24 @@ class BidRfqController extends Controller
     }
      public function pdfview($id){
         
-        $biddownload=BidRfq::where('id',$id)->first();
-        return view('bidrfq.pdfbidrfq',compact('biddownload'));
+        $newrfq=RfqDetailsTable::with('single','multiple','interview','online')->where('id',$id)->first();
+        $vendor = Vendor::get();
+        $client = Client::get();
+        return view('bidrfq.pdfbidrfq',compact('newrfq','vendor','client'));
         
     }
 
     public function downloadpdf($id){
         // dd($id);
-        $biddownload=BidRfq::where('id',$id)->first();
+        $newrfq=RfqDetailsTable::with('single','multiple','interview','online')->where('id',$id)->first();
+       //dd($newrfq); 
+        $vendor = Vendor::get();
+        $client = Client::get();
         $path = 'assets/images/logo-2.png';
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('biddownload','data','logo'))->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('newrfq','vendor','client','data','logo'))->setOptions(['defaultFont' => 'sans-serif']);
         return $pdf->download('pdf_file.pdf');
 
     }
