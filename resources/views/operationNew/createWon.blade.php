@@ -1713,7 +1713,7 @@
                             // $("#vendor_advance").val(data.bidrfq.vendor_advance);
                             // $("#vendor_balance").val(data.bidrfq.vendor_balance);
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="adminapp/public/${data.bidrfq.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.bidrfq.client_contract}</a>`
+                                `<a target="_blank" download href="/adminapp/public/${data.bidrfq.client_contract}" style=" text-decoration: none !important;">${data.bidrfq.client_contract}</a>`
                             );
                             // $("#vendor_contract_attachment").html( `<a href="${data.bidrfq.vendor_contract}" style=" text-decoration: none !important;">${data.bidrfq.vendor_contract}</a>`);
                             $(".currency").html(data.bidrfq.currency);
@@ -2184,7 +2184,7 @@
                             // $("#vendor_advance").val(data.wonProject.vendor_advance);
                             // $("#vendor_balance").val(data.wonProject.vendor_balance);
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
+                                `<a target="_blank" download href="/adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
                             );
                             // $("#vendor_contract_attachment").html( `<a href="${data.wonProject.vendor_contract}" style=" text-decoration: none !important;">${data.wonProject.vendor_contract}</a>`);
                             $(".currency").html(data.wonProject.currency);
@@ -2555,7 +2555,7 @@
 
                                 let vendor_contract = data.wonProject.vendor_contract.split(',')
                                 $("#vendor_advance1").append(
-                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../adminapp/public/' +
+                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../' +
                                     vendor_contract[i] + '">"' + vendor_contract[i] +
                                     '"</a></div></div></div><div class="col-md-6"></div>');
                             });
@@ -2564,7 +2564,7 @@
 
 
                             $("#client_contract_attachment").html(
-                                `<a target="_blank" download href="adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
+                                `<a target="_blank" download href="/adminapp/public/${data.wonProject.client_contract}" style=" text-decoration: none !important;">adminapp/public/${data.wonProject.client_contract}</a>`
                             );
                             $(".currency").html(data.wonProject.currency);
 
