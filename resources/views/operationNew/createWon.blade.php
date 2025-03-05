@@ -825,7 +825,7 @@
                                                                 <div class="col-lg-9">
             
                                                                     <a target="_blank" download
-                                                                        href="{{ url($value4) }}">{{ $value4 }}</a>
+                                                                        href="{{ url('adminapp/public/' . $value4) }}">{{ 'adminapp/public/' . $value4 }}</a>
                                                                     <input name="vendor_contract_0[{{ $key }}]"
                                                                         style="text-transform: capitalize;" id="otherField16"
                                                                         type="file" value="{{ $value4 }}"
@@ -1704,7 +1704,7 @@
 
                                 let vendor_contract = data.bidrfq.vendor_contract.split(',')
                                 $("#vendor_advance1").append(
-                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../' +
+                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../adminapp/public/' +
                                     vendor_contract[i] + '">"' + vendor_contract[i] +
                                     '"</a></div></div></div><div class="col-md-6"></div>');
                             });
@@ -2175,7 +2175,7 @@
 
                                 let vendor_contract = data.wonProject.vendor_contract.split(',')
                                 $("#vendor_advance1").append(
-                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../' +
+                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../adminapp/public/' +
                                     vendor_contract[i] + '">"' + vendor_contract[i] +
                                     '"</a></div></div></div><div class="col-md-6"></div>');
                             });
@@ -2555,7 +2555,7 @@
 
                                 let vendor_contract = data.wonProject.vendor_contract.split(',')
                                 $("#vendor_advance1").append(
-                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="' +
+                                    '<div class="col-md-6"><div class="form-group row"> <label id="otherField16" class="col-lg-3 col-form-label font-weight-semibold">Attach Vendor Contract / Email<span class="text-danger">*</span></label><div class="col-lg-9" id="vendor_contract1"><a target="_blank" download href="../../adminapp/public/' +
                                     vendor_contract[i] + '">"' + vendor_contract[i] +
                                     '"</a></div></div></div><div class="col-md-6"></div>');
                             });

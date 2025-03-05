@@ -774,9 +774,9 @@ input.txtCal.valid {
                                         <label id="otherField15" class="col-lg-3 col-form-label font-weight-semibold">Attach Client Contract / Email <span
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-9">
-                                            <a download target="_blank" href="{{url($wonproject->client_contract ? $wonproject->client_contract :'')}}">{{$wonproject->client_contract ? $wonproject->client_contract :''}}</a>
+                                            <a download target="_blank" href="{{url($wonproject->client_contract ?  'adminapp/public/'.$wonproject->client_contract :'')}}">{{$wonproject->client_contract ? 'adminapp/public/'.$wonproject->client_contract :''}}</a>
                                             <input name="client_contract" style="text-transform: capitalize;" 
-                                                id="otherField15" type="file"  value="{{$wonproject->client_contract ? $wonproject->client_contract :''}} " class="p-1 form-control" placeholder="Attach Client Contract">
+                                                id="otherField15" type="file"  value="{{$wonproject->client_contract ?  'adminapp/public/'.$wonproject->client_contract :''}} " class="p-1 form-control" placeholder="Attach Client Contract">
                                         </div>
                                     </div>
                                 </div>
@@ -878,7 +878,7 @@ input.txtCal.valid {
                                                 class="text-danger">*</span></label>
                                         <div class="col-lg-9">
 
-                                           <a target="_blank" download href="{{url($value4)}}">{{$value4}}</a>
+                                           <a target="_blank" download href="{{ url('adminapp/public/' . $value4) }}">{{ 'adminapp/public/' . $value4 }}</a>
                                             <input name="vendor_contract_0[{{$key}}]" style="text-transform: capitalize;" 
                                                 id="otherField16" type="file" value="{{$value4}}" class="p-1 form-control" placeholder="Attach Vendor Contract">
                                         </div>
