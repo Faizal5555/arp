@@ -846,7 +846,7 @@ class BidRfqController extends Controller
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('newrfq','vendor','client','data','logo'))->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('newrfq','vendor','client','data','logo'))->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
         return $pdf->download('pdf_file.pdf');
 
     }
