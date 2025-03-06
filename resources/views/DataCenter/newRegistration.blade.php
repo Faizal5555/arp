@@ -164,7 +164,7 @@
                         <div class="form-group row d-flex justify-content-center align-items-center">
                             <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Email Address <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="email" name="email" id="email" class="form-control border border-secondary"  placeholder="Email Address" style="width:100%;"  required data-msg-email="Enter a valid email account!" pattern="[a-z0-9._]+@[a-z]+\.[com]{3,6}" >
+                                <input type="email" name="email" id="email" class="form-control border border-secondary"  placeholder="Email Address" style="width:100%;"  required data-msg-email="Enter a valid email account!" pattern="[a-z0-9._]+@[a-z]+\.[a-z]{2,10}" >
                                 <span id="email-error" class="text-danger"></span>
                             </div>
                         </div>
