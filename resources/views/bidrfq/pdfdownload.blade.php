@@ -278,7 +278,7 @@
     }
 
     .total-cost {
-        background-color: white !important;
+        /* background-color: white !important; */
         color: black;
         font-weight: bold;
         text-align: center;
@@ -371,40 +371,33 @@
         color: black;
     }
 
-    @page {
 
-        background-image: url("{{ $logo }}") !important;
-        background-repeat: no-repeat;
-        background-position: center!important; 
-        background-size: 100% auto !important; /* Ensures proper scaling */
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        position: relative;
-    }
-
-    /* Watermark applied to every page */
-    .watermark {
-        position: fixed;
-        top:50%;
-        left: 31% !important;
-        transform: translate(-50%, -50%) rotate(-30deg);
-        width: 100%; /* Adjust size */
-        opacity: 0.5; /* Transparency */
-        z-index: -1; /* Ensure it's behind content */
-        pointer-events: none; /* Prevents interaction issues */
-      
-    }
-.content {
-    width: 100% !important; /* Adjust width to prevent stretching */
-    
+.watermark {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("{{ $logo }}") no-repeat center !important;
+    background-size: 50%; /* Adjust watermark size */
+    background-repeat: no-repeat !important; /* Prevent multiple watermarks */
+    opacity:0.25; /* Lighter transparency */
+    z-index: -1; /* Behind the text */
 }
+
+.content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    background: transparent !important; /* Remove white background */
+}
+      
+
+
 </style>
 
 <body>
     <div class="watermark">
-        <img src="{{ $logo }}" alt="Watermark">
     </div>
         <div class="container mt-4 content" style="width: 100% !imporant;">
             <div class="header-container">
@@ -475,114 +468,130 @@
                 <div class="{{ isset($newrfq) && isset($newrfq->single) ? '' : '' }}"
                     style="{{ isset($newrfq) && isset($newrfq->single) ? '' : 'display: none;' }}" id="single-country">
                     <?php
-            if(isset($newrfq) && isset($newrfq->single)){
-                $single_methodology = json_decode($newrfq->single->single_methodology);
-                $single_currency = json_decode($newrfq->single->single_currency);
-                $single_loi = json_decode($newrfq->single->single_loi);
-                $single_country = json_decode($newrfq->single->single_country);
-                $single_client = json_decode($newrfq->single->single_client);
-                $single_sample = json_decode($newrfq->single->single_sample);
-                $single_fieldwork = json_decode($newrfq->single->single_fieldwork);
-                $single_other = json_decode($newrfq->single->single_other);
-                $single_total_cost = json_decode($newrfq->single->single_total_cost);
-            }   
-            ?>
+                    if(isset($newrfq) && isset($newrfq->single)){
+                        $single_methodology_chunk = json_decode($newrfq->single->single_methodology);
+                        $single_methodology = array_chunk($single_methodology_chunk, 3);
+                        $single_currency_chunk = json_decode($newrfq->single->single_currency);
+                        $single_currency = array_chunk($single_currency_chunk, 3);
+                        $single_loi_chunk = json_decode($newrfq->single->single_loi);
+                        $single_loi = array_chunk($single_loi_chunk, 3);
+                        $single_country_chunk = json_decode($newrfq->single->single_country);
+                        $single_country = array_chunk($single_country_chunk, 3);
+                        $single_client_chunk = json_decode($newrfq->single->single_client);
+                        $single_client = array_chunk($single_client_chunk, 3);
+                        $single_sample_chunk = json_decode($newrfq->single->single_sample);
+                        $single_sample = array_chunk($single_sample_chunk, 3);
+                        $single_fieldwork_chunk = json_decode($newrfq->single->single_fieldwork);
+                        $single_fieldwork = array_chunk($single_fieldwork_chunk, 3);
+                        $single_other = json_decode($newrfq->single->single_other);
+                        // $single_other = array_chunk($single_other_chunk, 3);
+                        $single_total_cost_chunk = json_decode($newrfq->single->single_total_cost);
+                        $single_total_cost = array_chunk($single_total_cost_chunk, 3);
+                    }   
+                    ?>
                     @if(isset($newrfq) && isset($newrfq->single))
-                    <div class="table-container mt-2">
-                        <table class="" id="costingTable">
-                            <tbody>
-                                <tr>
-                                    <td class="static-field">Methodology</td>
-                                    @if(count($single_methodology) > 0)
-                                    @foreach($single_methodology as $key => $methodology)
-                                    <td class="viewer">
-                                        {{$methodology}}
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">Currency</td>
-                                    @if(count($single_currency) > 0)
-                                    @foreach($single_currency as $currency)
-                                    <td class="viewer">{{$currency}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">LOI</td>
-                                    @if(count($single_loi) > 0)
-                                    @foreach($single_loi as $loi)
-                                    <td class="viewer">{{$loi}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">Country</td>
-                                    @if(count($single_country) > 0)
-                                    @foreach($single_country as $country)
-                                    <td class="viewer">{{$country}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">Client</td>
-                                    @if(count($single_client) > 0)
-                                    @foreach($single_client as $value)
-                                    <td class="viewer">{{$value}}
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">Sample</td>
-                                    @if(count($single_sample) > 0)
-                                    @foreach($single_sample as $sample)
-                                    <td class="viewer">{{$sample}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field remove-other_{{$key - 1}}">Fieldwork CPI</td>
-                                    @if(count($single_fieldwork) > 0)
-                                    @foreach($single_fieldwork as $fieldwork)
-                                    <td class="viewer">{{$fieldwork}}
-                                        @endforeach
-                                        @endif
-                                    </td>
-                                </tr>
-
-                                @if(count($single_other) > 0)
-                                @foreach($single_other as $k => $value)
-                                <tr id="otherFields">
-                                    @if(count($value) > 0)
-                                    @foreach($value as $key => $other)
-                                    @if($key % 3 === 0)
-                                    <td class="viewer">
-                                        {{$other}}
-                                    </td>
-                                    @else
-                                    <td class="viewer">{{$other}}</td>
-                                    @endif
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @endif
-                                <tr>
-                                    <td>Total Cost</td>
-                                    @if(count($single_total_cost) > 0)
-                                    @foreach($single_total_cost as $total_cost)
-                                    <td>{{$total_cost}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                     <div class="table-container mt-2">
+                @if(count($single_methodology) > 0)
+                @foreach ($single_methodology as $j => $online)
+                <table class="" id="costingTable">
+                    <tbody>
+                        <tr>
+                            <td class="static-field">Methodology</td>
+                            @if(count($single_methodology[$j]) > 0)
+                            @foreach($single_methodology[$j] as $key => $methodology)
+                                <td class="viewer"> 
+                                {{$methodology}}
+                                </td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field remove-other_{{$key - 1}}">Currency</td>
+                            @if(count($single_currency[$j]) > 0)
+                            @foreach($single_currency[$j] as $currency)
+                                <td class="viewer">{{$currency}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field remove-other_{{$key - 1}}">LOI</td>
+                            @if(count($single_loi[$j]) > 0)
+                            @foreach($single_loi[$j] as $loi)
+                                <td class="viewer">{{$loi}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        
+                        <tr>
+                            <td class="static-field remove-other_{{$key - 1}}">Country</td>
+                            @if(count($single_country[$j]) > 0)
+                            @foreach($single_country[$j] as $country)
+                                <td class="viewer">{{$country}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        
+                        <tr>
+                        <td class="static-field remove-other_{{$key - 1}}">Client</td>
+                        @if(count($single_client[$j]) > 0)
+                        @foreach($single_client[$j] as $value)
+                            <td class="viewer">{{$value}}
+                            </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        
+                        <tr>
+                        <td class="static-field remove-other_{{$key - 1}}">Sample</td>
+                        @if(count($single_sample[$j]) > 0)
+                        @foreach($single_sample[$j] as $sample)
+                            <td class="viewer">{{$sample}}</td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field remove-other_{{$key - 1}}">Fieldwork CPI</td>
+                            @if(count($single_fieldwork[$j]) > 0)
+                            @foreach($single_fieldwork[$j] as $fieldwork)
+                                <td class="viewer">{{$fieldwork}}
+                            @endforeach
+                            @endif
+                            </td>
+                        </tr>
+                        
+                        @if(count($single_other) > 0)
+                        @foreach($single_other as $k => $value)
+                        <?php
+                            $first_value = array_shift($value);
+                            $value = array_chunk($value, 3);    
+                        ?>
+                        <tr id="otherFields">
+                        @if(count($value) > 0)
+                        <td class="viewer">
+                            {{$first_value}}
+                       </td>
+                        @foreach($value[$j] as $key => $other)
+                        <td class="viewer">
+                        {{$other}}
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        @endforeach
+                        @endif
+                        <tr>
+                            <td>Total Cost</td>
+                            @if(count($single_total_cost[$j]) > 0)
+                            @foreach($single_total_cost[$j] as $total_cost)
+                                <td>{{$total_cost}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                    </tbody>
+                </table>
+                @endforeach
+                @endif
+            </div>
                     @endif
                 </div>
             </div>
@@ -595,150 +604,140 @@
                     id="mulitple-country">
                     <?php
             if(isset($newrfq) && isset($newrfq->multiple)){
-                $multiple_methodology = json_decode($newrfq->multiple->multiple_methodology);
-                $multiple_currency = json_decode($newrfq->multiple->multiple_currency);
-                $multiple_loi = json_decode($newrfq->multiple->multiple_loi);
-                $multiple_client = json_decode($newrfq->multiple->multiple_client);
+                $multiple_methodology_chunk = json_decode($newrfq->multiple->multiple_methodology);
+                $multiple_methodology = array_chunk($multiple_methodology_chunk,3);
+                $multiple_currency_chunk = json_decode($newrfq->multiple->multiple_currency);
+                $multiple_currency = array_chunk($multiple_currency_chunk, 3);
+                $multiple_loi_chunk = json_decode($newrfq->multiple->multiple_loi);
+                $multiple_loi = array_chunk($multiple_loi_chunk, 3);
+                $multiple_client_chunk = json_decode($newrfq->multiple->multiple_client);
+                $multiple_client = array_chunk($multiple_client_chunk, 3);
                 $multiple_countries = json_decode($newrfq->multiple->multiple_countries);
                 $multiple_other = json_decode($newrfq->multiple->multiple_other);
-                $multiple_total_cost = json_decode($newrfq->multiple->multiple_total_cost);
+                $multiple_total_cost_chunk = json_decode($newrfq->multiple->multiple_total_cost);
+                $multiple_total_cost = array_chunk($multiple_total_cost_chunk, 3);
             }   
             ?>
 
                     @if(isset($newrfq) && isset($newrfq->multiple))
-                    <div class="table-container mt-2">
-                        <table class="" id="MultipleCountry">
-                            <tbody>
-                                <tr>
-                                    <td class="static-field">Methodology</td>
-                                    @if(count($multiple_methodology) > 0)
-                                    @foreach($multiple_methodology as $key => $methodology)
+                     <div class="table-container mt-2">
+                @if(count($multiple_methodology) > 0)
+                @foreach ($multiple_methodology as $j => $multiple)
+                <table class="" id="MultipleCountry">
+                    <tbody>
+                        <tr>
+                            <td class="static-field">Methodology</td>
+                            @if(count($multiple_methodology[$j]) > 0)
+                                @foreach($multiple_methodology[$j] as $key => $methodology)
                                     <td class="viewer" colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$methodology}}
-                                        </label>
-                                        @endforeach
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="static-field relative ">Currency</td>
-                                    @if(count($multiple_currency) > 0)
-                                    @foreach($multiple_currency as $key => $currency)
-                                    <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$currency}}
-                                        </label>
-                                        @endforeach
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="static-field relative ">LOI</td>
-                                    @if(count($multiple_loi) > 0)
-                                    @foreach($multiple_loi as $key => $loi)
-                                    <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$loi}}
-                                        </label>
-                                        @endforeach
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="static-field relative ">Client</td>
-                                    @if(count($multiple_client) > 0)
-                                    @foreach($multiple_client as $key => $value)
-                                    <td class="editable-field viewer " colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$value }}
-                                            </select>
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field relative ">Countries</td>
-                                    @if(count($multiple_client) > 0)
-                                    @foreach($multiple_client as $key => $multiple)
-                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">Sample</td>
-                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">CPI</td>
-                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">Total</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @if(count($multiple_countries) > 0)
-                                @foreach ($multiple_countries as $k => $countries)
-                                <tr>
-                                    <?php 
-                                    $i = "";
-                                ?>
-                                    @if(count($countries) > 0)
-                                    @foreach ($countries as $key => $country)
-                                    <?php 
-                                    if($key == 4)
-                                    {
-                                        $i = 0;
-                                    }
-                                    ?>
-                                    <td class="viewer">{{$country}}</td>
-                                    <?php
-                                    if($key % 3 === 0 && $key > 3)
-                                    {
-                                        $i++;
-                                    }
-                                    ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
+                                    <label class="mb-0 label">
+                                  {{$methodology}}
+                                    </label>
                                 @endforeach
-                                @endif
-                                @if(count($multiple_other) > 0)
-                                @foreach($multiple_other as $k => $value)
-                                <?php 
-                                $i = "";
+                            @endif
+                            </td>
+                        </tr>
+                        <tr>
+                        <td class="static-field relative ">Currency</td>
+                            @if(count($multiple_currency[$j]) > 0)
+                                @foreach($multiple_currency[$j] as $key => $currency)
+                                <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                <label class="mb-0 label">
+                               {{$currency}}
+                                </label>
+                                @endforeach
+                            @endif
+                            </td>
+                        </tr>
+                        <tr>
+                        <td class="static-field relative ">LOI</td>
+                            @if(count($multiple_loi[$j]) > 0)
+                            @foreach($multiple_loi[$j] as $key => $loi)
+                            <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                <label class="mb-0 label">
+                              {{$loi}}
+                                </label>
+                            @endforeach
+                            @endif
+                            </td>
+                        </tr>
+                        <tr>
+                        <td class="static-field relative ">Client</td>
+                        @if(count($multiple_client[$j]) > 0)
+                            @foreach($multiple_client[$j] as $key => $value)
+                            <td class="editable-field viewer "  colspan="3">
+                                <label class="mb-0 label"> 
+                                    {{$value }}
+                                </select>
+                                </label>
+                            </td>
+                            @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field relative ">Countries</td>
+                            @if(count($multiple_client[$j]) > 0)
+                            @foreach($multiple_client[$j] as $key => $multiple)
+                            <td class="static-field removeMultipleCountry_{{$key - 1}}">Sample</td>
+                            <td class="static-field removeMultipleCountry_{{$key - 1}}">CPI</td>
+                            <td class="static-field removeMultipleCountry_{{$key - 1}}">Total</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        @if(count($multiple_countries) > 0)
+                        @foreach ($multiple_countries as $k => $countries)
+                        <?php
+                        $first_value = array_shift($countries);
+                        $countries = array_chunk($countries, 9);    
+                        ?>
+                        <tr>
+                        
+                        @if(count($countries[$j]) > 0)
+                        <td class="viewer">
+                            {{$first_value}}
+                        </td>
+                        @foreach ($countries[$j] as $key => $country)
+                            <td class="viewer">{{$country}}</td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        @endforeach
+                        @endif
+                        @if(count($multiple_other) > 0)
+                        @foreach($multiple_other as $k => $value)
+                            <?php
+                            $first_value = array_shift($value);
+                            $value = array_chunk($value, 9);    
                             ?>
-                                <tr id="otherFieldMultipleCountry">
-                                    @if(count($value) > 0)
-                                    @foreach($value as $key => $other)
-                                    <?php 
-                                if($key == 4)
-                                {
-                                    $i = 0;
-                                }
-                                ?>
-                                    @if($key % 3 === 0 && $key == 0)
-                                    <td class="viewer removeMultipleCountry_{{$i}}">
-                                        {{$other}}
-                                    </td>
-                                    @else
-                                    <td class="viewer removeMultipleCountry_{{$i}}">{{$other}}</td>
-                                    @endif
-                                    <?php
-                                if($key % 3 === 0 && $key > 3)
-                                {
-                                    $i++;
-                                }
-                                ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @endif
-                                <tr>
-                                    <td class="total-cost relative ">Total project Cost</td>
-                                    @if(count($multiple_total_cost) > 0)
-                                    @foreach ($multiple_total_cost as $key => $value)
-                                    <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
-                                    <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
-                                    <td class="removeMultipleCountry_{{$key - 1}}">{{$value}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        <tr id="otherFieldMultipleOthers">
+                            @if(count($value[$j]) > 0)
+                            <td class="viewer">
+                                {{$first_value}}
+                           </td>
+                           @foreach($value[$j] as $key => $other)
+                            <td class="viewer">
+                                {{$other}}
+                            </td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        @endforeach
+                        @endif
+                        <tr>
+                            <td class="total-cost relative ">Total project Cost</td>
+                            @if(count($multiple_total_cost[$j]) > 0)
+                            @foreach ($multiple_total_cost[$j] as $key => $value)
+                            <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
+                            <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
+                            <td class="removeMultipleCountry_{{$key - 1}}">{{$value}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                    </tbody>
+                </table>
+                @endforeach
+                @endif
+            </div>
                     @endif
                 </div>
             </div>
@@ -750,332 +749,333 @@
                     style="{{ isset($newrfq) && isset($newrfq->interview) ? '' : 'display: none;' }}"
                     id="interview-depth">
 
-                    <?php
+              <?php
             if(isset($newrfq) && isset($newrfq->interview)){
-                $interview_depth_methodology = json_decode($newrfq->interview->interview_depth_methodology);
-                $interview_depth_currency = json_decode($newrfq->interview->interview_depth_currency);
-                $interview_depth_loi = json_decode($newrfq->interview->interview_depth_loi);
-                $interview_depth_client = json_decode($newrfq->interview->interview_depth_client);
-                $interview_depth_no_fgd = json_decode($newrfq->interview->interview_depth_no_fgd);
-                $interview_depth_sample_fgd = json_decode($newrfq->interview->interview_depth_sample_fgd);
-                $interview_depth_countries = json_decode($newrfq->interview->interview_depth_countries);
-                $interview_depth_requirements = json_decode($newrfq->interview->interview_depth_requirements);
-                $interview_depth_incentives = json_decode($newrfq->interview->interview_depth_incentives);
-                $interview_depth_moderation = json_decode($newrfq->interview->interview_depth_moderation);
-                $interview_depth_transcripts = json_decode($newrfq->interview->interview_depth_transcripts);
-                $interview_depth_project_management = json_decode($newrfq->interview->interview_depth_project_management);
+                $interview_depth_methodology_chunk = json_decode($newrfq->interview->interview_depth_methodology);
+                $interview_depth_methodology = array_chunk($interview_depth_methodology_chunk, 3);
+                $interview_depth_currency_chunk = json_decode($newrfq->interview->interview_depth_currency);
+                $interview_depth_currency = array_chunk($interview_depth_currency_chunk, 3);
+                $interview_depth_loi_chunk = json_decode($newrfq->interview->interview_depth_loi);
+                $interview_depth_loi = array_chunk($interview_depth_loi_chunk, 3);
+                $interview_depth_client_chunk = json_decode($newrfq->interview->interview_depth_client);
+                $interview_depth_client = array_chunk($interview_depth_client_chunk, 3);
+                $interview_depth_no_fgd_chunk = json_decode($newrfq->interview->interview_depth_no_fgd);
+                $interview_depth_no_fgd = array_chunk($interview_depth_no_fgd_chunk, 3);
+                $interview_depth_sample_fgd_chunk = json_decode($newrfq->interview->interview_depth_sample_fgd);
+                $interview_depth_sample_fgd = array_chunk($interview_depth_sample_fgd_chunk, 3);
+                $interview_depth_countries_chunk = json_decode($newrfq->interview->interview_depth_countries);
+                $interview_depth_countries = array_chunk($interview_depth_countries_chunk, 3);
+                $interview_depth_requirements_chunk = json_decode($newrfq->interview->interview_depth_requirements);
+                $interview_depth_requirements = array_chunk($interview_depth_requirements_chunk, 9);
+                $interview_depth_incentives_chunk = json_decode($newrfq->interview->interview_depth_incentives);
+                $interview_depth_incentives = array_chunk($interview_depth_incentives_chunk, 9);
+                $interview_depth_moderation_chunk = json_decode($newrfq->interview->interview_depth_moderation);
+                $interview_depth_moderation = array_chunk($interview_depth_moderation_chunk, 9);
+                $interview_depth_transcripts_chunk = json_decode($newrfq->interview->interview_depth_transcripts);
+                $interview_depth_transcripts = array_chunk($interview_depth_transcripts_chunk, 9);
+                $interview_depth_project_management_chunk = json_decode($newrfq->interview->interview_depth_project_management);
+                $interview_depth_project_management = array_chunk($interview_depth_project_management_chunk, 9);
                 $interview_depth_other = json_decode($newrfq->interview->interview_depth_other);
+                //$interview_depth_other = array_chunk($interview_depth_other_chunk, 9);
                 $interview_depth_total_cost_1 = json_decode($newrfq->interview->interview_depth_total_cost_1);
                 $interview_depth_total_cost_2 = json_decode($newrfq->interview->interview_depth_total_cost_2);
+                
             }   
             ?>
                     @if(isset($newrfq) && isset($newrfq->interview))
 
 
-                    <div class="table-container mt-2">
-                        <table class="" id="InterviewDepth">
-                            <tbody>
-                                <tr>
-                                    <td class="static-field">Methodology</td>
-                                    @if(count($interview_depth_methodology) > 0)
-                                    @foreach($interview_depth_methodology as $key => $methodology)
+                      <div class="table-container mt-2">
+                @if(count($interview_depth_methodology) > 0)
+                @foreach ($interview_depth_methodology as $j => $interview)
+                <table class="" id="InterviewDepth">
+                    <tbody>
+                        <tr>
+                            <td class="static-field">Methodology</td>
+                            @if(count($interview_depth_methodology[$j]) > 0)
+                                @foreach($interview_depth_methodology[$j] as $key => $methodology)
                                     <td colspan="3" class="viewer">
                                         <label class="mb-0 label">
                                             {{$methodology}}
                                         </label>
                                     </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field">Currency</td>
-                                    @if(count($interview_depth_currency) > 0)
-                                    @foreach($interview_depth_currency as $key => $currency)
-                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}" colspan="3">
+                                @endforeach
+                            @endif
+                            
+                        </tr>
+                        <tr>
+                            <td class="static-field">Currency</td>
+                            @if(count($interview_depth_currency[$j]) > 0)
+                                @foreach($interview_depth_currency[$j] as $key => $currency)
+                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
                                         <label class="mb-0 label">
                                             {{$currency}}
                                         </label>
                                     </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field">LOI</td>
-                                    @if(count($interview_depth_loi) > 0)
-                                    @foreach($interview_depth_loi as $key => $loi)
-                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}" colspan="3">
+                                @endforeach
+                            @endif
+                            
+                        </tr>
+                        <tr>
+                            <td class="static-field">LOI</td>
+                            @if(count($interview_depth_loi[$j]) > 0)
+                                @foreach($interview_depth_loi[$j] as $key => $loi)
+                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
                                         <label class="mb-0 label">
                                             {{$loi}}
                                         </label>
                                     </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field">Client</td>
-                                    @if(count($interview_depth_client) > 0)
-                                    @foreach($interview_depth_client as $key => $value)
-                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-
-
-                                            {{$value}}
-
-                                        </label>
+                                @endforeach
+                            @endif
+                            
+                        </tr>
+                        <tr>
+                            <td class="static-field">Client</td>
+                            @if(count($interview_depth_client[$j]) > 0)
+                                @foreach($interview_depth_client[$j] as $key => $value)
+                                    <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                    <label class="mb-0 label"> 
+                                       
+                                        
+                                        {{$value}}
+                                      
+                                    </label>
                                     </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field">No of FGDs</td>
-                                    @if(count($interview_depth_no_fgd) > 0)
-                                    @foreach($interview_depth_no_fgd as $key => $fgd)
-                                    <td class="editable-field removeInterviewDepth_{{$key - 1}}" colspan="3">
+                                @endforeach
+                            @endif
+                            
+                        </tr>
+                        <tr>
+                            <td class="static-field">No of FGDs</td>
+                            @if(count($interview_depth_no_fgd[$j]) > 0)
+                                @foreach($interview_depth_no_fgd[$j] as $key => $fgd)
+                                    <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
                                         <label class="mb-0 label viewer">
                                             {{$fgd}}
                                         </label>
                                     </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field">Samples per FGD/IDI</td>
-                                    @if(count($interview_depth_sample_fgd) > 0)
-                                    @foreach($interview_depth_sample_fgd as $key => $fgd)
-                                    <td class="editable-field removeInterviewDepth_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label viewer">
-                                            {{$fgd}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field">Country</td>
-                                    @if(count($interview_depth_countries) > 0)
-                                    @foreach($interview_depth_countries as $key => $country)
-                                    <td class="editable-field removeInterviewDepth_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label viewer">
-                                            {{$country}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field"></td>
-                                    @if(count($interview_depth_countries) > 0)
-                                    @foreach($interview_depth_countries as $key => $country)
-                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Sample</td>
-                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">CPI</td>
-                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Total</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
+                                @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field">Samples per FGD/IDI</td>
+                            @if(count($interview_depth_sample_fgd[$j]) > 0)
+                                @foreach($interview_depth_sample_fgd[$j] as $key => $fgd)
+                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                    <label class="mb-0 label viewer">
+                                        {{$fgd}}
+                                    </label>
+                                </td>
+                                @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field">Country</td>
+                            @if(count($interview_depth_countries[$j]) > 0)
+                                @foreach($interview_depth_countries[$j] as $key => $country)
+                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                <label class="mb-0 label viewer">
+                                    {{$country}}
+                                </label>
+                                </td>
+                                @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <td class="static-field"></td>
+                            @if(count($interview_depth_countries[$j]) > 0)
+                            @foreach($interview_depth_countries[$j] as $key => $country)
+                                <td class="static-field removeInterviewDepth_{{$key - 1}}">Sample</td>
+                                <td class="static-field removeInterviewDepth_{{$key - 1}}">CPI</td>
+                                <td class="static-field removeInterviewDepth_{{$key - 1}}">Total</td>
+                            @endforeach
+                            @endif
+                        </tr>
 
-                                <tr>
-                                    <td class="static-field ">Recruitment</td>
-                                    <?php 
+                        <tr>
+                            <td class="static-field ">Recruitment</td>
+                            <?php 
                                 $i = "";
                             ?>
-                                    @if(count($interview_depth_requirements) > 0)
-                                    @foreach($interview_depth_requirements as $key => $value)
-                                    <?php 
+                            @if(count($interview_depth_requirements[$j]) > 0)
+                            @foreach($interview_depth_requirements[$j] as $key => $value)
+                                <?php 
                                 if($key == 3)
                                 {
                                     $i = 0;
                                 }
                                 ?>
-                                    <td class=" viewer removeInterviewDepth_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
+                                <td class=" viewer removeInterviewDepth_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
                                 if(($key + 1) % 3 === 0 && $key > 3)
                                 {
                                     $i++;
                                 }
                                 ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <?php 
                                 $i = "";
                             ?>
-                                    <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Incentives</td>
-                                    @if(count($interview_depth_incentives) > 0)
-                                    @foreach($interview_depth_incentives as $key => $value)
-                                    <?php
+                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Incentives</td>
+                            @if(count($interview_depth_incentives[$j]) > 0)
+                            @foreach($interview_depth_incentives[$j] as $key => $value)
+                                <?php
                                 if($key == 3)
                                 {
                                     $i = 0;
                                 }
                                 ?>
-                                    <td class=" viewer removeInterviewDepth_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
+                                <td class=" viewer removeInterviewDepth_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
                                 if(($key + 1) % 3 === 0 && $key > 3)
                                 {
                                     $i++;
                                 }
                                 ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <?php 
                                 $i = "";
                             ?>
-                                    <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Moderation</td>
-                                    @if(count($interview_depth_moderation) > 0)
-                                    @foreach($interview_depth_moderation as $key => $value)
-                                    <?php 
+                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Moderation</td>
+                            @if(count($interview_depth_moderation[$j]) > 0)
+                            @foreach($interview_depth_moderation[$j] as $key => $value)
+                            <?php 
                                 if($key == 3)
                                 {
                                     $i = 0;
                                 }
                                 ?>
-                                    <td class="viewer removeInterviewDepth_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
+                                <td class="viewer removeInterviewDepth_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
                                 if(($key + 1) % 3 === 0 && $key > 3)
                                 {
                                     $i++;
                                 }
                                 ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <?php 
                                 $i = "";
                             ?>
-                                    <td class="static-field  viewer removeInterviewDepth_{{$key - 1}}">Transcripts</td>
-                                    @if(count($interview_depth_transcripts) > 0)
-                                    @foreach($interview_depth_transcripts as $key => $value)
-                                    <?php 
+                            <td class="static-field  viewer removeInterviewDepth_{{$key - 1}}">Transcripts</td>
+                            @if(count($interview_depth_transcripts[$j]) > 0)
+                            @foreach($interview_depth_transcripts[$j] as $key => $value)
+                            <?php 
                                 if($key == 3)
                                 {
                                     $i = 0;
                                 }
                                 ?>
-                                    <td class=" viewer removeInterviewDepth_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
+                                <td class=" viewer removeInterviewDepth_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
                                 if(($key + 1) % 3 === 0 && $key > 3)
                                 {
                                     $i++;
                                 }
                                 ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                        <?php 
                                 $i = "";
                             ?>
-                                    <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Project Management
-                                    </td>
-                                    @if(count($interview_depth_project_management) > 0)
-                                    @foreach($interview_depth_project_management as $key => $value)
-                                    <?php
+                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Project Management</td>
+                            @if(count($interview_depth_project_management[$j]) > 0)
+                            @foreach($interview_depth_project_management[$j] as $key => $value)
+                                <?php
                                     if($key == 3)
                                     {
                                         $i = 0;
                                     }
                                 ?>
-                                    <td class="viewer removeInterviewDepth_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
+                                <td class="viewer removeInterviewDepth_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
                                 if(($key + 1) % 3 === 0 && $key > 3)
                                 {
                                     $i++;
                                 }
                                 ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @if(count($interview_depth_other) > 0)
-                                @foreach($interview_depth_other as $k => $value)
-                                <tr id="otherFieldMultipleCountry">
-                                    @if(count($value) > 0)
-                                    @foreach($value as $key => $other)
-                                    <?php 
-                            if($key == 4)
-                            {
-                                $i = 0;
-                            }
-                            ?>
-                                    @if($key % 3 === 0 && $key == 0)
-                                    <td class="viewer removeInterviewDepth_{{$i}}">
-                                        {{$other}}
-                                    </td>
-                                    @else
-                                    <td class="viewer removeInterviewDepth_{{$i}}">{{$other}}</td>
-                                    @endif
-                                    <?php
-                            if($key % 3 === 0 && $key > 3)
-                            {
-                                $i++;
-                            }
-                            ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @endif
-                                {{-- <tr id="otherFieldsInterview">
-                            <td class="d-flex"><button type="button" class="btn btn-sm interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
-                            <td><input type="text" class="form-control sample" name="interview_depth_other[0][]"></td>
-                            <td><input type="text" class="form-control cpi" name="interview_depth_other[0][]"></td>
-                            <td> <input type="text" class="form-control cpi" name="interview_depth_other[0][]" attr="total" value=""></td>
-                        </tr> --}}
-                                <tr>
-                                    @if(count($interview_depth_total_cost_1) > 0)
-                                    <td class="total-cost">
-                                        {{$interview_depth_total_cost_1[0]}}</td>
-                                    @foreach ($interview_depth_total_cost_1 as $key => $value)
-                                    @if($key > 0)
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}">
-                                        {{$value}}
-                                    </td>
-                                    @endif
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    @if(count($interview_depth_total_cost_2) > 0)
-                                    <td class="total-cost">
-                                        {{$interview_depth_total_cost_2[0]}}</td>
-                                    @foreach ($interview_depth_total_cost_2 as $key => $value)
-                                    @if($key > 0)
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}">
-                                        {{$value}}
-                                    </td>
-
-                                    @endif
-                                    @endforeach
-                                    @endif
-                                    {{-- <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
-                            <td class="total-cost"></td>
-                            <td class="total-cost"></td>
-                            <td><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value=""></td> --}}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                            @endif
+                        </tr>
+                        @if(count($interview_depth_other) > 0)
+                        @foreach($interview_depth_other as $k => $value)
+                        <tr id="otherFieldMultipleCountry">
+                        <?php
+                            $first_value = array_shift($value);
+                            $value = array_chunk($value, 9);    
+                        ?>
+                        @if(count($value[$j]) > 0)
+                        <td class="viewer removeInterviewDepth_{{$i}}">
+                            {{$first_value}}
+                       </td>
+                       @foreach($value[$j] as $key => $other)
+                        <td class="viewer">
+                            {{$other}}
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        @endforeach
+                        @endif
+                        <tr>
+                        @if(count($interview_depth_total_cost_1) > 0)
+                        <?php
+                        $val = $interview_depth_total_cost_1;
+                        $first_value = array_shift($val);
+                        $val = array_chunk($val, 3);    
+                        ?>
+                        <td class="total-cost">{{$first_value}}</td>
+                        @foreach ($val[$j] as $k => $value)
+                        <td class="total-cost"></td>
+                        <td class="total-cost"></td>
+                        <td class="total-cost">
+                            {{$value}}
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        @if(count($interview_depth_total_cost_2) > 0)
+                        <?php
+                        $val = $interview_depth_total_cost_2;
+                        $first_value = array_shift($val);
+                        $val = array_chunk($val, 3);    
+                        ?>
+                        <td class="total-cost">{{$first_value}}</td>
+                        @foreach ($val[$j] as  $value)
+                        <td class="total-cost"></td>
+                        <td class="total-cost"></td>
+                        <td class="total-cost">
+                            {{$value}}
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                    </tbody>
+                </table>
+                @endforeach
+                @endif
+            </div>
                     @endif
                 </div>
             </div>
@@ -1092,266 +1092,251 @@
 
                     <?php
             if(isset($newrfq) && isset($newrfq->online)){
-                $online_community_methodology = json_decode($newrfq->online->online_community_methodology);
-                $online_community_currency = json_decode($newrfq->online->online_community_currency);
-                $online_community_client = json_decode($newrfq->online->online_community_client);
-                    $online_community_duration = json_decode($newrfq->online->online_community_duration);
-                $online_community_loi_screener = json_decode($newrfq->online->online_community_loi_screener);
-                $online_community_sample_loi_month = json_decode($newrfq->online->online_community_sample_loi_month);
-                $online_community_countries = json_decode($newrfq->online->online_community_countries);
-                $online_community_requirements = json_decode($newrfq->online->online_community_requirements);
-                $online_community_incentives = json_decode($newrfq->online->online_community_incentives);
-                $online_community_pmfree = json_decode($newrfq->online->online_community_pmfree);
-                $online_community_project_management = json_decode($newrfq->online->online_community_project_management);
+                $online_community_methodology_chunk = json_decode($newrfq->online->online_community_methodology);
+                $online_community_methodology = array_chunk($online_community_methodology_chunk, 3);
+                $online_community_currency_chunk = json_decode($newrfq->online->online_community_currency);
+                $online_community_currency = array_chunk($online_community_currency_chunk, 3);
+                $online_community_client_chunk = json_decode($newrfq->online->online_community_client);
+                $online_community_client = array_chunk($online_community_client_chunk, 3);
+                $online_community_duration_chunk = json_decode($newrfq->online->online_community_duration);
+                $online_community_duration = array_chunk($online_community_duration_chunk, 3);
+                $online_community_loi_screener_chunk = json_decode($newrfq->online->online_community_loi_screener);
+                $online_community_loi_screener = array_chunk($online_community_loi_screener_chunk, 3);
+                $online_community_sample_loi_month_chunk = json_decode($newrfq->online->online_community_sample_loi_month);
+                $online_community_sample_loi_month = array_chunk($online_community_sample_loi_month_chunk, 3);
+                $online_community_countries_chunk = json_decode($newrfq->online->online_community_countries);
+                $online_community_countries = array_chunk($online_community_countries_chunk, 3);
+                $online_community_requirements_chunk = json_decode($newrfq->online->online_community_requirements);
+                $online_community_requirements = array_chunk($online_community_requirements_chunk, 9);
+                $online_community_incentives_chunk = json_decode($newrfq->online->online_community_incentives);
+                $online_community_incentives = array_chunk($online_community_incentives_chunk, 9);
+                $online_community_pmfree_chunk = json_decode($newrfq->online->online_community_pmfree);
+                $online_community_pmfree = array_chunk($online_community_pmfree_chunk, 9);
                 $online_community_other = json_decode($newrfq->online->online_community_other);
-                $online_community_total_cost = json_decode($newrfq->online->online_community_total_cost);
-                
+                // $online_community_other = array_chunk($online_community_other_chunk, 9);
+                // dd($online_community_other_chunk);
+                $online_community_total_cost_chunk = json_decode($newrfq->online->online_community_total_cost);
+                $online_community_total_cost = array_chunk($online_community_total_cost_chunk, 3);
             }   
             ?>
-                    @if(isset($newrfq) && isset($newrfq->online))
+            @if(isset($newrfq) && isset($newrfq->online))
+           
 
-
-                    <div class="table-container mt-2">
-                        <table class="" id="OnlineCommunity">
-                            <tbody>
-                                <tr>
-                                    <td class="static-field viewer w-25">Methodology</td>
-                                    @if(count($online_community_methodology) > 0)
-                                    @foreach($online_community_methodology as $key => $methodology)
-                                    <td colspan="3" class="viewer">
-                                        <label class="mb-0 label">
-                                            {{$methodology}}
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">Currency</td>
-                                    @if(count($online_community_currency) > 0)
-                                    @foreach($online_community_currency as $key => $currency)
-                                    <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$currency}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">Client</td>
-                                    @if(count($online_community_client) > 0)
-                                    @foreach($online_community_client as $key => $value)
-                                    <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-
-
-
-                                            {{$value}}
-
-
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">Duration</td>
-                                    @if(count($online_community_duration) > 0)
-                                    @foreach($online_community_duration as $key => $duration)
-                                    <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label">
-                                            {{$duration}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">LOI</td>
-                                    @if(count($online_community_loi_screener) > 0)
-                                    @foreach($online_community_loi_screener as $key => $screener)
-                                    <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label viewer ">
-                                            {{$screener}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">LOI/Month</td>
-                                    @if(count($online_community_sample_loi_month) > 0)
-                                    @foreach($online_community_sample_loi_month as $key => $sample_loi_month)
-                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label viewer">
-                                            {{$sample_loi_month}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field ">Country</td>
-                                    @if(count($online_community_countries) > 0)
-                                    @foreach($online_community_countries as $key => $countries)
-                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}" colspan="3">
-                                        <label class="mb-0 label viewer">
-                                            {{$countries}}
-                                        </label>
-                                    </td>
-                                    @endforeach
-                                    @endif
-
-                                </tr>
-                                <tr>
-                                    <td class="static-field"></td>
-                                    @if(count($online_community_countries) > 0)
-                                    @foreach($online_community_countries as $key=> $online)
-                                    <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
-                                    <td class="static-field removeOnlineCommunity_{{$key - 1}}">CPI</td>
-                                    <td class="static-field removeOnlineCommunity_{{$key - 1}}">Total</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
+            <div class="table-container mt-2">
+                @if(count($online_community_methodology) > 0)
+                @foreach ($online_community_methodology as $j => $online)
+                <table class="" id="OnlineCommunity">
+                    <tbody>
+                        <tr>
+                            <td class="static-field viewer w-25">Methodology</td>
+                            @if(count($online_community_methodology[$j]) > 0)
+                            @foreach($online_community_methodology[$j] as $key => $methodology)
+                                <td  colspan="3" class="viewer">
+                                <label class="mb-0 label">
+                                    {{$methodology}}
+                                </td>
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">Currency</td>
+                        @if(count($online_community_currency[$j]) > 0)
+                        @foreach($online_community_currency[$j] as $key => $currency)
+                        <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                        <label class="mb-0 label">
+                            {{$currency}}
+                        </label>
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">Client</td>
+                        @if(count($online_community_client[$j]) > 0)
+                        @foreach($online_community_client[$j] as $key => $value)
+                        <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                            <label class="mb-0 label"> 
+                                {{$value}}
+                            </label>
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">Duration</td>
+                        @if(count($online_community_duration[$j]) > 0)
+                        @foreach($online_community_duration[$j] as $key => $duration)
+                            <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                            <label class="mb-0 label">
+                                {{$duration}}
+                            </label>
+                            </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">LOI</td>
+                        @if(count($online_community_loi_screener[$j]) > 0)
+                        @foreach($online_community_loi_screener[$j] as $key => $screener)
+                            <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                            <label class="mb-0 label viewer ">
+                                {{$screener}}
+                            </label>
+                            </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">LOI/Month</td>
+                        @if(count($online_community_sample_loi_month[$j]) > 0)
+                        @foreach($online_community_sample_loi_month[$j] as $key => $sample_loi_month)
+                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                            <label class="mb-0 label viewer">
+                                {{$sample_loi_month}}
+                            </label>
+                            </td>
+                            @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field ">Country</td>
+                        @if(count($online_community_countries[$j]) > 0)
+                        @foreach($online_community_countries[$j] as $key => $countries)
+                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                            <label class="mb-0 label viewer">
+                                {{$countries}}
+                            </label>
+                            </td>
+                            @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                        <td class="static-field"></td>
+                        @if(count($online_community_countries[$j]) > 0)
+                        @foreach($online_community_countries[$j] as $key=> $online)
+                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
+                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">CPI</td>
+                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">Total</td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        <tr>
+                            <?php 
                                 $i = "";
                             ?>
-                                    <td class="static-field ">Recruitment</td>
-                                    @if(count($online_community_requirements) > 0)
-                                    @foreach($online_community_requirements as $key => $value)
-                                    <?php 
-                                if($key == 3)
-                                {
-                                    $i = 0;
-                                }
-                                ?>
-                                    <td class=" viewer removeOnlineCommunity_{{$i}}">
-                                        {{$value}}</td>
-                                    <?php
-                                if(($key + 1) % 3 === 0 && $key > 3)
-                                {
-                                    $i++;
-                                }
-                                ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
-                                $i = "";
-                            ?>
-                                    <td class="static-field ">Incentives</td>
-                                    @if(count($online_community_incentives) > 0)
-                                    @foreach($online_community_incentives as $key => $value)
-                                    <?php 
-                                if($key == 3)
-                                {
-                                    $i = 0;
-                                }
-                                ?>
-                                    <td class=" viewer removeOnlineCommunity_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
-                                if(($key + 1) % 3 === 0 && $key > 3)
-                                {
-                                    $i++;
-                                }
-                                ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                <tr>
-                                    <?php 
-                                $i = "";
-                            ?>
-                                    <td class="static-field">Project Management</td>
-                                    @if(count($online_community_pmfree) > 0)
-                                    @foreach($online_community_pmfree as $key => $value)
-                                    <?php 
-                                if($key == 3)
-                                {
-                                    $i = 0;
-                                }
-                                ?>
-                                    <td class="viewer removeOnlineCommunity_{{$i}}">
-                                        {{$value}}
-                                    </td>
-                                    <?php
-                                if(($key + 1) % 3 === 0 && $key > 3)
-                                {
-                                    $i++;
-                                }
-                                ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @if(count($online_community_other) > 0)
-                                @foreach($online_community_other as $k => $value)
+                            <td class="static-field ">Recruitment</td>
+                            @if(count($online_community_requirements[$j]) > 0)
+                            @foreach($online_community_requirements[$j] as $key => $value)
                                 <?php 
-                            $i = "";
+                                if($key == 3)
+                                {
+                                    $i = 0;
+                                }
+                                ?>
+                                <td class=" viewer removeOnlineCommunity_{{$i}}">
+                                    {{$value}}</td>
+                                <?php
+                                if(($key + 1) % 3 === 0 && $key > 3)
+                                {
+                                    $i++;
+                                }
+                                ?>
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <?php 
+                                $i = "";
+                            ?>
+                            <td class="static-field ">Incentives</td>
+                            @if(count($online_community_incentives[$j]) > 0)
+                            @foreach($online_community_incentives[$j] as $key => $value)
+                                <?php 
+                                if($key == 3)
+                                {
+                                    $i = 0;
+                                }
+                                ?>
+                                <td class=" viewer removeOnlineCommunity_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
+                                if(($key + 1) % 3 === 0 && $key > 3)
+                                {
+                                    $i++;
+                                }
+                                ?>
+                            @endforeach
+                            @endif
+                        </tr>
+                        <tr>
+                            <?php 
+                                $i = "";
+                            ?>
+                            <td class="static-field">Project Management</td>
+                            @if(count($online_community_pmfree[$j]) > 0)
+                            @foreach($online_community_pmfree[$j] as $key => $value)
+                                <?php 
+                                if($key == 3)
+                                {
+                                    $i = 0;
+                                }
+                                ?>
+                                <td class="viewer removeOnlineCommunity_{{$i}}">
+                                    {{$value}}
+                                </td>
+                                <?php
+                                if(($key + 1) % 3 === 0 && $key > 3)
+                                {
+                                    $i++;
+                                }
+                                ?>
+                            @endforeach
+                            @endif
+                        </tr>
+                        @if(count($online_community_other) > 0)
+                        @foreach($online_community_other as $k => $value)
+                        <tr id="otherFieldsOnline">
+                        <?php
+                            $first_value = array_shift($value);
+                            $value = array_chunk($value, 9);    
                         ?>
-                                <tr id="otherFieldsOnline">
-                                    @if(count($value) > 0)
-                                    @foreach($value as $key => $other)
-                                    <?php 
-                            if($key == 4)
-                            {
-                                $i = 0;
-                            }
-                            ?>
-                                    @if($key % 3 === 0 && $key == 0)
-                                    <td class="viewer removeOnlineCommunity_{{$i}}">
-
-                                        {{$other}}
-                                    </td>
-                                    @elseif($key % 3 === 0)
-                                    <td class="viewer removeOnlineCommunity_{{$i}}">
-                                        {{$other}}
-                                    </td>
-                                    @else
-                                    <td class="viewer removeOnlineCommunity_{{$i}}">
-                                        {{$other}}
-                                    </td>
-                                    @endif
-                                    <?php
-                            if($key % 3 === 0 && $key > 3)
-                            {
-                                $i++;
-                            }
-                            ?>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @endif
-                                {{-- <tr id="otherFieldsOnline">
+                        @if(count($value[$j]) > 0)
+                        <td class="viewer removeOnlineCommunity_{{$i}}">
+                            {{$first_value}}
+                        </td>
+                        @foreach($value[$j] as $key => $other)
+                        <td class="viewer">
+                            {{$other}}
+                        </td>
+                        @endforeach
+                        @endif
+                        </tr>
+                        @endforeach
+                        @endif
+                        {{-- <tr id="otherFieldsOnline">
                             <td class="d-flex"><button type="button" class="btn btn-sm online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
                             <td><input type="text" class="form-control sample"  name="online_community_other[0][]"></td>
                             <td><input type="text" class="form-control cpi" name="online_community_other[0][]"></td>
                             <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
                         </tr> --}}
-                                <tr>
-                                    <td class="total-cost">Total Project Cost</td>
-                                    @if(count($online_community_total_cost) > 0)
-                                    @foreach ($online_community_total_cost as $key => $value)
-                                    <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
-                                    <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
-                                    <td class="removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}">
-                                        {{$value}}</td>
-                                    @endforeach
-                                    @endif
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    @endif
+                        <tr>
+                            <td class="total-cost">Total Project Cost</td>
+                            @if(count($online_community_total_cost[$j]) > 0)
+                            @foreach ($online_community_total_cost[$j] as $key => $value)
+                            <td class="total-cost "></td>
+                            <td class="total-cost "></td>
+                            <td class="">
+                                {{$value}}</td>
+                            @endforeach
+                            @endif
+                        </tr>
+                    </tbody>
+                </table>
+                @endforeach
+                @endif
+            </div>
+            @endif
                 </div>
             </div>
         </div>

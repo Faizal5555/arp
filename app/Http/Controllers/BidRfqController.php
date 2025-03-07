@@ -846,7 +846,18 @@ class BidRfqController extends Controller
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $data = file_get_contents($path);
         $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('newrfq','vendor','client','data','logo'))->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
+        $pdf = Pdf::loadView('bidrfq.pdfdownload',compact('newrfq','vendor','client','data','logo'))
+        ->setOptions(['defaultFont' => 'sans-serif',
+        'isHtml5ParserEnabled' => true, 
+        'isRemoteEnabled' => true
+    ]);
+        // $pdf->getDomPDF()->getCanvas()->page_script(function ($pageNumber, $pageCount, $canvas) {
+        //     $canvas->set_opacity(0.3); // Adjust opacity
+        //     $imgPath = public_path('assets/images/logo-2.png');
+            
+        //     // Ensure watermark is applied to all pages
+        //     $canvas->image($imgPath, 100, 200, 300, 300); // Adjust X, Y, Width, Height
+        // });
         return $pdf->download('pdf_file.pdf');
 
     }
