@@ -796,7 +796,7 @@
                             
                         </tr>
                         <tr>
-                            <td class="static-field">No of FGDs</td>
+                            <td class="static-field">No of FGDs/IDI</td>
                             @if(count($interview_depth_no_fgd) > 0)
                                 @foreach($interview_depth_no_fgd as $key => $fgd)
                                     <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">

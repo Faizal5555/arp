@@ -246,7 +246,7 @@
     }
 
     .static-field {
-        background-color: white;
+        /* background-color: white; */
         color: black;
         font-weight: bold;
         padding: 10px;
@@ -391,7 +391,11 @@
     width: 100%;
     background: transparent !important; /* Remove white background */
 }
-      
+   .title{
+    color: black !important;
+    font-size:14px;
+    font-weight: bold;
+   }   
 
 
 </style>
@@ -417,7 +421,7 @@
                 </tr>
             </table>
             <br>
-            <br>
+          
 
             <!-- ARP Sales Manager Name -->
 
@@ -605,17 +609,17 @@
                     <?php
             if(isset($newrfq) && isset($newrfq->multiple)){
                 $multiple_methodology_chunk = json_decode($newrfq->multiple->multiple_methodology);
-                $multiple_methodology = array_chunk($multiple_methodology_chunk,3);
+                $multiple_methodology = array_chunk($multiple_methodology_chunk,2);
                 $multiple_currency_chunk = json_decode($newrfq->multiple->multiple_currency);
-                $multiple_currency = array_chunk($multiple_currency_chunk, 3);
+                $multiple_currency = array_chunk($multiple_currency_chunk, 2);
                 $multiple_loi_chunk = json_decode($newrfq->multiple->multiple_loi);
-                $multiple_loi = array_chunk($multiple_loi_chunk, 3);
+                $multiple_loi = array_chunk($multiple_loi_chunk, 2);
                 $multiple_client_chunk = json_decode($newrfq->multiple->multiple_client);
-                $multiple_client = array_chunk($multiple_client_chunk, 3);
+                $multiple_client = array_chunk($multiple_client_chunk, 2);
                 $multiple_countries = json_decode($newrfq->multiple->multiple_countries);
                 $multiple_other = json_decode($newrfq->multiple->multiple_other);
                 $multiple_total_cost_chunk = json_decode($newrfq->multiple->multiple_total_cost);
-                $multiple_total_cost = array_chunk($multiple_total_cost_chunk, 3);
+                $multiple_total_cost = array_chunk($multiple_total_cost_chunk, 2);
             }   
             ?>
 
@@ -626,7 +630,7 @@
                 <table class="" id="MultipleCountry">
                     <tbody>
                         <tr>
-                            <td class="static-field">Methodology</td>
+                            <td class="title">Methodology</td>
                             @if(count($multiple_methodology[$j]) > 0)
                                 @foreach($multiple_methodology[$j] as $key => $methodology)
                                     <td class="viewer" colspan="3">
@@ -638,7 +642,7 @@
                             </td>
                         </tr>
                         <tr>
-                        <td class="static-field relative ">Currency</td>
+                        <td class="title relative ">Currency</td>
                             @if(count($multiple_currency[$j]) > 0)
                                 @foreach($multiple_currency[$j] as $key => $currency)
                                 <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}"  colspan="3">
@@ -650,7 +654,7 @@
                             </td>
                         </tr>
                         <tr>
-                        <td class="static-field relative ">LOI</td>
+                        <td class="title relative ">LOI</td>
                             @if(count($multiple_loi[$j]) > 0)
                             @foreach($multiple_loi[$j] as $key => $loi)
                             <td class="editable-field viewer removeMultipleCountry_{{$key - 1}}"  colspan="3">
@@ -662,7 +666,7 @@
                             </td>
                         </tr>
                         <tr>
-                        <td class="static-field relative ">Client</td>
+                        <td class="title relative ">Client</td>
                         @if(count($multiple_client[$j]) > 0)
                             @foreach($multiple_client[$j] as $key => $value)
                             <td class="editable-field viewer "  colspan="3">
@@ -675,7 +679,7 @@
                         @endif
                         </tr>
                         <tr>
-                            <td class="static-field relative ">Countries</td>
+                            <td class="title relative ">Countries</td>
                             @if(count($multiple_client[$j]) > 0)
                             @foreach($multiple_client[$j] as $key => $multiple)
                             <td class="static-field removeMultipleCountry_{{$key - 1}}">Sample</td>
@@ -688,7 +692,7 @@
                         @foreach ($multiple_countries as $k => $countries)
                         <?php
                         $first_value = array_shift($countries);
-                        $countries = array_chunk($countries, 9);    
+                        $countries = array_chunk($countries, 6);    
                         ?>
                         <tr>
                         
@@ -707,7 +711,7 @@
                         @foreach($multiple_other as $k => $value)
                             <?php
                             $first_value = array_shift($value);
-                            $value = array_chunk($value, 9);    
+                            $value = array_chunk($value, 6);    
                             ?>
                         <tr id="otherFieldMultipleOthers">
                             @if(count($value[$j]) > 0)
@@ -752,29 +756,29 @@
               <?php
             if(isset($newrfq) && isset($newrfq->interview)){
                 $interview_depth_methodology_chunk = json_decode($newrfq->interview->interview_depth_methodology);
-                $interview_depth_methodology = array_chunk($interview_depth_methodology_chunk, 3);
+                $interview_depth_methodology = array_chunk($interview_depth_methodology_chunk, 2);
                 $interview_depth_currency_chunk = json_decode($newrfq->interview->interview_depth_currency);
-                $interview_depth_currency = array_chunk($interview_depth_currency_chunk, 3);
+                $interview_depth_currency = array_chunk($interview_depth_currency_chunk, 2);
                 $interview_depth_loi_chunk = json_decode($newrfq->interview->interview_depth_loi);
-                $interview_depth_loi = array_chunk($interview_depth_loi_chunk, 3);
+                $interview_depth_loi = array_chunk($interview_depth_loi_chunk, 2);
                 $interview_depth_client_chunk = json_decode($newrfq->interview->interview_depth_client);
-                $interview_depth_client = array_chunk($interview_depth_client_chunk, 3);
+                $interview_depth_client = array_chunk($interview_depth_client_chunk, 2);
                 $interview_depth_no_fgd_chunk = json_decode($newrfq->interview->interview_depth_no_fgd);
-                $interview_depth_no_fgd = array_chunk($interview_depth_no_fgd_chunk, 3);
+                $interview_depth_no_fgd = array_chunk($interview_depth_no_fgd_chunk, 2);
                 $interview_depth_sample_fgd_chunk = json_decode($newrfq->interview->interview_depth_sample_fgd);
-                $interview_depth_sample_fgd = array_chunk($interview_depth_sample_fgd_chunk, 3);
+                $interview_depth_sample_fgd = array_chunk($interview_depth_sample_fgd_chunk, 2);
                 $interview_depth_countries_chunk = json_decode($newrfq->interview->interview_depth_countries);
-                $interview_depth_countries = array_chunk($interview_depth_countries_chunk, 3);
+                $interview_depth_countries = array_chunk($interview_depth_countries_chunk, 2);
                 $interview_depth_requirements_chunk = json_decode($newrfq->interview->interview_depth_requirements);
-                $interview_depth_requirements = array_chunk($interview_depth_requirements_chunk, 9);
+                $interview_depth_requirements = array_chunk($interview_depth_requirements_chunk, 6);
                 $interview_depth_incentives_chunk = json_decode($newrfq->interview->interview_depth_incentives);
-                $interview_depth_incentives = array_chunk($interview_depth_incentives_chunk, 9);
+                $interview_depth_incentives = array_chunk($interview_depth_incentives_chunk, 6);
                 $interview_depth_moderation_chunk = json_decode($newrfq->interview->interview_depth_moderation);
-                $interview_depth_moderation = array_chunk($interview_depth_moderation_chunk, 9);
+                $interview_depth_moderation = array_chunk($interview_depth_moderation_chunk, 6);
                 $interview_depth_transcripts_chunk = json_decode($newrfq->interview->interview_depth_transcripts);
-                $interview_depth_transcripts = array_chunk($interview_depth_transcripts_chunk, 9);
+                $interview_depth_transcripts = array_chunk($interview_depth_transcripts_chunk, 6);
                 $interview_depth_project_management_chunk = json_decode($newrfq->interview->interview_depth_project_management);
-                $interview_depth_project_management = array_chunk($interview_depth_project_management_chunk, 9);
+                $interview_depth_project_management = array_chunk($interview_depth_project_management_chunk, 6);
                 $interview_depth_other = json_decode($newrfq->interview->interview_depth_other);
                 //$interview_depth_other = array_chunk($interview_depth_other_chunk, 9);
                 $interview_depth_total_cost_1 = json_decode($newrfq->interview->interview_depth_total_cost_1);
@@ -791,7 +795,7 @@
                 <table class="" id="InterviewDepth">
                     <tbody>
                         <tr>
-                            <td class="static-field">Methodology</td>
+                            <td class="title">Methodology</td>
                             @if(count($interview_depth_methodology[$j]) > 0)
                                 @foreach($interview_depth_methodology[$j] as $key => $methodology)
                                     <td colspan="3" class="viewer">
@@ -804,7 +808,7 @@
                             
                         </tr>
                         <tr>
-                            <td class="static-field">Currency</td>
+                            <td class="title">Currency</td>
                             @if(count($interview_depth_currency[$j]) > 0)
                                 @foreach($interview_depth_currency[$j] as $key => $currency)
                                     <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -817,7 +821,7 @@
                             
                         </tr>
                         <tr>
-                            <td class="static-field">LOI</td>
+                            <td class="title">LOI</td>
                             @if(count($interview_depth_loi[$j]) > 0)
                                 @foreach($interview_depth_loi[$j] as $key => $loi)
                                     <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -830,7 +834,7 @@
                             
                         </tr>
                         <tr>
-                            <td class="static-field">Client</td>
+                            <td class="title">Client</td>
                             @if(count($interview_depth_client[$j]) > 0)
                                 @foreach($interview_depth_client[$j] as $key => $value)
                                     <td class="editable-field viewer removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -846,7 +850,7 @@
                             
                         </tr>
                         <tr>
-                            <td class="static-field">No of FGDs</td>
+                            <td class="title">No of FGDs/IDI</td>
                             @if(count($interview_depth_no_fgd[$j]) > 0)
                                 @foreach($interview_depth_no_fgd[$j] as $key => $fgd)
                                     <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -858,7 +862,7 @@
                             @endif
                         </tr>
                         <tr>
-                            <td class="static-field">Samples per FGD/IDI</td>
+                            <td class="title">Samples per FGD/IDI</td>
                             @if(count($interview_depth_sample_fgd[$j]) > 0)
                                 @foreach($interview_depth_sample_fgd[$j] as $key => $fgd)
                                 <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -870,7 +874,7 @@
                             @endif
                         </tr>
                         <tr>
-                            <td class="static-field">Country</td>
+                            <td class="title">Country</td>
                             @if(count($interview_depth_countries[$j]) > 0)
                                 @foreach($interview_depth_countries[$j] as $key => $country)
                                 <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
@@ -882,7 +886,7 @@
                             @endif
                         </tr>
                         <tr>
-                            <td class="static-field"></td>
+                            <td class="title"></td>
                             @if(count($interview_depth_countries[$j]) > 0)
                             @foreach($interview_depth_countries[$j] as $key => $country)
                                 <td class="static-field removeInterviewDepth_{{$key - 1}}">Sample</td>
@@ -893,7 +897,7 @@
                         </tr>
 
                         <tr>
-                            <td class="static-field ">Recruitment</td>
+                            <td class="title ">Recruitment</td>
                             <?php 
                                 $i = "";
                             ?>
@@ -921,7 +925,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Incentives</td>
+                            <td class="title viewer removeInterviewDepth_{{$key - 1}}">Incentives</td>
                             @if(count($interview_depth_incentives[$j]) > 0)
                             @foreach($interview_depth_incentives[$j] as $key => $value)
                                 <?php
@@ -946,7 +950,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Moderation</td>
+                            <td class="title viewer removeInterviewDepth_{{$key - 1}}">Moderation</td>
                             @if(count($interview_depth_moderation[$j]) > 0)
                             @foreach($interview_depth_moderation[$j] as $key => $value)
                             <?php 
@@ -971,7 +975,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field  viewer removeInterviewDepth_{{$key - 1}}">Transcripts</td>
+                            <td class="title  viewer removeInterviewDepth_{{$key - 1}}">Transcripts</td>
                             @if(count($interview_depth_transcripts[$j]) > 0)
                             @foreach($interview_depth_transcripts[$j] as $key => $value)
                             <?php 
@@ -996,7 +1000,7 @@
                         <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field viewer removeInterviewDepth_{{$key - 1}}">Project Management</td>
+                            <td class="title viewer removeInterviewDepth_{{$key - 1}}">Project Management</td>
                             @if(count($interview_depth_project_management[$j]) > 0)
                             @foreach($interview_depth_project_management[$j] as $key => $value)
                                 <?php
@@ -1022,7 +1026,7 @@
                         <tr id="otherFieldMultipleCountry">
                         <?php
                             $first_value = array_shift($value);
-                            $value = array_chunk($value, 9);    
+                            $value = array_chunk($value, 6);    
                         ?>
                         @if(count($value[$j]) > 0)
                         <td class="viewer removeInterviewDepth_{{$i}}">
@@ -1042,7 +1046,7 @@
                         <?php
                         $val = $interview_depth_total_cost_1;
                         $first_value = array_shift($val);
-                        $val = array_chunk($val, 3);    
+                        $val = array_chunk($val, 2);    
                         ?>
                         <td class="total-cost">{{$first_value}}</td>
                         @foreach ($val[$j] as $k => $value)
@@ -1059,7 +1063,7 @@
                         <?php
                         $val = $interview_depth_total_cost_2;
                         $first_value = array_shift($val);
-                        $val = array_chunk($val, 3);    
+                        $val = array_chunk($val, 2);    
                         ?>
                         <td class="total-cost">{{$first_value}}</td>
                         @foreach ($val[$j] as  $value)
@@ -1093,30 +1097,30 @@
                     <?php
             if(isset($newrfq) && isset($newrfq->online)){
                 $online_community_methodology_chunk = json_decode($newrfq->online->online_community_methodology);
-                $online_community_methodology = array_chunk($online_community_methodology_chunk, 3);
+                $online_community_methodology = array_chunk($online_community_methodology_chunk, 2);
                 $online_community_currency_chunk = json_decode($newrfq->online->online_community_currency);
-                $online_community_currency = array_chunk($online_community_currency_chunk, 3);
+                $online_community_currency = array_chunk($online_community_currency_chunk, 2);
                 $online_community_client_chunk = json_decode($newrfq->online->online_community_client);
-                $online_community_client = array_chunk($online_community_client_chunk, 3);
+                $online_community_client = array_chunk($online_community_client_chunk, 2);
                 $online_community_duration_chunk = json_decode($newrfq->online->online_community_duration);
-                $online_community_duration = array_chunk($online_community_duration_chunk, 3);
+                $online_community_duration = array_chunk($online_community_duration_chunk, 2);
                 $online_community_loi_screener_chunk = json_decode($newrfq->online->online_community_loi_screener);
-                $online_community_loi_screener = array_chunk($online_community_loi_screener_chunk, 3);
+                $online_community_loi_screener = array_chunk($online_community_loi_screener_chunk, 2);
                 $online_community_sample_loi_month_chunk = json_decode($newrfq->online->online_community_sample_loi_month);
-                $online_community_sample_loi_month = array_chunk($online_community_sample_loi_month_chunk, 3);
+                $online_community_sample_loi_month = array_chunk($online_community_sample_loi_month_chunk, 2);
                 $online_community_countries_chunk = json_decode($newrfq->online->online_community_countries);
-                $online_community_countries = array_chunk($online_community_countries_chunk, 3);
+                $online_community_countries = array_chunk($online_community_countries_chunk, 2);
                 $online_community_requirements_chunk = json_decode($newrfq->online->online_community_requirements);
-                $online_community_requirements = array_chunk($online_community_requirements_chunk, 9);
+                $online_community_requirements = array_chunk($online_community_requirements_chunk, 6);
                 $online_community_incentives_chunk = json_decode($newrfq->online->online_community_incentives);
-                $online_community_incentives = array_chunk($online_community_incentives_chunk, 9);
+                $online_community_incentives = array_chunk($online_community_incentives_chunk, 6);
                 $online_community_pmfree_chunk = json_decode($newrfq->online->online_community_pmfree);
-                $online_community_pmfree = array_chunk($online_community_pmfree_chunk, 9);
+                $online_community_pmfree = array_chunk($online_community_pmfree_chunk, 6);
                 $online_community_other = json_decode($newrfq->online->online_community_other);
                 // $online_community_other = array_chunk($online_community_other_chunk, 9);
                 // dd($online_community_other_chunk);
                 $online_community_total_cost_chunk = json_decode($newrfq->online->online_community_total_cost);
-                $online_community_total_cost = array_chunk($online_community_total_cost_chunk, 3);
+                $online_community_total_cost = array_chunk($online_community_total_cost_chunk, 2);
             }   
             ?>
             @if(isset($newrfq) && isset($newrfq->online))
@@ -1128,7 +1132,7 @@
                 <table class="" id="OnlineCommunity">
                     <tbody>
                         <tr>
-                            <td class="static-field viewer w-25">Methodology</td>
+                            <td class="title viewer w-25">Methodology</td>
                             @if(count($online_community_methodology[$j]) > 0)
                             @foreach($online_community_methodology[$j] as $key => $methodology)
                                 <td  colspan="3" class="viewer">
@@ -1139,7 +1143,7 @@
                             @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">Currency</td>
+                        <td class="title">Currency</td>
                         @if(count($online_community_currency[$j]) > 0)
                         @foreach($online_community_currency[$j] as $key => $currency)
                         <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1151,7 +1155,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">Client</td>
+                        <td class="title">Client</td>
                         @if(count($online_community_client[$j]) > 0)
                         @foreach($online_community_client[$j] as $key => $value)
                         <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1163,7 +1167,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">Duration</td>
+                        <td class="title">Duration</td>
                         @if(count($online_community_duration[$j]) > 0)
                         @foreach($online_community_duration[$j] as $key => $duration)
                             <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1175,7 +1179,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">LOI</td>
+                        <td class="title">LOI</td>
                         @if(count($online_community_loi_screener[$j]) > 0)
                         @foreach($online_community_loi_screener[$j] as $key => $screener)
                             <td class="editable-field viewer removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1187,7 +1191,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">LOI/Month</td>
+                        <td class="title">LOI/Month</td>
                         @if(count($online_community_sample_loi_month[$j]) > 0)
                         @foreach($online_community_sample_loi_month[$j] as $key => $sample_loi_month)
                             <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1199,7 +1203,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field ">Country</td>
+                        <td class="title">Country</td>
                         @if(count($online_community_countries[$j]) > 0)
                         @foreach($online_community_countries[$j] as $key => $countries)
                             <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
@@ -1211,7 +1215,7 @@
                         @endif
                         </tr>
                         <tr>
-                        <td class="static-field"></td>
+                        <td class="title"></td>
                         @if(count($online_community_countries[$j]) > 0)
                         @foreach($online_community_countries[$j] as $key=> $online)
                         <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
@@ -1224,7 +1228,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field ">Recruitment</td>
+                            <td class="title">Recruitment</td>
                             @if(count($online_community_requirements[$j]) > 0)
                             @foreach($online_community_requirements[$j] as $key => $value)
                                 <?php 
@@ -1248,7 +1252,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field ">Incentives</td>
+                            <td class="title">Incentives</td>
                             @if(count($online_community_incentives[$j]) > 0)
                             @foreach($online_community_incentives[$j] as $key => $value)
                                 <?php 
@@ -1273,7 +1277,7 @@
                             <?php 
                                 $i = "";
                             ?>
-                            <td class="static-field">Project Management</td>
+                            <td class="title">Project Management</td>
                             @if(count($online_community_pmfree[$j]) > 0)
                             @foreach($online_community_pmfree[$j] as $key => $value)
                                 <?php 
@@ -1299,7 +1303,7 @@
                         <tr id="otherFieldsOnline">
                         <?php
                             $first_value = array_shift($value);
-                            $value = array_chunk($value, 9);    
+                            $value = array_chunk($value, 6);    
                         ?>
                         @if(count($value[$j]) > 0)
                         <td class="viewer removeOnlineCommunity_{{$i}}">
