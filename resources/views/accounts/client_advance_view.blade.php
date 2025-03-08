@@ -990,6 +990,148 @@
        
     })
 
+
+    $(document).ready(function() {
+            $(document).on('keyup', '#costingTable td input', function() {
+                let index = $(this).closest("td").index();
+                let table = $(this).closest('table');
+                let row = table.find("tr");
+                let rowLength = row.length;
+                var sum = 0;
+                let sample = 1;
+                row.each(function(key){
+                    if(key == 5)
+                    {
+                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        if(!isNaN(val))
+                        {
+                        sample = val;
+                        }
+                    }
+                    if(key > 5 && key < (rowLength - 1))
+                    {
+                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        if(!isNaN(val))
+                        {
+                            sum = sum + val;
+                        }
+                    }
+                    if(key == (rowLength - 1))
+                    {
+                        $(this).children('td').eq(index).find('input').val(sum * sample)
+                    }
+                    
+                });
+            });
+
+
+       //Multiple Country
+
+            $(document).on('keyup', '#MultipleCountry td input', function() {
+                let totalValues = [];
+                let total_length = $('#MultipleCountry tbody td:has(input[attr="total"])').length;
+                let overall_total_length = $('#MultipleCountry tbody td:has(input[name="multiple_total_cost[]"])').length;
+                $('#MultipleCountry tbody td:has(input[attr="total"])').each(function(){
+                    let cpi = parseInt($(this).prev().find('input').val());
+                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    if(!isNaN(cpi) && !isNaN(sample))
+                    {
+                        $(this).find('input').val(cpi*sample);
+                        totalValues.push(cpi*sample);
+                    }else{
+                        $(this).find('input').val("");
+                        totalValues.push(0);
+                    }
+                })
+                let colIndex = 3;
+                $('#MultipleCountry tbody td:has(input[name="multiple_total_cost[]"])').each(function() {
+                    let sum = 0;
+                    $("#MultipleCountry tbody tr").each(function () {
+                        let inputValue = parseFloat($(this).find("td").eq(colIndex).find("input[attr='total']").val()) || 0;
+                        sum += inputValue;
+                    });
+                    colIndex+=3;
+                    $(this).find('input').val(sum);
+                })
+            });
+
+            // interview in depth calculation
+            $(document).on('keyup', '#InterviewDepth td input', function() {
+                let totalValues = [];
+                let total_length = $('#InterviewDepth tbody td:has(input[attr="total"])').length;
+                let overall_total_length = $('#InterviewDepth tbody td:has(input[name="interview_depth_total_cost_1[]"])').length;
+                $('#InterviewDepth tbody td:has(input[attr="total"])').each(function(){
+                    let cpi = parseInt($(this).prev().find('input').val());
+                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    if(!isNaN(cpi) && !isNaN(sample))
+                    {
+                        $(this).find('input').val(cpi*sample);
+                        totalValues.push(cpi*sample);
+                    }else{
+                        $(this).find('input').val("");
+                        totalValues.push(0);
+                    }
+                })
+                let colIndex = 3;
+                $('#InterviewDepth tbody td:has(input[attr="total1"])').each(function() {
+                    let sum = 0;
+                    $("#InterviewDepth tbody tr").each(function () {
+                        let inputValue = parseFloat($(this).find("td").eq(colIndex).find("input[attr='total']").val()) || 0;
+                        sum += inputValue;
+                    });
+                    colIndex+=3;
+                    $(this).find('input').val(sum);
+                })
+                // let index = 1;
+                $('#InterviewDepth tbody td:has(input[attr="total2"])').each(function(index) {
+                    let total = 0;
+                    // $("#InterviewDepth tbody tr").each(function () {
+                    //     console.log(index)
+                        let multiple = parseFloat($("input[name='interview_depth_fgd[]']").eq(index).val()) || 0;
+                        console.log(multiple);
+                        let inputValue = parseFloat($("input[attr='total1']").eq(index).val()) || 0;
+                        total = inputValue * multiple;
+                    // });
+                    // index++;
+                    $(this).find('input').val(total);
+                })
+            });
+
+            // online community
+
+            $(document).on('keyup', '#OnlineCommunity td input', function() {
+                console.log("hello");
+                let totalValues = [];
+                let total_length = $('#OnlineCommunity tbody td:has(input[attr="total"])').length;
+                let overall_total_length = $('#OnlineCommunity tbody td:has(input[name="online_community_total_cost[]"])').length;
+                $('#OnlineCommunity tbody td:has(input[attr="total"])').each(function(){
+                    let cpi = parseInt($(this).prev().find('input').val());
+                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    if(!isNaN(cpi) && !isNaN(sample))
+                    {
+                        $(this).find('input').val(cpi*sample);
+                        console.log(cpi*sample)
+                        totalValues.push(cpi*sample);
+                    }else{
+                        $(this).find('input').val("");
+                        totalValues.push(0);
+                    }
+                })
+                let colIndex = 3;
+                $('#OnlineCommunity tbody td:has(input[name="online_community_total_cost[]"])').each(function() {
+                    let sum = 0;
+                    $("#OnlineCommunity tbody tr").each(function () {
+                        let inputValue = parseFloat($(this).find("td").eq(colIndex).find("input[attr='total']").val()) || 0;
+                        sum += inputValue;
+                    });
+                    colIndex+=3;
+                    $(this).find('input').val(sum);
+                })
+            });
+        });
+
+
+
     </script>
 
 
