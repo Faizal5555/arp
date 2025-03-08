@@ -1817,6 +1817,16 @@ input.form-control {
                                     @endforeach
                                 @endforeach
 
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label id="otherField18" class="col-lg-3 col-form-label font-weight-semibold">Comments<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+                                            <textarea name="sales_comment" id="otherField18" class="form-control" placeholder="comments" style="text-align: left;">{{ $wonproject->sales_comment ?? '' }} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="col-md-6" id="won-rfq1">
                                     <div class="form-group row">

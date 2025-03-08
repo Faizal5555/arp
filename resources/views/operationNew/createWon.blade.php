@@ -714,6 +714,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            
 
                                             <?php
                                             $vendor_id = $vendor_advance = $vendor_balance = $vendor_total = $vendor_contract = []; // Default empty arrays
@@ -836,6 +837,19 @@
                                                     @endif
                                                 @endforeach
                                             @endforeach
+
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label id="otherField18"
+                                                        class="col-lg-3 col-form-label font-weight-semibold">Comments
+                                                        <span class="text-danger">*</span></label>
+                                                    <div class="col-lg-9">
+                                                        <textarea name="sales_comment" value="" id="sales_comment"
+                                                            type="text" class="form-control"
+                                                            placeholder="Comments"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
             
             
                                             <div class="col-md-6" id="won-rfq1">
@@ -1526,6 +1540,9 @@
                             total_margin: {
                                 required: true
                             },
+                            sales_comment: {
+                                required: true
+                            },
                             date: {
                                 required: true
                             },
@@ -2136,6 +2153,7 @@
                             $("#client_total").val(data.wonProject.client_total);
                             $("#mode").val(data.wonProject.mode);
                             $("#total_margin").val(data.wonProject.total_margin);
+                            $("#sales_comment").val(data.wonProject.sales_comment);
                             $("#client_advance").val(data.wonProject.client_advance);
                             $("#client_balance").val(data.wonProject.client_balance);
                             $(".user").val(data.user3.name);
@@ -2284,6 +2302,7 @@
                             $("#client_total").val(data.wonProject.client_total);
                             $("#vendor_total").val(data.wonProject.vendor_total);
                             $("#total_margin").val(data.wonProject.total_margin);
+                            $("#sales_comment").val(data.wonProject.sales_comment);
                             $("#client_advance").val(data.wonProject.client_advance);
                             $("#client_balance").val(data.wonProject.client_balance);
                             $("#vendor_advance").val(data.wonProject.vendor_advance);
@@ -2427,6 +2446,9 @@
                             total_margin: {
                                 required: true
                             },
+                            sales_comment: {
+                                required: true
+                            },
                             date: {
                                 required: true
                             },
@@ -2519,6 +2541,7 @@
                             $("#client_total").val(data.wonProject.client_total);
                             $("#mode").val(data.wonProject.mode);
                             $("#total_margin").val(data.wonProject.total_margin);
+                            $("#sales_comment").val(data.wonProject.sales_comment);
                             $("#client_advance").val(data.wonProject.client_advance);
                             $("#client_balance").val(data.wonProject.client_balance);
                             console.log(data.wonProject.vendor_id);

@@ -210,6 +210,7 @@ class WonProjectController extends Controller
             $wonproject->vendor_advance =  implode(',',$req->vendor_advance_0);
             $wonproject->vendor_balance =  implode(',',$req->vendor_balance_0);
             $wonproject->total_margin =  $req->total_margin;
+            $wonproject->sales_comment =  $req->sales_comment;
 
               if ($req->has('client_contract'))
             {
@@ -373,6 +374,7 @@ class WonProjectController extends Controller
             $wonproject->vendor_advance =  implode(',',$req->vendor_advance_0);
             $wonproject->vendor_balance =  implode(',',$req->vendor_balance_0);
             $wonproject->total_margin =  $req->total_margin;
+            $wonproject->sales_comment =  $req->sales_comment;
 
               if ($req->has('client_contract'))
             {

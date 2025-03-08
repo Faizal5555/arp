@@ -428,6 +428,9 @@
                     total_margin: {
                         required: true
                     },
+                    sales_comment:{
+                        required: true
+                    },
                     date: {
                         required: true
                     },
@@ -931,6 +934,9 @@
                 total_margin: {
                     required: true
                 },
+                sales_comment:{
+                    required: true
+                },
                 date: {
                     required: true
                 },
@@ -1002,7 +1008,10 @@
                                 <input type="hidden" name="id"
                                     value="{{ $newrfq && $newrfq->id ? $newrfq->id : '' }}">
                                 <input id="bidrfqCount" type="hidden" value="1" name="bidrfqCount">
-
+                                <input type="hidden" name="single_form"   value="{{isset($newrfq) && isset($newrfq->single) ? 1 : 0}}" id="single_form">
+                            <input type="hidden" name="multiple_form"   value="{{isset($newrfq) && isset($newrfq->multiple) ? 1 : 0}}" id="multiple_form">
+                            <input type="hidden" name="interview_form"  value="{{isset($newrfq) && isset($newrfq->interview) ? 1 : 0}}"id="interview_form">
+                            <input type="hidden" name="online_form"  value="{{isset($newrfq) && isset($newrfq->online) ? 1 : 0}}" id="online_form">
                                 <div class="col-md-6">
                                     <div class="form-group row">
                                         <label class="col-lg-3 col-form-label font-weight-semibold">RFQ No <span
@@ -2534,6 +2543,15 @@
                                     @endforeach
                                 @endforeach
 
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label id="otherField18" class="col-lg-3 col-form-label font-weight-semibold">Comments<span
+                                                class="text-danger">*</span></label>
+                                        <div class="col-lg-9">
+                                            <textarea name="sales_comment" id="otherField18" class="form-control" placeholder="comments" style="text-align: left;">{{ $wonproject->sales_comment ?? '' }} </textarea>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-6" id="won-rfq1">
                                     <div class="form-group row">

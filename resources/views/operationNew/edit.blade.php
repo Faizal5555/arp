@@ -1818,7 +1818,15 @@ input.form-control {
                                                     @endif
                                                 @endforeach
                                             @endforeach
-            
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label id="otherField18" class="col-lg-3 col-form-label font-weight-semibold">Comments
+                                                        <span class="text-danger">*</span></label>
+                                                    <div class="col-lg-9">
+                                                        <textarea name="sales_comment" id="otherField18" class="form-control" placeholder="comments" style="text-align: left;">{{ $wonproject->sales_comment ?? '' }} </textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
             
                                             <div class="col-md-6" id="won-rfq1">
                                                 <div class="form-group row">
@@ -3926,6 +3934,9 @@ $("#complete").validate({
              total_margin: {
                  required: true
              },
+             sales_comment:{
+                 required: true
+             },
              date: {
                  required: true
              },
@@ -5117,6 +5128,9 @@ $("#complete").validate({
                     required: true
                 },
                 total_margin: {
+                    required: true
+                },
+                sales_comment:{
                     required: true
                 },
                 date: {

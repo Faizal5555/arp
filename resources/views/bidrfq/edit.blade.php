@@ -3221,13 +3221,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group row">
-                                        <div class="col-lg-9">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label id="otherField18"
+                                            class="col-lg-3 col-form-label font-weight-semibold">Comments<span
+                                                class="text-danger">*</span></label>
+                                            <div class="col-lg-9">
+                                                <textarea name="sales_comment" type="text" id="otherField18"
+                                                class="form-control" placeholder="Comments"></textarea>
+    
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                               
                                 <div class="col-md-12 d-flex align-items-center justify-content-center">
                                     <a href="{{ route('bidrfq.index') }}" class=" btn btn-outline-secondary">Back</a>
                                     <button type="submit" id="addRegisterButton"
@@ -3439,6 +3446,10 @@
                     date: {
                         required: true
                     },
+                    sales_comment:{
+                        required: true
+
+                    }
                 },
                 errorPlacement: function(error, element) {
                     if (element.hasClass("select2-hidden-accessible")) {
