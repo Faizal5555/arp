@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::get('/', function () {
     });
 
     Route::prefix('adminapp')->group(function () {
+      Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('password.update');
       // Admin login
       Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
       //Route::post('/admin/login', [AuthenticatedSessionController::class, 'store'])->name('admin.login.store');
