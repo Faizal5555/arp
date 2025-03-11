@@ -931,7 +931,16 @@ $(document).ready(function() {
                         processData: false,
                         contentType: false,
                         dataType: "json",
+                        beforeSend: function () {
+                        // Disable the submit button and show the loader inside it
+                        $('#addRegisterButton')
+                            .prop('disabled', true)
+                            .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+                        },
                         success: function(data) {
+                            $('#addRegisterButton')
+                            .prop('disabled', false)
+                            .html('Submit');
                             if (data.success == 1) {
                                 swal({
                                     title: 'Success',
