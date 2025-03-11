@@ -303,7 +303,6 @@ class DashboardController extends Controller
             return view ('DataCenter.global_dashboard',compact('countries'));
         }elseif($user->user_type == ('global_team')){
             $countries =Country::get();
-
             return view ('user.consumer_dashboard',compact('countries'));
         }
         // $dashboard = '';
@@ -326,16 +325,16 @@ class DashboardController extends Controller
          $user = Auth::user();
         $vendor = Vendor::count();
         $client = Client::count();
-        $lost=  BidRfq::where('type','lost')->count();
-        $next=  BidRfq::where('type','next')->count();
-        $won=  BidRfq::where('type','won')->count();
+        $lost=  RfqDetailsTable::where('type','lost')->count();
+        $next=  RfqDetailsTable::where('type','next')->count();
+        $won=  RfqDetailsTable::where('type','won')->count();
         
        
         $won_project = WonProject::count();
         
         
-        $bidrfq1=Bidrfq::count();
-        $bidrfq=bidrfq::get();
+        $bidrfq1=RfqDetailsTable::count();
+        $bidrfq=RfqDetailsTable::get();
         $TotalRFQsBid="";
         $won_project_1="";
         $TotalClientvalue="";
