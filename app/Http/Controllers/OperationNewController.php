@@ -1504,7 +1504,7 @@ public function fieldchart(Request $req)
     
         public function usersview(Request $request){
             $user = Auth()->user();
-            $users = User::where('user_type', '!=', 'admin')->latest()->get(); 
+            $users = User::whereNotIn('user_type', ['admin', 'doctor','user'])->latest()->get(); 
             $country=Country::get();
             if($request->ajax()){
                 return Datatables::of($users)
