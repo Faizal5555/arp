@@ -558,6 +558,22 @@ select.form-control{
             <!--admin-->
             
              @elseif((auth()->user()->user_type == 'sales') or (auth()->user()->user_type == 'admin'))
+              
+             <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#export_data" aria-expanded="false" aria-controls="export_data">
+                <span class="menu-title">Data Export</span>
+                <i class="menu-arrow"></i>
+                <i class="fas fa-user-shield"></i>
+              </a>
+              <div class="collapse" id="export_data">
+                <ul class="nav flex-column sub-menu1">
+                  <li class="nav-item">
+                    <li class="nav-item" > <a class="nav-link" href="{{ route('adminapp.data') }}">Export</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+           
              <li class="nav-item">
               <a class="nav-link"  href="{{route('usersview')}}" >
                 <span class="menu-title">Users</span>
@@ -568,6 +584,8 @@ select.form-control{
               </a>
              
              <li>
+
+            
             
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
