@@ -285,12 +285,12 @@ class DashboardController extends Controller
             // dd("hi");
                  $vendor = Vendor::count();
                  $client = Client::count();
-                 $lost=  BidRfq::where('type','lost')->count();
-                 $next=  BidRfq::where('type','next')->count();
-                 $won=  BidRfq::where('type','won')->count();
-                 $bidrfq=bidrfq::get();
-                 $bidrfq1=Bidrfq::count();
-                 $bid=Bidrfq::count();
+                 $lost=  RfqDetailsTable::where('type','lost')->count();
+                 $next=  RfqDetailsTable::where('type','next')->count();
+                 $won=  RfqDetailsTable::where('type','won')->count();
+                 $bidrfq=RfqDetailsTable::get();
+                 $bidrfq1=RfqDetailsTable::count();
+                 $bid=RfqDetailsTable::count();
                  $won_project = WonProject::count();
                  $totalrevenue=WonProject::sum('client_total','+','vendor_total');
                  $totalmargin=Wonproject::sum('total_margin');
@@ -305,6 +305,10 @@ class DashboardController extends Controller
             $countries =Country::get();
             return view ('user.consumer_dashboard',compact('countries'));
         }
+        // elseif($user->user_type == ('business_manager')){
+        //     $countries =Country::get();
+        //     return view ('business.bm_dashboard',compact('countries'));
+        // }
         // $dashboard = '';
         // return view('index',compact('dashboard'));
     }
