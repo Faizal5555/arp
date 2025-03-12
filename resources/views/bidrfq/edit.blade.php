@@ -3531,12 +3531,8 @@
                                         <select class="form-control label-gray-3" name="vendor_id_0[${woncount}]" id="vendor_id">
                                            <option class="label-gray-3" value="" disabled selected>Select Vendor Name</option>
                                            @foreach ($vendor as $key => $value)
-                                       @foreach ($value as $k)
-                                         <option class="label-gray-3" value="{{ $k }}">{{ $k }}</option>
-                                        @endforeach
+                                         <option class="label-gray-3" value="{{ $value->vendor_name }}">{{ $value->vendor_name }}</option>
                                         @endforeach 
-                                            <option class="label-gray-3" value=""></option>
-                                           
                                         </select> 
                                         </div>
                                     </div>
