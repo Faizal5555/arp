@@ -400,51 +400,51 @@ $(document).ready(function () {
         }
     }
 
-    $('#whatsappNumber').on('blur', function () {
-        validateWhatsAppNumber();
-    });
+    // $('#whatsappNumber').on('blur', function () {
+    //     validateWhatsAppNumber();
+    // });
 
-    $('#whatsappNumber').on('input', function () {
-        clearWhatsAppError(); // Clear error message on new input
-    });
+    // $('#whatsappNumber').on('input', function () {
+    //     clearWhatsAppError(); // Clear error message on new input
+    // });
 
     // WhatsApp number validation function
-    function validateWhatsAppNumber() {
-        var whatsappNumber = $('#whatsappNumber').val();
-        if (whatsappNumber) {
-            $.ajax({
-                url: "{{ route('checkEmail') }}", // Use the same route for validation
-                type: "POST",
-                data: { phone: whatsappNumber },
-                success: function () {
-                    // Clear error message if validation passes
-                    $('#whatsappNumber').removeClass('is-invalid');
-                    $('#whatsapp-error').text('').hide(); // Hide error message
-                    checkFormValidity();
-                },
-                error: function (xhr) {
-                    // Show error message if validation fails
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        $('#whatsappNumber').addClass('is-invalid');
-                        $('#whatsapp-error')
-                            .text(xhr.responseJSON.message) // Set error message
-                            .show(); // Ensure the error is visible
-                        checkFormValidity();
-                    }
-                },
-            });
-        } else {
-            // Clear error if input is empty
-            clearWhatsAppError();
-        }
-    }
+    // function validateWhatsAppNumber() {
+    //     var whatsappNumber = $('#whatsappNumber').val();
+    //     if (whatsappNumber) {
+    //         $.ajax({
+    //             url: "{{ route('checkEmail') }}", // Use the same route for validation
+    //             type: "POST",
+    //             data: { phone: whatsappNumber },
+    //             success: function () {
+    //                 // Clear error message if validation passes
+    //                 $('#whatsappNumber').removeClass('is-invalid');
+    //                 $('#whatsapp-error').text('').hide(); // Hide error message
+    //                 checkFormValidity();
+    //             },
+    //             error: function (xhr) {
+    //                 // Show error message if validation fails
+    //                 if (xhr.responseJSON && xhr.responseJSON.message) {
+    //                     $('#whatsappNumber').addClass('is-invalid');
+    //                     $('#whatsapp-error')
+    //                         .text(xhr.responseJSON.message) // Set error message
+    //                         .show(); // Ensure the error is visible
+    //                     checkFormValidity();
+    //                 }
+    //             },
+    //         });
+    //     } else {
+    //         // Clear error if input is empty
+    //         clearWhatsAppError();
+    //     }
+    // }
 
     // Clear WhatsApp error
-    function clearWhatsAppError() {
-        $('#whatsappNumber').removeClass('is-invalid');
-        $('#whatsapp-error').text('').hide(); // Clear and hide error message
-        checkFormValidity();
-    }
+    // function clearWhatsAppError() {
+    //     $('#whatsappNumber').removeClass('is-invalid');
+    //     $('#whatsapp-error').text('').hide(); // Clear and hide error message
+    //     checkFormValidity();
+    // }
 
 
     // Form validity checker
