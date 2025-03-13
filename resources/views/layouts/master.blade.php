@@ -764,38 +764,7 @@ select.form-control{
               </div>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic7" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title">Hcp Registration</span>
-                <i class="menu-arrow"></i>
-               <i class="fas fa-user-nurse"></i>
-              </a>
-              <div class="collapse" id="ui-basic7">
-                <ul class="nav flex-column sub-menu1">
-                  @if(auth()->user()->user_type == 'admin')
-                  <li class="nav-item" ><a class="nav-link" href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
-                  <li class="nav-item" ><a class="nav-link" href="{{route('hcpPanelInvite')}}">View  Registration</a></li>
-
-                  @endif
-                 </ul>
-              </div>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="#ui-basic8" aria-expanded="false" aria-controls="ui-basic">
-                <span class="menu-title">Consumer Registration</span>
-                <i class="menu-arrow"></i>
-               <i class="fas fa-user-nurse"></i>
-              </a>
-              <div class="collapse" id="ui-basic8">
-                <ul class="nav flex-column sub-menu1">
-                  @if(auth()->user()->user_type == 'admin')
-                  <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">New Registrations</a></li>
-                  <li class="nav-item" ><a class="nav-link" href="{{route('consumerRegistration')}}">View  Registration</a></li>
-                  @endif
-                 </ul>
-              </div>
-            </li>
+           
 
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-basic9" aria-expanded="false" aria-controls="ui-basic">
@@ -806,11 +775,43 @@ select.form-control{
               <div class="collapse" id="ui-basic9">
                 <ul class="nav flex-column sub-menu1">
                   @if(auth()->user()->user_type == 'admin')
-                  <li class="nav-item">
+                  {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ route('dataCenternew', ['id' => $user_id]) }}">HCP Registrations</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{{ route('consumerform', ['id' => $user_id]) }}">Consumer Registrations</a>
+                  </li> --}}
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#ui-basic7" aria-expanded="false" aria-controls="ui-basic">
+                      <span class="menu-title">Hcp Registration</span>
+                      <i class="menu-arrow"></i>
+                     {{-- <i class="fas fa-user-nurse"></i> --}}
+                    </a>
+                    <div class="collapse" id="ui-basic7">
+                      <ul class="nav flex-column sub-menu1">
+                        @if(auth()->user()->user_type == 'admin')
+                        <li class="nav-item" ><a class="nav-link" href="{{route('dataCenternew', ['id' => $user_id])}}">New Registrations</a></li>
+                        <li class="nav-item" ><a class="nav-link" href="{{route('hcpPanelInvite')}}">View  Registration</a></li>
+      
+                        @endif
+                       </ul>
+                    </div>
+                  </li>
+      
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#ui-basic8" aria-expanded="false" aria-controls="ui-basic">
+                      <span class="menu-title">Consumer Registration</span>
+                      <i class="menu-arrow"></i>
+                     {{-- <i class="fas fa-user-nurse"></i> --}}
+                    </a>
+                    <div class="collapse" id="ui-basic8">
+                      <ul class="nav flex-column sub-menu1">
+                        @if(auth()->user()->user_type == 'admin')
+                        <li class="nav-item" > <a class="nav-link"   href="{{ route('consumerform', ['id' => $user_id]) }}">New Registrations</a></li>
+                        <li class="nav-item" ><a class="nav-link" href="{{route('consumerRegistration')}}">View  Registration</a></li>
+                        @endif
+                       </ul>
+                    </div>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#ui-global-panel-manager" aria-expanded="false" aria-controls="ui-global-panel-manager">
@@ -1065,6 +1066,7 @@ select.form-control{
                 </ul>
               </div>
             </li>
+
             
              @elseif((auth()->user()->user_type == 'field_team') || (auth()->user()->user_type == 'admin'))
              <li class="nav-item">
