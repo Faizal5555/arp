@@ -1079,6 +1079,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="col-lg-3 col-form-label font-weight-semibold">
+                                                Respondent Type <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <i class="float-right fa-solid fa-circle-plus add-respondent-type" style="color:green;" data-id="1"></i>
+                                                <input name="respondent_type[]" type="text" class="form-control mt-1" placeholder="Enter Respondent Type">
+                                                <div id="respondent_type_wrapper"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                         <div class="col-md-12 ">
                                             <div class="form-group row">
                                                 <label class="col-lg-12 col-form-label font-weight-semibold">Target
@@ -2704,6 +2716,9 @@
                             "other_document[]": {
                                 required: true
                             },
+                            "respondent_type[]": {
+                                required: true
+                            }
                         },
                         errorPlacement: function(error, element) {
                             if (element.hasClass("select2-hidden-accessible")) {
@@ -2823,6 +2838,22 @@
                     // alert("hi");
                     $(this).parent().remove();
                 });
-                
+
+                $(document).on('click', '.add-respondent-type', function() {
+                var data_id = parseInt($(this).attr('data-id'));
+                $("#respondent_type_wrapper").append(`
+                    <div class="d-flex mt-2">
+                        <input type="text" name="respondent_type[${data_id}]" class="form-control" placeholder="Enter Respondent Type">
+                        <i class="fa-solid fa-circle-minus remove-respondent-type ml-2" style="color:red; cursor:pointer;"></i>
+                    </div>
+                `);
+                $('.add-respondent-type').attr('data-id', `${data_id + 1}`);
+            });
+
+            // Remove respondent type input
+            $(document).on('click', '.remove-respondent-type', function() {
+                $(this).parent().remove();
+            });
+                            
             </script>
         @endsection

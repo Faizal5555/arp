@@ -2065,6 +2065,33 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">
+                                        Respondent Type <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-9" id="respondent_type_container">
+                                        @php
+                                            $respondentTypes = isset($operation->respondent_type) ? json_decode($operation->respondent_type) : [''];
+                                        @endphp
+                            
+                                        @foreach($respondentTypes as $key => $type)
+                                            <div class="d-flex mb-2 align-items-center respondent-type-row">
+                                                <input type="text" name="respondent_type[]" class="form-control" value="{{ $type }}" required>
+                                                
+                                                @if($key === 0)
+                                                    {{-- Plus icon only for the first row --}}
+                                                    <i class="fa-solid fa-circle-plus ml-2 text-success add-respondent-type" style="cursor:pointer;"></i>
+                                                @else
+                                                    {{-- Minus icon for additional rows --}}
+                                                    <i class="fa-solid fa-circle-minus ml-2 text-danger remove-respondent-type" style="cursor:pointer;"></i>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
                             <!--<div class="col-md-6">-->
                             <!--    <div class="form-group row">-->
                             <!--        <label class="col-lg-3 col-form-label font-weight-semibold">comments <span-->
@@ -5203,6 +5230,18 @@ $("#complete").validate({
        
     })
 
+    $(document).on('click', '.add-respondent-type', function () {
+    let html = `
+        <div class="d-flex mb-2 align-items-center respondent-type-row">
+            <input type="text" name="respondent_type[]" class="form-control" placeholder="Enter Respondent Type" required>
+            <i class="fa-solid fa-circle-minus ml-2 text-danger remove-respondent-type" style="cursor:pointer;"></i>
+        </div>
+    `;
+    $('#respondent_type_container').append(html);
+});
 
+$(document).on('click', '.remove-respondent-type', function () {
+    $(this).closest('.respondent-type-row').remove();
+});
 </script>
 @endsection

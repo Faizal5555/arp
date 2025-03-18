@@ -378,6 +378,7 @@ class OperationNewController extends Controller
                 $operation->project_deliverable = $req->project_deliverable;
                 $operation->project_manager_name = $req->project_manager_name;
                 $operation->project_operation_head = $req->project_operation_head;
+                $operation->respondent_type = json_encode($req->respondent_type);
                 $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
                 $operation->country_name = implode(',',$req->country_name_0);
@@ -649,7 +650,8 @@ class OperationNewController extends Controller
                 $operation->quality_analyst_name = $req->quality_analyst_name;
                 $operation->project_deliverable = $req->project_deliverable;
                 $operation->project_manager_name = $req->project_manager_name;
-                 $operation->sample_target = json_encode($req->sample_target_0);
+                $operation->respondent_type = json_encode($req->respondent_type);
+                $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
                 $operation->country_name = implode(',',$req->country_name_0);
                 $operation->target_group = implode(',',$req->target_group);
