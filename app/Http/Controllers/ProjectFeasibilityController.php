@@ -30,6 +30,8 @@ class ProjectFeasibilityController extends Controller
         'target_countries.*' => 'required|string|max:255',
         'responded_titles' => 'required|array',
         'responded_titles.*' => 'required|string|max:255',
+        'respondent_firstname' => 'required|string|max:255',
+        'respondent_lastname' => 'required|string|max:255',
         'no_of_sample_required' => 'required|integer',
         'no_of_sample_delivered' => 'required|integer',
         'incentive_promised' => 'required|string',
@@ -50,6 +52,8 @@ class ProjectFeasibilityController extends Controller
     'pn_number' => $validated['pn_number'],
     'email_subject_line' => $validated['email_subject_line'],
     'project_launch_date' => $validated['project_launch_date'],
+    'respondent_firstname' => $validated['respondent_firstname'],
+    'respondent_lastname' => $validated['respondent_lastname'],
     'target_countries' => json_encode($validated['target_countries']),
     'responded_titles' => json_encode($validated['responded_titles']), // Store as JSON
     'no_of_sample_required' => $validated['no_of_sample_required'],
@@ -128,6 +132,8 @@ class ProjectFeasibilityController extends Controller
         'id' => $project->id,
         'date' => $project->date,
         'pn_number' => $project->pn_number,
+        'respondent_firstname' => $project->respondent_firstname,
+        'respondent_lastname' => $project->respondent_lastname,
         'email_subject_line' => $project->email_subject_line,
         'project_launch_date' => $project->project_launch_date,
         'target_countries' => $project->target_countries, // JSON field
@@ -148,6 +154,8 @@ public function update(Request $request, $id)
     $validatedData = $request->validate([
         'date' => 'required|date',
         'pn_number' => 'required|string|max:255',
+        'respondent_firstname' => 'required|string|max:255',
+        'respondent_lastname' => 'required|string|max:255',
         'email_subject_line' => 'required|string|max:255',
         'project_launch_date' => 'required|date',
         'target_countries' => 'nullable|array',
@@ -170,6 +178,8 @@ public function update(Request $request, $id)
     // Update the project fields
     $project->date = $validatedData['date'];
     $project->pn_number = $validatedData['pn_number'];
+    $project->respondent_firstname = $validatedData['respondent_firstname'];
+    $project->respondent_lastname = $validatedData['respondent_lastname'];
     $project->email_subject_line = $validatedData['email_subject_line'];
     $project->project_launch_date = $validatedData['project_launch_date'];
     $project->target_countries = json_encode($validatedData['target_countries'] ?? []); // Save as JSON

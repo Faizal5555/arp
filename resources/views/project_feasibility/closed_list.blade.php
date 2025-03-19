@@ -59,6 +59,8 @@ label.mb-0.not-expired {
                     <th>S.no</th>
                     <th>Date</th>
                     <th>PN Number</th>
+                    <th>Respondent FirstName</th>
+                    <th>Respondent LastName</th>
                     <th>Email Subject</th>
                     <th>Project Launch Date</th>
                     <th>Countries</th>
@@ -100,6 +102,19 @@ label.mb-0.not-expired {
                     { data: null, render: function (data, type, row, meta) { return meta.row + 1; } },
                     { data: "date" },
                     { data: "pn_number" },
+                    {
+                        data: "respondent_firstname",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                    }
+                    },
+                    {
+                        data: "respondent_lastname",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                    }
+                    },
+
                     { data: "email_subject_line" },
                     { data: "project_launch_date" },
                     { data: "target_countries", render: function (data) { return JSON.parse(data || '[]').join(', '); } },
@@ -109,10 +124,30 @@ label.mb-0.not-expired {
                     @endif
                     { data: "no_of_sample_required" },
                     { data: "no_of_sample_delivered" },
-                    { data: "incentive_promised" },
-                    { data: "total_incentive_paid" },
-                    { data: "incentive_paid_date" },
-                    { data: "mode_of_payment" }
+                    {
+                        data: "incentive_promised",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: "total_incentive_paid",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: "incentive_paid_date",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: "mode_of_payment",
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                        }
+                    }
                 ]
             });
         }

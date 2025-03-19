@@ -59,6 +59,8 @@
                     <th>S.no</th>
                     <th>Date</th>
                     <th>PN Number</th>
+                    <th>Respondent FirstName</th>
+                    <th>Respondent LastName</th>
                     <th>Email Subject</th>
                     <th>Project Launch Date</th>
                     <th>Countries</th>
@@ -118,6 +120,17 @@
                         <div class="col-md-6">
                             <label for="edit-project_launch_date">Project Launch Date</label>
                             <input type="date" name="project_launch_date" id="edit-project_launch_date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="edit-respondent_firstname">Respondent FirstName</label>
+                            <input type="text" name="respondent_firstname" id="edit-respondent_firstname" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit-respondent_lastname">Respondent LastName</label>
+                            <input type="text" name="respondent_lastname" id="edit-respondent_lastname"  class="form-control" required>
                         </div>
                     </div>
 
@@ -257,17 +270,19 @@
                 <td>${index++}</td>
                 <td>${row.date}</td>
                 <td>${row.pn_number}</td>
+                <td>${row.respondent_firstname ? row.respondent_firstname : '-'}</td>
+                <td>${row.respondent_lastname ? row.respondent_lastname : '-'}</td>
                 <td>${row.email_subject_line}</td>
                 <td>${row.project_launch_date}</td>
                 <td>${countries}</td>
                 <td>${titles}</td>
                  ${userType === 'admin' ? `<td>${emails}</td>` : ''}
-                <td>${row.no_of_sample_required}</td>
-                <td>${row.no_of_sample_delivered}</td>
-                <td>${row.incentive_promised}</td>
-                <td>${row.total_incentive_paid}</td>
-                <td>${row.incentive_paid_date}</td>
-                <td>${row.mode_of_payment}</td>
+                <td>${row.no_of_sample_required ? row.no_of_sample_required : '-'}</td>
+                <td>${row.no_of_sample_delivered ? row.no_of_sample_delivered : '-'}</td>
+                <td>${row.incentive_promised ? row.incentive_promised : '-'}</td>
+                <td>${row.total_incentive_paid ? row.total_incentive_paid : '-'}</td>
+                <td>${row.incentive_paid_date ? row.incentive_paid_date : '-'}</td>
+                <td>${row.mode_of_payment ? row.mode_of_payment : '-'}</td>
                    ${userType === 'admin' || userType === 'global_manager' ? `
                     <td>
                         <button class="btn btn-info btn-sm edit-btn" data-id="${row.id}">Edit</button>
@@ -292,6 +307,8 @@
             $('#edit-id').val(response.id);
             $('#edit-date').val(response.date);
             $('#edit-pn_number').val(response.pn_number);
+            $('#edit-respondent_firstname').val(response.respondent_firstname);
+            $('#edit-respondent_lastname').val(response.respondent_lastname);
             $('#edit-email_subject_line').val(response.email_subject_line);
             $('#edit-project_launch_date').val(response.project_launch_date);
             $('#edit-no_of_sample_required').val(response.no_of_sample_required);

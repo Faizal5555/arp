@@ -54,6 +54,16 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group">
+                    <label for="project_launch_date">Respondent Firstname</label>
+                    <input type="text" name="respondent_firstname" id="respondent_firstname" class="form-control" required>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label for="target_countries">Respondent Lastname</label>
+                    <input type="text" name="respondent_lastname" id="respondent_lastname" class="form-control" required>
+                </div>
+            </div>
+            <div class="row pl-2 d-flex justify-content-center">
+                <div class="col-md-5 form-group">
                     <label for="responded_title">Respondent Title</label>
                     <div id="titles-container">
                         <div class="d-flex">

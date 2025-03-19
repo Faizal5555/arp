@@ -13,6 +13,8 @@ class ProjectFeasibility extends Model
     protected $fillable = [
         'date',
         'pn_number',
+        'respondent_firstname',
+        'respondent_lastname',
         'email_subject_line',
         'project_launch_date',
         'target_countries',
