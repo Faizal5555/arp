@@ -25,6 +25,7 @@ use App\Models\adminvoucher;
 use App\Models\Speciality;
 use App\Models\Fieldteam;
 use App\Models\Doctornotification;
+use App\Models\BusinessResearch;
 use Carbon\Carbon;
 use App\Models\Que;
 use DB;
@@ -305,10 +306,39 @@ class DashboardController extends Controller
             $countries =Country::get();
             return view ('user.consumer_dashboard',compact('countries'));
         }
-        // elseif($user->user_type == ('business_manager')){
-        //     $countries =Country::get();
-        //     return view ('business.bm_dashboard',compact('countries'));
-        // }
+        elseif($user->user_type == ('business_manager')){
+            $countries =Country::get();
+            return view ('business.bm_dashboard',compact('countries'));
+        }
+        elseif($user->user_type == ('business_team_member')){
+            $countries =Country::get();
+            return view ('business_team.bm_team_dashboard',compact('countries'));
+        }
+
+        elseif($user->user_type == 'secondary_manager') {
+            $countries = Country::get();
+            $keyword = $request->input('keyword');
+        
+            $results = [];
+        
+            if ($keyword) {
+                $results = BusinessResearch::with(['teamMembers.user', 'questions'])
+                    ->where(function ($query) use ($keyword) {
+                        $query->where('client_name', 'LIKE', "%{$keyword}%")
+                            ->orWhere('pn_number', 'LIKE', "%{$keyword}%")
+                            ->orWhere('subject_line', 'LIKE', "%{$keyword}%")
+                            ->orWhere('industry', 'LIKE', "%{$keyword}%")
+                            ->orWhereHas('questions', function ($q) use ($keyword) {
+                                $q->where('question', 'LIKE', "%{$keyword}%")
+                                  ->orWhere('answer', 'LIKE', "%{$keyword}%");
+                            });
+                    })
+                    ->get();
+            }
+            $clientNames = BusinessResearch::select('client_name')->distinct()->pluck('client_name');
+            $industries = BusinessResearch::select('industry')->distinct()->pluck('industry');
+            return view('business_secondary.bm_secondary_dashboard', compact('countries', 'results', 'keyword','clientNames','industries'));
+        }
         // $dashboard = '';
         // return view('index',compact('dashboard'));
     }

@@ -68,4 +68,9 @@ class User extends Authenticatable
         return $this->hasMany(Que::class, 'user_id', 'id')
             ->where('user_type', 'global_team');
     }
+
+        public function researchQuestions()
+    {
+        return $this->hasMany(BusinessResearchQuestion::class);
+    }
 }

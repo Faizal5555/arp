@@ -1067,6 +1067,37 @@ select.form-control{
               </div>
             </li>
 
+            @elseif(auth()->user()->user_type == 'business_manager')
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic10" aria-expanded="false" aria-controls="ui-basic10">
+                <span class="menu-title">Business Research</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic10">
+                <ul class="nav flex-column sub-menu1">
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('businessresearch.create')) ? 'active' : '' }} href="{{route('businessresearch.create')}}">Create Project</a></li>
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('businessresearch.index')) ? 'active' : '' }} href="{{route('businessresearch.index')}}">Existing Project</a></li>
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('businessresearch.closed')) ? 'active' : '' }} href="{{route('businessresearch.closed')}}">Closed Project</a></li>
+                  </ul>
+              </div>
+            </li>
+
+
+            @elseif(auth()->user()->user_type == 'business_team_member')
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="#ui-basic11" aria-expanded="false" aria-controls="ui-basic11">
+                <span class="menu-title">Business Research</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic11">
+                <ul class="nav flex-column sub-menu1">
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('businessresearch.team')) ? 'active' : '' }} href="{{route('businessresearch.team')}}">Existing Project</a></li>
+                   <li class="nav-item"> <a class="nav-link" {{ (Route::is('business.team.closed')) ? 'active' : '' }} href="{{route('business.team.closed')}}">Closed Project</a></li>
+                  </ul>
+              </div>
+            </li>
             
              @elseif((auth()->user()->user_type == 'field_team') || (auth()->user()->user_type == 'admin'))
              <li class="nav-item">

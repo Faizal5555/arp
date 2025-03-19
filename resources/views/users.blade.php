@@ -135,7 +135,7 @@ table tfoot th {
           serverSide: true,
           ajax: "{{route('usersview')}}",
           columns: [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             {data:'name',name:'name'},
             {data:'email',name:'email'},
             {data:'user_type',
@@ -323,6 +323,9 @@ table tfoot th {
                     <option name= "user_type" value="data_center">Data Center</option>
                     <option name= "user_type" value="global_manager">Global Panel Manager</option>
                     <option name= "user_type" value="global_team">Global Panel Team</option>
+                    <option name= "user_type" value="business_manager">Business Research Manager</option>
+                    <option name= "user_type" value="business_team_member">Business Research Team Member</option>
+                    <option name= "user_type" value="secondary_manager">Search Secondary Data Projects</option>
                 </select>
                 </div>
                 {{-- <div class="form-group mt-4 d-none" id="globalManagerDropdown">
@@ -348,6 +351,9 @@ table tfoot th {
                     <option name= "user_role" value="data_center">Data Center</option>
                     <option name= "user_role" value="global_manager">Global Panel Manager</option>
                     <option name= "user_role" value="global_team">Global Panel Team</option>
+                    <option name= "user_role" value="business_manager">Business Research Manager</option>
+                    <option name= "user_role" value="business_team_member">Business Research Team Member</option>
+                    <option name= "user_role" value="secondary_manager">Search Secondary Data Projects</option>    
                 </select>
                   </div>
                   <div class="row">

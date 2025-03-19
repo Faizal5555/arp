@@ -39,6 +39,22 @@ class AuthenticatedSessionController extends Controller
         return view('auth.supplier-login', ['userType' => 'supplier']);
     }
 
+    public function createBusinessTeamMember()
+    {
+        return view('auth.business-team-member-login', ['userType' => 'business_manager']);
+    }
+
+     public function createBusinessManager()
+    {
+        return view('auth.business-manager-login', ['userType' => 'business_manager']);
+    }
+
+    public function createBusinessSearch()
+    {
+        return view('auth.business-search-login', ['userType' => 'secondary_manager']);
+    }
+
+
     /**
      * Handle login for all user types.
      */
@@ -49,7 +65,7 @@ class AuthenticatedSessionController extends Controller
     // Authenticate user
     if (Auth::attempt($credentials)) {
         // Define restricted user types
-        $restrictedUserTypes = ['global_team', 'global_manager', 'user','supplier'];
+        $restrictedUserTypes = ['global_team', 'global_manager', 'user','supplier','business_team_member','business_manager','secondary_manager'];
 
         // Check if the authenticated user's user_type is in the restricted list
         if (in_array(Auth::user()->user_type, $restrictedUserTypes)) {
@@ -110,6 +126,50 @@ class AuthenticatedSessionController extends Controller
 
         return back()->withErrors(['email' => 'Invalid credentials for Supplier.']);
     }
+
+
+    public function storeteamMember(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt(array_merge($credentials, ['user_type' => 'business_team_member']))) {
+            $request->session()->regenerate();
+            return redirect()->intended('adminapp/dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials for Team Member.']);
+    }
+
+    public function storebusinessManager(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt(array_merge($credentials, ['user_type' => 'business_manager']))) {
+            $request->session()->regenerate();
+            return redirect()->intended('adminapp/dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials for Team Member.']);
+    }
+     
+
+    public function storebusinessSearch(LoginRequest $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt(array_merge($credentials, ['user_type' => 'Secondary_manager']))) {
+            $request->session()->regenerate();
+            return redirect()->intended('adminapp/dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials for Team Member.']);
+    }
+
+    
+    
+
+
+
 
 
     public function destroy(Request $request)

@@ -40,6 +40,15 @@ Route::get('/', function () {
       Route::get('/supplier/login', [AuthenticatedSessionController::class, 'createSupplier'])->name('supplier.login');
       Route::post('/supplier/login', [AuthenticatedSessionController::class, 'storeSupplier'])->name('supplier.store');
   
+      Route::get('/business-team-member/login', [AuthenticatedSessionController::class, 'createBusinessTeamMember'])->name('teamMember.login');
+      Route::post('/business-team-member/login', [AuthenticatedSessionController::class, 'storeteamMember'])->name('teamMember.store');
+      
+      Route::get('/business-manager/login', [AuthenticatedSessionController::class, 'createBusinessManager'])->name('businessManager.login');
+      Route::post('/business-manager/login', [AuthenticatedSessionController::class, 'storebusinessManager'])->name('businessManager.store');
+      
+      Route::get('/business-search/login', [AuthenticatedSessionController::class, 'createBusinessSearch'])->name('businessSearch.login');
+      Route::post('/business-search/login', [AuthenticatedSessionController::class, 'storebusinessSearch'])->name('businessSearch.store');
+      
       Route::get('/employee/forgot-password', [PasswordResetLinkController::class, 'employeeCreate'])->name('employee.password.request');
       Route::post('/check-email', 'App\Http\Controllers\dataCenterController@checkEmail')->name('checkEmail');
     });
@@ -67,9 +76,27 @@ Route::get('/', function () {
     Route::get('/project-feasibility/existing', 'App\Http\Controllers\ProjectFeasibilityController@existing')->name('project.existing');
     Route::put('/project-feasibility/{id}/change-status', 'App\Http\Controllers\ProjectFeasibilityController@changeStatus')->name('projectFeasibility.changeStatus');
     Route::get('/project-feasibility/closed', 'App\Http\Controllers\ProjectFeasibilityController@closedList')->name('projectFeasibility.closed');
-
-
-
+   
+   
+    Route::get('/business-research/create', 'App\Http\Controllers\BusinessResearchController@create')->name('businessresearch.create');
+    Route::post('/business-research/store', 'App\Http\Controllers\BusinessResearchController@store')->name('businessresearch.store'); 
+    Route::get('/business-research/index', 'App\Http\Controllers\BusinessResearchController@index')->name('businessresearch.index');
+    Route::get('/business-research/edit/{id}', 'App\Http\Controllers\BusinessResearchController@edit')->name('businessresearch.edit');
+    Route::post('/business-research/update/{id}', 'App\Http\Controllers\BusinessResearchController@update')->name('businessresearch.update');
+    Route::delete('/business-research/destory/{id}', 'App\Http\Controllers\BusinessResearchController@destroy')->name('businessresearch.destroy');
+    Route::get('/business-allocated-projects', 'App\Http\Controllers\BusinessResearchController@getAllocatedProjects')->name('business.allocated.projects');
+    Route::get('/business-research/show/{id}', 'App\Http\Controllers\BusinessResearchController@getProjects')->name('businessresearch.project');
+    Route::get('/business-research/questions', 'App\Http\Controllers\BusinessResearchController@questions')->name('businessresearch.question');
+    Route::post('/business-research/close/{id}', 'App\Http\Controllers\BusinessResearchController@closeProject')->name('businessresearch.close');
+    Route::get('/business-research/closed',  'App\Http\Controllers\BusinessResearchController@closed')->name('businessresearch.closed');
+   
+    Route::get('/business-team/view', 'App\Http\Controllers\BusinessResearchController@team')->name('businessresearch.team');
+    Route::get('/business-team/show/{id}', 'App\Http\Controllers\BusinessResearchController@show')->name('businessresearch.show');                
+    Route::post('/business-research/que/{id}',  'App\Http\Controllers\BusinessResearchController@storeQuestions')->name('business.research.save.que');
+    Route::get('/secondary/search', 'App\Http\Controllers\BusinessResearchController@secondarySearch')->name('secondary.search');
+    Route::get('/search/export', 'App\Http\Controllers\BusinessResearchController@exportSearchResults')->name('search.export');
+    Route::get('/business-team/closed',  'App\Http\Controllers\BusinessResearchController@teamclosed')->name('business.team.closed');
+    
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
     
