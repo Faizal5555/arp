@@ -266,7 +266,7 @@
                     </div>
                     <div class="col-lg-6 col-md-12">
                         <div class="form-group row d-flex justify-content-center align-items-center">
-                            <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Whatsapp Number<span class="text-danger">*</span></label>
+                            <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">Whatsapp Number<span class="text-danger"></span></label>
                             <div class="col-md-9">
                                 <input type="text" name="whatsappNumber" id="whatsappNumber" class="form-control border border-secondary" placeholder="Whatsapp Number"  onkeypress="return isNumber(event)" style="width:100%;" >
                                 <div id="whatsapp-error" class="invalid-feedback"></div>
@@ -468,10 +468,10 @@
                      required:true,
                      email:true
                 }, 
-                whatsappNumber:{
-                    required:true,
-                    minlength: 10
-                },
+                // whatsappNumber:{
+                //     required:true,
+                //     minlength: 10
+                // },
                 docterSpecility:{
                     required:true
                 },
