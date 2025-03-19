@@ -240,6 +240,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-lg-6 col-md-12 ">
+                        <div class="form-group row d-flex justify-content-center align-items-center">
+                            <label class=" col-md-3 col-form-label font-weight-semibold " style="font-size:16px;">LinkedIn/ Facebook URL<span class="text-danger"></span></label>
+                            <div class="col-md-9">
+                                <input type="text" name="social_url" id="social_url" class="form-control border border-secondary" placeholder="LinkedIn/ Facebook URL" style="width:100%;" >
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-12 d-flex justify-content-center">
                      <button type="sumbit" id="submitInvite" class="btn btn-success" disabled>Submit</button>
                     </div>

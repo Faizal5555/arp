@@ -315,7 +315,7 @@ class dataCenterController extends Controller
                 $new->licence = $req->licenceNumber;
                 $new->PatientsMonth = $req->permonth;
                 $new->country1=$req->country1;
-                
+                $new->social_url=$req->social_url;
                 $new->datacenter_id= $req->userid?$req->userid:null;
 
                 if ($req->hasFile('file'))
@@ -1755,7 +1755,7 @@ public function hcpPanelInviteData(Request $request)
 {
     $data = $request->all();
     $hcpInvite = datacenternew::query(); // Adjust the model to your actual one
-
+    
     if (!empty($data['speciality'])) {
         $hcpInvite->where('docterSpeciality', 'like', '%' . $data['speciality'] . '%');
     }
@@ -1792,7 +1792,8 @@ public function editHcp($id)
 
 
 public function updateHcp(Request $request, $id)
-{
+{   
+   
     $hcp = datacenternew::find($id); // Replace with your actual model
     if ($hcp) {
         $hcp->update($request->all()); // Update HCP details

@@ -31,6 +31,13 @@ $(function () {
             { data: 'country1', name: 'country1' },
             { data: 'docterSpeciality', name: 'docterSpeciality' },
             {
+                    data: 'social_url',
+                    name: 'social_url',
+                    render: function(data, type, row) {
+                        return data ? data : '-';
+                    }
+                },
+            {
                 data: 'action',
                 name: 'action',
                 orderable: false,
@@ -90,6 +97,7 @@ $(function () {
                 $('#editModal #lastname').val(hcp.lastname);
                 $('#editModal #email').val(hcp.email);
                 $('#editModal #phone').val(hcp.PhNumber);
+                $('#editModal #social_url').val(hcp.social_url);
 
                 // Show modal
                 $('#editModal').modal('show');
@@ -215,6 +223,7 @@ $('#hcpTable').on('click', '.delete-btn', function() {
                             <th>Ph Number</th>
                             <th>Country</th>
                             <th>Speciality</th>
+                            <th>LinkedIN/Facebook Url</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -265,6 +274,10 @@ $('#hcpTable').on('click', '.delete-btn', function() {
                     <div class="form-group">
                         <label for="speciality">Speciality</label>
                         <select name="docterSpeciality" id="speciality" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="social_url">LinkedIN/Facebook URL</label>
+                        <input type="text" name="social_url" id="social_url" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
