@@ -69,7 +69,7 @@ ul.list-inline li {
                                     <span class="fw-semibold">Q:</span> {{ $question->question }}<br>
                                     <span class="fw-semibold">A:</span> {{ $question->answer }}<br>
                                     @if($question->attachment)
-                                        <a href="{{ asset('adminapp/storage/app/public/' . $question->attachment) }}" class="text-decoration-none text-primary" target="_blank">  <i class="fas fa-paperclip px-1"></i>View Attachment</a>
+                                        <a href="{{ asset('adminapp/storage/app/public/' . $question->attachment) }}" class="text-decoration-none text-primary" target="_blank" download>  <i class="fas fa-paperclip px-1"></i>View Attachment</a>
                                     @endif
                                 </li>
                             @endforeach

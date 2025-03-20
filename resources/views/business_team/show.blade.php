@@ -143,7 +143,7 @@
                                         <input type="file" class="form-control" name="attachment[]">
                                         @if($qa->attachment)
                                         <div>
-                                            <a href="{{ url('adminapp/storage/app/public/' . $qa->attachment) }}" target="_blank">
+                                            <a href="{{ url('adminapp/storage/app/public/' . $qa->attachment) }}" target="_blank" download>
                                                 {{ ($qa->attachment) }}
                                             </a>
                                         </div>
