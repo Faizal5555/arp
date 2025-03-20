@@ -149,7 +149,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('adminapp/dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials for Team Member.']);
+        return back()->withErrors(['email' => 'Invalid credentials for Business Manager.']);
     }
      
 
@@ -162,7 +162,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('adminapp/dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials for Team Member.']);
+        return back()->withErrors(['email' => 'Invalid credentials for Secondary Manager.']);
     }
 
     
