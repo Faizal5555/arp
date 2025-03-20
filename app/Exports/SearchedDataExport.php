@@ -35,7 +35,7 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                     foreach ($files as $file) {
                         $file = trim($file);
                         if ($file) {
-                            $link = asset('storage/' . ltrim($file, '/')); // Generates full URL
+                            $link = asset('adminapp/storage/app/public/' . ltrim($file, '/')); // Generates full URL
                             $rows[] = [
                                 'Field' => 'Attachment',
                                 'Value' => '',
@@ -59,7 +59,7 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                     $rows[] = [
                         'Field' => 'Question: ' . $q->question,
                         'Value' => 'Answer: ' . $q->answer,
-                        'Attachment' => $q->attachment ? asset('storage/' . $q->attachment) : 'N/A',
+                        'Attachment' => $q->attachment ? asset('adminapp/storage/app/public/' . $q->attachment) : 'N/A',
                     ];
                 }
 
