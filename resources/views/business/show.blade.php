@@ -103,7 +103,7 @@
                                 @php $attachment = trim($attachment); @endphp
                                 @if($attachment)
                                     <li>
-                                        <a href="{{ asset('public/storage/' . $attachment) }}" target="_blank" download>
+                                        <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download>
                                             {{ basename($attachment) }}
                                         </a>
                                     </li>
