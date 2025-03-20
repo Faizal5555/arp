@@ -106,7 +106,7 @@
                                     @php $attachment = trim($attachment); @endphp
                                     @if($attachment)
                                         <li class="mb-1">
-                                            <a href="{{ asset('storage/' . $attachment) }}" target="_blank" download>
+                                            <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download>
                                                 {{ basename($attachment) }}
                                             </a>
                                         </li>
@@ -143,7 +143,7 @@
                                         <input type="file" class="form-control" name="attachment[]">
                                         @if($qa->attachment)
                                         <div>
-                                            <a href="{{ url('adminapp/storage/' . $qa->attachment) }}" target="_blank">
+                                            <a href="{{ url('adminapp/storage/app/public/' . $qa->attachment) }}" target="_blank">
                                                 {{ ($qa->attachment) }}
                                             </a>
                                         </div>
