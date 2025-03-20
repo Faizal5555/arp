@@ -89,13 +89,17 @@ Route::get('/', function () {
     Route::get('/business-research/questions', 'App\Http\Controllers\BusinessResearchController@questions')->name('businessresearch.question');
     Route::post('/business-research/close/{id}', 'App\Http\Controllers\BusinessResearchController@closeProject')->name('businessresearch.close');
     Route::get('/business-research/closed',  'App\Http\Controllers\BusinessResearchController@closed')->name('businessresearch.closed');
-   
+    Route::get('/business-research/filter','App\Http\Controllers\BusinessResearchController@filter')->name('businessresearch.filter');
+
+
     Route::get('/business-team/view', 'App\Http\Controllers\BusinessResearchController@team')->name('businessresearch.team');
     Route::get('/business-team/show/{id}', 'App\Http\Controllers\BusinessResearchController@show')->name('businessresearch.show');                
     Route::post('/business-research/que/{id}',  'App\Http\Controllers\BusinessResearchController@storeQuestions')->name('business.research.save.que');
     Route::get('/secondary/search', 'App\Http\Controllers\BusinessResearchController@secondarySearch')->name('secondary.search');
     Route::get('/search/export', 'App\Http\Controllers\BusinessResearchController@exportSearchResults')->name('search.export');
     Route::get('/business-team/closed',  'App\Http\Controllers\BusinessResearchController@teamclosed')->name('business.team.closed');
+    
+
     
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');
     Route::post('hcp/country', 'App\Http\Controllers\DashboardController@hcpCountry')->name('hcp.country');
