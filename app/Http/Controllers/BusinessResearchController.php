@@ -12,6 +12,7 @@ use App\Models\BusinessResearchQuestion;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
+use DB;
 use App\Exports\SearchedDataExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -508,5 +509,37 @@ public function exportSearchResults(Request $request)
 
 return Excel::download(new SearchedDataExport($results), 'searched_data.xlsx');
 }
+
+public function filter(Request $request)
+{
+    $query = BusinessResearch::query();
+
+    if ($request->start_date && $request->end_date) {
+        $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+    }
+
+    if ($request->industry) {
+        $query->where('industry', $request->industry);
+    }
+
+    // ✅ Get industry data from the filtered query, not the whole table
+    $statusData = BusinessResearch::select('type', DB::raw('count(*) as total'))
+    ->whereIn('type', ['existing', 'closed'])
+    ->groupBy('type')
+    ->get();
+
+    $clientCount = $query->distinct('client_name')->count('client_name');
+    $projectCount = $query->count();
+
+    $teamMembersCount = User::where('user_type', 'business_team_member')->count();
+
+    return response()->json([
+        'clientCount' => $clientCount,
+        'projectCount' => $projectCount,
+        'statusData' => $statusData,
+        'teamMembersCount' => $teamMembersCount
+    ]);
+}
+
     
 }

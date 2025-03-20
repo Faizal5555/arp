@@ -308,7 +308,42 @@ class DashboardController extends Controller
         }
         elseif($user->user_type == ('business_manager')){
             $countries =Country::get();
-            return view ('business.bm_dashboard',compact('countries'));
+
+            $industryFilter = request('industry');
+            $from = request('from_date') ?? Carbon::now()->subDays(30)->toDateString();
+            $to = request('to_date') ?? Carbon::now()->toDateString();
+        
+            // Base query with filters
+            $baseQuery = BusinessResearch::query()
+                ->whereBetween('created_at', [$from, $to]);
+        
+            if ($industryFilter) {
+                $baseQuery->where('industry', $industryFilter);
+            }
+        
+            // Metrics based on filtered query
+            $clientCount = $baseQuery->distinct('client_name')->count('client_name');
+            $projectCount = $baseQuery->count();
+            $teamMembersCount = User::where('user_type', 'business_team_member')->count();
+        
+            // Industry-wise Project Count (for pie chart – ignore industry filter here to show full distribution)
+            $industryProjects = BusinessResearch::select('industry', DB::raw('count(*) as total'))
+                ->groupBy('industry')
+                ->get();
+        
+            // Projects in date range (filtered)
+            $projectsInRange = $baseQuery->count();
+        
+            return view('business.bm_dashboard', compact(
+                'countries',
+                'clientCount',
+                'projectCount',
+                'industryProjects',
+                'projectsInRange',
+                'teamMembersCount',
+                'from',
+                'to'
+            ));
         }
         elseif($user->user_type == ('business_team_member')){
             $countries =Country::get();
@@ -344,7 +379,9 @@ class DashboardController extends Controller
     }
     
     public function operationindex()
-    {
+    {   
+
+       
         $user = Auth::user();
         // if($user->user_type == 'admin')
         // {
@@ -380,7 +417,7 @@ class DashboardController extends Controller
         
         $closed=OperationNew::where('status','completed')->count();
         $new=OperationNew::count();
-        $operation=OperationNew::latest()->take(5)->get();
+        $operation=OperationNew::get();
          $tl=User::where('user_role','team_leader')->get();
         $pl=User::where('user_role','project_manager')->get();
         $ql=User::where('user_role','quality_analyst')->get();
