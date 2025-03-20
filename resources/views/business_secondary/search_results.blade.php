@@ -49,7 +49,7 @@ ul.list-inline li {
                                 @php $attachment = trim($attachment); @endphp
                                 @if($attachment)
                                     <li>
-                                        <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" class="text-decoration-none text-primary">
+                                        <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download class="text-decoration-none text-primary">
                                             <i class="fas fa-paperclip px-1"></i>{{ basename($attachment) }}
                                         </a>
                                     </li>
