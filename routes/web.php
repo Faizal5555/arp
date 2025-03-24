@@ -261,7 +261,7 @@ Route::post('/operationNew/vendorfinal', 'App\Http\Controllers\OperationNewContr
 Route::get('/operationNew/projectview/{id}', 'App\Http\Controllers\OperationNewController@projectview')->name('operationNew.projectview');
 Route::get('/operationNew/overview', 'App\Http\Controllers\OperationNewController@operationOverview')->name('operationNew.overview');
 Route::post('/operationNew/status', 'App\Http\Controllers\OperationNewController@updateStatus')->name('operationNew.updateStatus');
-
+Route::get('/operationNew/pm/overview', 'App\Http\Controllers\OperationNewController@operationPmOverview')->name('operationNewPM.overview');
 
 // field perfomance
 Route::get('/operationNew/fieldteam/performance', 'App\Http\Controllers\OperationNewController@fieldperfomance')->name('operationNew.fieldperfomance');

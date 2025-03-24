@@ -1911,5 +1911,43 @@ public function fieldchart(Request $req)
             return response()->json($response_data);
         }
 
+        public function operationPmOverview()
+        {
+            $closed = "";
+            
+            $user = Auth::user();
+            $new = "";
+            $operation = OperationNew::get();
+            $tl=User::where('user_role','team_leader')->get();
+            $pl=User::where('user_role','project_manager')->get();
+            $ql=User::where('user_role','quality_analyst')->get();
+            $oh=User::where('user_role','operation_head')->get();
+            $operation->transform(function ($item) use ($user) {
+                $createdAt = Carbon::parse($item->created_at);
+                $updatedAt = Carbon::parse($item->updated_at);
+            
+                // Assume updated_at is only valid if it changed from created_at
+                if ($updatedAt->ne($createdAt)) {
+                    // Fetch last version of this record before update using DB
+                    $history = DB::table('operation_new') // Replace 'operations' with your actual table
+                        ->where('id', $item->id)
+                        ->first();
+            
+                    // Check if the project_manager_name is now equal to the current user ID
+                    if ($item->project_manager_name == $user->id) {
+                        $item->display_date = $updatedAt->format('d-m-Y');
+                    } else {
+                        $item->display_date = $createdAt->format('d-m-Y');
+                    }
+                } else {
+                    $item->display_date = $createdAt->format('d-m-Y');
+                }
+                  
+                return $item;
+            });
+            return view('operationdashboard',compact('operation','closed','new','tl','pl','ql','oh'));
+        }
+
+
     
 }

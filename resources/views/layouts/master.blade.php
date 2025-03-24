@@ -658,7 +658,7 @@ select.form-control{
                   <!--<li class="nav-item {{ (Route::is('operationNew.add_field_team')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD PROJECTS</a></li>-->
                   <!--<li class="nav-item {{ (Route::is('operationdashboard')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationdashboard')}}">OVERVIEW</a></li>-->
                    <li class="nav-item {{ (Route::is('operationNew.fieldperfomance')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.fieldperfomance')}}">Performance</a></li>
-                   <li class="nav-item"> <a class="nav-link" href="{{route('fieldteamDashboard')}}">Overview</a></li>
+                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNewPM.overview')}}">Overview</a></li>
                    
                 </ul>
               </div>
