@@ -7,14 +7,44 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{-- for chartjs --}}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .status-badge {
     font-size: 14px; /* Adjust as needed */
     font-weight: bold; /* Optional for better emphasis */
+    }
+    .target-table {
+        width: auto;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
+
+    .target-table th,
+    .target-table td {
+        min-width: 100px;
+        max-width: 120px;
+        padding: 8px;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .status-colored {
+    font-weight: bold;
+    border-radius: 6px;
 }
+.table-country{
+    table-layout: fixed;
+    width: 100% !important; 
+ 
+}
+th, td {
+    width: 150px !important; 
+    overflow: hidden;
+    text-overflow: ellipsis;  /* Truncate text with an ellipsis */
+    white-space: nowrap; /* Set the desired width for both th and td */
+}
+
   </style>
 <div class="content-wrapper">
             <div class="page-header">
@@ -103,29 +133,32 @@
                         <thead>
                           <tr>
                             <th>Project No</th>
-                            <th>Team Leader </th>
+                            {{-- <th>Team Leader </th> --}}
                             <th>Project Manager Name</th>
-                            <th>Quality Analyst Name	 </th>
+                            {{-- <th>Quality Analyst Name	 </th> --}}
                             <th>Status </th>
                             <th>Progress </th>
+                            <th>Target Group</th>
+                            <th>Date</th>
                           </tr>
                         </thead>
                         <tbody>
+                          
                             @if(count($operation)>0)
                             @foreach($operation as $key=> $data)
-                            
+                             
                            <tr>
                                <td>{{$data->project_no}}</td>
                                
                                
-                               <td> @if(count($tl)>0)
+                               {{-- <td> @if(count($tl)>0)
                                 @foreach ($tl as $item)
                                 @if($data->team_leader == $item->id)
                                 {{$item->name}}
                                 @endif
                                 @endforeach
                                 @endif
-                                </td>
+                                </td> --}}
                                
                                <td>
                                     @if(count($pl)>0)
@@ -138,7 +171,7 @@
                                 </td>
                                 
 
-                               <td>
+                               {{-- <td>
                                 @if(count($ql)>0)
                                 @foreach ($ql as $item)
                                 @if($data->quality_analyst_name == $item->id)
@@ -148,29 +181,115 @@
                                 @endif
                                 @endforeach
                                 @endif
-                                </td>
+                                </td> --}}
                                 
-                                <td>
-                                  @if($data->status == 'hold')
-                                      <span class="badge badge-info status-badge">Ongoing Project</span>
-                                  @elseif($data->status == 'completed')
-                                      <span class="badge badge-success status-badge">Completed</span>
-                                  @else
-                                      <span class="badge badge-danger status-badge">Project Stop In Middle</span>
-                                  @endif
-                              </td>
-                                <td>
-                              <div class="progress">
-                                  @if($data->status == 'hold')
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                {{-- <td>
+                                    @if($data->status == 'hold')
+                                        <span class="badge badge-info status-badge">Ongoing Project</span>
                                     @elseif($data->status == 'completed')
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <span class="badge badge-success status-badge">Completed</span>
                                     @else
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <span class="badge badge-danger status-badge">Project Stop In Middle</span>
                                     @endif
-                              
-                              </div>
+                                </td> --}}
+
+                                <td>
+                                    <select class="form-control form-select status-dropdown status-colored" 
+                                            style="min-width: 170px; padding: 4px 8px;" 
+                                            data-id="{{ $data->id }}">
+                                        <option value="hold" {{ $data->status == 'hold' ? 'selected' : '' }}>Live</option>
+                                        <option value="completed" {{ $data->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Links Not Working</option>
+                                        <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Pause by Client</option>
+                                        <option value="awaited" {{ $data->status == 'awaited' ? 'selected' : '' }}>ID's/PO/Awaited</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="progress">
+                                        @if($data->status == 'hold')
+                                      <div class="progress-bar bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                          @elseif($data->status == 'completed')
+                                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                      @elseif($data->status == 'pause')
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                      @elseif($data->status == 'awaited')
+                                      <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                      @else
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                     @endif
+                                    
+                                    </div>
+                              </td>
+                            <td class="country">
+                                @php
+                                $countries = explode(',', $data->country_name);
+                                $groups = explode(',', $data->target_group);
+                                $sampleTargets = json_decode($data->sample_target, true);
+                                $sampleAchieved = json_decode($data->sample_achieved, true);
+                                $totals = json_decode($data->total, true);
+                            
+                                $groupCount = count($groups);
+                            
+                                // Determine active columns (columns with at least one non-zero value)
+                                $activeColumns = [];
+                                for ($i = 0; $i < $groupCount; $i++) {
+                                    $hasValue = false;
+                                    foreach ($sampleTargets as $index => $targets) {
+                                        if (!empty($targets[$i]) && $targets[$i] != 0) {
+                                            $hasValue = true;
+                                            break;
+                                        }
+                                    }
+                                    foreach ($sampleAchieved as $index => $achieved) {
+                                        if (!empty($achieved[$i]) && $achieved[$i] != 0) {
+                                            $hasValue = true;
+                                            break;
+                                        }
+                                    }
+                            
+                                    if ($hasValue) {
+                                        $activeColumns[] = $i;
+                                    }
+                                }
+                            @endphp
+                            
+                            <table class="table-country table-bordered text-center w-50">
+                                <thead class="country">
+                                    <tr>
+                                        <th rowspan="2">Country</th>
+                                        @foreach ($activeColumns as $i)
+                                            <th colspan="2">{{ $groups[$i] }}</th>
+                                        @endforeach
+                                    </tr>
+                                    <tr>
+                                        @foreach ($activeColumns as $i)
+                                            <th>Sample Target</th>
+                                            <th>Sample Achieved</th>
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($countries as $index => $country)
+                                        <tr>
+                                            <td>{{ trim($country) }}</td>
+                                            @foreach ($activeColumns as $i)
+                                                <td>{{ $sampleTargets[$index][$i] ?? 0 }}</td>
+                                                <td>{{ $sampleAchieved[$index][$i] ?? 0 }}</td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <th>Total</th>
+                                        @foreach ($activeColumns as $i)
+                                            <th>{{ $totals[$i * 2] ?? 0 }}</th>
+                                            <th>{{ $totals[$i * 2 + 1] ?? 0 }}</th>
+                                        @endforeach
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
                             </td>
+                            <td>{{ $data->pm_updated_at ? \Carbon\Carbon::parse($data->pm_updated_at)->format('d-m-y') : '-' }}</td>
                            </tr>
                              @endforeach
                               @endif
@@ -190,7 +309,7 @@
                       <table class="table">
                         <thead>
                           <tr>
-                            <th>Ongoing  Project</th>
+                            <th>Live  Project</th>
                             <th>Completed Project </th>
                             <th> Stop In Middle</th> 
                           </tr>
@@ -373,6 +492,71 @@ $(function () {
 
 });
 
+$(document).on('change', '.status-dropdown', function () {
+    var status = $(this).val();
+    var id = $(this).data('id');
+
+    $.ajax({
+        url: '{{ route("operationNew.updateStatus") }}', // ✅ Laravel named route
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id: id,
+            status: status
+        },
+        success: function (response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Status Updated',
+                text: 'The project status has been updated to "' + status + '".',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            // Optional: You can update a badge here without reloading
+            // Or reload if needed
+             location.reload();
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Status update failed. Please try again!',
+            });
+        }
+    });
+});
+function applySelectColor(selectElement) {
+    let value = $(selectElement).val();
+    $(selectElement).removeClass('bg-primary bg-success bg-danger bg-danger text-white');
+
+    switch (value) {
+        case 'hold':
+            $(selectElement).addClass('bg-primary text-white');
+            break;
+        case 'completed':
+            $(selectElement).addClass('bg-success text-white');
+            break;
+        case 'stop':
+            $(selectElement).addClass('bg-danger text-white');
+            break;
+        case 'pause':
+            $(selectElement).addClass('bg-danger text-white');
+            break;
+        case 'awaited':
+            $(selectElement).addClass('bg-warning text-dark');
+            break;
+    }
+}
+// Apply on page load
+$('.status-colored').each(function () {
+    applySelectColor(this);
+});
+
+// Apply on change
+$(document).on('change', '.status-colored', function () {
+    applySelectColor(this);
+});
 
 </script>
 @endsection

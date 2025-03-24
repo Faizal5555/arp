@@ -258,7 +258,7 @@ h5 {
  <div class="chart-title">
   <div class="container  mt-3">
     <div class="row">
-          <div class="col-md-3 mt-3">
+          {{-- <div class="col-md-3 mt-3">
             <h4 class="card-title float-left" style="margin-bottom:40px !important">Team Leader Name</h4>
             <select class="form-control label-gray-3 sales tel" name="tl" id="tel" style="outline: 1px solid #89b3e2 !important; ">
               <option class="label-gray-3" value="" disabled selected>Select Team Leader </br> Name</option>
@@ -269,7 +269,7 @@ h5 {
                 @endforeach
                 @endif
             </select>
-          </div>
+          </div> --}}
           <div class="col-md-3 mt-3">
             <h4 class="card-title float-left">Project Manager Name</h4>
             <select class="form-control label-gray-3 sales" name="pm" id="pem" style="outline: 1px solid #89b3e2 !important;">

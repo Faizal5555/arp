@@ -2086,19 +2086,13 @@ input.form-control {
                                             
                                         </tr>
                                         <tr>
+                                            @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
                                             <td></td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
+                                            @for ($i = 0; $i < count(json_decode($operation->total)); $i+=2) 
+                                                <td style="text-align: center">Sample Target</td>
+                                                <td style="text-align: center">Sample Achieved</td>
+                                            @endfor
+                                            @endif
                                         </tr>
                                             
                                                 
@@ -2146,6 +2140,14 @@ input.form-control {
 
                                         </tr>
                                                             @endforeach  
+                                                            <tr id="totalRow">
+                                                                @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                                                <td>Total</td>
+                                                                @foreach (json_decode($operation->total) as $total)
+                                                                    <td class="total"><input type="text" name="total[]" class="border-0" value="{{$total}}"></td>
+                                                                @endforeach
+                                                                @endif
+                                                            </tr>
                                     </table><br>
                                     </div>
                                 </div>
@@ -3316,7 +3318,12 @@ $(document).ready(function(){
    $(document).on('click', '#removeBtn', function(){  
          $(this).closest("tr").remove();
     });
+
+    
 });
+
+
+
 </script>
 {{-- end data append --}}
 
@@ -4555,7 +4562,35 @@ $("#complete").validate({
             }
         });
 
-       
+        function calculateTotals()
+    {
+        const columnCount = $("#mtables .operation_target:first").children().length;
+        console.log(columnCount);
+        let totals = new Array(columnCount).fill(0);
+        // console.log(totals);
+        $(".operation_target").each(function () {
+            // $(this).find("tr").each(function (index) {
+                $(this).find("td input").each(function (index) {
+                    totals[index] += parseFloat($(this).val()) || 0;
+                    console.log($(this).val());
+                });
+            // })
+        });
+
+        $("#totalRow").empty();
+        $("#totalRow").append(`<td><b>Total</b></td>`);
+        totals.forEach((total,key) => {
+            if(key < columnCount - 1){
+                $("#totalRow").append(`<td><input type="text" name="total[]" value="${total}"></td>`);
+                
+            }
+        });
+    }
+
+    $(document).on("keyup", ".operation_target input", function () {
+        calculateTotals()
+    });
+        
     })
 
 

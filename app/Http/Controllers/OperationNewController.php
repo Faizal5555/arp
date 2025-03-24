@@ -28,6 +28,7 @@ use App\Models\operationImage;
 use App\Models\RfqDetailsTable;
 use DB;
 
+
 class OperationNewController extends Controller
 {
     public function createWon(Request $req)
@@ -350,7 +351,7 @@ class OperationNewController extends Controller
          */
     public function store(Request $req)
     {
-        // dd($req->all());
+        //dd($req->all());
         $response_data = [];
         $validator = Validator::make($req->all(),
         [
@@ -381,6 +382,7 @@ class OperationNewController extends Controller
                 $operation->respondent_type = json_encode($req->respondent_type);
                 $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
+                $operation->total =json_encode($req->total);
                 $operation->country_name = implode(',',$req->country_name_0);
                 $operation->target_group = implode(',',$req->target_group);
                 $operation->user_id = auth()->user()->id;
@@ -431,7 +433,9 @@ class OperationNewController extends Controller
                 //     // var_dump($dt->year);
                 // }
                 $operation->project_no = $req->project_no;
-                
+                if (auth()->user()->user_type === 'admin' || auth()->user()->user_type === 'operation') {
+                    $operation->pm_updated_at = now()->toDateString(); // You can also use Carbon::now()
+                }
                 if ($operation->save()) {
                     if (count($req->other_document)> 0)
                     {
@@ -653,6 +657,7 @@ class OperationNewController extends Controller
                 $operation->respondent_type = json_encode($req->respondent_type);
                 $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
+                $operation->total =json_encode($req->total);
                 $operation->country_name = implode(',',$req->country_name_0);
                 $operation->target_group = implode(',',$req->target_group);
                 $operation->user_id = auth()->user()->id;
@@ -682,6 +687,10 @@ class OperationNewController extends Controller
                     $filename = time() . '.' .$extension;
                     $file->move('global_assets/survey_link', $filename);
                     $operation->survey_link = 'global_assets/survey_link/' . $filename;
+                }
+
+                if (auth()->user()->user_type === 'admin' || auth()->user()->user_type === 'operation') {
+                    $operation->pm_updated_at = now()->toDateString(); // You can also use Carbon::now()
                 }
         
                 if ($operation->save()) {
@@ -1854,8 +1863,53 @@ public function fieldchart(Request $req)
            }
            
 
+        public function operationOverview()
+        {
+            $closed = "";
+            
+            $user = Auth::user();
+            $new = "";
+            $operation = OperationNew::get();
+            $tl=User::where('user_role','team_leader')->get();
+            $pl=User::where('user_role','project_manager')->get();
+            $ql=User::where('user_role','quality_analyst')->get();
+            $oh=User::where('user_role','operation_head')->get();
+            $operation->transform(function ($item) use ($user) {
+                $createdAt = Carbon::parse($item->created_at);
+                $updatedAt = Carbon::parse($item->updated_at);
+            
+                // Assume updated_at is only valid if it changed from created_at
+                if ($updatedAt->ne($createdAt)) {
+                    // Fetch last version of this record before update using DB
+                    $history = DB::table('operation_new') // Replace 'operations' with your actual table
+                        ->where('id', $item->id)
+                        ->first();
+            
+                    // Check if the project_manager_name is now equal to the current user ID
+                    if ($item->project_manager_name == $user->id) {
+                        $item->display_date = $updatedAt->format('d-m-Y');
+                    } else {
+                        $item->display_date = $createdAt->format('d-m-Y');
+                    }
+                } else {
+                    $item->display_date = $createdAt->format('d-m-Y');
+                }
+                  
+                return $item;
+            });
+            return view('operation_head',compact('operation','closed','new','tl','pl','ql','oh'));
+        }
 
 
+
+        public function updateStatus(Request $request)
+        {
+            $operation = OperationNew::find($request->id);
+            $operation->status = $request->status;
+            $operation->save();
+            $response_data=["success"=>1,"message"=>"Updated Successfully"];
+            return response()->json($response_data);
+        }
 
     
 }

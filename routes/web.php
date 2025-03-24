@@ -259,7 +259,8 @@ Route::post('/operationNew/vendorrequestbalance', 'App\Http\Controllers\Operatio
 Route::post('/operationNew/clientfinal', 'App\Http\Controllers\OperationNewController@clientfinal')->name('operationNew.clientfinal');
 Route::post('/operationNew/vendorfinal', 'App\Http\Controllers\OperationNewController@vendorfinal')->name('operationNew.vendorfinal');
 Route::get('/operationNew/projectview/{id}', 'App\Http\Controllers\OperationNewController@projectview')->name('operationNew.projectview');
-
+Route::get('/operationNew/overview', 'App\Http\Controllers\OperationNewController@operationOverview')->name('operationNew.overview');
+Route::post('/operationNew/status', 'App\Http\Controllers\OperationNewController@updateStatus')->name('operationNew.updateStatus');
 
 
 // field perfomance

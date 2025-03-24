@@ -404,7 +404,14 @@
         border-color: #0b5dbb;
 
     }
-
+    .remove-group {
+        position: absolute;
+        top: -22px;
+        right: 0px;
+    }
+    .relative{
+        position: relative;
+    }
 
     /* end new design */
 </style>
@@ -1099,13 +1106,16 @@
                                                     data-count="0" type="button">
                                                     Add New Country
                                                 </button>
+                                                <button class="ml-2 btn btn-success" style="float: right;"id="AddTargetGroup"
+                                                data-count="0" type="button"><i class="fa-solid fa-plus"></i>
+                                                Add Target Group
+                                            </button>
                                                 <div class="col-md-12 table-responsive" style="overflow-x:auto;">
 
                                                     {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                                     remove Industry
                                                 </button> --}}
-                                                    <table border="1" name="" id="mtables">
-                                                        <tr>
+                                                    <table border="1" name="" id="mtables" class="mt-4">
                                                         <tr>
                                                             <th class="operation-country">Country</th>
                                                             <th colspan="2" style="text-align: center"><input
@@ -1132,7 +1142,6 @@
                                                                     type="text" class="form-control"
                                                                     name="target_group[5]" style="text-align: center"
                                                                     value="Target Group 6"></th>
-                                                        </tr>
                                                         </tr>
                                                         <tr>
                                                             <td></td>
@@ -2776,13 +2785,43 @@
                 })
             </script>
             <script>
-                $(document).ready(function () {
+$(document).ready(function () {
+
+    function calculateTotals()
+    {
+        const columnCount = $("#mtables .operation_target:first").children().length;
+        console.log(columnCount);
+        let totals = new Array(columnCount).fill(0);
+        // console.log(totals);
+        $(".operation_target").each(function () {
+            // $(this).find("tr").each(function (index) {
+                $(this).find("td input").each(function (index) {
+                    totals[index] += parseFloat($(this).val()) || 0;
+                    console.log($(this).val());
+                });
+            // })
+        });
+
+        $("#totalRow").empty();
+        $("#totalRow").append(`<td><b>Total</b></td>`);
+        totals.forEach((total,key) => {
+            if(key < columnCount - 1){
+                $("#totalRow").append(`<td><input type="text" name="total[]" value="${total}"></td>`);
+                
+            }
+        });
+    }
+
+    $(document).on("keyup", ".operation_target input", function () {
+        calculateTotals()
+    });
+                  
     // Add new country functionality
     $('#addBtn').on('click', function () {
         // Get the last row's data-count or initialize to -1 if no rows exist
         var lastRow = $('.operation_target').last();
         var count = lastRow.length ? parseInt(lastRow.attr('data-count')) + 1 : 0;
-
+        let td_length = $('#mtables .operation_target:first').find('td').length;
         // Construct the new row
         var html = `
         <tr class="operation_target" data-count="${count}">
@@ -2808,18 +2847,98 @@
             <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
             <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
             <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
-            <td>
-                <button type="button" class="ml-2 btn btn-danger removeBtn">Remove</button>
-            </td>
-        </tr>`;
+            `
+        if(td_length > 13)
+        {
+            let remove_count = $('.remove-group').map(function () {
+                return $(this).data('count');
+            }).get();
+            let j = 0;
+            for(i = 13; i < td_length; i+=2)
+            {
+                html += `<td class="remove-group-${remove_count[j]}"><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+                <td class="remove-group-${remove_count[j]}"><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>`;
+                j++;
+            }
+        }
+        html +=`<td>
+                    <button type="button" class="ml-2 btn btn-danger removeBtn">Remove</button>
+                </td>
+            </tr>`;
 
         // Append the new row to the table
-        $('#mtables').append(html);
+        $('#totalRow').before(html);
+        calculateTotals();
     });
 
     // Remove country functionality
     $(document).on('click', '.removeBtn', function () {
         $(this).closest('tr').remove();
+        calculateTotals();
+    });
+
+    $(document).on('input', '.operation_target input[type="text"]', function () {
+        calculateTotals();
+    });
+
+    var totalRowHtml = `
+    <tr id="totalRow">
+        <td><b>Total</b></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+        <td class="total"><input type="text" name="total[]" value=""></td>
+
+        
+    </tr>`;
+    $('#mtables tbody').append(totalRowHtml);
+
+
+    $('#AddTargetGroup').click(function () {
+        let html = "";
+        let j = $(this).attr('data-count');
+        $(this).attr('data-count',parseInt(j) + 1);
+
+        $('#mtables tr').each(function (key, value) {
+            let i = $(this).attr('data-count');
+            if(key == 0)
+            {
+                $(this).append(`<th colspan="2" class="relative remove-group-${j}"><input type="text" class="form-control" name="target_group[]" style="text-align: center" value="Target Group "><button type="button" class="ml-2 btn btn-danger remove-group" data-count="${j}">x</button></th>`);
+            }else if(key == 1){
+                $(this).append(`
+                <td style="text-align: center" class="remove-group-${j}">Sample Target</td><td style="text-align: center" class="remove-group-${j}">Sample Achieved</td>`)
+            }else if( key + 1 == $('#mtables tr').length){
+                $(this).append(`<td class="total remove-group-${j}"><input type="text" name="total[]" value="0"></td><td class="total remove-group-${j}"><input type="text" name="total[]" value="0"></td>`)
+            }else if (key == 2){
+                $(this).append(`<td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_target_0[${i}][]" placeholder="Sample Target">
+                                </td>
+                                <td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_achieved_0[${i}][]" placeholder="Sample Achieved">
+                                </td>`)
+            }else{
+                $(this).find('td:last').before(`<td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_target_0[${i}][]" placeholder="Sample Target">
+                                </td><td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_achieved_0[${i}][]" placeholder="Sample Achieved">
+                                </td>`   );
+            }
+        })
+
+        // Append the new row to the table  
+    })
+    $(document).on('click', '.remove-group', function () {
+        let i = $(this).attr('data-count');
+        $(`.remove-group-${i}`).remove();
+        calculateTotals();
     });
 });
 

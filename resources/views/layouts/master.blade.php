@@ -642,7 +642,7 @@ select.form-control{
                   <li class="nav-item {{ (Route::is('operationNew.indexclose')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">Closed Projects</a></li>
                   <li class="nav-item {{ (Route::is('operationNew.operation')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.operation')}}">Project Status </a></li>
                    <li class="nav-item {{ (Route::is('operationNew.operationperfomance')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.operationperfomance')}}">Performance</a></li>
-                  <li class="nav-item {{ (Route::is('operationdashboard')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationdashboard')}}">Overview</a></li>
+                  <li class="nav-item {{ (Route::is('operationNew.overview')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.overview')}}">Overview</a></li>
                 </ul>
               </div>
             </li>

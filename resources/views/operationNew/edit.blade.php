@@ -367,6 +367,14 @@ input.form-control {
         border-color: #0b5dbb;
 
     }
+    .remove-group {
+        position: absolute;
+        top: -22px;
+        right: 0px;
+    }
+    .relative{
+        position: relative;
+    }
 </style>
 @section('page_title', 'Operation New Project')
 @section('content')
@@ -2015,7 +2023,7 @@ input.form-control {
                                         
                                     </a>
                                          
-                                         @if($k != 0)<i class="fa-solid fa-circle-minus removebutton" style="color:red;" data-id="{{$value->id}}"></i>
+                                         @if($k != 0)<i class="fa-solid fa-circle-minus minus" style="color:red;" data-id="{{$value->id}}"></i>
                                          @endif
                                         </div>
                                         
@@ -2054,7 +2062,7 @@ input.form-control {
                             
                                         @foreach($respondentTypes as $key => $type)
                                             <div class="d-flex mb-2 align-items-center respondent-type-row">
-                                                <input type="text" name="respondent_type[]" class="form-control" value="{{ $type }}" required>
+                                                <input type="text" name="respondent_type[]"  class="form-control" value="{{ $type }}" required>
                                                 
                                                 @if($key === 0)
                                                     {{-- Plus icon only for the first row --}}
@@ -2086,27 +2094,31 @@ input.form-control {
                             <!--        </div>-->
                             <!--    </div>-->
                             <!--</div>-->
+                            <?php
+                                $world=explode(",",$operation->country_name);
+                                $sample_target=json_decode($operation->sample_target,true);
+                                $sample_achieved=json_decode($operation->sample_achieved,true);
+                                $target_group=explode(",",$operation->target_group);
+                            ?>  
                             <div class="col-md-12 ">
                                 <div class="form-group row">
                                     <label class="col-lg-12 col-form-label font-weight-semibold">Target Table<span
                                             class="text-danger"></span></label>
-                                            <button class="ml-2 btn btn-danger"  style="float: right;"id="addBtn" type="button">
+                                            <button class="ml-2 btn btn-danger"  style="float: right;"id="addBtn" data-count="{{count($world) - 1}}" type="button">
                                                 Add New Country
+                                            </button>
+                                            <button class="ml-2 btn-sm btn-success" style="float: right; height: 40px;"id="AddTargetGroup"
+                                                data-count="0" type="button"><i class="fa-solid fa-plus"></i>
+                                                Add Target Group
                                             </button>
                                     <div class="col-md-12 table-responsive" style="overflow-x:auto;">
                                     
-                                        <?php
-                                        $world=explode(",",$operation->country_name);
-                                        $sample_target=json_decode($operation->sample_target,true);
-                                        $sample_achieved=json_decode($operation->sample_achieved,true);
-                                        $target_group=explode(",",$operation->target_group);
                                         
-                                        ?>  
                                        
                                         {{-- <button class="ml-2 btn btn-danger" class="removeBtn" type="button">
                                             remove Industry
                                         </button> --}}
-                                    <table border="1" name="" id="mtables">
+                                    <table border="1" name="" class="mt-4" id="mtables">
                                       
                                         <tr>
                                             <th class="operation-country">Country</th>
@@ -2119,26 +2131,17 @@ input.form-control {
                                             
                                         </tr>
                                         <tr>
-                                            <td></td>
+                                        @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                        <td></td>
+                                        @for ($i = 0; $i < count(json_decode($operation->total)); $i+=2) 
                                             <td style="text-align: center">Sample Target</td>
                                             <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                            <td style="text-align: center">Sample Target</td>
-                                            <td style="text-align: center">Sample Achieved</td>
-                                        </tr>
-                                            
-                                                
+                                        @endfor
+                                        @endif
                                                
                                                     
                                             @foreach ($world as $c=> $data )
-                                            <tr>
+                                            <tr class="operation_target" data-count="{{$c}}">
                                                 <td >
                                                
                                                 <select class="form-control label-gray-" name="country_name_0[]" id="country_name" required>
@@ -2179,6 +2182,15 @@ input.form-control {
 
                                         </tr>
                                                             @endforeach  
+                                            <tr id="totalRow">
+                                                @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                                <td>Total</td>
+                                                @foreach (json_decode($operation->total) as $total)
+                                                    <td class="total"><input type="text" name="total[]" class="border-0" value="{{$total}}"></td>
+                                                @endforeach
+                                                @endif
+                                            </tr>
+                                        {{-- @if() --}}
                                     </table><br>
                                     </div>
                                 </div>
@@ -3680,64 +3692,183 @@ $(document).on('click','.btn-country',function(){
 
     
 $(document).ready(function(){
-    html=`<tr id="addoperation">
+    // html=`<tr id="addoperation">
                                             
-        <td>
-            <select class="form-control label-gray-3" name="country_name_0[]" id="country_name" required>
-            <option class="label-gray-3" value="">Select Country</option>
+    //     <td>
+    //         <select class="form-control label-gray-3" name="country_name_0[]" id="country_name" required>
+    //         <option class="label-gray-3" value="">Select Country</option>
                 
-                @if (count($country_fetch) > 0)
-                @foreach($country_fetch as $value)
-                <option value="{{$value->name}}">{{$value->name}}</option>
-                @endforeach
-                @endif
-            </select>
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td><td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
-        </td>
-        <td>
-            <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
-        </td>
-        <td>
-            <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
-                                            Remove
-                                        </button>
-        </td>
-    </tr>`;
+    //             @if (count($country_fetch) > 0)
+    //             @foreach($country_fetch as $value)
+    //             <option value="{{$value->name}}">{{$value->name}}</option>
+    //             @endforeach
+    //             @endif
+    //         </select>
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td><td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td><td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_target_0[]" placeholder="Sample Target">
+    //     </td>
+    //     <td>
+    //         <input type="text" class="border-0" name="sample_achieved_0[]" placeholder="Sample Achieved">
+    //     </td>
+    //     <td>
+    //         <button class="ml-2 btn btn-danger" id="removeBtn" type="button">
+    //                                         Remove
+    //                                     </button>
+    //     </td>
+    // </tr>`;       
+    function calculateTotals()
+    {
+        const columnCount = $("#mtables .operation_target:first").children().length;
+        console.log(columnCount);
+        let totals = new Array(columnCount).fill(0);
+        // console.log(totals);
+        $(".operation_target").each(function () {
+            // $(this).find("tr").each(function (index) {
+                $(this).find("td input").each(function (index) {
+                    totals[index] += parseFloat($(this).val()) || 0;
+                    console.log($(this).val());
+                });
+            // })
+        });
+
+        $("#totalRow").empty();
+        $("#totalRow").append(`<td><b>Total</b></td>`);
+        totals.forEach((total,key) => {
+            if(key < columnCount - 1){
+                $("#totalRow").append(`<td><input type="text" name="total[]" value="${total}"></td>`);
+                
+            }
+        });
+    }
+
+    $(document).on("keyup", ".operation_target input", function () {
+        calculateTotals()
+    });                                                                                                       
     $(document).on('click' ,'#addBtn',function(){
-    $("#mtables").append(html);
+        var lastRow = $('.operation_target').last();
+        var count = lastRow.length ? parseInt(lastRow.attr('data-count')) + 1 : 0;
+        let td_length = $('#mtables .operation_target:first').find('td').length;
+        // Construct the new row
+        var html = `
+        <tr class="operation_target" data-count="${count}">
+            <td>
+                <select class="form-control label-gray-3" name="country_name_0[${count}]" required>
+                    <option value="">Select Country</option>
+                    @if (count($country_fetch) > 0)
+                    @foreach ($country_fetch as $value)
+                    <option value="{{ $value->name }}">{{ $value->name }}</option>
+                    @endforeach
+                    @endif
+                </select>
+            </td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            <td><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+            <td><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>
+            `
+        if(td_length > 13)
+        {
+            let remove_count = $('.remove-group').map(function () {
+                return $(this).data('count');
+            }).get();
+            let j = 0;
+            for(i = 13; i < td_length; i+=2)
+            {
+                html += `<td class="remove-group-${remove_count[j]}"><input type="text" class="border-0" name="sample_target_0[${count}][]" placeholder="Sample Target"></td>
+                <td class="remove-group-${remove_count[j]}"><input type="text" class="border-0" name="sample_achieved_0[${count}][]" placeholder="Sample Achieved"></td>`;
+                j++;
+            }
+        }
+        html +=`<td>
+                    <button type="button" class="ml-2 btn btn-danger removeBtn">Remove</button>
+                </td>
+            </tr>`;
+
+        // Append the new row to the table
+        $('#totalRow').before(html);
+        calculateTotals();
     });
    $(document).on('click', '#removeBtn', function(){  
          $(this).closest("tr").remove();
+         calculateTotals();
+    });
+    $(document).on('input', '.operation_target input[type="text"]', function () {
+        calculateTotals();
+    });
+    $('#AddTargetGroup').click(function () {
+        let html = "";
+        let j = $(this).attr('data-count');
+        $(this).attr('data-count',parseInt(j) + 1);
+
+        $('#mtables tr').each(function (key, value) {
+            let i = $(this).attr('data-count');
+            if(key == 0)
+            {
+                $(this).append(`<th colspan="2" class="relative remove-group-${j}"><input type="text" class="form-control" name="target_group[]" style="text-align: center" value="Target Group "><button type="button" class="ml-2 btn btn-danger remove-group" data-count="${j}">x</button></th>`);
+            }else if(key == 1){
+                $(this).append(`
+                <td style="text-align: center" class="remove-group-${j}">Sample Target</td><td style="text-align: center" class="remove-group-${j}">Sample Achieved</td>`)
+            }else if( key + 1 == $('#mtables tr').length){
+                $(this).append(`<td class="total remove-group-${j}"><input type="text" name="total[]" value="0" class="border-0"></td><td class="total remove-group-${j}"><input type="text" name="total[]" value="0" class="border-0"></td>`)
+            }else if (key >= 2 && key < ({{count($world)}} + 2)){
+                $(this).append(`<td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_target_0[${i}][]" placeholder="Sample Target">
+                                </td>
+                                <td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_achieved_0[${i}][]" placeholder="Sample Achieved">
+                                </td>`)
+            }else{
+                $(this).find('td:last').before(`<td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_target_0[${i}][]" placeholder="Sample Target">
+                                </td><td class="remove-group-${j}">
+                                    <input type="text" class="border-0" name="sample_achieved_0[${i}][]" placeholder="Sample Achieved">
+                                </td>`   );
+            }
+        })
+        calculateTotals();
+        // Append the new row to the table  
+    })
+    $(document).on('click', '.remove-group', function () {
+        let i = $(this).attr('data-count');
+        $(`.remove-group-${i}`).remove();
+        calculateTotals();
     });
 });
 
@@ -5371,6 +5502,7 @@ $("#complete").validate({
 $(document).on('click', '.remove-respondent-type', function () {
     $(this).closest('.respondent-type-row').remove();
 });
+
 
 </script>
 @endsection
