@@ -168,6 +168,17 @@ div#vendor-template {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">
+                                        Comments <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <textarea name="project_comment" style="height:150px;" class="form-control" readonly>{{ $operation && $operation->project_comment ? $operation->project_comment : '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                             @endsection
 
                         </div>

@@ -2195,6 +2195,18 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">
+                                        Comments <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <textarea name="project_comment" style="height:150px;" class="form-control">{{ $operation && $operation->project_comment ? $operation->project_comment : '' }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <button type="button" id="Operation" class="btn btn-primary">Back</button>
                                 <button type="submit" id="addRegisterButton"
@@ -3332,6 +3344,9 @@ input.form-control {
                     required: true
                 },
                 team_leader: {
+                    required: true
+                },
+                project_comment:{
                     required: true
                 },
             },

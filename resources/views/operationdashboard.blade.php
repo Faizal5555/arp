@@ -340,7 +340,12 @@ th, td {
                                 
                             </td>
                             <td>{{ $data->pm_updated_at ? \Carbon\Carbon::parse($data->pm_updated_at)->format('d-m-y') : '-' }}</td>
-                           </tr>
+                            <td>
+                                <span style="display: block; min-width: 250px; line-height: normal; white-space: normal; padding: 5px; word-break: break-word;">
+                                    {{ $data->project_comment ? $data->project_comment : '-' }}
+                                </span>
+                            </td>
+                        </tr>
                              @endforeach
                               @endif
                         </tbody>

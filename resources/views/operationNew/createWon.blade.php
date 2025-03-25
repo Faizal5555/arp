@@ -1242,6 +1242,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label 
+                                                    class="col-lg-3 col-form-label font-weight-semibold">Comments
+                                                    <span class="text-danger">*</span></label>
+                                                <div class="col-lg-9">
+                                                    <textarea name="project_comment" style="height:150px;" value="" id="project_comment"
+                                                        type="text" class="form-control"
+                                                        placeholder="Comments"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
                                             <a href="" id="add_reg1" class="btn btn-outline-secondary">Back</a>
                                             <button type="submit" id="addRegisterButton"
@@ -2720,6 +2732,9 @@
                                 required: true
                             },
                             team_leader: {
+                                required: true
+                            },
+                            project_comment:{
                                 required: true
                             },
                             "other_document[]": {

@@ -383,6 +383,7 @@ class OperationNewController extends Controller
                 $operation->sample_target = json_encode($req->sample_target_0);
                 $operation->sample_achieved =json_encode($req->sample_achieved_0);
                 $operation->total =json_encode($req->total);
+                $operation->project_comment = $req->project_comment;
                 $operation->country_name = implode(',',$req->country_name_0);
                 $operation->target_group = implode(',',$req->target_group);
                 $operation->user_id = auth()->user()->id;
@@ -660,6 +661,7 @@ class OperationNewController extends Controller
                 $operation->total =json_encode($req->total);
                 $operation->country_name = implode(',',$req->country_name_0);
                 $operation->target_group = implode(',',$req->target_group);
+                $operation->project_comment = $req->project_comment;
                 $operation->user_id = auth()->user()->id;
                 if ($req->hasFile('questionnarie'))
                 {
