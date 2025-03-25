@@ -1300,6 +1300,11 @@ public function fieldchart(Request $req)
            $clientrequest->client_contract=$req->client_contract;
            $clientrequest->invoice_type=$req->invoice_type;
            $clientrequest->operation_id=$req->operation_id;
+           if ($req->invoice_type == 'advance') {
+            $clientrequest->advance_comment = $req->advance_comment ?? null;
+        } elseif ($req->invoice_type == 'balance') {
+            $clientrequest->balance_comment = $req->balance_comment ?? null;
+        }
 
            if($clientrequest->save()){
                $response_data=["success"=>1,"message"=>"sucesssfully"];

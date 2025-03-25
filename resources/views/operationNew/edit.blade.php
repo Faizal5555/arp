@@ -3077,6 +3077,7 @@ input.form-control {
              <input type="hidden" name="operation_id" id="operation_id" class="form-control" value="{{$operation && $operation->id ? $operation->id :''}}">
              <input type="hidden" name="id" id="advanceid" class="form-control" value="{{$operation && $operation->rfq ? $operation->rfq :''}}">
              <input type="hidden" name="invoice_type" value="advance" id="invoice_type">
+            
             </div>
 
              {{-- important --}}
@@ -3093,6 +3094,10 @@ input.form-control {
                <div class="form-group">  
                 <label>Client Contract </label>    
                 <input type="type" name="client_contract" id="client_contract" class="form-control">
+               </div>
+               <div class="form-group">
+                <label>Comments</label>    
+                <textarea type="type" name="advance_comment" id="advance_comment" class="form-control"></textarea>
                </div>
                <div class="modal-footer d-flex justify-content-between">
                    <a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a>
@@ -3143,6 +3148,10 @@ input.form-control {
            <div class="form-group">  
             <label>Client Contract </label>    
             <input type="type" name="client_contract" id="clientcontract" class="form-control">
+           </div>
+           <div class="form-group">
+            <label>Comments</label>    
+            <textarea type="type" name="balance_comment" id="balance_comment"  class="form-control"></textarea>
            </div>
            <div class="modal-footer d-flex justify-content-between">
            <a href="/operationNew/projectview/{{$operation && $operation->id ? $operation->id :''}}" style="color:green;text-decoration: none;" class="d-flex justify-content-start">Project File</a>
@@ -4541,6 +4550,7 @@ $("#complete").validate({
                     $('#client_advance').val(data.wonproject.currency+' '+data.wonproject.client_advance);
                     $('#client_contract').val(data.wonproject.client_contract);
                     
+                    
 
                     console.log(data.wonproject);
                 }
@@ -4580,6 +4590,7 @@ $("#complete").validate({
                     $('#clientid').val(data.wonproject.client_id);
                     $('#client_balance').val(data.wonproject.currency+' '+data.wonproject.client_balance);
                     $('#clientcontract').val(data.wonproject.client_contract);
+                   
                 }
                 else{
                     alert('fail');
@@ -4969,7 +4980,7 @@ $("#complete").validate({
                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                  },
         });
-
+       
         $.ajax({
             type:"post",
             data:{
@@ -4978,7 +4989,9 @@ $("#complete").validate({
                 client_id:$('#client_id').val(),
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
-                invoice_type:$('#invoice_type').val()
+                invoice_type:$('#invoice_type').val(),
+                advance_comment:$('#advance_comment').val(),
+               
             },
             url:"{{route('operationNew.clientrequest')}}",
             datatype:'json',
@@ -5032,7 +5045,9 @@ $("#complete").validate({
                 client_id:$('#clientid').val(),
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
-                invoice_type:$('#invoice_type1').val()
+                invoice_type:$('#invoice_type1').val(),
+                balance_comment:$('#balance_comment').val(),
+
             },
             url:"{{route('operationNew.clientrequest')}}",
             datatype:'json',

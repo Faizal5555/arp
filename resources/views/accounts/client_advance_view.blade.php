@@ -2788,6 +2788,16 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Comments
+                                            <span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" readonly="readonly"
+                                                value="{{ $clientrequest && $clientrequest->invoice_type == 'balance' ? $clientrequest->balance_comment : ($clientrequest && $clientrequest->invoice_type == 'advance' ? $clientrequest->advance_comment : '') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
                                         <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client
                                             Contract <span class="text-danger"></span></label>
                                         <div class="col-lg-4 d-flex">
