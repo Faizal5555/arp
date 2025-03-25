@@ -2131,7 +2131,11 @@ input.form-control {
                                             
                                         </tr>
                                         <tr>
-                                        @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                            @php
+                                            $totalData = json_decode($operation->total, true);
+                                        @endphp
+                                        
+                                        @if(isset($operation) && isset($operation->total) && is_array($totalData) && count($totalData) > 0)
                                         <td></td>
                                         @for ($i = 0; $i < count(json_decode($operation->total)); $i+=2) 
                                             <td style="text-align: center">Sample Target</td>
