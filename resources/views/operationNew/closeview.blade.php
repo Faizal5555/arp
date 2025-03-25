@@ -2086,13 +2086,17 @@ input.form-control {
                                             
                                         </tr>
                                         <tr>
-                                            @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                            @php
+                                            $totalData = json_decode($operation->total, true);
+                                        @endphp
+                                        
+                                        @if(isset($totalData) && is_array($totalData) && count($totalData) > 0)
                                             <td></td>
-                                            @for ($i = 0; $i < count(json_decode($operation->total)); $i+=2) 
+                                            @for ($i = 0; $i < count($totalData); $i+=2) 
                                                 <td style="text-align: center">Sample Target</td>
                                                 <td style="text-align: center">Sample Achieved</td>
                                             @endfor
-                                            @endif
+                                        @endif
                                         </tr>
                                             
                                                 
@@ -2140,14 +2144,18 @@ input.form-control {
 
                                         </tr>
                                                             @endforeach  
-                                                            <tr id="totalRow">
-                                                                @if(isset($operation) && isset($operation->total) && count(json_decode($operation->total)) > 0)
+                                                            @php
+                                                        $totalData = json_decode($operation->total, true); // Decode JSON safely
+                                                    @endphp
+                                                        
+                                                        <tr id="totalRow">
+                                                            @if(isset($totalData) && is_array($totalData) && count($totalData) > 0)
                                                                 <td>Total</td>
-                                                                @foreach (json_decode($operation->total) as $total)
-                                                                    <td class="total"><input type="text" name="total[]" class="border-0" value="{{$total}}"></td>
+                                                                @foreach ($totalData as $total)
+                                                                    <td class="total"><input type="text" name="total[]" class="border-0" value="{{ $total }}"></td>
                                                                 @endforeach
-                                                                @endif
-                                                            </tr>
+                                                            @endif
+                                                        </tr>
                                     </table><br>
                                     </div>
                                 </div>
