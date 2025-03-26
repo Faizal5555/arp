@@ -310,16 +310,38 @@ class BusinessResearchController extends Controller
 
 
 
-    public function getProjects(Request $request, $id)
+   public function getProjects(Request $request, $id)
     {
 
-        $record = BusinessResearch::with('teamMembers.user')->findOrFail($id);
-        $businessResearch = BusinessResearch::findOrFail($id);
-        $teamMember = BusinessTeamMember::find($request->team_member_id);
-        $selectedTeamMemberId = $request->team_member_id;
+        // $record = BusinessResearch::with('teamMembers.user')->findOrFail($id);
+        // $businessResearch = BusinessResearch::findOrFail($id);
+        // $teamMember = BusinessTeamMember::find($request->team_member_id);
+        // $selectedTeamMemberId = $request->team_member_id;
+       
 
-        return view('business.show', compact('record','businessResearch','teamMember','selectedTeamMemberId' ));
-        
+
+        // return view('business.show', compact('record','businessResearch','teamMember','selectedTeamMemberId' ));
+        $businessResearch = BusinessResearch::findOrFail($id);
+
+        // Load related team members with users
+        $record = BusinessResearch::with(['teamMembers.user'])->findOrFail($id);
+    
+        $teamData = [];
+    
+        foreach ($record->teamMembers as $member) {
+            $questions = BusinessResearchQuestion::where('business_research_id', $id)
+                ->where('user_id', $member->user_id)
+                ->get();
+    
+            $teamData[] = [
+                'id' => $member->id,
+                'member' => $member->user->name,
+                'user_id' => $member->user_id,
+                'questions' => $questions
+            ];
+        }
+       
+        return view('business.show', compact('record', 'businessResearch', 'teamData'));
     }
 
 
@@ -330,7 +352,7 @@ class BusinessResearchController extends Controller
             ->where('user_id', $teamMember->user_id)
             ->get();
     return view('business.business_data', compact('questions'));
-    }
+    } 
 
 
        
@@ -360,90 +382,147 @@ class BusinessResearchController extends Controller
     }
 
     public function storeQuestions(Request $request, $businessResearchId)
-{   
-    //  dd($request->all());
-    $request->validate([
-        'que' => 'required|array',
-        'ans' => 'required|array',
-        'attachment.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx',
-        'question_id' => 'nullable|array',
-    ]);
-
-    if ($request->filled('team_member_id')) {
-        $teamMember = BusinessTeamMember::find($request->team_member_id);
-        $userId = $teamMember ? $teamMember->user_id : auth()->id(); // fallback just in case
-    } else {
-        $userId = auth()->id();
-    }
-
-    $questionIds = $request->question_id ?? [];
-    $questions = $request->que ?? [];
-    $answers = $request->ans ?? [];
+    {
+        $request->validate([
+            'que' => 'required|array',
+            'ans' => 'required|array',
+            'attachment.*.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx',
+            'question_id' => 'nullable|array',
+        ]);
     
+        $que = $request->input('que');
+        $isGrouped = is_array(reset($que)); // true if format is que[userid][]
     
-    $submittedIds = [];
-    foreach ($questionIds as $index => $id) {
-        // Check if corresponding question/answer exists at same index
-        if (!empty($questions[$index]) || !empty($answers[$index])) {
-            $submittedIds[] = $id;
-        }
-    }
+        if ($isGrouped) {
+            foreach ($que as $userId => $questions) {
+                $answers = $request->ans[$userId] ?? [];
+                $questionIds = $request->question_id[$userId] ?? [];
+                $attachments = $request->file("attachment.$userId") ?? [];
     
-    $existingIds = BusinessResearchQuestion::where('business_research_id', $businessResearchId)->pluck('id')->toArray();
-    $idsToDelete = array_diff($existingIds, $submittedIds);
+                $existingIds = BusinessResearchQuestion::where('business_research_id', $businessResearchId)
+                    ->where('user_id', $userId)
+                    ->pluck('id')
+                    ->toArray();
     
-    if (!empty($idsToDelete)) {
-        BusinessResearchQuestion::whereIn('id', $idsToDelete)->delete();
-    }
-    foreach ($request->que as $index => $questionText) {
-        $questionId = $request->question_id[$index] ?? null;
-
-        $attachmentPath = null;
-        if ($request->hasFile("attachment.$index")) {
-            $file = $request->file("attachment.$index");
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $attachmentPath = $file->storeAs('attachments', $filename, 'public');
-        }
-
-        if ($questionId) {
-            // Update existing
-            $existingQuestion = BusinessResearchQuestion::where('id', $questionId)
-            ->where('user_id', $userId)
-            ->first();
-
-            if ($existingQuestion) {
-                $updateData = [
-                    'question' => $questionText,
-                    'answer' => $request->ans[$index],
-                ];
-
-                if ($attachmentPath) {
-                    $updateData['attachment'] = $attachmentPath;
+                $submittedIds = [];
+    
+                foreach ($questions as $index => $questionText) {
+                    if (is_array($questionText)) {
+                        $questionText = implode(', ', $questionText);
+                    }
+    
+                    $answer = $answers[$index] ?? null;
+                    if (is_array($answer)) {
+                        $answer = implode(', ', $answer);
+                    }
+    
+                    $questionId = $questionIds[$index] ?? null;
+    
+                    $attachmentPath = null;
+                    if (isset($attachments[$index])) {
+                        $file = $attachments[$index];
+                        $filename = time() . '_' . $file->getClientOriginalName();
+                        $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+                    }
+    
+                    if ($questionId) {
+                        $submittedIds[] = $questionId;
+    
+                        $existing = BusinessResearchQuestion::where('id', $questionId)
+                            ->where('user_id', $userId)
+                            ->first();
+    
+                        if ($existing) {
+                            $existing->update([
+                                'question' => $questionText,
+                                'answer' => $answer,
+                                'attachment' => $attachmentPath ?? $existing->attachment,
+                            ]);
+                        }
+                    } else {
+                        BusinessResearchQuestion::create([
+                            'business_research_id' => $businessResearchId,
+                            'user_id' => $userId,
+                            'question' => $questionText,
+                            'answer' => $answer,
+                            'attachment' => $attachmentPath,
+                        ]);
+                    }
                 }
-
-                $existingQuestion->update($updateData);
+    
+                $idsToDelete = array_diff($existingIds, $submittedIds);
+                if (!empty($idsToDelete)) {
+                    BusinessResearchQuestion::whereIn('id', $idsToDelete)->delete();
+                }
             }
         } else {
-            // Create new
-            $createData = [
-                'business_research_id' => $businessResearchId,
-                'user_id' => $userId,
-                'question' => $questionText,
-                'answer' => $request->ans[$index],
-            ];
-
-            if ($attachmentPath) {
-                $createData['attachment'] = $attachmentPath;
+            $userId = auth()->id();
+            $questions = $request->que;
+            $answers = $request->ans;
+            $questionIds = $request->question_id ?? [];
+            $attachments = $request->file('attachment') ?? [];
+    
+            $existingIds = BusinessResearchQuestion::where('business_research_id', $businessResearchId)
+                ->where('user_id', $userId)
+                ->pluck('id')
+                ->toArray();
+    
+            $submittedIds = [];
+    
+            foreach ($questions as $index => $questionText) {
+                if (is_array($questionText)) {
+                    $questionText = implode(', ', $questionText);
+                }
+    
+                $answer = $answers[$index] ?? null;
+                if (is_array($answer)) {
+                    $answer = implode(', ', $answer);
+                }
+    
+                $questionId = $questionIds[$index] ?? null;
+    
+                $attachmentPath = null;
+                if (isset($attachments[$index])) {
+                    $file = $attachments[$index];
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+                }
+    
+                if ($questionId) {
+                    $submittedIds[] = $questionId;
+    
+                    $existing = BusinessResearchQuestion::where('id', $questionId)
+                        ->where('user_id', $userId)
+                        ->first();
+    
+                    if ($existing) {
+                        $existing->update([
+                            'question' => $questionText,
+                            'answer' => $answer,
+                            'attachment' => $attachmentPath ?? $existing->attachment,
+                        ]);
+                    }
+                } else {
+                    BusinessResearchQuestion::create([
+                        'business_research_id' => $businessResearchId,
+                        'user_id' => $userId,
+                        'question' => $questionText,
+                        'answer' => $answer,
+                        'attachment' => $attachmentPath,
+                    ]);
+                }
             }
-
-            BusinessResearchQuestion::create($createData);
+    
+            $idsToDelete = array_diff($existingIds, $submittedIds);
+            if (!empty($idsToDelete)) {
+                BusinessResearchQuestion::whereIn('id', $idsToDelete)->delete();
+            }
         }
+    
+        return redirect()->back()->with('success', 'Q&A saved successfully.');
     }
-
-
-    return redirect()->back()->with('success', 'Questions and answers saved successfully.');
-}
-
+    
+    
 
 public function secondarySearch(Request $request)
 {
@@ -499,13 +578,18 @@ public function exportSearchResults(Request $request)
     ->when($request->filled('keyword'), function ($query) use ($request) {
         $query->where(function ($q) use ($request) {
             $q->where('subject_line', 'like', '%' . $request->keyword . '%')
-              ->orWhere('pn_number', 'like', '%' . $request->keyword . '%');
+              ->orWhere('pn_number', 'like', '%' . $request->keyword . '%')
+              ->orWhereHas('questions', function ($q2) use ($request) {
+                  $q2->where('question', 'like', '%' . $request->keyword . '%')
+                     ->orWhere('answer', 'like', '%' . $request->keyword . '%');
+              });
         });
     })
     ->when($request->filled('client_name'), fn($q) => $q->where('client_name', 'like', '%' . $request->client_name . '%'))
     ->when($request->filled('industry'), fn($q) => $q->where('industry', 'like', '%' . $request->industry . '%'))
     ->when($request->filled('pn_number'), fn($q) => $q->where('pn_number', $request->pn_number))
     ->get();
+    
 
 return Excel::download(new SearchedDataExport($results), 'searched_data.xlsx');
 }

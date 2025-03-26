@@ -129,7 +129,8 @@
                     <label class="mb-2 pl-5"><strong>Question & Answer Section</strong></label>
                     <div id="qa-wrapper">
                         @if($record->questions->isNotEmpty())
-                            @foreach($record->questions as $index => $qa)
+                        @foreach($record->questions as $index => $qa)
+                             
                                 <input type="hidden" name="question_id[]" value="{{ $qa->id }}">
                                 <div class="row qa-row mb-3">
                                     <div class="col-md-1"></div>
@@ -200,26 +201,27 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    $(document).ready(function () {
-        $(document).on('click', '.add-qa-btn', function () {
-            var newRow = `
-                <div class="row qa-row mb-3">
-                      <div class="col-md-1"></div>
-                    <div class="col-md-3">
-                        <textarea class="form-control" name="que[]" placeholder="Enter question"></textarea>
-                    </div>
-                    <div class="col-md-3">
-                        <textarea class="form-control" name="ans[]" placeholder="Enter answer"></textarea>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="file" class="form-control" name="attachment[]">
-                    </div>
-                    <div class="col-md-1 d-flex align-items-start">
-                        <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
-                    </div>
-                </div>
-            `;
-            $('#qa-wrapper').append(newRow);
-        });
+    $(document).on('click', '.add-qa-btn', function () {
+    const userId = {{ auth()->id() }};
+    const newRow = `
+        <div class="row qa-row mb-3">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="que[${userId}][]" placeholder="Enter question"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="ans[${userId}][]" placeholder="Enter answer"></textarea>
+            </div>
+            <div class="col-md-3">
+                <input type="file" class="form-control" name="attachment[${userId}][]">
+            </div>
+            <div class="col-md-1 d-flex align-items-start">
+                <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
+            </div>
+        </div>
+    `;
+    $('#qa-wrapper').append(newRow);
+});
 
         $(document).on('click', '.remove-qa-btn', function () {
             $(this).closest('.qa-row').remove();
@@ -248,7 +250,16 @@ $('#qa-form').on('submit', function (e) {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // better to use meta token
         },
+        beforeSend: function () {
+        // Disable the submit button and show the loader inside it
+        $('#addRegisterButton')
+            .prop('disabled', true)
+            .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+        },
         success: function (response) {
+            $('#addRegisterButton')
+            .prop('disabled', false)
+            .html('Submit');
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
@@ -260,6 +271,9 @@ $('#qa-form').on('submit', function (e) {
             });
         },
         error: function (xhr) {
+            $('#addRegisterButton')
+            .prop('disabled', false)
+            .html('Submit');
             Swal.fire({
                 icon: 'error',
                 title: 'Oops!',

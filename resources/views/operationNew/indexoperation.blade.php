@@ -216,7 +216,7 @@ input#po_no{
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-12 ml-4">
+                        <div class="col-md-12">
                             <div class="d-flex justify-content-end">
                                 {{-- <div class="input-group" >
                                     <div>

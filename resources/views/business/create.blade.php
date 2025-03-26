@@ -231,7 +231,16 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+                beforeSend: function () {
+                        // Disable the submit button and show the loader inside it
+                $('#save-project')
+                    .prop('disabled', true)
+                    .html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
+                },
                 success: function (response) {
+                    $('#save-project')
+                            .prop('disabled', false)
+                            .html('Submit');
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',

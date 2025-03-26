@@ -3129,6 +3129,7 @@ input.form-control {
         <form enctype="multipart/form-data">
                     @csrf
             {{-- important --}}
+            
             <input type="hidden" name="operation_id" id="operationid" class="form-control" value="{{$operation && $operation->id ? $operation->id :''}}">
             <input type="hidden" name="invoice_type" value="balance" id="invoice_type1">
          <div class="form-group">  

@@ -83,36 +83,36 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group mt-3">
-                    <label for="team_member_id">Allocated Team Member</label>
+                    {{-- <label for="team_member_id">Allocated Team Member</label>
                         <select class="form-control" id="team_member_id" name="team_member_id">
                             <option value="">-- Select --</option>
                             @foreach($record->teamMembers as $member)
                                 <option value="{{ $member->id }}">{{ $member->user->name }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
+                        <label>Attachments</label>
+                        @php
+                            $attachments = $record->attachments ? explode(',', $record->attachments) : [];
+                        @endphp
+                    
+                        @if(count($attachments))
+                            <ul class="list-unstyled">
+                                @foreach($attachments as $attachment)
+                                    @php $attachment = trim($attachment); @endphp
+                                    @if($attachment)
+                                        <li>
+                                            <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download>
+                                                {{ basename($attachment) }}
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>No attachments found.</p>
+                        @endif
                 </div>
                 <div class="col-md-5">
-                    <label>Attachments</label>
-                    @php
-                        $attachments = $record->attachments ? explode(',', $record->attachments) : [];
-                    @endphp
-                
-                    @if(count($attachments))
-                        <ul class="list-unstyled">
-                            @foreach($attachments as $attachment)
-                                @php $attachment = trim($attachment); @endphp
-                                @if($attachment)
-                                    <li>
-                                        <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download>
-                                            {{ basename($attachment) }}
-                                        </a>
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    @else
-                        <p>No attachments found.</p>
-                    @endif
                 </div>
             </div>
 
@@ -121,22 +121,84 @@
         </form>
         
 
-        <form id="qa-form">
+        <form id="qa-form" method="POST" enctype="multipart/form-data" action="{{ route('business.research.save.que', $businessResearch->id) }}">
             @csrf
-                      <input type="hidden" id="business_research_id" value="{{ $businessResearch->id }}">
-                      <input type="hidden" name="team_member_id" value="{{ $selectedTeamMemberId }}">
-                    <div id="qa_section">
-                     {{-- Questions and answers will be loaded here via AJAX --}}
+        
+            @foreach($teamData as $data)
+                <div class="mt-5 border p-3 rounded shadow-sm">
+                    <h5 class="text-primary">Team Member: {{ $data['member'] }}</h5>
+                    @php $wrapperId = 'qa-wrapper-' . $data['user_id']; @endphp
+                    <div id="{{ $wrapperId }}" class="qa-wrapper-container">
+                        @if($data['questions']->isNotEmpty())
+                            @foreach($data['questions'] as $index => $qa)
+                                <input type="hidden" name="question_id[{{ $data['user_id'] }}][]" value="{{ $qa->id }}">
+                                <div class="row qa-row mb-3">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-3">
+                                        <textarea class="form-control" name="que[{{ $data['user_id'] }}][]" placeholder="Enter question">{{ $qa->question }}</textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <textarea class="form-control" name="ans[{{ $data['user_id'] }}][]" placeholder="Enter answer">{{ $qa->answer }}</textarea>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="file" class="form-control" name="attachment[{{ $data['user_id'] }}][]">
+                                        @if($qa->attachment)
+                                            <div>
+                                                <a href="{{ url('adminapp/storage/app/public/' . $qa->attachment) }}" target="_blank" download>
+                                                    {{ basename($qa->attachment) }}
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-start">
+                                        @if($loop->first)
+                                            <button type="button" class="btn btn-sm btn-success add-qa-btn m-2 mt-1"
+                                                data-target="{{ $wrapperId }}"
+                                                data-user="{{ $data['user_id'] }}">+</button>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="row qa-row mb-3">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-3">
+                                    <textarea class="form-control" name="que[{{ $data['user_id'] }}][]" placeholder="Enter question"></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <textarea class="form-control" name="ans[{{ $data['user_id'] }}][]" placeholder="Enter answer"></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="file" class="form-control mb-1" name="attachment[{{ $data['user_id'] }}][]">
+                                </div>
+                                <div class="col-md-1 d-flex align-items-start">
+                                    <button type="button" class="btn btn-sm btn-success add-qa-btn m-2 mt-1"
+                                        data-target="{{ $wrapperId }}"
+                                        data-user="{{ $data['user_id'] }}">+</button>
+                                </div>
+                            </div>
+                        @endif
                     </div>
+                </div>
+            @endforeach
+        
+            <div class="text-center mt-4">
+                <button type="submit" id="save-que" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+        
+    
 
            
 
-            <div class="col-md-12 d-flex align-items-center justify-content-center mt-4">
+            {{-- <div class="col-md-12 d-flex align-items-center justify-content-center mt-4">
                 <a href="{{ route('businessresearch.team') }}" class=" btn btn-outline-secondary">Back</a>
                 <button type="submit" id="addRegisterButton"
                     class="ml-2 btn btn-primary">Submit</button>
 
-            </div>
+            </div> --}}
         </form>
     </div>
 
@@ -148,74 +210,77 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    $(document).ready(function () {
-        $(document).on('click', '.add-qa-btn', function () {
-            var newRow = `
-                <div class="row qa-row mb-3">
-                      <div class="col-md-1"></div>
-                    <div class="col-md-3">
-                        <textarea class="form-control" name="que[]" placeholder="Enter question"></textarea>
-                    </div>
-                    <div class="col-md-3">
-                        <textarea class="form-control" name="ans[]" placeholder="Enter answer"></textarea>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="file" class="form-control" name="attachment[]">
-                    </div>
-                    <div class="col-md-1 d-flex align-items-start">
-                        <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
-                    </div>
-                </div>
-            `;
-            $('#qa-wrapper').append(newRow);
-        });
-
+    $(document).on('click', '.add-qa-btn', function () {
+    const wrapperId = $(this).data('target');
+    const userId = $(this).data('user');
+    const newRow = `
+        <div class="row qa-row mb-3">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="que[${userId}][]" placeholder="Enter question"></textarea>
+            </div>
+            <div class="col-md-3">
+                <textarea class="form-control" name="ans[${userId}][]" placeholder="Enter answer"></textarea>
+            </div>
+            <div class="col-md-3">
+                <input type="file" class="form-control" name="attachment[${userId}][]">
+            </div>
+            <div class="col-md-1 d-flex align-items-start">
+                <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
+            </div>
+        </div>
+    `;
+    $('#' + wrapperId).append(newRow);
+});
         $(document).on('click', '.remove-qa-btn', function () {
             $(this).closest('.qa-row').remove();
         });
     });
-$(document).ready(function () {
 
-$.ajaxSetup({
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-        });
-// Submit form with AJAX POST
-$('#qa-form').on('submit', function (e) {
+
+    $(document).ready(function () {
+        $('#qa-form').on('submit', function (e) {
     e.preventDefault();
 
-    let form = this; // reference the form
-    let formData = new FormData(form); // gather all form data
+    let formData = new FormData(this);
 
     $.ajax({
-        url: "{{ route('business.research.save.que', $record->id) }}", // your Laravel route
+        url: $(this).attr('action'), // use dynamic form action
         type: "POST",
         data: formData,
-        processData: false, // prevent jQuery from converting the data
-        contentType: false, // prevent jQuery from setting content type
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // better to use meta token
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+                        // Disable the submit button and show the loader inside it
+        $('#save-que')
+            .prop('disabled', true)
+            .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
         },
-        success: function (response) {
+        success: function () {
+            $('#save-que')
+            .prop('disabled', false)
+            .html('Submit');
             Swal.fire({
                 icon: 'success',
-                title: 'Success!',
-                text: 'Question & Answer saved successfully.',
+                title: 'Saved!',
+                text: 'All team member Q&A saved.',
                 timer: 2000,
                 showConfirmButton: false
             }).then(() => {
                 location.reload(); // reload after alert
             });
         },
-        error: function (xhr) {
+        error: function () {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops!',
-                text: 'Something went wrong. Please try again.'
+                text: 'Something went wrong.'
             });
         }
     });
 });
+});
+
 
 
 
@@ -244,5 +309,5 @@ $('#team_member_id').on('change', function () {
     
 });
 
-});
+
 </script>
