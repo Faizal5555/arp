@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <label class="col-lg-3 col-form-label font-weight-semibold ">Supplier Email <span
                                             class="text-danger"></span></label>
                                     <div class="col-lg-9">
-                                        <input name="supplier_email" type="text" class="form-control" style="font-family: FontAwesome;" placeholder='&#xf199 Supplier Email' required pattern="[^@]+@[^@]+\.[com]{3,6}">
+                                        <input name="supplier_email" type="text" class="form-control" style="font-family: FontAwesome;" placeholder='&#xf199 Supplier Email' required pattern="[a-z0-9._]+@[a-z]+\.[a-z]{2,10}">
                                     </div>
                                 </div>
                             </div>
