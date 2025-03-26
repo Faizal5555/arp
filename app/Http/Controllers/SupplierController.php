@@ -120,7 +120,7 @@ class SupplierController extends Controller
                 $supplier->user_id = auth()->user()->id;
     
                 if ($supplier->save()) {
-                    $response_data = ["success" => 1, "message" => "Client Created Successfully"];
+                    $response_data = ["success" => 1, "message" => "Supplier Created Successfully"];
                   
                 } else {
                     $response_data = ["success" => 0, "message" => "Site Server Error"];
