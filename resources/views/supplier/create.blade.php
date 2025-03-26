@@ -103,31 +103,31 @@ button#addRegisterButton:hover {
                 supplier_company:{
                     required:true
                 },
-                supplier_manager:{
-                    required:true
-                },
+                // supplier_manager:{
+                //     required:true
+                // },
                 supplier_email:{
                     required:true,
                     email:true
                 },
-                supplier_phone:{
-                    required:true,
-                    number:true,
-                    minlength:9,
-                    maxlength:15
-                },
-                supplier_whatsapp:{
-                    required:true,
-                    number:true,
-                    minlength:9,
-                    maxlength:15
-                },
+                // supplier_phone:{
+                //     required:true,
+                //     number:true,
+                //     minlength:9,
+                //     maxlength:15
+                // },
+                // supplier_whatsapp:{
+                //     required:true,
+                //     number:true,
+                //     minlength:9,
+                //     maxlength:15
+                // },
                 supplier_country:{
                 required:true
                 },
-                other_detail:{
-                    required:true
-                }
+                // other_detail:{
+                //     required:true
+                // }
                 
             },
             errorPlacement: function (error, element) {

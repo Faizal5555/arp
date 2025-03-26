@@ -69,24 +69,24 @@ button#addRegisterButton:hover {
                 supplier_name:{
                     required:true
                 },
-                supplier_manager:{
-                    required:true
-                },
+                // supplier_manager:{
+                //     required:true
+                // },
                 supplier_email:{
                     required:true
                 },
-                supplier_phone:{
-                    required:true
-                },
-                supplier_whatsapp:{
-                    required:true
-                },
+                // supplier_phone:{
+                //     required:true
+                // },
+                // supplier_whatsapp:{
+                //     required:true
+                // },
                 supplier_country:{
                 required:true
                 },
-                other_detail:{
-                    required:true
-                }
+                // other_detail:{
+                //     required:true
+                // }
                 
             },
             errorPlacement: function (error, element) {

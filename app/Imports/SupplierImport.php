@@ -26,7 +26,7 @@ class SupplierImport implements  ToModel, WithHeadingRow, WithValidation
     {
         return [
             'supplier_company' => 'required',
-            'supplier_manager' => 'required',
+            // 'supplier_manager' => 'required',
             'supplier_email' => [
                 'required',
                 'email',
@@ -36,17 +36,17 @@ class SupplierImport implements  ToModel, WithHeadingRow, WithValidation
                     }
                 },
             ],
-            'supplier_phone' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    if (Supplier::where('supplier_phone', $value)->exists()) {
-                        $fail("The phone number '{$value}' already exists.");
-                    }
-                },
-            ],
-            'supplier_whatsapp' => 'required',
+            // 'supplier_phone' => [
+            //     'required',
+            //     function ($attribute, $value, $fail) {
+            //         if (Supplier::where('supplier_phone', $value)->exists()) {
+            //             $fail("The phone number '{$value}' already exists.");
+            //         }
+            //     },
+            // ],
+            // 'supplier_whatsapp' => 'required',
             'supplier_country' => 'required',
-            'other_detail' => 'required',
+            // 'other_detail' => 'required',
         ];
     }
 

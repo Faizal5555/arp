@@ -73,12 +73,12 @@ class SupplierController extends Controller
         $validator = Validator::make(  $request->all(),
         [
             'supplier_company'=>'required',
-            'supplier_manager'=>'required',
+            // 'supplier_manager'=>'required',
             'supplier_email'=>'required|email|unique:supplier,supplier_email',
-            'supplier_phone'=>'required',
-            'supplier_whatsapp'=>'required',
+            // 'supplier_phone'=>'required',
+            // 'supplier_whatsapp'=>'required',
             'supplier_country'=>'required',
-            'other_detail'=>'required'
+            // 'other_detail'=>'required'
 
         ]
               
@@ -151,12 +151,12 @@ class SupplierController extends Controller
       $validator = Validator::make(  $request->all(),
         [
             'supplier_company'=>'required',
-            'supplier_manager'=>'required',
+            // 'supplier_manager'=>'required',
             'supplier_email'=>'required',
-            'supplier_phone'=>'required',
-            'supplier_whatsapp'=>'required',
+            // 'supplier_phone'=>'required',
+            // 'supplier_whatsapp'=>'required',
             'supplier_country'=>'required',
-            'other_detail'=>'required'
+            // 'other_detail'=>'required'
 
         ]
               
