@@ -3236,8 +3236,8 @@
                                 </div>
                                
                                 <div class="col-md-12 d-flex align-items-center justify-content-center">
-                                    <a href="{{ route('bidrfq.index') }}" class=" btn btn-outline-secondary">Back</a>
-                                    <button type="submit" id="addRegisterButton"
+                                    <a href="{{ route('bidrfq.index') }}" class=" btn btn-outline-secondary">Backs</a>
+                                    <button type="submit" id="addRegisterButtons"
                                         class="ml-2 btn btn-success">Submit</button>
                                 </div>
                             </form>
@@ -3473,7 +3473,16 @@
                         processData: false,
                         contentType: false,
                         dataType: "json",
-                        success: function(data) {
+                        beforeSend: function () {
+                        // Disable the submit button and show the loader inside it
+                        $('#addRegisterButtons')
+                            .prop('disabled', true)
+                            .html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
+                        },
+                            success: function(data) {
+                                $('#addRegisterButtons')
+                                .prop('disabled', false)
+                                .html('Submit');
                             if (data.success == 1) {
                                 swal({
                                     title: 'Success',

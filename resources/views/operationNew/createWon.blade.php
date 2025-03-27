@@ -849,7 +849,7 @@
                                                 <div class="form-group row">
                                                     <label id="otherField18"
                                                         class="col-lg-3 col-form-label font-weight-semibold">Comments
-                                                        <span class="text-danger">*</span></label>
+                                                        <span class="text-danger"></span></label>
                                                     <div class="col-lg-9">
                                                         <textarea name="sales_comment" value="" id="sales_comment"
                                                             type="text" class="form-control"
@@ -2767,7 +2767,16 @@
                                 processData: false,
                                 contentType: false,
                                 dataType: "json",
+                                beforeSend: function () {
+                        // Disable the submit button and show the loader inside it
+                                $('#addRegisterButton')
+                                    .prop('disabled', true)
+                                    .html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
+                                },
                                 success: function(data) {
+                                    $('#addRegisterButton')
+                                    .prop('disabled', false)
+                                    .html('Submit');
 
                                     if (data.success == 1) {
                                         swal({
