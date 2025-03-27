@@ -26,7 +26,14 @@ use Session;
 use DataTables;
 use App\Models\operationImage;
 use App\Models\RfqDetailsTable;
+use CreateClientAdvanceRequest;
 use DB;
+use App\Models\RfqOnlineCommunity;
+use App\Models\RfqSingleCountry;
+use App\Models\RfqMultipleCountry;
+use App\Models\RfqInterviewDepth;
+
+
 
 
 class OperationNewController extends Controller
@@ -1956,5 +1963,50 @@ public function fieldchart(Request $req)
         }
 
 
-    
-}
+        public function delete($id)
+        {
+            DB::beginTransaction();
+
+            try {
+                $operation = OperationNew::findOrFail($id);
+        
+                // ✅ Step 1: Extract base RFQ code
+                $rfqFull = $operation->rfq;
+                $rfq = explode('_', $rfqFull)[0]; // e.g., "RFQ46-2025"
+        
+                // ✅ Step 2: Get all rfq_details related to this RFQ
+                $details = RfqDetailsTable::where('rfq_no', $rfq)->get();
+        
+                foreach ($details as $detail) {
+                    $detailId = $detail->id;
+        
+                    // ✅ Step 3: Delete related child entries
+                    RfqSingleCountry::where('rfq_details_id', $detailId)->delete();
+                    RfqMultipleCountry::where('rfq_details_id', $detailId)->delete();
+                    RfqInterviewDepth::where('rfq_details_id', $detailId)->delete();
+                    RfqOnlineCommunity::where('rfq_details_id', $detailId)->delete();
+        
+                    // Delete rfq_detail
+                    $detail->delete();
+                }
+        
+                // ✅ Step 4: Delete related models using full rfq
+                WonProject::where('rfq_no', $rfqFull)->delete();
+                ClientRequest::where('rfq', $rfqFull)->delete();
+                Vendorrequestadvance::where('rfq', $rfqFull)->delete();
+        
+                // ✅ Step 5: Delete the main operation
+                $operation->delete();
+        
+                DB::commit();
+                return response()->json(['message' => 'RFQ and all related data deleted successfully.']);
+        
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Error deleting data: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+        
+ }

@@ -108,6 +108,11 @@ input#po_no{
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const currentUserType = "{{ auth()->user()->user_type }}";
+</script>
 <script type="text/javascript">
     // $(function(){
     //     $.ajaxSetup({
@@ -174,9 +179,29 @@ input#po_no{
             }
         },
             {data:'',
-                 render:(data,typr,row)=>{
-                 return `<a href='/adminapp/operationNew/edit/${row.id}' class='mdi mdi-table-edit'></a>`     
-                 }
+            render: (data, type, row) => {
+                    let editBtn = `
+                        <a href="/adminapp/operationNew/edit/${row.id}" class="btn btn-sm p-1">
+                            <i class="mdi mdi-table-edit text-primary" style="font-size: 20px;"></i>
+                        </a>
+                    `;
+
+                    let deleteBtn = '';
+                    if (currentUserType === 'admin') {
+                        deleteBtn = `
+                            <button type="button" class="btn btn-sm p-1 delete-operation" data-id="${row.id}">
+                                <i class="mdi mdi-delete text-danger" style="font-size: 20px;"></i>
+                            </button>
+                        `;
+                    }
+
+                    return `
+                        <div class="d-flex align-items-center gap-2">
+                            ${editBtn}
+                            ${deleteBtn}
+                        </div>
+                    `;
+                }
         }
           ]
       });
@@ -308,5 +333,38 @@ input#po_no{
     }
 </style>
 @endpush
-@section('script')
-@endsection
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+  $(document).on('click', '.delete-operation', function () {
+    let id = $(this).data('id');
+    let url = "{{ route('operationNew.delete', ':id') }}".replace(':id', id);
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will delete the RFQ and all related records!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e3342f',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (response) {
+                    Swal.fire('Deleted!', response.message, 'success');
+                    $('.data-table').DataTable().ajax.reload();
+                },
+                error: function () {
+                    Swal.fire('Error!', 'Something went wrong.', 'error');
+                }
+            });
+        }
+    });
+});
+});
+</script>
+
