@@ -145,7 +145,7 @@ input#search {
                             icon:'success',
                             button:false
                         })
-                       window.location = "{{route('bidrfq.index')}}";
+                       window.location = "{{route('bidrfq.followup')}}";
                        }
                        else{
                            swal({

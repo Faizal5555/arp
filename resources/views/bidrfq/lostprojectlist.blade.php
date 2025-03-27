@@ -94,8 +94,6 @@ tr {
                 console.log(data.rfq_no);
                 data.industry=$('#industry').val();
                 console.log(data.industry);
-                data.client_id=$('#client_id').val();
-                console.log(data.client_id);
                 data.start_date = $('#start').val();
                 data.end_date =$('#end').val();
             },
@@ -104,13 +102,6 @@ tr {
             {data:'rfq_no',name:'rfq_no'},
             {data:'date'  ,name:'date'},
             {data:'follow_up_date',name:'follow_up_date'},
-            {data: 'client_id', "render": function (data, type,row) {
-                var data = data.replaceAll('[','');
-                data = data.replaceAll(']','');
-                data = data.replaceAll('&quot;','');
-                console.log(data);
-                return data;
-            }},
             {data:'industry',name:'industry'},
             {data:'comments',name:'comments'},
             {data:'',
@@ -239,7 +230,6 @@ tr {
                                         <th>RFQ No </th>
                                         <th>Date</th>
                                         <th>Follow Up Date</th>
-                                        <th>Client Name</th>
                                         <th>Industry</th>
                                         <th>Comments</th>
                                         <th>Status</th>

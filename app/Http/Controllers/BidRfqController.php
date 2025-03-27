@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\ProjectsComments;
 use App\Models\WonProject;
 use App\Models\BidRfq;
+use App\Models\User;
 use App\Models\RfqDetailsTable;
 use App\Models\RfqSingleCountry;
 use App\Models\RfqMultipleCountry;
@@ -469,7 +470,7 @@ class BidRfqController extends Controller
         return response()->json($response_data);
     }
     public function nextFollowupdate(Request $req)
-    {
+    {  
         $response_data = [];
          $validator = Validator::make($req->all(),[
             'follow_up_date'=> 'required',
@@ -594,13 +595,13 @@ class BidRfqController extends Controller
         $user = Auth::user();
         $follow="";
        if($user->user_type=="admin"){
-            $bidrfq = BidRfq::where('type','next')->orderBy('id', 'DESC')->paginate(5);
+            $bidrfq = RfqDetailsTable::where('type','next')->orderBy('id', 'DESC')->paginate(5);
         }else{
-            $bidrfq = BidRfq::where('type','next')->where('user_id',$user->id)->paginate(5);
+            $bidrfq = RfqDetailsTable::where('type','next')->where('user_id',$user->id)->paginate(5);
         }
         // dd($bidrfq);
         #Store Unique Order/Product Number
-        $unique_no = BidRfq::where('user_id',$user)->orderBy('id', 'DESC')->pluck('id')->first();
+        $unique_no = RfqDetailsTable::where('user_id',$user)->orderBy('id', 'DESC')->pluck('id')->first();
         if($unique_no == null or $unique_no == ""){
             #If Table is Empty
             $unique_no = 1;
@@ -689,13 +690,14 @@ class BidRfqController extends Controller
         $country = Country::get();
         $vendor = Vendor::get();
         $client = Client::get();
-        $bidrfq = RfqDetailsTable::where('id', $id)->first();
+        $newrfq=RfqDetailsTable::with('single','multiple','interview','online')->where('id',$id)->first();
+        $user3=User::where('user_role','operation_head')->get();
         $rfq = array();
         for($i=0; $i< count($wonproject);$i++)
         {
             array_push($rfq,$wonproject[$i]['rfq_no']);
         }
-        return view('bidrfq.lostview',compact('bidrfq','client','vendor','country','id','wonproject','rfq'));
+        return view('bidrfq.lostview',compact('client','vendor','user3','country','id','wonproject','rfq','newrfq'));
     }
      public function wonupdate(Request $request)
     {

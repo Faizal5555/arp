@@ -2856,7 +2856,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger" style="display:none"></div>
-                    <form id="update">
+                    <form id="update-follow-up-date">
                         @csrf
                         <input type="hidden" name="id" id="id"
                             value="{{ $newrfq && $newrfq->id ? $newrfq->id : '' }}">
@@ -3274,6 +3274,9 @@
             $('#addRegisterButton1').click(function(e) {
                 e.preventDefault();
 
+                let form = $('#update-follow-up-date')[0]; // DOM element ✅
+                let formData = new FormData(form);
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -3282,12 +3285,9 @@
                 $.ajax({
                     url: "{{ route('bidrfq.nextFollowupdate') }}",
                     method: 'post',
-                    data: {
-                        id: $('#id').val(),
-                        follow_up_date: $('#follow_up_date1').val(),
-                        comments: $('#comments1').val(),
-
-                    },
+                    data: formData,
+                    processData: false,       
+                    contentType: false,       
                     success: function(result) {
 
                         if (result.success == 1) {
