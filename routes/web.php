@@ -90,7 +90,8 @@ Route::get('/', function () {
     Route::post('/business-research/close/{id}', 'App\Http\Controllers\BusinessResearchController@closeProject')->name('businessresearch.close');
     Route::get('/business-research/closed',  'App\Http\Controllers\BusinessResearchController@closed')->name('businessresearch.closed');
     Route::get('/business-research/filter','App\Http\Controllers\BusinessResearchController@filter')->name('businessresearch.filter');
-
+    Route::get('//business-research/sample-download', 'App\Http\Controllers\BusinessResearchController@generateSampleFile')->name('businessresearch.downloadSample');
+    Route::get('//business-research/data/import', 'App\Http\Controllers\BusinessResearchController@importProjectData')->name('businessresearch.importProjectData');
 
     Route::get('/business-team/view', 'App\Http\Controllers\BusinessResearchController@team')->name('businessresearch.team');
     Route::get('/business-team/show/{id}', 'App\Http\Controllers\BusinessResearchController@show')->name('businessresearch.show');                
@@ -262,6 +263,8 @@ Route::get('/operationNew/projectview/{id}', 'App\Http\Controllers\OperationNewC
 Route::get('/operationNew/overview', 'App\Http\Controllers\OperationNewController@operationOverview')->name('operationNew.overview');
 Route::post('/operationNew/status', 'App\Http\Controllers\OperationNewController@updateStatus')->name('operationNew.updateStatus');
 Route::get('/operationNew/pm/overview', 'App\Http\Controllers\OperationNewController@operationPmOverview')->name('operationNewPM.overview');
+Route::get('/operationNew/delete/{id}', 'App\Http\Controllers\OperationNewController@delete')->name('operationNew.delete');
+
 
 // field perfomance
 Route::get('/operationNew/fieldteam/performance', 'App\Http\Controllers\OperationNewController@fieldperfomance')->name('operationNew.fieldperfomance');
