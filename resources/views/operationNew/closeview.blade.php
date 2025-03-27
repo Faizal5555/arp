@@ -2170,13 +2170,13 @@ input.form-control {
                                     </div>
                                 </div>
                             </div>
+                        </form>
                             <div class="col-md-12 d-flex align-items-center justify-content-center">
                                 <button id="addRegister" class=" btn btn-primary">Back</button>
-                                <!--<button type="submit" id="addRegisterButton"-->
-                                <!--    class="ml-2 btn btn-success">Update</button>-->
+                                <button type="submit"
+                                class="ml-2 btn btn-success edit-completion-btn"  data-id="{{ $operation->id }}">Update</button>
                                     
                             </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -2222,14 +2222,14 @@ input.form-control {
                             Open Comments Box
                           </button>
                     </div>
-                      <div class="col-md-4">
+                      {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
                     </div>
-                
+                 --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2241,13 +2241,13 @@ input.form-control {
                             Open Comments Box
                           </button>
                     </div>
-                      <div class="col-md-4">
+                      {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2259,13 +2259,13 @@ input.form-control {
                             Open Comments Box
                           </button>
                     </div>
-                      <div class="col-md-4">
+                      {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2824,13 +2824,14 @@ input.form-control {
                         </div>
                     </div>
 
-                     <div class="col-md-12 d-flex justify-content-end">
+                     {{-- <div class="col-md-12 d-flex justify-content-end">
                          <button type="submit"  class="btn btn-primary"  >Submit</button>
-                     </div>
+                     </div> --}}
                  </div>
        </form>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -4611,6 +4612,48 @@ $("#complete").validate({
         
     })
 
+    $(document).on('click', '.edit-completion-btn', function () {
+    const operationId = $(this).data('id');
+
+    $.get(`/adminapp/operationNew/procompleted/${operationId}`, function (response) {
+        if (response.success) {
+            const data = response.data;
+
+            // Pre-select radio buttons
+            $(`input[name="clientadvance"][value="${data.clientadvance}"]`).prop("checked", true);
+            $(`input[name="clientbalance"][value="${data.clientbalance}"]`).prop("checked", true);
+            $(`input[name="vendoradvance"][value="${data.vendoradvance}"]`).prop("checked", true);
+            $(`input[name="vendorbalance"][value="${data.vendorbalance}"]`).prop("checked", true);
+
+            // Show file links (you can create divs below each file input)
+            const basePath = window.location.origin + "/adminapp/";
+
+// Remove previous download links to prevent duplicates
+$('.download-link').remove();
+
+if (response.files.respondentfile) {
+    $('#respondentfile').after(`<a href="${basePath + response.files.respondentfile}" class="text-info d-block mt-1 download-link" target="_blank">Download Respondent File</a>`);
+}
+if (response.files.clientinvoicefile) {
+    $('#clientinvoicefile').after(`<a href="${basePath + response.files.clientinvoicefile}" class="text-info d-block mt-1 download-link" target="_blank">Download Client Invoice</a>`);
+}
+if (response.files.vendorinvoicefile) {
+    $('#vendorinvoicefile').after(`<a href="${basePath + response.files.vendorinvoicefile}" class="text-info d-block mt-1 download-link" target="_blank">Download Vendor Invoice</a>`);
+}
+if (response.files.client_confirmation) {
+    $('#client_confirmation').after(`<a href="${basePath + response.files.client_confirmation}" class="text-info d-block mt-1 download-link" target="_blank">Download Client Confirmation</a>`);
+}
+if (response.files.vendor_confirmation) {
+    $('#vendor_confirmation').after(`<a href="${basePath + response.files.vendor_confirmation}" class="text-info d-block mt-1 download-link" target="_blank">Download Vendor Confirmation</a>`);
+}
+
+            // Optionally open modal
+            $('#exampleModalCentercompleted').modal('show');
+        } else {
+            alert('No data found');
+        }
+    });
+});
 
 
 

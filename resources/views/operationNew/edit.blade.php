@@ -2249,13 +2249,13 @@ input.form-control {
                           </button>
                     </div>
                    
-                    <div class="col-md-4">
+                    {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2267,13 +2267,13 @@ input.form-control {
                             Open Comments Box
                           </button>
                     </div>
-                      <div class="col-md-4">
+                      {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                 
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
@@ -2286,13 +2286,13 @@ input.form-control {
                             Open Comments Box 
                           </button>
                     </div>
-                      <div class="col-md-4">
+                      {{-- <div class="col-md-4">
                         <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2304,13 +2304,13 @@ input.form-control {
                          Open Comments Box
                        </button>
                  </div>
-                   <div class="col-md-4">
+                   {{-- <div class="col-md-4">
                      <div class="middle">
                      <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                          Project Stopped In The Middle
                        </button>
                      </div>
-                 </div>
+                 </div> --}}
                  <div class="col-md-4">
                       <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                          Client Invoice Request
@@ -2323,12 +2323,12 @@ input.form-control {
                           </button>
                     </div>
                       <div class="col-md-4">
-                        <div class="middle">
+                        {{-- <div class="middle">
                         <button type="button" class="btn btn-primary" id="my-stop" data-toggle="modal" data-target="#exampleModalCenterstop">
                             Project Stopped In The Middle
                           </button>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-4">
                          <button type="button" class="btn btn-primary" id="client-topic" data-toggle="modal" data-target="#exampleModalCenterstopclient">
                             Client Invoice Request
@@ -2832,9 +2832,11 @@ input.form-control {
             <div class="modal-body">
                 <div  id="main_div" class="col-md-9 ">
         <form id="complete" enctype="multipart/form-data">
+            
                 @csrf
                     <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Paid <span class="text-danger">*</span></label>
+                        <input type="hidden" name="id" value="{{$operation && $operation->id ? $operation->id :''}}">
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Raised <span class="text-danger">*</span></label>
                          <div class="col-lg-6">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="clientadvance" id="clientadvance" value="Yes">
@@ -2851,7 +2853,7 @@ input.form-control {
                         </div>
                      </div>
                      <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Balance Invoice Paid <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Balance Invoice Raised <span class="text-danger">*</span></label>
                          <div class="col-lg-6">
                               <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="clientbalance" id="clientbalance" value="Yes">
@@ -2871,7 +2873,7 @@ input.form-control {
                      </div>
 
                      <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Advance Invoice Paid  <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Advance Invoice Paid  <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                            <div class="form-check form-check-inline">
                                <input class="form-check-input" type="radio" name="vendoradvance" id="vendoradvance" value="Yes">
@@ -2889,7 +2891,7 @@ input.form-control {
                     </div>
 
                      <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Balance Invoice Paid  <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Balance Invoice Paid  <span class="text-danger"></span></label>
                          <div class="col-lg-6">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="vendorbalance" id="vendorbalance" value="Yes">
@@ -2909,7 +2911,7 @@ input.form-control {
 
 
                      <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="respondentfile" value=""
                             id="respondentfile" type="file" class="p-1 form-control" placeholder="Attach Respondent incentive file">
@@ -2919,7 +2921,7 @@ input.form-control {
 
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Invoice File<span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Project Data File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="clientinvoicefile" value=""
                             id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
@@ -2928,7 +2930,7 @@ input.form-control {
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Invoice File <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Any Other File <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="vendorinvoicefile" value=""
                             id="vendorinvoicefile" type="file" class="p-1 form-control" placeholder="Attach vendorinvoicefile">
@@ -2947,7 +2949,7 @@ input.form-control {
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="vendor_confirmation" value=""
                             id="vendor_confirmation" type="file" class="p-1 form-control" placeholder="Attach Vendor Confirmation Email">
@@ -3364,9 +3366,9 @@ input.form-control {
                 team_leader: {
                     required: true
                 },
-                project_comment:{
-                    required: true
-                },
+                // project_comment:{
+                //     required: true
+                // },
             },
             errorPlacement: function (error, element) {
                 if (element.hasClass("select2-hidden-accessible")) {
@@ -4007,27 +4009,27 @@ $("#complete").validate({
         clientbalance:{
             required: true
         },
-        vendoradvance:{
-            required: true
-        },
-        vendorbalance:{
-            required:true
-        },
-        respondentfile:{
-            required: true
-        },
+        // vendoradvance:{
+        //     required: true
+        // },
+        // vendorbalance:{
+        //     required:true
+        // },
+        // respondentfile:{
+        //     required: true
+        // },
         clientinvoicefile:{
             required:true
         },
-        vendorinvoicefile:{
-            required:true
-        },
+        // vendorinvoicefile:{
+        //     required:true
+        // },
         client_confirmation:{
             required:true
         },
-        vendor_confirmation:{
-            required:true
-        },
+        // vendor_confirmation:{
+        //     required:true
+        // },
     },
     errorPlacement: function (error, element) {
                 if (element.hasClass("select2-hidden-accessible")) {
@@ -4041,7 +4043,7 @@ $("#complete").validate({
 
             submitHandler: function (form) {
                 var data = new FormData(form);
-               
+                let projectId = $('#complete input[name="id"]').val();
 
                 $.ajax({
                     type:"POST",

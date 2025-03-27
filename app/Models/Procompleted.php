@@ -11,6 +11,6 @@ class Procompleted extends Model
     protected $table = 'project_completed';
     public $timestamps = true;
     protected $fillable=['clientadvance','clientbalance','vendoradvance','vendorbalance','respondentfile','clientinvoicefile','vendorinvoicefile',
-                           'client_confirmation','vendor_confirmation','user_id'
+                           'client_confirmation','vendor_confirmation','user_id','operation_id'
     ];
 }

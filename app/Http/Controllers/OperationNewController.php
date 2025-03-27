@@ -730,24 +730,28 @@ class OperationNewController extends Controller
     }
 
   public function addproject(Request $req){
+
+    
         $validator=Validator::make($req->all(),[
            'clientadvance'=>'required',
            'clientbalance'=>'required',
-           'vendoradvance'=>'required',
-           'vendorbalance'=>'required',
-           'respondentfile'=>'required',
+        //    'vendoradvance'=>'required',
+        //    'vendorbalance'=>'required',
+        //    'respondentfile'=>'required',
            'clientinvoicefile'=>'required',
-           'vendorinvoicefile'=>'required',
+        //    'vendorinvoicefile'=>'required',
            'client_confirmation'=>'required',
-           'vendor_confirmation'=>'required',
+        //    'vendor_confirmation'=>'required',
         ]);
         if(!$validator->fails()){
-        $procompleted = new  Procompleted(); 
+        $procompleted = Procompleted::where('operation_id', $req->id)->first() ?? new Procompleted();
+        $procompleted->operation_id = $req->id;
         $procompleted->clientadvance = $req->clientadvance;
         $procompleted->clientbalance = $req->clientbalance;
         $procompleted->vendoradvance = $req->vendoradvance;
         $procompleted->vendorbalance = $req->vendorbalance;
         $procompleted->user_id = auth()->user()->id;
+        $procompleted->operation_id = $req->id; 
         if($req->hasfile('respondentfile'))
         {
           $file=$req->file('respondentfile');
@@ -2007,6 +2011,26 @@ public function fieldchart(Request $req)
                     'message' => 'Error deleting data: ' . $e->getMessage()
                 ], 500);
             }
+        }
+        public function getProjectCompletionData($operationId)
+        {
+            $data = Procompleted::where('operation_id', $operationId)->first();
+        
+            if (!$data) {
+                return response()->json(['success' => false, 'message' => 'No data found']);
+            }
+        
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'files' => [
+                    'respondentfile' => $data->respondentfile ?? null,
+                    'clientinvoicefile' => $data->clientinvoicefile ?? null,
+                    'vendorinvoicefile' => $data->vendorinvoicefile ?? null,
+                    'client_confirmation' => $data->client_confirmation ?? null,
+                    'vendor_confirmation' => $data->vendor_confirmation ?? null,
+                ]
+            ]);
         }
         
  }

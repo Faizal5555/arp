@@ -176,7 +176,7 @@ th, td {
                                             style="min-width: 170px; padding: 4px 8px;" 
                                             data-id="{{ $data->id }}">
                                         <option value="hold" {{ $data->status == 'hold' ? 'selected' : '' }}>Live</option>
-                                        <option value="completed" {{ $data->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        {{-- <option value="completed" {{ $data->status == 'completed' ? 'selected' : '' }}>Completed</option> --}}
                                         <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Links Not Working</option>
                                         <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Pause by Client</option>
                                         <option value="awaited" {{ $data->status == 'awaited' ? 'selected' : '' }}>ID's/PO/Awaited</option>
@@ -187,8 +187,8 @@ th, td {
                                     <div class="progress">
                                         @if($data->status == 'hold')
                                       <div class="progress-bar bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                          @elseif($data->status == 'completed')
-                                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                          {{-- @elseif($data->status == 'completed')
+                                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div> --}}
                                       @elseif($data->status == 'pause')
                                       <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                       @elseif($data->status == 'awaited')
@@ -588,9 +588,9 @@ function applySelectColor(selectElement) {
         case 'hold':
             $(selectElement).addClass('bg-primary text-white');
             break;
-        case 'completed':
-            $(selectElement).addClass('bg-success text-white');
-            break;
+        // case 'completed':
+        //     $(selectElement).addClass('bg-success text-white');
+        //     break;
         case 'stop':
             $(selectElement).addClass('bg-danger text-white');
             break;

@@ -2734,9 +2734,9 @@
                             team_leader: {
                                 required: true
                             },
-                            project_comment:{
-                                required: true
-                            },
+                            // project_comment:{
+                            //     required: true
+                            // },
                             "other_document[]": {
                                 required: true
                             },
