@@ -4626,7 +4626,7 @@ $("#complete").validate({
             $(`input[name="vendorbalance"][value="${data.vendorbalance}"]`).prop("checked", true);
 
             // Show file links (you can create divs below each file input)
-            const basePath = window.location.origin + "/adminapp/";
+            const basePath = window.location.origin + "/adminapp/public/";
 
 // Remove previous download links to prevent duplicates
 $('.download-link').remove();
