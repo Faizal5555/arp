@@ -733,7 +733,7 @@ class OperationNewController extends Controller
 
     
         $validator=Validator::make($req->all(),[
-           'clientadvance'=>'required',
+        //    'clientadvance'=>'required',
            'clientbalance'=>'required',
         //    'vendoradvance'=>'required',
         //    'vendorbalance'=>'required',

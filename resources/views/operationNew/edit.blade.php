@@ -2836,7 +2836,7 @@ input.form-control {
                 @csrf
                     <div class="form-group row">
                         <input type="hidden" name="id" value="{{$operation && $operation->id ? $operation->id :''}}">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Raised <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Raised <span class="text-danger"></span></label>
                          <div class="col-lg-6">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="clientadvance" id="clientadvance" value="Yes">
@@ -4003,9 +4003,9 @@ $(document).on('click','.remove-country',function(){
 <script>
 $("#complete").validate({
     rules:{
-        clientadvance:{
-            required: true
-        },
+        // clientadvance:{
+        //     required: true
+        // },
         clientbalance:{
             required: true
         },
@@ -4056,25 +4056,21 @@ $("#complete").validate({
                     contentType:false,
                     dataType: "json",
                     success: function(data) {
-                       if(data.success == 1 ){
-                           
-                            if(data.vendorbalance=='Yes'&&data.vendoradvance=='Yes'&&data.clientbalance=='Yes'&&data.clientadvance=='Yes'){
-                            $( "#project_hold" ).addClass( 'd-none');
-                            $( "#project_closed" ).removeClass( 'd-none');
-                            $('#statusbar').modal('show');
-                           }
-                           else{
-                            $( "#project_closed" ).addClass( 'd-none');
-                            $( "#project_hold" ).removeClass( 'd-none');
-                            $('#statusbar').modal('show');
-                           }
-
+                        if (data.success == 1) {
+                        if (data.clientbalance === 'Yes') {
+                            // Show Project Completed Popup
+                            $("#project_hold").addClass('d-none');
+                            $("#project_closed").removeClass('d-none');
+                        } else {
+                            // Show Project Ongoing/Hold Popup
+                            $("#project_closed").addClass('d-none');
+                            $("#project_hold").removeClass('d-none');
                         }
-                        else{
-                            alert('fail');
-                        }
+                        $('#statusbar').modal('show'); // Show modal after setting classes
+                    } else {
+                        alert('Fail'); // This appears if `success` is not 1
                     }
-
+                }
 
                 });
             }
