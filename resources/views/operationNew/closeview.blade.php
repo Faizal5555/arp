@@ -2703,7 +2703,7 @@ input.form-control {
         <form id="complete" enctype="multipart/form-data">
                 @csrf
                     <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Paid <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Raised <span class="text-danger"></span></label>
                          <div class="col-lg-6">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="clientadvance" id="clientadvance" value="Yes">
@@ -2720,7 +2720,7 @@ input.form-control {
                         </div>
                      </div>
                      <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Balance Invoice Paid <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Client Balance Invoice Raised <span class="text-danger">*</span></label>
                          <div class="col-lg-6">
                               <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="clientbalance" id="clientbalance" value="Yes">
@@ -2740,7 +2740,7 @@ input.form-control {
                      </div>
 
                      <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Advance Invoice Paid  <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Advance Invoice Paid  <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                            <div class="form-check form-check-inline">
                                <input class="form-check-input" type="radio" name="vendoradvance" id="vendoradvance" value="Yes">
@@ -2758,7 +2758,7 @@ input.form-control {
                     </div>
 
                      <div class="form-group row">
-                         <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Balance Invoice Paid  <span class="text-danger">*</span></label>
+                         <label class="col-lg-6 col-form-label font-weight-semibold">Vendor Balance Invoice Paid  <span class="text-danger"></span></label>
                          <div class="col-lg-6">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="vendorbalance" id="vendorbalance" value="Yes">
@@ -2778,7 +2778,7 @@ input.form-control {
 
 
                      <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Respondent Incentive File <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="respondentfile" value=""
                             id="respondentfile" type="file" class="p-1 form-control" placeholder="Attach Respondent incentive file">
@@ -2788,7 +2788,7 @@ input.form-control {
 
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Client Invoice File<span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Project Data File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
                             <input name="clientinvoicefile" value=""
                             id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
@@ -2797,7 +2797,7 @@ input.form-control {
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Invoice File <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Any other File <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="vendorinvoicefile" value=""
                             id="vendorinvoicefile" type="file" class="p-1 form-control" placeholder="Attach vendorinvoicefile">
@@ -2816,7 +2816,7 @@ input.form-control {
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger">*</span></label>
+                        <label class="col-lg-6 col-form-label font-weight-semibold">Attach Vendor Confirmation Email <span class="text-danger"></span></label>
                         <div class="col-lg-6">
                             <input name="vendor_confirmation" value=""
                             id="vendor_confirmation" type="file" class="p-1 form-control" placeholder="Attach Vendor Confirmation Email">
