@@ -49,6 +49,32 @@
 
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+@if (session('validationErrors'))
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (session('validationErrors') as $validationError)
+                <li>{{ $validationError }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 <div class="col-md-12">
     <div class="card pb-3" id="header-title">  
         <div class="card-header header-elements-inline header">
@@ -156,7 +182,7 @@
                 
                 <div class="col-md-5 form-group mt-3">
                     <label for="import" class="form-label">Import</label><br>
-                    <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
+                    <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#importModal">
                         Import Data
                       </button>
                 </div>
@@ -194,6 +220,30 @@
                 <button type="button" id="save-project" class="btn btn-primary">Submit</button>
             </div>
         </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Projects</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('businessresearch.importProjectData') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" class="form-control" required>
+                    <small class="form-text text-muted">
+                        Accepted formats: CSV,XLSX.
+                    <a href="{{ route('businessresearch.downloadSample') }}">Download Sample File</a>
+                    </small>
+                    <br>
+                    <button class="btn btn-success">Upload</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

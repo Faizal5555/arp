@@ -284,30 +284,30 @@
 
 
 
-$('#team_member_id').on('change', function () {
-    let teamMemberId = $(this).val();
-   let researchId = $('#business_research_id').val(); // or pass via hidden input
+// $('#team_member_id').on('change', function () {
+//     let teamMemberId = $(this).val();
+//    let researchId = $('#business_research_id').val(); // or pass via hidden input
 
-    if (teamMemberId) {
-        $.ajax({
-            url: "{{ route('businessresearch.question') }}",
-            method: 'GET',
-            data: {
-                research_id: researchId,
-                team_member_id: teamMemberId
-            },
-            success: function (response) {
-                $('#qa_section').html(response); // load the returned HTML into the section
-                $('input[name="team_member_id"]').val(teamMemberId); // update hidden field for submission
-            }
-        });
-    } else {
-        $('#qa_section').html('');
-    }
+//     if (teamMemberId) {
+//         $.ajax({
+//             url: "{{ route('businessresearch.question') }}",
+//             method: 'GET',
+//             data: {
+//                 research_id: researchId,
+//                 team_member_id: teamMemberId
+//             },
+//             success: function (response) {
+//                 $('#qa_section').html(response); // load the returned HTML into the section
+//                 $('input[name="team_member_id"]').val(teamMemberId); // update hidden field for submission
+//             }
+//         });
+//     } else {
+//         $('#qa_section').html('');
+//     }
 
 
     
-});
+// });
 
 
 </script>

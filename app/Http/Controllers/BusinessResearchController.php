@@ -13,8 +13,15 @@ use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
 use DB;
+use App\Imports\ProjectImport;
 use App\Exports\SearchedDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+use PhpOffice\PhpSpreadsheet\NamedRange;
+
 
 class BusinessResearchController extends Controller
 {
@@ -607,10 +614,10 @@ public function filter(Request $request)
     }
 
     // ✅ Get industry data from the filtered query, not the whole table
-    $statusData = BusinessResearch::select('type', DB::raw('count(*) as total'))
-    ->whereIn('type', ['existing', 'closed'])
-    ->groupBy('type')
-    ->get();
+    // $statusData = BusinessResearch::select('type', DB::raw('count(*) as total'))
+    // ->whereIn('status', ['next', 'closed'])
+    // ->groupBy('status')
+    // ->get();
 
     $clientCount = $query->distinct('client_name')->count('client_name');
     $projectCount = $query->count();
@@ -620,10 +627,133 @@ public function filter(Request $request)
     return response()->json([
         'clientCount' => $clientCount,
         'projectCount' => $projectCount,
-        'statusData' => $statusData,
         'teamMembersCount' => $teamMembersCount
     ]);
 }
+
+public function generateSampleFile()
+{
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+
+    // Set headers
+    $headers = [
+        'A1' => 'date',
+        'B1' => 'pn_number',
+        'C1' => 'subject_line',
+        'D1' => 'client_name',
+        'E1' => 'industry',
+        'F1' => 'team_members',
+        'G1' => 'others',
+    ];
+
+    foreach ($headers as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // Sample data
+    $sample = [
+        'A2' => now()->format('Y-m-d'),
+        'B2' => '12345',
+        'C2' => 'Sample Subject',
+        'D2' => 'Sample Client',
+        'E2' => 'Technology Industry',
+        'F2' => 'John Doe, Jane Smith',
+        'G2' => 'Test',
+    ];
+
+    foreach ($sample as $cell => $value) {
+        $sheet->setCellValue($cell, $value);
+    }
+
+    // 🔁 Pass the spreadsheet, not just sheet
+    $this->applyDropdownValidationForIndustry($spreadsheet, $sheet, 2, 100);
+
+    // Save the file
+    $fileName = 'project_sample_file.xlsx';
+    $filePath = public_path("assets/$fileName");
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+
+    return response()->download($filePath)->deleteFileAfterSend(false);
+}
+
+private function applyDropdownValidationForIndustry(Spreadsheet $spreadsheet, Worksheet $sheet, int $startRow, int $endRow)
+{
+    $industries = [
+        "Manufacturing Industry", "Production Industry", "Food Industry", "Agricultural Industry",
+        "Technology Industry", "Construction Industry", "Factory Industry", "Mining Industry",
+        "Finance Industry", "Retail Industry", "Engineering Industry", "Marketing Industry",
+        "Education Industry", "Transport Industry", "Chemical Industry", "Healthcare Industry",
+        "Hospitality Industry", "Energy Industry", "Science Industry", "Waste Industry",
+        "Chemistry Industry", "Teritiary Sector Industry", "Real Estate Industry",
+        "Financial Services Industry", "Telecommunications Industry", "Distribution Industry",
+        "Medical Device Industry", "Biotechnology Industry", "Aviation Industry", "Insurance Industry",
+        "Trade Industry", "Stock Market Industry", "Electronics Industry", "Textile Industry",
+        "Computers and Information Technology Industry", "Market Research Industry", "Machine Industry",
+        "Recycling Industry", "Information and Communication Technology Industry", "E- Commerce Industry",
+        "Research Industry", "Rail Transport Industry", "Food Processing Industry", "Small Business Industry",
+        "Wholesale Industry", "Pulp and Paper Industry", "Vehicle Industry", "Steel Industry",
+        "Renewable Energy Industry"
+    ];
+
+    // Create hidden sheet for dropdown values
+    $dropdownSheet = new Worksheet($spreadsheet, 'Dropdowns');
+    $spreadsheet->addSheet($dropdownSheet);
+    $spreadsheet->setActiveSheetIndex(0); // Return to main sheet
+
+    // Fill industries in column A
+    foreach ($industries as $i => $industry) {
+        $dropdownSheet->setCellValue("A" . ($i + 1), $industry);
+    }
+
+    // Create named range for dropdown
+    $namedRange = new NamedRange('IndustryOptions', $dropdownSheet, '$A$1:$A$' . count($industries));
+    $spreadsheet->addNamedRange($namedRange);
+
+    // Apply dropdown to E2:E100
+    for ($row = $startRow; $row <= $endRow; $row++) {
+        $cell = "E$row";
+        $validation = $sheet->getCell($cell)->getDataValidation();
+        $validation->setType(DataValidation::TYPE_LIST);
+        $validation->setErrorStyle(DataValidation::STYLE_STOP);
+        $validation->setAllowBlank(false);
+        $validation->setShowDropDown(true);
+        $validation->setFormula1('=IndustryOptions');
+        $sheet->getCell($cell)->setDataValidation($validation);
+    }
+
+    // Hide the sheet from user
+    $dropdownSheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
+}
+public function importProjectData(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ]);
+
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+
+    try {
+        Excel::import(new ProjectImport, $request->file('file'));
+        return back()->with('success', 'Project data imported successfully.');
+    } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        $failures = $e->failures();
+        $messages = [];
+
+        foreach ($failures as $failure) {
+            $messages[] = "Row {$failure->row()}, Attribute: {$failure->attribute()} - " . implode(', ', $failure->errors());
+        }
+
+        return back()->withErrors(['file' => $messages]);
+    } catch (\Exception $e) {
+        return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
+    }
+}
+
+
 
     
 }
