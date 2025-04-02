@@ -10,7 +10,7 @@
                 row.each(function(key){
                     if(key == 5)
                     {
-                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        let val = parseFloat($(this).children('td').eq(index).find('input').val());
                         if(!isNaN(val))
                         {
                         sample = val;
@@ -18,15 +18,16 @@
                     }
                     if(key > 5 && key < (rowLength - 1))
                     {
-                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        let val = parseFloat($(this).children('td').eq(index).find('input').val());
                         if(!isNaN(val))
                         {
                             sum = sum + val;
                         }
                     }
                     if(key == (rowLength - 1))
-                    {
-                        $(this).children('td').eq(index).find('input').val(sum * sample)
+                    {   
+                        let total = (sum * sample).toFixed(2); 
+                        $(this).children('td').eq(index).find('input').val(total);
                     }
                     
                 });
