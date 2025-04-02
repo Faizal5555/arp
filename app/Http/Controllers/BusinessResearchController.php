@@ -621,13 +621,15 @@ public function filter(Request $request)
 
     $clientCount = $query->distinct('client_name')->count('client_name');
     $projectCount = $query->count();
+    $closedProjectCount = $query->where('status', 'Closed')->count();
 
     $teamMembersCount = User::where('user_type', 'business_team_member')->count();
 
     return response()->json([
         'clientCount' => $clientCount,
         'projectCount' => $projectCount,
-        'teamMembersCount' => $teamMembersCount
+        'teamMembersCount' => $teamMembersCount,
+        'closedProjectCount' => $closedProjectCount
     ]);
 }
 
@@ -755,5 +757,92 @@ public function importProjectData(Request $request)
 
 
 
+
+public function getIndustryData(Request $request)
+{
+    $industry = $request->input('industry');
+    $authUserId = $request->input('user_id'); // Get logged-in user ID from the request
+
+    // Get unique client count based on the selected industry
+    $clientCount = BusinessResearch::where('industry', $industry)
+        ->distinct('client_name')
+        ->count('client_name');
+
+    // Get projects where the logged-in user is the owner
+    $ownedProjectCount = BusinessResearch::where('user_id', $authUserId)
+        ->where('industry', $industry)
+        ->count();
+
+    // Get projects where the logged-in user is an allocated team member
+    $allocatedProjectCount = BusinessResearch::whereHas('teamMembers', function ($query) use ($authUserId) {
+            $query->where('user_id', $authUserId);
+        })
+        ->where('industry', $industry)
+        ->count();
+
+        $closedProjectCount = BusinessResearch::where(function ($query) use ($authUserId) {
+            $query->where('user_id', $authUserId)
+                  ->orWhereHas('teamMembers', function ($q) use ($authUserId) {
+                      $q->where('user_id', $authUserId);
+                  });
+        })
+        ->where('industry', $industry)
+        ->where('status', 'Closed') // Only closed projects
+        ->count();
+
+    // Total projects: owned + allocated
+    $totalProjectCount = $ownedProjectCount + $allocatedProjectCount;
+
+    return response()->json([
+        'clientCount' => $clientCount,
+        'projectCount' => $totalProjectCount,
+        'closedProjectCount' => $closedProjectCount
+    ]);
+}
+
+
+public function filterProjectsAndClients(Request $request)
+{
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+    $authUserId = auth()->id(); // Get logged-in user ID
+
+    // Get project IDs (business_research_id) assigned to the logged-in user
+    $allocatedProjectIds = BusinessTeamMember::where('user_id', $authUserId)
+                                             ->pluck('business_research_id')
+                                             ->toArray();
+
+    // Get all team members working on these projects
+    $teamMemberIds = BusinessTeamMember::whereIn('business_research_id', $allocatedProjectIds)
+                                       ->pluck('user_id')
+                                       ->toArray();
+
+    // Include logged-in user
+    $teamMemberIds[] = $authUserId;
+
+    // Count distinct projects allocated to the logged-in user and their team
+    $projectsCount = BusinessResearch::whereIn('id', $allocatedProjectIds)
+                                      ->whereBetween('created_at', [$startDate, $endDate])
+                                      ->distinct('id')
+                                      ->count('id');
+
+    // Count distinct client_name for these projects
+    $clientsCount = BusinessResearch::whereIn('id', $allocatedProjectIds)
+                                     ->whereBetween('created_at', [$startDate, $endDate])
+                                     ->distinct('client_name')
+                                     ->count('client_name');
+
+    $closedProjectsCount = BusinessResearch::whereIn('id', $allocatedProjectIds)
+    ->whereBetween('created_at', [$startDate, $endDate])
+    ->where('status', 'Closed') // Only closed projects
+    ->distinct('id')
+    ->count('id');
+
+    return response()->json([
+        'projectsCount' => $projectsCount,
+        'clientsCount' => $clientsCount,
+        'closedProjectsCount' => $closedProjectsCount
+    ]);
+}
     
 }

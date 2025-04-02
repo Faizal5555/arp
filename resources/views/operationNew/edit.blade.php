@@ -5427,11 +5427,12 @@ $("#complete").validate({
                 let total_length = $('#MultipleCountry tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#MultipleCountry tbody td:has(input[name="multiple_total_cost[]"])').length;
                 $('#MultipleCountry tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                        $(this).find('input').val((cpi*sample).toFixed(2));
                         totalValues.push(cpi*sample);
                     }else{
                         $(this).find('input').val("");
@@ -5446,7 +5447,7 @@ $("#complete").validate({
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2)); 
                 })
             });
 
@@ -5456,11 +5457,12 @@ $("#complete").validate({
                 let total_length = $('#InterviewDepth tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#InterviewDepth tbody td:has(input[name="interview_depth_total_cost_1[]"])').length;
                 $('#InterviewDepth tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                        $(this).find('input').val((cpi*sample).toFixed(2));
                         totalValues.push(cpi*sample);
                     }else{
                         $(this).find('input').val("");
@@ -5475,7 +5477,7 @@ $("#complete").validate({
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2)); 
                 })
                 // let index = 1;
                 $('#InterviewDepth tbody td:has(input[attr="total2"])').each(function(index) {
@@ -5500,11 +5502,12 @@ $("#complete").validate({
                 let total_length = $('#OnlineCommunity tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#OnlineCommunity tbody td:has(input[name="online_community_total_cost[]"])').length;
                 $('#OnlineCommunity tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                        $(this).find('input').val((cpi*sample).toFixed(2));
                         console.log(cpi*sample)
                         totalValues.push(cpi*sample);
                     }else{
@@ -5520,7 +5523,7 @@ $("#complete").validate({
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2)); 
                 })
             });
         });

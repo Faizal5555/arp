@@ -347,7 +347,22 @@ class DashboardController extends Controller
         }
         elseif($user->user_type == ('business_team_member')){
             $countries =Country::get();
-            return view ('business_team.bm_team_dashboard',compact('countries'));
+            $authUserId = $request->input('user_id'); 
+            $industry = $request->input('industry');
+            $ownedProjectCount = BusinessResearch::where('user_id', $authUserId)
+            ->where('industry', $industry)
+            ->count();
+    
+        // Get projects where the logged-in user is an allocated team member
+        $allocatedProjectCount = BusinessResearch::whereHas('teamMembers', function ($query) use ($authUserId) {
+                $query->where('user_id', $authUserId);
+            })
+            ->where('industry', $industry)
+            ->count();
+    
+        // Total projects: owned + allocated
+        $totalProjectCount = $ownedProjectCount + $allocatedProjectCount;
+            return view ('business_team.bm_team_dashboard',compact('countries','authUserId','totalProjectCount'));
         }
 
         elseif($user->user_type == 'secondary_manager') {

@@ -99,7 +99,8 @@ Route::get('/', function () {
     Route::get('/secondary/search', 'App\Http\Controllers\BusinessResearchController@secondarySearch')->name('secondary.search');
     Route::get('/search/export', 'App\Http\Controllers\BusinessResearchController@exportSearchResults')->name('search.export');
     Route::get('/business-team/closed',  'App\Http\Controllers\BusinessResearchController@teamclosed')->name('business.team.closed');
-    
+    Route::post('/business-team/member/data',  'App\Http\Controllers\BusinessResearchController@getIndustryData')->name('industry.data');
+    Route::get('/business-team/member/date',  'App\Http\Controllers\BusinessResearchController@filterProjectsAndClients')->name('industry.date');
 
     
     Route::post('/consumer-dashboard', 'App\Http\Controllers\DashboardController@consumerCountryfilter')->name('consumer.country');

@@ -14,6 +14,9 @@
     background: linear-gradient(135deg, #16A085, #138D75); 
   } /* Green */
 
+  .bg-closed-projects {
+    background: linear-gradient(135deg, #6ABF4B, #47A032); /* Green */
+  }
   .dashboard-card {
     border-radius: 12px !important;
     transition: 0.3s ease;
@@ -64,7 +67,7 @@
           <h2 class="mb-0 total_clients">{{ $clientCount }}</h2>
         </div>
         <i class="mdi mdi-account-multiple dashboard-icon"></i>
-      </div>
+      </div>      
     </div>
 
     <div class="col-md-4">
@@ -86,6 +89,19 @@
         <i class="mdi mdi-account-multiple dashboard-icon"></i>
       </div>
     </div>
+
+
+
+    <div class="col-md-4 mt-3">
+      <div class="dashboard-card bg-closed-projects text-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">Total Closed Projects</h5>
+          <h2 class="closed_projects">0</h2>
+        </div>
+        <i class="mdi mdi-checkbox-marked-circle dashboard-icon"></i>
+      </div>
+    </div>
+
   </div>
 
   <!-- Pie Chart -->
@@ -122,15 +138,13 @@ $(function () {
       format: 'YYYY-MM-DD'
     },
     ranges: {
-      'Today': [moment(), moment()],
-      'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-      'Last 45 Days': [moment().subtract(44, 'days'), moment()],
-      'Last 60 Days': [moment().subtract(59, 'days'), moment()],
-      'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-      'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-    }
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
   }, function (start, end) {
     start_1 = start.format('YYYY-MM-DD');
     end_1 = end.format('YYYY-MM-DD');
@@ -172,6 +186,7 @@ function fetchFilteredData() {
       $('.total_clients').text(res.clientCount);
       $('.total_projects').text(res.projectCount);
       $('.total_member').text(res.teamMembersCount);
+      $('.closed_projects').text(res.closedProjectsCount);
       renderChart(res.industryData);
     },
     error: function (err) {
