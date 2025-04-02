@@ -127,19 +127,19 @@
   
   <div class="row">
     <!-- Total Clients Card -->
-    <div class="col-md-4">
+    {{-- <div class="col-md-4">
       <div class="dashboard-card bg-clients">
         <i class="mdi mdi-account-group dashboard-icon"></i>
         <h5>Total Clients</h5>
         <h2 class="total_clients">0</h2>
       </div>
-    </div>
+    </div> --}}
 
     <!-- Total Projects Card -->
     <div class="col-md-4">
       <div class="dashboard-card bg-projects">
         <i class="mdi mdi-chart-line dashboard-icon"></i>
-        <h5>Total Projects</h5>
+        <h5>Total Existing Projects</h5>
         <h2 class="total_projects">{{$totalProjectCount}}</h2>
       </div>
     </div>

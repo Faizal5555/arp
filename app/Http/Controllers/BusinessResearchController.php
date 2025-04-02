@@ -422,11 +422,14 @@ class BusinessResearchController extends Controller
                     if (is_array($answer)) {
                         $answer = implode(', ', $answer);
                     }
-    
+                    
+                    if (empty(trim($questionText)) && empty(trim($answer))) {
+                        continue;
+                    }
                     $questionId = $questionIds[$index] ?? null;
     
                     $attachmentPath = null;
-                    if (isset($attachments[$index])) {
+                    if (isset($attachments[$index]) && $attachments[$index] instanceof \Illuminate\Http\UploadedFile) {
                         $file = $attachments[$index];
                         $filename = time() . '_' . $file->getClientOriginalName();
                         $attachmentPath = $file->storeAs('attachments', $filename, 'public');
@@ -485,16 +488,28 @@ class BusinessResearchController extends Controller
                 if (is_array($answer)) {
                     $answer = implode(', ', $answer);
                 }
+
+                // if (empty(trim($questionText)) && empty(trim($answer))) {
+                //     continue;
+                // }
     
                 $questionId = $questionIds[$index] ?? null;
     
                 $attachmentPath = null;
                 if (isset($attachments[$index])) {
-                    $file = $attachments[$index];
-                    $filename = time() . '_' . $file->getClientOriginalName();
-                    $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+                    if (is_array($attachments[$index])) {
+                        foreach ($attachments[$index] as $file) {
+                            if ($file instanceof \Illuminate\Http\UploadedFile) {
+                                $filename = time() . '_' . $file->getClientOriginalName();
+                                $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+                            }
+                        }
+                    } elseif ($attachments[$index] instanceof \Illuminate\Http\UploadedFile) {
+                        $file = $attachments[$index];
+                        $filename = time() . '_' . $file->getClientOriginalName();
+                        $attachmentPath = $file->storeAs('attachments', $filename, 'public');
+                    }
                 }
-    
                 if ($questionId) {
                     $submittedIds[] = $questionId;
     

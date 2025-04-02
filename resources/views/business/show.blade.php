@@ -271,6 +271,9 @@
             });
         },
         error: function () {
+            $('#save-que')
+            .prop('disabled', false)
+            .html('Submit');
             Swal.fire({
                 icon: 'error',
                 title: 'Oops!',
