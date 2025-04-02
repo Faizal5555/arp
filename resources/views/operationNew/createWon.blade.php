@@ -1254,14 +1254,27 @@
                                                 </div>
                                             </div>
                                         </div>
+                                      
                                         <div class="col-md-12 d-flex align-items-center justify-content-center">
                                             <a href="" id="add_reg1" class="btn btn-outline-secondary">Back</a>
                                             <button type="submit" id="addRegisterButton"
                                                 class="ml-2 btn btn-success">Submit</button>
                                         </div>
+                                      
                                     </form>
                                 </div>
                             </div>
+                            <div class="progress" style="height: 25px; display: none;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                    role="progressbar" 
+                                    style="width: 0%" 
+                                    aria-valuenow="0" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100">
+                                    0%
+                                </div>
+                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -2767,13 +2780,38 @@
                                 processData: false,
                                 contentType: false,
                                 dataType: "json",
+                                xhr: function() {
+                                var xhr = new window.XMLHttpRequest();
+                                
+                                // Track the progress of the request
+                                xhr.upload.addEventListener("progress", function(evt) {
+                                    if (evt.lengthComputable) {
+                                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                        
+                                        // Update the progress bar
+                                        $(".progress-bar")
+                                            .css("width", percentComplete + "%")
+                                            .attr("aria-valuenow", percentComplete)
+                                            .text(percentComplete + "%");
+                                    }
+                                }, false);
+
+                                return xhr;
+                            },
                                 beforeSend: function () {
                         // Disable the submit button and show the loader inside it
                                 $('#addRegisterButton')
                                     .prop('disabled', true)
                                     .html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
+                                   
+                                    $(".progress-bar")
+                                    .css("width", "0%")
+                                    .attr("aria-valuenow", "0")
+                                    .text("0%");
+                                     $(".progress").show();
                                 },
                                 success: function(data) {
+                                    $(".progress").hide();
                                     $('#addRegisterButton')
                                     .prop('disabled', false)
                                     .html('Submit');
