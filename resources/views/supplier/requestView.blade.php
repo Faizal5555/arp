@@ -110,8 +110,8 @@ thead {
                         <div class="form-group row d-flex">
                             <label class="col-lg-4 col-form-label font-weight-bold text-dark">Content Of The Email<span
                                     class="text-danger"></span></label>
-                            <div class="col-lg-4">
-                            <textarea   class="form-control" readonly="readonly" value="{{$supplier  && $supplier->email_content ?  $supplier->email_content:''}}" >{{$supplier  && $supplier->email_content ?  $supplier->email_content:''}}</textarea>
+                            <div class="col-lg-4 form-control" style="min-height: 150px; overflow-y: auto; background-color: #f8f9fa; padding: 10px; border: 1px solid #ced4da;">
+                           {!! $supplier && $supplier->email_content ? $supplier->email_content : 'No content available' !!}
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/js/bootstrap-multiselect.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.14/css/bootstrap-multiselect.css" />
 
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <style>
 .header {
     background: linear-gradient(43deg, #0b5dbb, #0b5dbb);
@@ -79,8 +82,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 mt-3">
+                        {{-- <label for="email-content" class="font-weight-bold">Email Content</label>
+                        <textarea id="email-content" class="form-control" rows="5" required></textarea> --}}
                         <label for="email-content" class="font-weight-bold">Email Content</label>
-                        <textarea id="email-content" class="form-control" rows="5" required></textarea>
+                        <textarea id="email-content" class="form-control" required></textarea>
                     </div>
                     <div class="col-md-12 mt-3">
                         <label for="upload-file" class="font-weight-bold">Upload File</label>
@@ -164,10 +169,12 @@ $('#select-all').change(function () {
 
 $('.form-submit').click(function () {
     let selectedSuppliers = [];
-    let emailContent = $('#email-content').val().trim(); // Get the email content and trim whitespace
+    // let emailContent = $('#email-content').val().trim(); // Get the email content and trim whitespace
+     
+     let emailContent = $('#email-content').summernote('code');  
 
     // Check if email content is empty
-    if (!emailContent) {
+    if (!emailContent || $('<div>').html(emailContent).text().trim() === '') {  
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -248,5 +255,18 @@ $('.form-submit').click(function () {
         },
     });
 });
+
+ $(document).ready(function() {
+        $('#email-content').summernote({
+            height: 200,
+            placeholder: 'Write your email content here...',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['view', ['codeview']]
+            ]
+        });
+    });
 </script>
 @endsection

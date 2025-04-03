@@ -61,13 +61,13 @@ class SendSupplierMailFired
 
             // Also override the "from" address
             Config::set('mail.from.address', 'quotesarp@asiaresearchpartners.com');
-            Config::set('mail.from.name', 'Request For Quotation');
+            Config::set('mail.from.name', 'Request For Quotation - Asia Research Partners');
 
             // 📨 Send email with or without attachment
             Mail::send('mails.supplier_mail', ['data' => $supplier_details], function ($mail) use ($supplier_details) {
                 $mail->to($supplier_details[0]);
                 $mail->cc('businessresearch@asiaresearchpartners.com');
-                $mail->subject('Supplier Notification');
+                $mail->subject('Cost Request For Potential Project');
 
                 if (!empty($supplier_details[2]) && file_exists(public_path($supplier_details[2]))) {
                     $mail->attach(public_path($supplier_details[2]));
