@@ -412,6 +412,30 @@
     .relative{
         position: relative;
     }
+    #ui-notification {
+    max-height: 200px; /* Adjust height as needed */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    border: 1px solid #ccc; /* Optional: Adds a border */
+    background-color: #fff; /* Ensures visibility */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
+
+#ui-notification ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+#ui-notification li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd; /* Optional: Separates list items */
+}
+
+#ui-notification li:hover {
+    background-color: #f5f5f5; /* Optional: Highlight effect on hover */
+}
 
     /* end new design */
 </style>
