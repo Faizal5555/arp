@@ -595,26 +595,26 @@ public function secondarySearch(Request $request)
 
 public function exportSearchResults(Request $request)
 {
-    // Apply the same logic as your search to filter data
-    $results = BusinessResearch::with(['questions', 'teamMembers.user'])
-    ->when($request->filled('keyword'), function ($query) use ($request) {
-        $query->where(function ($q) use ($request) {
-            $q->where('subject_line', 'like', '%' . $request->keyword . '%')
-              ->orWhere('pn_number', 'like', '%' . $request->keyword . '%')
-              ->orWhereHas('questions', function ($q2) use ($request) {
-                  $q2->where('question', 'like', '%' . $request->keyword . '%')
-                     ->orWhere('answer', 'like', '%' . $request->keyword . '%');
-              });
-        });
-    })
-    ->when($request->filled('client_name'), fn($q) => $q->where('client_name', 'like', '%' . $request->client_name . '%'))
-    ->when($request->filled('industry'), fn($q) => $q->where('industry', 'like', '%' . $request->industry . '%'))
-    ->when($request->filled('pn_number'), fn($q) => $q->where('pn_number', $request->pn_number))
-    ->get();
-    
+    $keyword = $request->keyword;
 
-return Excel::download(new SearchedDataExport($results), 'searched_data.xlsx');
+    $results = BusinessResearch::with(['questions', 'teamMembers.user'])
+        ->when($request->filled('keyword'), function ($query) use ($request) {
+            $query->where('pn_number', 'like', '%' . $request->keyword . '%') // Ensure pn_number is searched
+                  ->orWhere('client_name', 'like', '%' . $request->keyword . '%')
+                  ->orWhere('industry', 'like', '%' . $request->keyword . '%')
+                  ->orWhereHas('questions', function ($q) use ($request) {
+                      $q->where('question', 'like', '%' . $request->keyword . '%')
+                        ->orWhere('answer', 'like', '%' . $request->keyword . '%');
+                  });
+        })
+        ->when($request->filled('client_name'), fn($q) => $q->where('client_name', 'like', '%' . $request->client_name . '%'))
+        ->when($request->filled('industry'), fn($q) => $q->where('industry', 'like', '%' . $request->industry . '%'))
+        ->when($request->filled('pn_number'), fn($q) => $q->where('pn_number', 'like', '%' . $request->pn_number . '%')) // Make sure pn_number filtering works
+        ->get();
+
+    return Excel::download(new SearchedDataExport($results, $keyword), 'searched_data.xlsx');
 }
+
 
 public function filter(Request $request)
 {

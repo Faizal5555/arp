@@ -63,6 +63,7 @@ ul.list-inline li {
                         <span class="fw-semibold">Client Name:</span> {{ $research->client_name }}
                     </div>
                     @endif
+                    
 
                     {{-- Show only questions related to the keyword --}}
                     @if($research->questions && count($research->questions))
@@ -94,7 +95,26 @@ ul.list-inline li {
                         <span class="fw-semibold">PN Number:</span> {{ $research->pn_number }}<br>
                         <span class="fw-semibold">Subject Line:</span> {{ $research->subject_line }}<br>
                         <span class="fw-semibold">Industry:</span> {{ $research->industry }}
+                         @if($research->attachments)
+                    @php
+                        $attachments = explode(',', $research->attachments);
+                    @endphp
+                    <div class="mt-3">
+                        <h6 class="fw-semibold text-primary">Attachments:</h6>
+                        <ul class="list-unstyled ps-3 mb-0" style="max-height: 120px; overflow-y: auto;">
+                            @foreach($attachments as $attachment)
+                                @php $attachment = trim($attachment); @endphp
+                                @if($attachment)
+                                    <li>
+                                        <a href="{{ asset('adminapp/storage/app/public/' . $attachment) }}" target="_blank" download class="text-decoration-none text-primary">
+                                            <i class="fas fa-paperclip px-1"></i>{{ basename($attachment) }}
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
                     </div>
+                    @endif
 
                     @if($research->questions && count($research->questions))
                         <div class="mb-3">

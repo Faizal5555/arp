@@ -46,7 +46,7 @@
             <div class="form-group mb-4">
                 <label for="search" class="search-label">Search</label>
                 <input type="text" id="live-search" class="form-control search-input"
-                    placeholder="Search by client name, PN number, subject line, industry, question, answer...">
+                    placeholder="Search Here...">
             </div>
 
             <div class="form-row">
