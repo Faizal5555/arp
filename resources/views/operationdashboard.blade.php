@@ -176,10 +176,11 @@ th, td {
                                             style="min-width: 170px; padding: 4px 8px;" 
                                             data-id="{{ $data->id }}">
                                         <option value="hold" {{ $data->status == 'hold' ? 'selected' : '' }}>Live</option>
-                                        {{-- <option value="completed" {{ $data->status == 'completed' ? 'selected' : '' }}>Completed</option> --}}
+                                        <option value="completed" {{ $data->status == 'completed' ? 'selected' : '' }} class="d-none">Completed</option>
                                         <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Links Not Working</option>
                                         <option value="pause" {{ $data->status == 'pause' ? 'selected' : '' }}>Pause by Client</option>
                                         <option value="awaited" {{ $data->status == 'awaited' ? 'selected' : '' }}>ID's/PO/Awaited</option>
+                                        <option value="stop" {{ $data->status == 'stop' ? 'selected' : '' }}>Cancel By Client</option>
 
                                     </select>
                                 </td>
@@ -191,6 +192,10 @@ th, td {
                                       <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                       @elseif($data->status == 'awaited')
                                       <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                      @elseif($data->status == 'completed')  <!-- ✅ Show progress for completed -->
+                                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                      @elseif($data->status == 'stop')  <!-- ✅ Show progress for completed -->
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                       @else
                                       <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                      @endif
@@ -586,9 +591,9 @@ function applySelectColor(selectElement) {
         case 'hold':
             $(selectElement).addClass('bg-primary text-white');
             break;
-        // case 'completed':
-        //     $(selectElement).addClass('bg-success text-white');
-        //     break;
+        case 'completed':
+            $(selectElement).addClass('bg-success text-white');
+            break;
         case 'stop':
             $(selectElement).addClass('bg-danger text-white');
             break;
