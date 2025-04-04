@@ -190,7 +190,7 @@ class OperationNewController extends Controller
         $data = $request->all();
     
         // Base query: Only fetch 'hold' status records
-        $operation = OperationNew::where('status', 'hold');
+        $operation = OperationNew::where('status', 'hold');        
     
         // If the logged-in user is a Project Manager, filter by their ID
         if ($user->user_role === 'project_manager') {

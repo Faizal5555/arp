@@ -142,7 +142,18 @@ input#po_no{
             }
       });
       var table = $('.data-table').DataTable({
-          "scrollX": true,
+        dom: 'Blfrtip',
+        "lengthMenu": [ [10, 25, 50,75,100, -1], [10, 25, 50,75,100, "All"] ],
+        buttons: [
+                 {
+                extend: 'excelHtml5',
+                text: 'Export',
+                exportOptions: {
+                  columns: [0,1,2,3,4,5,6]
+                },
+            },
+            ],
+          scrollX: true,
           processing: true,
           serverSide: true,
           order:[0,'desc'],
@@ -173,12 +184,23 @@ input#po_no{
                 return data === 'hold' ? 'live' : data; 
             }
         },
+
+        { 
+                data: 'updated_at', 
+                name: 'updated_at',
+                render: function (data, type, row) {
+                    if (!data) return '-';  // Handle null values
+                    let date = new Date(data);
+                    return moment(date).format('DD/MM/YYYY HH:mm A'); // Format in IST time
+                }
+            },
             {data:'',
                  render:(data,typr,row)=>{
                  return `<a href='/adminapp/operationNew/editpm/${row.id}' class='mdi mdi-table-edit'></a>`     
                  }
         }
           ]
+          
       });
       
       $(document).on('keyup','#po_no',function(){
@@ -240,7 +262,7 @@ input#po_no{
                             </div>
                         </div>
                         
-                            <table class="table table-hover table1 data-table">
+                            <table class="table table-hover table1 data-table w-100">
                                 <thead>
                                     <tr style="background-color: #0b5dbb !important;">
                                         <th>Project No </th>
@@ -254,6 +276,7 @@ input#po_no{
                                         <!--<th>sample_target </th>-->
                                         <!--<th>sample_achieved</th>-->
                                         <th>Status</th>
+                                        <th>Last Updated At</th> 
                                         <th>Action</th>
 
                                     </tr>

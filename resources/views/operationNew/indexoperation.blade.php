@@ -101,6 +101,34 @@ input#po_no{
     border-color: #0b5dbb;
     margin-right: 18px;
 }
+ .badge {
+        padding: 2px 0px 0px 0px !important;
+        position: absolute;
+        top: -3px;
+        right: 6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 100% !important;
+        background: red;
+        color: white;
+        font-size: 10px;
+    }
+
+    .dropdown-content-two {
+        display: none;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #4982C2;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .btnn:hover .dropdown-content-two {
+        display: block;
+    }
 </style>
     
 @section('page_title', 'BidRfq List')
