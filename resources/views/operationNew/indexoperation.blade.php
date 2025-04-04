@@ -206,6 +206,15 @@ input#po_no{
                 return data === 'hold' ? 'live' : data; 
             }
         },
+        { 
+                data: 'updated_at', 
+                name: 'updated_at',
+                render: function (data, type, row) {
+                    if (!data) return '-';  // Handle null values
+                    let date = new Date(data);
+                    return moment(date).format('DD/MM/YYYY HH:mm A'); // Format in IST time
+                }
+            },
             {data:'',
             render: (data, type, row) => {
                     let editBtn = `
@@ -307,6 +316,7 @@ input#po_no{
                                         <!--<th>sample_target </th>-->
                                         <!--<th>sample_achieved</th>-->
                                         <th>Status</th>
+                                        <th>Last Updated At</th> 
                                         <th>Action</th>
 
                                     </tr>
