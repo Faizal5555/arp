@@ -1219,6 +1219,7 @@ public function fieldchart(Request $req)
     $existing = 0;
     $closed = 0;
     $stop = 0;
+    $pause = 0;
 
     // Get the logged-in user's role and ID
     $user = auth()->user();
@@ -1262,6 +1263,8 @@ public function fieldchart(Request $req)
             $closed++; // Completed projects
         } elseif ($operation->status == 'stop') {
             $stop++; // Stop in middle projects
+        } elseif ($operation->status == 'pause') {
+            $pause++; // Stop in middle projects
         }
     }
 
@@ -1270,7 +1273,8 @@ public function fieldchart(Request $req)
         "new" => $new,         // New projects from BidRfq
         "existing" => $existing, // Existing (ongoing) projects from OperationNew
         "closed" => $closed,   // Completed projects from OperationNew
-        "stop" => $stop        // Stop in middle projects from OperationNew
+        "stop" => $stop,  // Stop in middle projects from OperationNew
+        "pause" => $pause,  
     ]);
 }
 

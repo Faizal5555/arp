@@ -415,6 +415,7 @@ $(function () {
             const existingCount = data.existing || 0;
             const closedCount = data.closed || 0;
             const stopCount = data.stop || 0;
+            const pauseCount = data.pause || 0;
 
             // Total Projects
             const totalProjects = newCount + existingCount + closedCount + stopCount;
@@ -435,7 +436,7 @@ $(function () {
             $("#stoppedCount").html(stopCount);
 
             // Render Pie Chart
-            renderPieChart(newCount, existingCount, closedCount);
+            renderPieChart(newCount, existingCount, closedCount, stopCount,pauseCount);
         },
         error: function () {
             alert("Error fetching data");
@@ -445,14 +446,14 @@ $(function () {
 
 
     // Render Pie Chart
-    function renderPieChart(newProjects, existingProjects, closedProjects) {
+    function renderPieChart(newProjects, existingProjects, closedProjects, pauseProjects) {
     var chartDom = document.getElementById('chartContainer');
     var myChart = echarts.init(chartDom);
 
     var option = {
         title: {
             text: 'Projects',
-            subtext: 'Completed, New, and Existing',
+            subtext: 'Completed, New, Existing & Pause',
             left: 'center'
         },
         tooltip: {
@@ -462,7 +463,7 @@ $(function () {
         legend: {
             orient: 'vertical',
             left: 'left',
-            data: ['New Projects', 'Existing Projects', 'Completed Projects']
+            data: ['New Projects', 'Existing Projects', 'Closed Projects','Paused Projects']
         },
         series: [
             {
@@ -484,13 +485,18 @@ $(function () {
                     {
                         value: existingProjects,
                         name: 'Existing Projects',
-                        itemStyle: { color: '#17a2b8' } // Teal
+                        itemStyle: { color: '#007bff' } // Teal
                     },
                     {
                         value: closedProjects,
                         name: 'Closed Projects',
                         itemStyle: { color: '#28a745' } // Green
-                    }
+                    },
+                    {
+                        value: pauseProjects,
+                        name: 'Paused Projects',
+                        itemStyle: { color: '#dc3545' } // Red (danger)
+                    },
                 ]
             }
         ]
