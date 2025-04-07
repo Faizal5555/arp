@@ -1232,12 +1232,12 @@ public function fieldchart(Request $req)
         $newQuery->whereBetween('created_at', [$req->start_1, $req->end_1]);
     }
 
-    if ($isProjectManager) {
-        // If the user is a project manager, filter BidRfq projects based on allocated projects
-        $newQuery->whereHas('operationNew', function ($query) use ($userId) {
-            $query->where('project_manager_name', $userId);
-        });
-    }
+    // if ($isProjectManager) {
+    //     // If the user is a project manager, filter BidRfq projects based on allocated projects
+    //     $newQuery->whereHas('operationNew', function ($query) use ($userId) {
+    //         $query->where('project_manager_name', $userId);
+    //     });
+    // }
 
     $new = $newQuery->count(); // Count the "next" type projects
 
