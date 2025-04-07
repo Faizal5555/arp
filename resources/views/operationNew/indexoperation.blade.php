@@ -175,7 +175,18 @@ input#po_no{
             }
       });
       var table = $('.data-table').DataTable({
-          "scrollX": true,
+        dom: 'Blfrtip',
+        "lengthMenu": [ [10, 25, 50,75,100, -1], [10, 25, 50,75,100, "All"] ],
+        buttons: [
+                 {
+                extend: 'excelHtml5',
+                text: 'Export',
+                exportOptions: {
+                  columns: [0,1,2,3,4,5,6]
+                },
+            },
+            ],
+          scrollX: true,
           processing: true,
           serverSide: true,
           order:[0,'desc'],
