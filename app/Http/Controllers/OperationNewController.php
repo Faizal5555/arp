@@ -1226,7 +1226,7 @@ public function fieldchart(Request $req)
     $userId = $user->id;
 
     // Query `BidRfq` table for new projects based on `type = 'next'`
-    $newQuery = RfqDetailsTable::where('type', 'next');
+    $newQuery = Notification::where('status',0);
 
     if (!empty($req->start_1) && !empty($req->end_1)) {
         $newQuery->whereBetween('created_at', [$req->start_1, $req->end_1]);
