@@ -659,8 +659,8 @@ select.form-control{
                   <!--<li class="nav-item {{ (Route::is('operationNew.add_field_team')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD PROJECTS</a></li>-->
                   <!--<li class="nav-item {{ (Route::is('operationdashboard')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationdashboard')}}">OVERVIEW</a></li>-->
                    <li class="nav-item {{ (Route::is('operationNew.fieldperfomance')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.fieldperfomance')}}">Performance</a></li>
-                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNewPM.overview')}}">Overview</a></li>
-                   
+                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNewPM.overview')}}">Dashboard</a></li>
+                   <li class="nav-item {{ (Route::is('overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('overview.closed')}}">Overview - Closed Project</a></li>
                 </ul>
               </div>
             </li>
@@ -1033,10 +1033,11 @@ select.form-control{
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu1">
                    {{-- <li class="nav-item"> <a class="nav-link" {{ (Route::is('operationNew.createWon')) ? 'active' : '' }} href="{{route('operationNew.createWon')}}">NEW PROJECT</a></li> --}}
-                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexpm')}}">EXISTING PROJECTS </a></li>
-                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">CLOSED PROJECTS</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexpm')}}">Exisiting Projects </a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">Closed Projects</a></li>
                   <!--<li class="nav-item"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD TEAM</a></li>-->
-                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.operation')}}">PROJECT STATUS </a></li>
+                  <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.operation')}}">Project Status </a></li>
+                  <li class="nav-item {{ (Route::is('overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('overview.closed')}}">Overview - Closed Project</a></li>
                   @if(auth()->user()->user_type == "operation")
                   <li class="nav-item d-none"> <a class="nav-link" href="{{route('dashboard')}}">OVERVIEW</a></li>
                   @endif

@@ -2040,8 +2040,19 @@ public function fieldchart(Request $req)
         }
 
         public function OverviewClosed()
-        {
-             $operation = OperationNew::whereIn('status', ['completed', 'stop'])->get();
+        {    
+            
+            $user =  Auth()->user(); // get current logged in user
+
+            // Start building query
+            $query = OperationNew::whereIn('status', ['completed', 'stop']);
+
+            // If the logged in user is a project manager, filter accordingly
+            if ($user->user_role === 'project_manager') {
+                $query->where('project_manager_name', $user->id);
+            }
+
+            $operation = $query->get();
              $pl=User::where('user_role','project_manager')->get();
              $oh=User::where('user_role','operation_head')->get();
              return view('operationNew.overviewclosed',compact('operation','pl'));
