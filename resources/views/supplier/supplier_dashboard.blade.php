@@ -32,14 +32,15 @@
         </div>
 
         <!-- Suppliers by Name (Bar Chart) -->
-        <div class="col-md-6">
-            <div class="card" style="border: none;">
-                <div class="card-header" style="border-bottom: none;">
-                    <h5>Suppliers by Name</h5>
-                </div>
-                <div class="card-body">
-                    <div id="suppliersByNameBarChart" style="height: 400px;"></div>
-                </div>
+       
+    </div>
+    <div class="col-md-12">
+        <div class="card" style="border: none;">
+            <div class="card-header" style="border-bottom: none;">
+                <h5>Suppliers by Name</h5>
+            </div>
+            <div class="card-body">
+                <div id="suppliersByNameBarChart" style="height: 400px;"></div>
             </div>
         </div>
     </div>
