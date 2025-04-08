@@ -485,7 +485,7 @@ $(function () {
             $("#stoppedCount").html(stopCount);
 
             // Render Pie Chart
-            renderPieChart(newCount, existingCount, closedCount,pauseCount, stopCount);
+            renderPieChart(newCount, existingCount, closedCount, pauseCount);
         },
         error: function () {
             alert("Error fetching data");
