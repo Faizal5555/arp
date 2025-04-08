@@ -96,21 +96,27 @@
             value: item.count,
             name: item.supplier_country,
         }));
-
+     
+    const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
     suppliersByCountryPieChart.setOption({
         title: {
-            text: '',
-            left: 'center',
+            text: `Total: ${totalCount}`,
+            left: 'left', // Position on the top right
+            top: '95%', // Adjust position as needed
+            textStyle: {
+                fontSize: 20,
+                fontWeight: 'bold',
+            },
         },
         tooltip: {
             trigger: 'item',
             formatter: '{b}: {c}', // Tooltip format for pie chart
         },
-        legend: {
-            orient: 'horizontal',
-            left: 'left',
-            data: chartData.map(item => item.name),
-        },
+        // legend: {
+        //     orient: 'horizontal',
+        //     left: 'left',
+        //     data: chartData.map(item => item.name),
+        // },
         series: [
             {
                 name: 'Suppliers',

@@ -1196,6 +1196,7 @@ select.form-control{
               <div class="collapse" id="ui-basic4">
                 <ul class="nav flex-column sub-menu1">
                   <li class="nav-item"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('Supplier.create')}}">Add Supplier</a></li>
+                  <li class="nav-item {{(Route::is('Supplier.index')) ? 'active' : ''}}"> <a class="nav-link"  style="font-size:0.83rem   !important;margin-left:-4px !important;" href="{{route('Supplier.index')}}">View Supplier </a></li>
                   <li class="nav-item"> <a class="nav-link" style="font-size:0.83rem   !important;margin-left:-4px !important;"  href="{{route('SuperLiner.cost')}}">Cost Request (RFQ) </a></li>
                   <li class="nav-item"> <a class="nav-link" style="font-size: 0.83rem  !important;margin-left:-4px !important;"  href="{{route('supplier.costRequestView')}}">Total Cost Requests (RFQ) </a></li>
                   <!--<li class="nav-item"> <a class="nav-link"  href="{{route('supplier.view')}}">View Supplier</a></li>-->
