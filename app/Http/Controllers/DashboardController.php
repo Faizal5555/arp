@@ -58,10 +58,10 @@ class DashboardController extends Controller
 
         $closed = "";
         $new = "";
-        $operation = OperationNew::get();
+        $operation = OperationNew::whereNotIn('status', ['completed', 'stop'])->get();
         if ($user->user_role === 'project_manager') {
             // Get operations where the logged-in user is the project manager
-            $operation = OperationNew::where('project_manager_name', $user->id)->get();
+            $operation = OperationNew::whereNotIn('status', ['completed', 'stop'])->where('project_manager_name', $user->id)->get();
         }
         $country=Country::get();
         $speciality=Speciality::get();

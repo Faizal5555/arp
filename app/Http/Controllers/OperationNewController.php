@@ -1245,6 +1245,8 @@ public function fieldchart(Request $req)
     // Query `OperationNew` for all statuses
     $operationQuery = OperationNew::query();
 
+
+
     if (!empty($req->start_1) && !empty($req->end_1)) {
         $operationQuery->whereBetween('created_at', [$req->start_1, $req->end_1]);
     }
@@ -1891,7 +1893,7 @@ public function fieldchart(Request $req)
             
             $user = Auth::user();
             $new = "";
-            $operation = OperationNew::get();
+            $operation = OperationNew::whereNotIn('status', ['completed', 'stop'])->get();
             $tl=User::where('user_role','team_leader')->get();
             $pl=User::where('user_role','project_manager')->get();
             $ql=User::where('user_role','quality_analyst')->get();
@@ -1939,7 +1941,7 @@ public function fieldchart(Request $req)
             
             $user = Auth::user();
             $new = "";
-            $operation = OperationNew::get();
+            $operation = OperationNew::whereNotIn('status', ['completed', 'stop'])->get();
             $tl=User::where('user_role','team_leader')->get();
             $pl=User::where('user_role','project_manager')->get();
             $ql=User::where('user_role','quality_analyst')->get();
@@ -2035,6 +2037,14 @@ public function fieldchart(Request $req)
                     'vendor_confirmation' => $data->vendor_confirmation ?? null,
                 ]
             ]);
+        }
+
+        public function OverviewClosed()
+        {
+             $operation = OperationNew::whereIn('status', ['completed', 'stop'])->get();
+             $pl=User::where('user_role','project_manager')->get();
+             $oh=User::where('user_role','operation_head')->get();
+             return view('OperationNew.overviewclosed',compact('operation','pl'));
         }
         
  }
