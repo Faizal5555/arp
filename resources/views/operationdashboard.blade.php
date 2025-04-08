@@ -22,7 +22,7 @@
     border-radius: 6px;
 }
 .table-country{
-    table-layout: fixed;
+    /* table-layout: fixed; */
     width: 100% !important; 
  
 }
