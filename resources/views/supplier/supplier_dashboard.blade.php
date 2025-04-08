@@ -20,7 +20,7 @@
 
     <div class="row">
         <!-- Suppliers by Country (Pie Chart) -->
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="card" style="border: none;">
                 <div class="card-header" style="border-bottom: none;">
                     <h5>Suppliers by Country</h5>
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Suppliers by Name (Bar Chart) -->
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="card" style="border: none;">
                 <div class="card-header" style="border-bottom: none;">
                     <h5>Suppliers by Name</h5>
