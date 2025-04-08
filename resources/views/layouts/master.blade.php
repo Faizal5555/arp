@@ -643,7 +643,7 @@ select.form-control{
                   <li class="nav-item {{ (Route::is('operationNew.operation')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.operation')}}">Project Status </a></li>
                    <li class="nav-item {{ (Route::is('operationNew.operationperfomance')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.operationperfomance')}}">Performance</a></li>
                   <li class="nav-item {{ (Route::is('operationNew.overview')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.overview')}}">Dashboard</a></li>
-                  <li class="nav-item {{ (Route::is('operationNew.overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.overview.closed')}}">Overview - Closed Project</a></li>
+                  <li class="nav-item {{ (Route::is('overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('overview.closed')}}">Overview - Closed Project</a></li>
                 </ul>
               </div>
             </li>
@@ -1060,7 +1060,7 @@ select.form-control{
                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.indexclose')}}">CLOSED PROJECTS</a></li>
                   <!--<li class="nav-item"> <a class="nav-link" href="{{route('operationNew.add_field_team')}}">ADD FIELD TEAM</a></li>-->
                   <li class="nav-item"> <a class="nav-link" href="{{route('operationNew.operation')}}">PROJECT STATUS </a></li>
-                  <li class="nav-item {{ (Route::is('operationNew.overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('operationNew.overview.closed')}}">Overview - Closed Project</a></li>
+                   <li class="nav-item {{ (Route::is('overview.closed')) ? 'active' : '' }}"> <a class="nav-link" href="{{route('overview.closed')}}">Overview - Closed Project</a></li>
                   @if(auth()->user()->user_type == "operation")
                   <li class="nav-item d-none"> <a class="nav-link" href="{{route('dashboard')}}">OVERVIEW</a></li>
                   @endif

@@ -266,7 +266,7 @@ Route::post('/operationNew/status', 'App\Http\Controllers\OperationNewController
 Route::get('/operationNew/pm/overview', 'App\Http\Controllers\OperationNewController@operationPmOverview')->name('operationNewPM.overview');
 Route::get('/operationNew/delete/{id}', 'App\Http\Controllers\OperationNewController@delete')->name('operationNew.delete');
 Route::get('/operationNew/procompleted/{id}', 'App\Http\Controllers\OperationNewController@getProjectCompletionData');
-Route::get('/operationNew/overview/closed','App\Http\Controllers\OperationNewController@OverviewClosed')->name('operationNew.overview.closed');
+Route::get('/operationNew/overview/closed','App\Http\Controllers\OperationNewController@OverviewClosed')->name('overview.closed');
 
 
 // field perfomance
