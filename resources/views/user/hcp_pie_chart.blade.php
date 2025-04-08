@@ -174,16 +174,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 trigger: 'item',
                 formatter: '{b}: {c}', // Tooltip shows country and count
             },
-            legend: {
-                orient: 'horizontal',
-                left: 'left',
-                data: labels,
-            },
+            // legend: {
+            //     orient: 'horizontal',
+            //     left: 'left',
+            //     data: labels,
+            // },
             series: [
                 {
                     type: 'pie',
                     radius: '50%',
-                    center: ['50%', '60%'],
+                    center: ['50%', '40%'],
                     data: labels.map((label, index) => ({ name: label, value: counts[index] })),
                     emphasis: {
                         itemStyle: {
