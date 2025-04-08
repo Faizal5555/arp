@@ -2044,7 +2044,7 @@ public function fieldchart(Request $req)
              $operation = OperationNew::whereIn('status', ['completed', 'stop'])->get();
              $pl=User::where('user_role','project_manager')->get();
              $oh=User::where('user_role','operation_head')->get();
-             return view('operationNew.OverviewClosed',compact('operation','pl'));
+             return view('operationNew.overviewClosed',compact('operation','pl'));
         }
         
  }
