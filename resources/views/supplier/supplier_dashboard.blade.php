@@ -122,6 +122,7 @@
                 name: 'Suppliers',
                 type: 'pie',
                 radius: '50%',
+                center: ['50%', '40%'],
                 data: chartData,
                 emphasis: {
                     itemStyle: {
