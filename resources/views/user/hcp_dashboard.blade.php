@@ -89,11 +89,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 trigger: 'item',
                 formatter: '{b}: {c}', // Tooltip shows country and count
             },
-            legend: {
-                orient: 'horizontal',
-                left: 'left',
-                data: labels,
-            },
+            // legend: {
+            //     orient: 'horizontal',
+            //     left: 'left',
+            //     data: labels,
+            // },
             series: [
                 {
                     type: 'pie',
