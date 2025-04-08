@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             title: {
                 text: `Total: ${totalCount}`, // Display total count
                 left: 'left', // Position on the top right
-                top: '85%', // Adjust position as needed
+                top: '95%', // Adjust position as needed
                 textStyle: {
                     fontSize: 20,
                     fontWeight: 'bold',
