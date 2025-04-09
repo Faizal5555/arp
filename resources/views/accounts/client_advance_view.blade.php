@@ -351,7 +351,17 @@
                         processData: false,
                         contentType: false,
                         dataType: "json",
+                        beforeSend: function () {
+                // Disable the submit button and show the loader inside it
+                        $('#client-awaited1')
+                            .prop('disabled', true)
+                            .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+                        },
                         success: function(data) {
+                            $('#client-awaited1')
+                            .prop('disabled', false)
+                            .html('Submit');
+                     
                             if (data.success == 1) {
                                 swal({
                                     title: 'Payment Awaited Successfully',
@@ -1002,7 +1012,7 @@
                 row.each(function(key){
                     if(key == 5)
                     {
-                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        let val = parseFloat($(this).children('td').eq(index).find('input').val());
                         if(!isNaN(val))
                         {
                         sample = val;
@@ -1010,15 +1020,16 @@
                     }
                     if(key > 5 && key < (rowLength - 1))
                     {
-                        let val = parseInt($(this).children('td').eq(index).find('input').val());
+                        let val = parseFloat($(this).children('td').eq(index).find('input').val());
                         if(!isNaN(val))
                         {
                             sum = sum + val;
                         }
                     }
                     if(key == (rowLength - 1))
-                    {
-                        $(this).children('td').eq(index).find('input').val(sum * sample)
+                    {   
+                        let total = (sum * sample).toFixed(2); 
+                        $(this).children('td').eq(index).find('input').val(total);
                     }
                     
                 });
@@ -1032,11 +1043,12 @@
                 let total_length = $('#MultipleCountry tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#MultipleCountry tbody td:has(input[name="multiple_total_cost[]"])').length;
                 $('#MultipleCountry tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                         $(this).find('input').val((cpi*sample).toFixed(2));
                         totalValues.push(cpi*sample);
                     }else{
                         $(this).find('input').val("");
@@ -1051,7 +1063,7 @@
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2)); 
                 })
             });
 
@@ -1061,11 +1073,12 @@
                 let total_length = $('#InterviewDepth tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#InterviewDepth tbody td:has(input[name="interview_depth_total_cost_1[]"])').length;
                 $('#InterviewDepth tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                        $(this).find('input').val((cpi*sample).toFixed(2));
                         totalValues.push(cpi*sample);
                     }else{
                         $(this).find('input').val("");
@@ -1080,7 +1093,7 @@
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2)); 
                 })
                 // let index = 1;
                 $('#InterviewDepth tbody td:has(input[attr="total2"])').each(function(index) {
@@ -1105,11 +1118,12 @@
                 let total_length = $('#OnlineCommunity tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#OnlineCommunity tbody td:has(input[name="online_community_total_cost[]"])').length;
                 $('#OnlineCommunity tbody td:has(input[attr="total"])').each(function(){
-                    let cpi = parseInt($(this).prev().find('input').val());
-                    let sample = parseInt ($(this).prev().prev().find('input').val());
+                    let cpi = parseFloat($(this).prev().find('input').val());
+                    let sample = parseFloat ($(this).prev().prev().find('input').val());
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
-                        $(this).find('input').val(cpi*sample);
+                        let total = (cpi * sample).toFixed(2); // Ensure two decimal places
+                        $(this).find('input').val((cpi*sample).toFixed(2));
                         console.log(cpi*sample)
                         totalValues.push(cpi*sample);
                     }else{
@@ -1125,7 +1139,7 @@
                         sum += inputValue;
                     });
                     colIndex+=3;
-                    $(this).find('input').val(sum);
+                    $(this).find('input').val(sum.toFixed(2));
                 })
             });
         });
@@ -2768,6 +2782,47 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client
+                                            Manager<span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" readonly="readonly"
+                                                value="{{ $clientrequest && $clientrequest->client_manager ? $clientrequest->client_manager : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client
+                                            Address<span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" readonly="readonly"
+                                                value="{{ $clientrequest && $clientrequest->client_address ? $clientrequest->client_address : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client
+                                            PO Number<span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" readonly="readonly"
+                                                value="{{ $clientrequest && $clientrequest->client_po_number ? $clientrequest->client_po_number : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client
+                                            PN Number<span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" readonly="readonly"
+                                                value="{{ $clientrequest && $clientrequest->client_pn_number ? $clientrequest->client_pn_number : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
                                         <label class="col-lg-4 col-form-label font-weight-bold text-dark">Invoice
                                             Type<span class="text-danger"></span></label>
                                         <div class="col-lg-4">
@@ -2843,6 +2898,17 @@
                                                 <input type="file" name="upload_invoice" id="upload_invoice"
                                                     class="form-control" required>
                                             @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group row d-flex">
+                                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Email
+                                            </label> <span class="text-danger"></span></label>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" name="email"
+                                                value="" id="email">
                                         </div>
                                     </div>
                                 </div>
