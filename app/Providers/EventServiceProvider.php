@@ -48,6 +48,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SendBulkRegistrationMail' => [
             'App\Listeners\SendBulkRegistrationMail',
         ],
+        'App\Events\SendClientInvoiceMail' => [
+            'App\Listeners\SendClientInvoiceMailListener',
+        ],
+        
         
     ];
 

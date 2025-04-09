@@ -19,6 +19,7 @@ use App\Models\User;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Events\SendClientInvoiceMail;
 use Yajra\DataTables\Facades\DataTables;
 class AccountsController extends Controller
 {
@@ -767,6 +768,7 @@ class AccountsController extends Controller
        [
         'upload_invoice'=>'required',
         'id'=>'required',
+        'email' => 'required|email',
        ]);
 
        if(!$validator->fails()){
@@ -781,16 +783,16 @@ class AccountsController extends Controller
                 }
                  $clientadvance->status='awaited';
                 
-            if( $clientadvance->update()){
-                $response_data=["success"=>1 ,"message"=>"data saved success"];
+                 if ($clientadvance->update()) {
+                    // Trigger Event to send email
+                    event(new SendClientInvoiceMail($clientadvance, $req->email));
+                    $response_data = ["success" => 1, "message" => "Data saved and email sent"];
+                } else {
+                    $response_data = ["success" => 0, "message" => "Data not saved"];
+                }
+            } else {
+                $response_data = ["success" => 2, "message" => "Validation failed"];
             }
-            else{
-             $response_data=["success"=>0 ,"message"=>"data  not saved "];
-            }
-         }
-         else{
-             $response_data=["success"=>2 ,"message"=>" not found "];
-         } 
          return response()->json($response_data);
      }
     
