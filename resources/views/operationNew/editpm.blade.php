@@ -3109,6 +3109,24 @@ input.form-control {
                </div>
 
                <div class="form-group">  
+                <label>Client Manager</label>    
+                <input type="type" name="client_manager" id="client_manager" class="form-control">
+                </div>
+                <div class="form-group">  
+                        <label>Client Address</label>    
+                        <input type="type" name="client_address" id="client_address" class="form-control">
+                    </div>
+                <div class="form-group">  
+                        <label>PO Number</label>    
+                        <input type="type" name="client_po_number" id="client_po_number" class="form-control">
+                    </div>
+                    <div class="form-group">  
+                        <label>PN Number</label>    
+                        <input type="type" name="client_pn_number" id="client_pn_number" class="form-control">
+                </div>
+
+
+               <div class="form-group">  
                 <label>Client Advance</label>    
                 <input type="type" name="client_advance" id="client_advance" class="form-control">
                </div>
@@ -3162,6 +3180,23 @@ input.form-control {
             <label>Client Name</label>    
             <input type="type" name="client_id" id="clientid" class="form-control">
            </div>
+
+           <div class="form-group">  
+            <label>Client Manager</label>    
+            <input type="type" name="client_manager" id="client_manager1" class="form-control">
+            </div>
+            <div class="form-group">  
+                    <label>Client Address</label>    
+                    <input type="type" name="client_address" id="client_address1" class="form-control">
+                </div>
+            <div class="form-group">  
+                    <label>PO Number</label>    
+                    <input type="type" name="client_po_number" id="client_po_number1" class="form-control">
+                </div>
+                <div class="form-group">  
+                    <label>PN Number</label>    
+                    <input type="type" name="client_pn_number" id="client_pn_number1" class="form-control">
+            </div>
 
            <div class="form-group">  
             <label>Client Balance</label>    
@@ -4999,6 +5034,10 @@ $("#complete").validate({
                 operation_id:$('#operation_id').val(),
                 id:$('#advanceid').val(),
                 client_id:$('#client_id').val(),
+                client_pn_number:$('#client_pn_number').val(),
+                client_po_number:$('#client_po_number').val(),
+                client_manager:$('#client_manager').val(),
+                client_address:$('#client_address').val(),
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
                 invoice_type:$('#invoice_type').val(),
@@ -5055,6 +5094,10 @@ $("#complete").validate({
                 operation_id:$('#operationid').val(),
                 id:$('#balanceid').val(),
                 client_id:$('#clientid').val(),
+                client_pn_number:$('#client_pn_number1').val(),
+                client_po_number:$('#client_po_number1').val(),
+                client_manager:$('#client_manager1').val(),
+                client_address:$('#client_address1').val(),
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
                 invoice_type:$('#invoice_type1').val(),
