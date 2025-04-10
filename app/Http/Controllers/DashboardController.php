@@ -308,7 +308,7 @@ class DashboardController extends Controller
         }
         elseif($user->user_type == ('business_manager')){
             $countries =Country::get();
-
+            $totalProjects = BusinessResearch::count();
             $industryFilter = request('industry');
             $from = request('from_date') ?? Carbon::now()->subDays(30)->toDateString();
             $to = request('to_date') ?? Carbon::now()->toDateString();
@@ -341,6 +341,7 @@ class DashboardController extends Controller
                 'industryProjects',
                 'projectsInRange',
                 'teamMembersCount',
+                'totalProjects',
                 'from',
                 'to'
             ));

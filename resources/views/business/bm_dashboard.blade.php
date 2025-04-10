@@ -120,7 +120,7 @@
       <div class="dashboard-card bg-projects text-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center">
         <div>
           <h5 class="mb-1">Total Existing Projects</h5>
-          <h2 class="mb-0 total_projects">0</h2>
+          <h2 class="mb-0 total_projects">{{$totalProjects}}</h2>
         </div>
         <i class="mdi mdi-briefcase dashboard-icon"></i>
       </div>
@@ -167,36 +167,36 @@
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
 
 <script>
- let start_1 = '';
+let start_1 = '';
 let end_1 = '';
 
-
 $(function () {
-  // Date range picker
   $('#daterange').daterangepicker({
     showDropdowns: true,
     opens: 'right',
+    startDate: start_1,
+    endDate: end_1,
     autoUpdateInput: false,
     locale: {
       cancelLabel: 'Clear',
       format: 'YYYY-MM-DD'
     },
     ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
+      'Today': [moment(), moment()],
+      'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    }
   }, function (start, end) {
-    start_1 = start.format('YYYY-MM-DD');
-    end_1 = end.format('YYYY-MM-DD');
-    $('#daterange').val(start_1 + ' to ' + end_1);
-
-    // Auto-fetch data when date changes
+    start_1 = start;
+    end_1 = end;
+    $('#daterange').val(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
     fetchFilteredData();
   });
 
@@ -207,31 +207,37 @@ $(function () {
     fetchFilteredData();
   });
 
-  // Auto-fetch when industry changes
   $('#industryFilter').on('change', function () {
     fetchFilteredData();
   });
 
-  // Initial chart render
-  fetchFilteredData(); 
+  // Set default visible value in input
+  // $('#daterange').val(start_1.format('YYYY-MM-DD') + ' to ' + end_1.format('YYYY-MM-DD'));
+ 
+  // Initial fetch with default dates
+  fetchFilteredData();
   renderChart(@json($industryProjects));
 });
 
-// Function to fetch and update chart + counts
 function fetchFilteredData() {
   const industry = $('#industryFilter').val();
+
+  let data = {
+    industry: industry
+  };
+
+  if (start_1 && end_1 && typeof start_1.format === 'function') {
+    data.start_date = start_1.format('YYYY-MM-DD');
+    data.end_date = end_1.format('YYYY-MM-DD');
+  }
 
   $.ajax({
     url: '{{ route("businessresearch.filter") }}',
     method: 'GET',
-    data: {
-      start_date: start_1,
-      end_date: end_1,
-      industry: industry
-    },
+    data: data,
     success: function (res) {
       $('.total_clients').text(res.clientCount);
-      $('.total_projects').text(res.projectCount);
+      $('.total_projects').text(res.projectCount); 
       $('.total_member').text(res.teamMembersCount);
       $('.closed_projects').text(res.closedProjectsCount);
       renderChart(res.industryData);
@@ -241,6 +247,7 @@ function fetchFilteredData() {
     }
   });
 }
+
 function renderChart(data, selectedIndustry = null) {
     const chartDom = document.getElementById('industryChart');
     if (!chartDom) return;

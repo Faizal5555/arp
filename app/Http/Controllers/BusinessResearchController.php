@@ -627,33 +627,39 @@ public function filter(Request $request)
 {
     $query = BusinessResearch::query();
 
+    // Apply Date Filter
     if ($request->start_date && $request->end_date) {
-        $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        $query->whereBetween('created_at', [
+            $request->start_date . ' 00:00:00',
+            $request->end_date . ' 23:59:59'
+        ]);
     }
 
+    // Apply Industry Filter
     if ($request->industry) {
         $query->where('industry', $request->industry);
     }
 
-    // ✅ Get industry data from the filtered query, not the whole table
-    // $statusData = BusinessResearch::select('type', DB::raw('count(*) as total'))
-    // ->whereIn('status', ['next', 'closed'])
-    // ->groupBy('status')
-    // ->get();
-
-    $clientCount = $query->distinct('client_name')->count('client_name');
-    $projectCount = $query->count();
-    $closedProjectCount = $query->where('status', 'Closed')->count();
-
+    $clientCount = (clone $query)->distinct('client_name')->count('client_name');
+    $projectCount = (clone $query)->count(); // now filtered
+    $closedProjectCount = (clone $query)->where('status', 'Closed')->count();
     $teamMembersCount = User::where('user_type', 'business_team_member')->count();
+
+    // Optional: Industry-wise chart
+    $industryData = BusinessResearch::select('industry', DB::raw('count(*) as total'))
+        ->groupBy('industry')
+        ->get();
 
     return response()->json([
         'clientCount' => $clientCount,
         'projectCount' => $projectCount,
         'teamMembersCount' => $teamMembersCount,
-        'closedProjectCount' => $closedProjectCount
+        'closedProjectsCount' => $closedProjectCount,
+        'industryData' => $industryData
     ]);
 }
+
+
 
 public function generateSampleFile()
 {
