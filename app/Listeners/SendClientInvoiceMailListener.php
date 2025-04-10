@@ -50,9 +50,13 @@ class SendClientInvoiceMailListener
         Config::set('mail.from.name', 'Client Invoice - Asia Research Partners');
 
         // 📨 Send email
-        Mail::send('mails.client_invoice', ['data' => $data], function ($message) use ($email) {
+        Mail::send('mails.client_invoice', ['data' => $data], function ($message) use ($email,$client) {
             $message->to($email);
             $message->subject('Invoice Notification');
+
+            if (!empty($client->upload_invoice) && file_exists(public_path($client->upload_invoice))) {
+                $message->attach(public_path($client->upload_invoice));
+            }
         });
     }
 }
