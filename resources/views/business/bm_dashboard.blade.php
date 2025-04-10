@@ -171,8 +171,8 @@
 
 
 <script>
-let start_1 = '';
-let end_1 = '';
+let start_1 = moment().subtract(29, 'days'); // Default: last 30 days
+let end_1 = moment();
 
 $(function () {
   $('#daterange').daterangepicker({
