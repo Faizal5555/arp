@@ -90,6 +90,7 @@ label.mb-0.not-expired {
                     <th>Industry</th>
                     <th>Client Name</th>
                     <th>Team Members</th>
+                    <th>Feasibility Done</th>
                     <th>Others</th>
                 </tr>
             </thead>
@@ -119,6 +120,13 @@ $(document).ready(function() {
             { data: 'client_name', name: 'client_name' },
             { data: 'team_members', name: 'team_members' },
             { data: 'others', name: 'others' },
+            {
+            data: 'feasibility_done',
+            name: 'feasibility_done',
+            render: function (data, type, row) {
+            return data == 1 ? 'Yes' : 'No';
+            }
+            },
            
         ]
     });

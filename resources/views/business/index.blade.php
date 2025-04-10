@@ -91,6 +91,7 @@ label.mb-0.not-expired {
                     <th>Client Name</th>
                     <th>Team Members</th>
                     <th>Others</th>
+                    <th>Feasibility Done</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -218,7 +219,14 @@ label.mb-0.not-expired {
                 <label>Others</label>
                 <textarea name="others" id="edit_others" class="form-control"></textarea>
                 </div>
-                <div class="col-md-6 mb-3"></div>
+                <div class="col-md-6 mb-3">
+                    <label for="edit_feasibility_done">Feasibility Done</label>
+                    <select name="feasibility_done" id="edit_feasibility_done" class="form-control">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
             </div>
   
           </div>
@@ -253,6 +261,13 @@ $(document).ready(function() {
             { data: 'client_name', name: 'client_name' },
             { data: 'team_members', name: 'team_members' },
             { data: 'others', name: 'others' },
+            {
+            data: 'feasibility_done',
+            name: 'feasibility_done',
+            render: function (data, type, row) {
+            return data == 1 ? 'Yes' : 'No';
+            }
+            },
             {
             data: 'id',
             name: 'action',
@@ -300,6 +315,7 @@ $(document).ready(function() {
         $('#edit_client_name').val(data.client_name);
         $('#edit_others').val(data.others);
         $('#edit_team_members').val(data.team_members).trigger('change');
+        $('#edit_feasibility_done').val(data.feasibility_done);
 
         
     });

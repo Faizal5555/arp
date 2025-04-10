@@ -12,7 +12,7 @@ class BusinessResearch extends Model
     protected $table = 'business_research';
 
     protected $fillable = [
-        'user_id', 'date', 'pn_number', 'subject_line', 'client_name', 'industry', 'others','attachments',
+        'user_id', 'date', 'pn_number', 'subject_line', 'client_name', 'industry', 'others','attachments','feasibility_done',
     ];
 
     // public function teamMembers()

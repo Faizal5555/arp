@@ -91,6 +91,7 @@ label.mb-0.not-expired {
                     <th>Client Name</th>
                     <th>Team Members</th>
                     <th>Others</th>
+                    <th>Feasibility Done</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -122,6 +123,13 @@ label.mb-0.not-expired {
                 { data: 'client_name', name: 'client_name' },
                 { data: 'team_members', name: 'team_members', orderable: false, searchable: false },
                 { data: 'others', name: 'others' },
+                {
+                data: 'feasibility_done',
+                name: 'feasibility_done',
+                render: function (data, type, row) {
+                return data == 1 ? 'Yes' : 'No';
+                }
+                },
                 {
                 data: 'id', // use 'id' to build the URL dynamically
                 name: 'action',

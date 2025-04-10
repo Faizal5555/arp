@@ -119,6 +119,25 @@
                     @endif
                 </div>
             </div>
+            <div class="row pl-2 d-flex justify-content-center">
+                <div class="col-md-5 form-group">
+                    <label>Industry</label>
+                    <input type="text" class="form-control" value="{{ $record->industry }}" readonly>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label>Has the feasibility done with panel members?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_yes" value="1"
+                            {{ $record->feasibility_done == 1 ? 'checked' : '' }} onclick="return false;">
+                        <label class="form-check-label m-0" for="feasibility_yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_no" value="0"
+                            {{ $record->feasibility_done == 0 ? 'checked' : '' }} onclick="return false;">
+                        <label class="form-check-label m-0" for="feasibility_no">No</label>
+                    </div>
+                </div>
+            </div>
         </form>
         
 

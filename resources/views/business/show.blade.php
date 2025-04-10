@@ -44,7 +44,15 @@
 
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="col-md-12">
     <div class="card pb-3" id="header-title">  
         <div class="card-header header-elements-inline header">
@@ -113,6 +121,17 @@
                         @endif
                 </div>
                 <div class="col-md-5">
+                    <label>Has the feasibility done with panel members?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_yes" value="1"
+                            {{ $record->feasibility_done == 1 ? 'checked' : '' }} onclick="return false;">
+                        <label class="form-check-label m-0" for="feasibility_yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_no" value="0"
+                            {{ $record->feasibility_done == 0 ? 'checked' : '' }} onclick="return false;">
+                        <label class="form-check-label m-0" for="feasibility_no">No</label>
+                    </div>
                 </div>
             </div>
 

@@ -44,8 +44,8 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                     $rows[] = ['Field' => 'Industry', 'Value' => $item->industry, 'Attachment' => 'N/A'];
                     $matchFound = true;
                 }
-                $Attachment = $item->attachments ? asset('adminapp/storage/app/public/' . $item->attachments) : 'N/A';
-                $rows[] = ['Field' => 'Attachment', 'Value' => '', 'Attachment' => $Attachment];
+                // $Attachment = $item->attachments ? asset('adminapp/storage/app/public/' . $item->attachments) : 'N/A';
+                $rows[] = ['Field' => 'Attachment', 'Value' => ''];
 
                 // Check Questions and Answers for match
                 foreach ($item->questions as $q) {
@@ -73,8 +73,19 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                 $rows[] = ['Field' => 'Industry', 'Value' => $item->industry, 'Attachment' => 'N/A'];
                 
 
-                $Attachment = $item->attachments ? asset('adminapp/storage/app/public/' . $item->attachments) : 'N/A';
-                $rows[] = ['Field' => 'Attachment', 'Value' => '', 'Attachment' => $Attachment];
+                if ($item->attachments) {
+                    $attachments = explode(',', $item->attachments);
+                    foreach ($attachments as $file) {
+                        $rows[] = [
+                            'Field' => 'Attachment',
+                            'Value' => '',
+                            'Attachment' => asset('adminapp/storage/app/public/' . trim($file)),
+                        ];
+                    }
+                } else {
+                    $rows[] = ['Field' => 'Attachment', 'Value' => '', 'Attachment' => 'N/A'];
+                }
+    
 
                 foreach ($item->questions as $q) {
                     $rows[] = [
@@ -85,7 +96,11 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                 }
             }
 
-            $rows[] = ['Field' => '', 'Value' => '', 'Attachment' => '']; // Spacer row
+            $rows[] = [
+                'Field' => '',
+                'Value' => '',
+                'Attachment' => '',
+            ];
         }
 
         return $rows;

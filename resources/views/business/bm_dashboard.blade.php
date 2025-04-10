@@ -213,6 +213,7 @@ $(function () {
   });
 
   // Initial chart render
+  fetchFilteredData(); 
   renderChart(@json($industryProjects));
 });
 

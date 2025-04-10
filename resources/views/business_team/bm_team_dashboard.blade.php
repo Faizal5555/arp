@@ -211,8 +211,28 @@ $(document).ready(function () {
                 $('.total_projects').text(response.projectCount);  // Update total projects
                 $('.closed_projects').text(response.closedProjectCount); // Update closed projects
             }
+            
         });
     });
+    function fetchInitialData() {
+        $.ajax({
+            url: "{{ route('industry.data') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                user_id: "{{ auth()->id() }}"
+            },
+            success: function (response) {
+                $('.total_clients').text(response.clientCount);
+                $('.total_projects').text(response.projectCount);
+                $('.closed_projects').text(response.closedProjectCount);
+            }
+        });
+    }
+
+    // 👇 Call this ONCE after page is ready
+    fetchInitialData();
+    
 });
 
 </script>

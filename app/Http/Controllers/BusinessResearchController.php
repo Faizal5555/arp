@@ -48,6 +48,7 @@ class BusinessResearchController extends Controller
         'others' => 'nullable|string',
         'users' => 'nullable|array',
         'users.*' => 'exists:users,id',
+        'feasibility_done' => 'required|boolean',
         'attachments.*' => 'file|mimes:pdf,doc,docx,xlsx,jpg,jpeg,png|max:5120', 
     ]);
 
@@ -68,6 +69,7 @@ class BusinessResearchController extends Controller
     $businessResearch->client_name = $request->client_name;
     $businessResearch->industry = $request->industry;
     $businessResearch->others = $request->others;
+    $businessResearch->feasibility_done = $request->feasibility_done;
     $businessResearch->save();
 
     $attachmentPaths = [];
@@ -138,6 +140,8 @@ class BusinessResearchController extends Controller
             'client_name' => $record->client_name,
             'others' => $record->others,
             'team_members' => $record->teamMembers->pluck('user_id'),
+            'feasibility_done' => $record->feasibility_done, 
+            
             
         ]);
        
@@ -154,7 +158,8 @@ class BusinessResearchController extends Controller
             'others' => 'nullable|string',
             'date' => 'required|date',
             'team_members' => 'nullable|array',
-            'team_members.*' => 'exists:users,id'
+            'team_members.*' => 'exists:users,id',
+            'feasibility_done' => 'required|boolean',
         ]);
 
         // 2. Find the business research
@@ -168,6 +173,7 @@ class BusinessResearchController extends Controller
             'client_name' => $request->client_name,
             'others' => $request->others,
             'date' => $request->date,
+            'feasibility_done' => $request->feasibility_done,
         ]);
 
       

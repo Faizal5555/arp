@@ -147,7 +147,44 @@ thead {
                                     </div>
                                 </div>
                    </div>
-                  <div class="col-md-12">
+                   <div class="col-md-12">
+                    <div class="form-group row d-flex">
+                        <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client Manager<span
+                                class="text-danger"></span></label>
+                        <div class="col-lg-4">
+                        <input  class="form-control" readonly="readonly" value="{{$clientrequest  && $clientrequest->client_manager ?  $clientrequest->client_manager:''}}">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group row d-flex">
+                            <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client Address<span
+                                    class="text-danger"></span></label>
+                            <div class="col-lg-4">
+                            <input  class="form-control" readonly="readonly" value="{{$clientrequest  && $clientrequest->client_address ?  $clientrequest->client_address:''}}">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group row d-flex">
+                                <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client PO Number<span
+                                        class="text-danger"></span></label>
+                                <div class="col-lg-4">
+                                <input  class="form-control" readonly="readonly" value="{{$clientrequest  && $clientrequest->client_po_number ?  $clientrequest->client_po_number:''}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group row d-flex">
+                                <label class="col-lg-4 col-form-label font-weight-bold text-dark">Client Pn Number<span
+                                        class="text-danger"></span></label>
+                                <div class="col-lg-4">
+                                <input  class="form-control" readonly="readonly" value="{{$clientrequest  && $clientrequest->client_pn_number ?  $clientrequest->client_pn_number:''}}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                    <div class="col-md-12">
                                 <div class="form-group row d-flex">
                                     <label class="col-lg-4 col-form-label font-weight-bold text-dark">Invoice Type<span
                                             class="text-danger"></span></label>

@@ -137,6 +137,7 @@ ul.list-inline li {
                 @endif
             </div>
         </div>
+    </div>
     @endforeach
 @else
     <div class="alert alert-warning">No results found.</div>

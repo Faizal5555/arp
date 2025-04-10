@@ -176,8 +176,13 @@
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group mt-3">
-                    <label for="attachments">Upload Attachments(Select Multiple) </label>
-                    <input type="file" name="attachments[]" class="form-control" multiple>
+                    <label>Upload Attachments</label>
+                    <div id="attachment-fields">
+                        <div class="input-group mb-2">
+                            <input type="file" name="attachments[]" class="form-control">
+                            <button type="button" class="btn btn-success add-btn mx-2"><span class="add-btn">+</span></button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="col-md-5 form-group mt-3">
@@ -210,8 +215,19 @@
                     </div>
                 </div>
                 <div class="col-md-1"></div>
-                <div class="col-md-5"></div>
+                <div class="col-md-5 form-group mt-3">
+                    <label>Has the feasibility done with panel members?</label><br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_yes" value="1" required>
+                        <label class="form-check-label m-0" for="feasibility_yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="feasibility_done" id="feasibility_no" value="0">
+                        <label class="form-check-label m-0" for="feasibility_no">No</label>
+                    </div>
+                </div>
             </div>
+            
 
 
 
@@ -269,6 +285,7 @@
             industry: { required: true },
             others: { required: true },
             attachments:{required: true},
+            feasibility_done: { required: true }
         },
         errorPlacement: function (error, element) {
             error.insertAfter(element);
@@ -317,6 +334,28 @@
         $('#project-form').submit();
     });
 
+   
+
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('attachment-fields');
+
+        container.addEventListener('click', function (e) {
+            if (e.target.classList.contains('add-btn')) {
+                const newField = document.createElement('div');
+                newField.classList.add('input-group', 'mb-3');
+                newField.innerHTML = `
+                    <input type="file" name="attachments[]" class="form-control">
+                    <button type="button" class="btn btn-danger remove-btn mx-2"><span class="remove-btn">-</span></button>
+                `;
+                container.appendChild(newField);
+            }
+
+            if (e.target.classList.contains('remove-btn')) {
+                e.target.closest('.input-group').remove();
+            }
+        });
+    });
 
 </script>
