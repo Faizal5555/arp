@@ -267,6 +267,12 @@
 
 
     $(document).ready(function () {
+
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
         $('#qa-form').on('submit', function (e) {
     e.preventDefault();
 
@@ -324,6 +330,7 @@
             });
         },
         error: function () {
+            $(".progress").hide();
             $('#save-que')
             .prop('disabled', false)
             .html('Submit');

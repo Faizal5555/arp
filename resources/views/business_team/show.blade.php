@@ -325,6 +325,7 @@ $('#qa-form').on('submit', function (e) {
             });
         },
         error: function (xhr) {
+            $(".progress").hide();
             $('#addRegisterButton')
             .prop('disabled', false)
             .html('Submit');
