@@ -400,7 +400,7 @@ class BusinessResearchController extends Controller
         $request->validate([
             'que' => 'required|array',
             'ans' => 'required|array',
-            'attachment.*.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a|max:20480',
+            'attachment.*.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a',
             'question_id' => 'nullable|array',
         ]);
     
