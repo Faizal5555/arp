@@ -236,6 +236,16 @@
                 <button type="button" id="save-project" class="btn btn-primary">Submit</button>
             </div>
         </form>
+        <div class="progress" style="height: 25px; display: none;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                role="progressbar" 
+                style="width: 0%" 
+                aria-valuenow="0" 
+                aria-valuemin="0" 
+                aria-valuemax="100">
+                0%
+            </div>
+        </div>
     </div>
 </div>
 
@@ -266,6 +276,16 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
+        $.validator.addMethod("maxFileSize", function (value, element, param) {
+        if (element.files.length === 0) return true;
+        for (let i = 0; i < element.files.length; i++) {
+            if (element.files[i].size > param) {
+                return false;
+            }
+        }
+        return true;
+    }, "File size must be less than 20MB");
+
         $('input[name="users[]"]').on('change', function () {
             let selected = [];
             $('input[name="users[]"]:checked').each(function () {
@@ -284,12 +304,21 @@
             client_name: { required: true },
             industry: { required: true },
             others: { required: true },
-            attachments:{required: true},
+            attachments: {
+            required: true,
+            maxFileSize: 20 * 1024 * 1024 // 20MB
+        },
             feasibility_done: { required: true }
         },
         errorPlacement: function (error, element) {
             error.insertAfter(element);
         },
+        messages: {
+        attachments: {
+            required: "Please upload a file",
+            maxFileSize: "File size must be less than 20MB"
+        }
+    },
         submitHandler: function (form) {
             var formData = new FormData(form);
             $.ajax({
@@ -298,16 +327,38 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+                xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        
+                        // Track the progress of the request
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                
+                                // Update the progress bar
+                                $(".progress-bar")
+                                    .css("width", percentComplete + "%")
+                                    .attr("aria-valuenow", percentComplete)
+                                    .text(percentComplete + "%");
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
                 beforeSend: function () {
                         // Disable the submit button and show the loader inside it
                 $('#save-project')
                     .prop('disabled', true)
                     .html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
+                    $(".progress-bar")
+                            .css("width", "0%")
+                            .attr("aria-valuenow", "0")
+                            .text("0%");
+                        $(".progress").show();
                 },
                 success: function (response) {
-                    $('#save-project')
-                            .prop('disabled', false)
-                            .html('Submit');
+                    $(".progress").hide();
+                   
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -319,6 +370,9 @@
                     });
                 },
                 error: function (xhr) {
+                    $('#save-project')
+                    .prop('disabled', false)
+                    .html('Submit');
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops!',
@@ -357,5 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    
 
 </script>

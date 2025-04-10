@@ -208,8 +208,17 @@
             </div>
         </form>
         
-    
-
+        <div class="progress" style="height: 25px; display: none;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                role="progressbar" 
+                style="width: 0%" 
+                aria-valuenow="0" 
+                aria-valuemin="0" 
+                aria-valuemax="100">
+                0%
+            </div>
+        </div>
+            
            
 
             {{-- <div class="col-md-12 d-flex align-items-center justify-content-center mt-4">
@@ -218,7 +227,7 @@
                     class="ml-2 btn btn-primary">Submit</button>
 
             </div> --}}
-        </form>
+        
     </div>
 
        
@@ -269,13 +278,38 @@
         data: formData,
         processData: false,
         contentType: false,
+        xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        
+                        // Track the progress of the request
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                
+                                // Update the progress bar
+                                $(".progress-bar")
+                                    .css("width", percentComplete + "%")
+                                    .attr("aria-valuenow", percentComplete)
+                                    .text(percentComplete + "%");
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
         beforeSend: function () {
                         // Disable the submit button and show the loader inside it
         $('#save-que')
             .prop('disabled', true)
             .html('<span class="spinner-border spinner-border-sm"></span> Sending...');
+
+            $(".progress-bar")
+                            .css("width", "0%")
+                            .attr("aria-valuenow", "0")
+                            .text("0%");
+                        $(".progress").show();
         },
         success: function () {
+            $(".progress").hide();
             $('#save-que')
             .prop('disabled', false)
             .html('Submit');

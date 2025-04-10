@@ -49,7 +49,8 @@ class BusinessResearchController extends Controller
         'users' => 'nullable|array',
         'users.*' => 'exists:users,id',
         'feasibility_done' => 'required|boolean',
-        'attachments.*' => 'file|mimes:pdf,doc,docx,xlsx,jpg,jpeg,png|max:5120', 
+        'attachment.*' => 'nullable|file|max:20480|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a',
+
     ]);
 
     if ($validator->fails()) {
@@ -399,7 +400,7 @@ class BusinessResearchController extends Controller
         $request->validate([
             'que' => 'required|array',
             'ans' => 'required|array',
-            'attachment.*.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx',
+            'attachment.*.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a|max:20480',
             'question_id' => 'nullable|array',
         ]);
     
