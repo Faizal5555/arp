@@ -2080,6 +2080,7 @@ public function userconsumerlistData(Request $request)
                         'datacenternews.date',
                         'datacenternews.docterSpeciality', 
                         'datacenternews.firstname', 
+                        'datacenternews.lastname', 
                         'datacenternews.email', 
                         'datacenternews.country1 as country', 
                         'datacenternews.created_at',
@@ -2120,6 +2121,7 @@ public function userconsumerlistData(Request $request)
                         if ($userType === 'doctor') {
                             // Filters for doctors
                             $q->whereRaw('LOWER(datacenternews.firstname) LIKE ?', ['%' . $searchValue . '%'])
+                            ->orWhereRaw('LOWER(datacenternews.lastname) LIKE ?', ['%' . $searchValue . '%'])
                               ->orWhereRaw('LOWER(datacenternews.country1) LIKE ?', ['%' . $searchValue . '%'])
                               ->orWhereRaw('LOWER(datacenternews.docterSpeciality) LIKE ?', ['%' . $searchValue . '%'])
                               ->orWhereRaw('LOWER(referrers.name) LIKE ?', ['%' . $searchValue . '%']); // Referral name

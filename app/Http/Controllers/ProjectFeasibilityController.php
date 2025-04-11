@@ -40,7 +40,7 @@ class ProjectFeasibilityController extends Controller
         'userid' => 'required|exists:users,id', 
         'total_incentive_paid' => 'required|string', // New field
         'incentive_paid_date' => 'required|date', // New field
-        'mode_of_payment' => 'required|string|max:255', // New field
+        'mode_of_payment' => 'required|array', // New field
         
     ]);
 
@@ -63,7 +63,7 @@ class ProjectFeasibilityController extends Controller
     'user_id' => $validated['userid'],
     'total_incentive_paid' => $validated['total_incentive_paid'], // New field
     'incentive_paid_date' => $validated['incentive_paid_date'], // New field
-    'mode_of_payment' => $validated['mode_of_payment'], // New field
+    'mode_of_payment' => json_encode($validated['mode_of_payment']), // New field
     'status' => 'next',
 ]);
 
@@ -169,7 +169,7 @@ public function update(Request $request, $id)
         'incentive_promised' => 'required|string',
         'total_incentive_paid' => 'nullable|string',
         'incentive_paid_date' => 'nullable|date',
-        'mode_of_payment' => 'nullable|string|max:255',
+        'mode_of_payment' => 'nullable|array',
     ]);
 
     // Find the project feasibility record by ID
@@ -190,7 +190,7 @@ public function update(Request $request, $id)
     $project->incentive_promised = $validatedData['incentive_promised'];
     $project->total_incentive_paid = $validatedData['total_incentive_paid'] ?? null;
     $project->incentive_paid_date = $validatedData['incentive_paid_date'] ?? null;
-    $project->mode_of_payment = $validatedData['mode_of_payment'] ?? null;
+    $project->mode_of_payment = json_encode($validatedData['mode_of_payment'] ?? []);
 
     // Save the updated record
     $project->save();

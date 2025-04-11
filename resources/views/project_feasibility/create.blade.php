@@ -109,7 +109,12 @@
                 </div>
                 <div class="col-md-5 form-group">
                     <label for="mode_of_payment">Mode of Payment</label>
-                    <input type="text" name="mode_of_payment" id="mode_of_payment" class="form-control" required>
+                    <div id="payment-container">
+                     <div class="d-flex">
+                        <input type="text" name="mode_of_payment[]" id="mode_of_payment" class="form-control" required>
+                        <button type="button" class="btn btn-info ml-2 add-payment" style="height:38px;">+</button>
+                     </div>
+                    </div>
                 </div>
             </div>
             
@@ -245,6 +250,25 @@
 // Remove responded title dynamically
 document.getElementById('titles-container').addEventListener('click', function (e) {
     if (e.target.classList.contains('remove-title')) {
+        e.target.parentElement.remove();
+    }
+});
+
+
+document.querySelector('.add-payment').addEventListener('click', function () {
+    const container = document.getElementById('payment-container');
+    const div = document.createElement('div');
+    div.classList.add('d-flex', 'mt-2');
+    div.innerHTML = `
+        <input type="text" name="mode_of_payment[]" class="form-control mb-2" required>
+        <button type="button" class="btn btn-danger ml-2 remove-payment" style="height:38px;">-</button>
+    `;
+    container.appendChild(div);
+});
+
+// Remove responded title dynamically
+document.getElementById('payment-container').addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-payment')) {
         e.target.parentElement.remove();
     }
 });

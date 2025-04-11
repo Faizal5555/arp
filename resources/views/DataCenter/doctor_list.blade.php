@@ -9,6 +9,7 @@
             <input class="form-check-input doctor-checkbox" type="checkbox" name="doctors[]" value="{{ $doctor->id }}" id="doctor_{{ $doctor->id }}">
             <label class="form-check-label" for="doctor_{{ $doctor->id }}">
                 <span class="doctor-name">{{ $doctor->firstname }}</span>
+                <span class="doctor-name">{{ $doctor->lastname }}</span>
                 {{-- <span class="doctor-email">({{ $doctor->email }})</span> --}}
             </label>
         </div>

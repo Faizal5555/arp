@@ -29,6 +29,7 @@ $(function () {
             headerRow.append("<th>Date</th>");
         }
     headerRow.append("<th>First Name</th>");
+    headerRow.append("<th>Last Name</th>");
 
     // Conditional columns
     if (userType === 'doctor') {
@@ -64,7 +65,11 @@ $(function () {
     }
 
     // First Name column (always included)
-    columns.push({ data: 'firstname', name: 'firstname' });
+    columns.push({ data: 'firstname', name: 'firstname' },
+                { data: 'lastname', name: 'lastname' }
+
+    );
+    
 
     // Conditional column: Speciality for Doctors, Last Name for Consumers
     if (userType === 'doctor') {

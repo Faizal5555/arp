@@ -268,7 +268,15 @@ label.mb-0.not-expired {
                     {
                         data: "mode_of_payment",
                         render: function(data, type, row) {
-                            return data ? data : '-';
+                            try {
+                                const parsed = JSON.parse(data || '[]');
+                                if (Array.isArray(parsed)) {
+                                    return parsed.join(', ');
+                                }
+                                return typeof parsed === 'string' ? parsed : '-';
+                            } catch (e) {
+                                return data || '-';
+                            }
                         }
                     },
                     @if(auth()->user()->user_type === 'admin' || auth()->user()->user_type === 'global_manager')

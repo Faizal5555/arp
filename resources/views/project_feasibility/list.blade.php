@@ -141,7 +141,7 @@
                             <div class="edit-container edit-countries">
                                 <div class="d-flex mb-2">
                                     <input type="text" name="target_countries[]" class="form-control" placeholder="Enter Country" required>
-                                    <button type="button" class="btn btn-info ms-2 add-country">+</button>
+                                    <button type="button" class="btn btn-info mx-2 add-country">+</button>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                             <div class="edit-container edit-titles">
                                 <div class="d-flex mb-2">
                                     <input type="text" name="responded_titles[]" class="form-control" placeholder="Enter Respondent Title" required>
-                                    <button type="button" class="btn btn-info ms-2 add-title">+</button>
+                                    <button type="button" class="btn btn-info mx-2 add-title">+</button>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +165,7 @@
                             <div class="edit-container edit-emails">
                                 <div class="d-flex mb-2">
                                     <input type="email" name="responded_email[]" class="form-control" placeholder="Enter Respondent Email" required>
-                                    <button type="button" class="btn btn-info ms-2 add-email">+</button>
+                                    <button type="button" class="btn btn-info mx-2 add-email">+</button>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,12 @@
                         </div>
                         <div class="col-md-6">
                             <label for="edit-mode_of_payment">Mode of Payment</label>
-                            <input type="text" name="mode_of_payment" id="edit-mode_of_payment" class="form-control" required>
+                            <div class="edit-container edit-payments">
+                                <div class="d-flex mb-2">
+                                <input type="text" name="mode_of_payment[]" class="form-control" required>
+                                <button type="button" class="btn btn-info mx-2 add-payment">+</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -265,6 +270,18 @@
         const emails = JSON.parse(row.responded_emails || '[]').join(', ');
         const titles = JSON.parse(row.responded_titles || '[]').join(', ');
 
+        let paymentModes = '-';
+    try {
+        const parsed = typeof row.mode_of_payment === 'string'
+            ? JSON.parse(row.mode_of_payment)
+            : Array.isArray(row.mode_of_payment)
+                ? row.mode_of_payment
+                : [];
+        paymentModes = parsed.length ? parsed.join(', ') : '-';
+    } catch (e) {
+        console.warn('Error parsing mode_of_payment:', row.mode_of_payment);
+    }
+
         tableBody.append(`
             <tr>
                 <td>${index++}</td>
@@ -282,7 +299,7 @@
                 <td>${row.incentive_promised ? row.incentive_promised : '-'}</td>
                 <td>${row.total_incentive_paid ? row.total_incentive_paid : '-'}</td>
                 <td>${row.incentive_paid_date ? row.incentive_paid_date : '-'}</td>
-                <td>${row.mode_of_payment ? row.mode_of_payment : '-'}</td>
+                <td>${paymentModes}</td>
                    ${userType === 'admin' || userType === 'global_manager' ? `
                     <td>
                         <button class="btn btn-info btn-sm edit-btn" data-id="${row.id}">Edit</button>
@@ -316,7 +333,7 @@
             $('#edit-incentive_promised').val(response.incentive_promised);
             $('#edit-total_incentive_paid').val(response.total_incentive_paid);
             $('#edit-incentive_paid_date').val(response.incentive_paid_date);
-            $('#edit-mode_of_payment').val(response.mode_of_payment);
+           
 
             // Populate multiple-value fields (countries)
             const countriesContainer = $('.edit-countries'); // Use the correct class
@@ -393,6 +410,29 @@
                 });
             }
 
+            const paymentContainer = $('.edit-payments');
+            paymentContainer.empty();
+            const payments = JSON.parse(response.mode_of_payment || '[]');
+            if (payments.length === 0) {
+                paymentContainer.append(`
+                    <div class="d-flex mb-2">
+                        <input type="text" name="mode_of_payment[]" class="form-control" placeholder="Enter Mode of Payment" required>
+                        <button type="button" class="btn btn-info ms-2 add-payment">+</button>
+                    </div>
+                `);
+            } else {
+                payments.forEach((payment, index) => {
+                    paymentContainer.append(`
+                        <div class="d-flex mb-2">
+                            <input type="text" name="mode_of_payment[]" class="form-control" value="${payment}" required>
+                            ${index === payments.length - 1
+                                ? '<button type="button" class="btn btn-info ms-2 add-payment">+</button>'
+                                : '<button type="button" class="btn btn-danger ms-2 remove-field">-</button>'}
+                        </div>
+                    `);
+                });
+            }
+
             // Open the modal
             $('#editModal').modal('show');
         },
@@ -461,6 +501,25 @@ $(document).on('click', '.add-email', function () {
     updateRemoveButtons(container);
 });
 
+
+$(document).on('click', '.add-payment', function () {
+    const container = $('.edit-payments');
+
+    // Remove + buttons from all rows
+    container.find('.add-payment').remove();
+
+    // Add new row with both + and - buttons
+    container.append(`
+        <div class="d-flex mb-2">
+            <input type="text" name="mode_of_payment[]" class="form-control" placeholder="Enter Mode of Payment" required>
+            <button type="button" class="btn btn-danger ms-2 remove-field">-</button>
+            <button type="button" class="btn btn-info ms-2 add-payment">+</button>
+        </div>
+    `);
+
+    updateRemoveButtons(container);
+});
+
 // Remove Field
 $(document).on('click', '.remove-field', function () {
     const container = $(this).closest('.edit-container'); // Get the parent container
@@ -479,6 +538,9 @@ $(document).on('click', '.remove-field', function () {
     if (lastRow.find('.add-email').length === 0 && container.hasClass('edit-emails')) {
         lastRow.append(`<button type="button" class="btn btn-info ms-2 add-email">+</button>`);
     }
+    if (lastRow.find('.add-payment').length === 0 && container.hasClass('edit-payments')) {
+        lastRow.append(`<button type="button" class="btn btn-info ms-2 add-payment">+</button>`);
+    }
 
     // Update visibility of Remove buttons
     updateRemoveButtons(container);
@@ -488,11 +550,9 @@ $(document).on('click', '.remove-field', function () {
 function updateRemoveButtons(container) {
     const rows = container.find('.d-flex');
     if (rows.length === 1) {
-        // Hide the Remove button if there's only one row
-        rows.find('.remove-field').hide();
+        rows.find('.remove-field').hide(); // Hide remove if only one row
     } else {
-        // Show the Remove button for all rows
-        rows.find('.remove-field').show();
+        rows.find('.remove-field').show(); // Show remove otherwise
     }
 }
 
