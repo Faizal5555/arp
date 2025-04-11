@@ -34,9 +34,7 @@ $(function () {
     // Conditional columns
     if (userType === 'doctor') {
         headerRow.append("<th>Speciality</th>"); // Show Speciality for HCP
-    } else {
-        headerRow.append("<th>Last Name</th>"); // Show Last Name for Consumer
-    }
+    } 
 
     // Common columns
     headerRow.append("<th>Country</th>");
@@ -65,18 +63,22 @@ $(function () {
     }
 
     // First Name column (always included)
-    columns.push({ data: 'firstname', name: 'firstname' },
-                { data: 'lastname', name: 'lastname' }
-
-    );
+    columns.push(
+    { data: 'firstname', name: 'firstname' },
+    {
+        data: null,
+        name: 'lastname',
+        render: function (data, type, row) {
+            return row.lastname || row.lname || '-';
+        }
+    }
+);
     
 
     // Conditional column: Speciality for Doctors, Last Name for Consumers
     if (userType === 'doctor') {
         columns.push({ data: 'docterSpeciality', name: 'docterSpeciality' }); // Speciality for doctors
-    } else {
-        columns.push({ data: 'lname', name: 'lname' }); // Last Name for consumers
-    }
+    } 
 
     // Common columns
     columns.push(
