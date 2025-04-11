@@ -140,7 +140,7 @@
       <div class="dashboard-card bg-projects">
         <i class="mdi mdi-chart-line dashboard-icon"></i>
         <h5>Total Existing Projects</h5>
-        <h2 class="total_projects">{{$totalProjectCount}}</h2>
+        <h2 class="total_projects">0</h2>
       </div>
     </div>
 

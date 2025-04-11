@@ -789,42 +789,56 @@ public function importProjectData(Request $request)
 public function getIndustryData(Request $request)
 {
     $industry = $request->input('industry');
-    $authUserId = $request->input('user_id'); // Get logged-in user ID from the request
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+    $authUserId = $request->input('user_id'); // or use auth()->id() if needed
 
-    // Get unique client count based on the selected industry
-    $clientCount = BusinessResearch::where('industry', $industry)
+    // Base query with optional filters
+    $baseQuery = BusinessResearch::query();
+
+    if ($industry) {
+        $baseQuery->where('industry', $industry);
+    }
+
+    if ($startDate && $endDate) {
+        $baseQuery->whereBetween('created_at', [$startDate, $endDate]);
+    }
+
+    // Distinct client count
+    $clientCount = (clone $baseQuery)
         ->distinct('client_name')
         ->count('client_name');
 
-    // Get projects where the logged-in user is the owner
-    $ownedProjectCount = BusinessResearch::where('user_id', $authUserId)
-        ->where('industry', $industry)
+    // Projects owned by user
+    $ownedProjectCount = (clone $baseQuery)
+        ->where('user_id', $authUserId)
         ->count();
 
-    // Get projects where the logged-in user is an allocated team member
-    $allocatedProjectCount = BusinessResearch::whereHas('teamMembers', function ($query) use ($authUserId) {
+    // Projects where user is a team member
+    $allocatedProjectCount = (clone $baseQuery)
+        ->whereHas('teamMembers', function ($query) use ($authUserId) {
             $query->where('user_id', $authUserId);
         })
-        ->where('industry', $industry)
         ->count();
 
-        $closedProjectCount = BusinessResearch::where(function ($query) use ($authUserId) {
+    // Closed projects (owned or team member)
+    $closedProjectCount = (clone $baseQuery)
+        ->where(function ($query) use ($authUserId) {
             $query->where('user_id', $authUserId)
                   ->orWhereHas('teamMembers', function ($q) use ($authUserId) {
                       $q->where('user_id', $authUserId);
                   });
         })
-        ->where('industry', $industry)
-        ->where('status', 'Closed') // Only closed projects
+        ->where('status', 'Closed')
         ->count();
 
-    // Total projects: owned + allocated
+    // Total projects = owned + allocated
     $totalProjectCount = $ownedProjectCount + $allocatedProjectCount;
 
     return response()->json([
         'clientCount' => $clientCount,
         'projectCount' => $totalProjectCount,
-        'closedProjectCount' => $closedProjectCount
+        'closedProjectCount' => $closedProjectCount,
     ]);
 }
 
@@ -847,6 +861,7 @@ public function filterProjectsAndClients(Request $request)
 
     // Include logged-in user
     $teamMemberIds[] = $authUserId;
+    
 
     // Count distinct projects allocated to the logged-in user and their team
     $projectsCount = BusinessResearch::whereIn('id', $allocatedProjectIds)
