@@ -271,16 +271,29 @@
         const titles = JSON.parse(row.responded_titles || '[]').join(', ');
 
         let paymentModes = '-';
-    try {
-        const parsed = typeof row.mode_of_payment === 'string'
-            ? JSON.parse(row.mode_of_payment)
-            : Array.isArray(row.mode_of_payment)
-                ? row.mode_of_payment
-                : [];
-        paymentModes = parsed.length ? parsed.join(', ') : '-';
-    } catch (e) {
-        console.warn('Error parsing mode_of_payment:', row.mode_of_payment);
+
+try {
+    let parsed = [];
+
+    if (Array.isArray(row.mode_of_payment)) {
+        parsed = row.mode_of_payment;
+    } else if (typeof row.mode_of_payment === 'string') {
+        const trimmed = row.mode_of_payment.trim();
+
+        // Only try JSON.parse if it's a JSON-looking string (starts with [ and ends with ])
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+            parsed = JSON.parse(trimmed);
+        } else {
+            // Treat it as a regular comma-separated string
+            parsed = trimmed.split(',').map(p => p.trim()).filter(Boolean);
+        }
     }
+
+    paymentModes = parsed.length ? parsed.join(', ') : '-';
+} catch (e) {
+    console.warn('Error handling mode_of_payment:', row.mode_of_payment, e);
+    paymentModes = row.mode_of_payment || '-';
+}
 
         tableBody.append(`
             <tr>
@@ -412,7 +425,23 @@
 
             const paymentContainer = $('.edit-payments');
             paymentContainer.empty();
-            const payments = JSON.parse(response.mode_of_payment || '[]');
+            let payments = [];
+
+                try {
+                    if (Array.isArray(response.mode_of_payment)) {
+                        payments = response.mode_of_payment;
+                    } else if (typeof response.mode_of_payment === 'string') {
+                        const trimmed = response.mode_of_payment.trim();
+                        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+                            payments = JSON.parse(trimmed);
+                        } else {
+                            payments = trimmed.split(',').map(p => p.trim()).filter(Boolean);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse mode_of_payment:', response.mode_of_payment, e);
+                    payments = [];
+                }
             if (payments.length === 0) {
                 paymentContainer.append(`
                     <div class="d-flex mb-2">
