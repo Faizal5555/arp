@@ -338,7 +338,7 @@ $(document).ready(function() {
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-8 d-flex justify-content-end d-none">
+                    <div class="col-md-8 d-flex justify-content-end">
                         <button class="btn btn-primary send-email-btn" id="openGlobalEmailModalBtn" data-toggle="modal" data-target="#emailModal">Send Email</button>
                     </div>
                 </div>
