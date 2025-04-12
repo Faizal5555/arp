@@ -259,7 +259,7 @@ $(document).ready(function () {
                     data.forEach((doctor, index) => {
                         html += `<div class="form-check mb-2 d-flex align-items-start">
                             <input type="checkbox" class="panelist-checkbox mt-2 mr-2" name="recipients[]" value="${doctor.email}" id="panelist${index}">
-                             <strong>${doctor.firstname} ${doctor.lastname} ${doctor.email}</strong>
+                             <strong>${doctor.firstname} ${doctor.lastname}</strong>
                                
                         </div>`;
                     });
