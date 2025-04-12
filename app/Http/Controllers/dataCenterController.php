@@ -2160,37 +2160,40 @@ public function userconsumerlistData(Request $request)
         
         
         public function globalEmail(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'recipientEmail' => 'required|email',
-            'emailContent' => 'required|string',
-            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048'
-        ]);
+        {
+            $validator = Validator::make($request->all(), [
+                'recipients' => 'required|array|min:1',
+                'recipients.*' => 'email',
+                'emailContent' => 'required|string',
+                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:2048'
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()], 400);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()->first()], 400);
+            }
+
+            $recipients = $request->recipients;
+            $emailContent = $request->emailContent;
+            $attachment = $request->file('attachment');
+
+            foreach ($recipients as $email) {
+                Mail::send('mails.global', ['emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
+                    $mail->from('researchaccountmanager@asiaresearchpartners.com');
+                    $mail->to($email);
+                    $mail->subject('Global Panel Notification');
+
+                    if ($attachment) {
+                        $mail->attach($attachment->getRealPath(), [
+                            'as' => $attachment->getClientOriginalName(),
+                            'mime' => $attachment->getMimeType()
+                        ]);
+                    }
+                });
+            }
+
+            return response()->json(['message' => 'Email sent successfully to selected panelists.']);
         }
 
-        $email = $request->recipientEmail;
-        $emailContent = $request->emailContent;
-        $attachment = $request->file('attachment');
-
-        Mail::send('mails.global', ['emailContent' => $emailContent], function ($mail) use ($email, $attachment) {
-            $mail->from('researchaccountmanager@asiaresearchpartners.com');
-            $mail->to($email);
-            $mail->subject('Global Panel Notification');
-
-            if ($attachment) {
-                $mail->attach($attachment->getRealPath(), [
-                    'as' => $attachment->getClientOriginalName(),
-                    'mime' => $attachment->getMimeType()
-                ]);
-            }
-        });
-
-        return response()->json(['message' => 'Email sent successfully.']);
-    }
-    
 
     public function getRecruitment()
     {
@@ -3136,6 +3139,25 @@ public function downloadHcpSampleFile()
 
     return response()->download($filePath)->deleteFileAfterSend(false);
 }
-    
+
+
+public function getFilteredDoctors(Request $request)
+{
+    $query = DB::table('datacenternews')
+        ->select('firstname', 'lastname', 'email')
+        ->whereNotNull('email');
+
+    if ($request->filled('country')) {
+        $query->where('country1', $request->country);
+    }
+
+    if ($request->filled('speciality')) {
+        $query->where('docterSpeciality', $request->speciality);
+    }
+
+    $panelists = $query->get();
+
+    return response()->json($panelists);
+}
 
 }

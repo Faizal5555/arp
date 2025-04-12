@@ -406,6 +406,7 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
     Route::get('/filter-doctors', 'App\Http\Controllers\dataCenterController@filterDoctors')->name('filterDoctors');
     Route::post('/send-email-panelists', 'App\Http\Controllers\dataCenterController@sendEmailToPanelists')->name('sendEmailToPanelists');
     // Route::get('mail', 'App\Http\Controllers\dataCenterController@mailexample')->name('mailexample');
+    Route::get('/get-filtered-doctors', 'App\Http\Controllers\dataCenterController@getFilteredDoctors')->name('get.filtered.doctors');
 
     Route::get('website/user/actived/link','App\Http\Controllers\dataCenterController@userReturnview');
     
