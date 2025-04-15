@@ -5020,6 +5020,24 @@ $("#complete").validate({
     <!-- Account client Request -->
 
 <script>
+
+function sanitizeAddress(str) {
+    return str
+        .replaceAll("/", "[slash]")
+        .replaceAll(",", "[comma]")
+        .replaceAll(".", "[dot]")
+        .replaceAll(":", "[colon]")
+        .replaceAll(";", "[semicolon]")
+        .replaceAll("'", "[quote]")
+        .replaceAll('"', "[doublequote]")
+        .replaceAll("&", "[and]")
+        .replaceAll("#", "[hash]")
+        .replaceAll("%", "[percent]")
+        .replaceAll("?", "[question]")
+        .replaceAll("=", "[equal]")
+        .replaceAll("+", "[plus]")
+        .replaceAll("@", "[at]");
+}
       $('#client_Advance_request').click(function(e){
         e.preventDefault();
         $.ajaxSetup({
@@ -5037,7 +5055,7 @@ $("#complete").validate({
                 client_pn_number:$('#client_pn_number').val(),
                 client_po_number:$('#client_po_number').val(),
                 client_manager:$('#client_manager').val(),
-                client_address:$('#client_address').val(),
+                address_encoded: encodedAddress,
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
                 invoice_type:$('#invoice_type').val(),
@@ -5087,6 +5105,8 @@ $("#complete").validate({
                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                  },
         });
+        
+        const encodedAddress = encodeURIComponent($('#client_address1').val());
 
         $.ajax({
             type:"post",
@@ -5097,7 +5117,7 @@ $("#complete").validate({
                 client_pn_number:$('#client_pn_number1').val(),
                 client_po_number:$('#client_po_number1').val(),
                 client_manager:$('#client_manager1').val(),
-                client_address:$('#client_address1').val(),
+                address_encoded: encodedAddress,
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
                 invoice_type:$('#invoice_type1').val(),
