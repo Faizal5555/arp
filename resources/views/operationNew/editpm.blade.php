@@ -5045,6 +5045,8 @@ function sanitizeAddress(str) {
                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                  },
         });
+        
+        const encodedAddress = encodeURIComponent($('#client_address').val());
 
         $.ajax({
             type:"post",
