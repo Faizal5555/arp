@@ -5030,6 +5030,9 @@ function sanitizeAddress(str) {
                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                  },
         });
+
+        const encodedAddress = encodeURIComponent($('#client_address').val());
+
        
         $.ajax({
             type:"post",
@@ -5040,7 +5043,7 @@ function sanitizeAddress(str) {
                 client_pn_number:$('#client_pn_number').val(),
                 client_po_number:$('#client_po_number').val(),
                 client_manager:$('#client_manager').val(),
-                client_address: sanitizeAddress($('#client_address').val()),
+                address_encoded: encodedAddress,
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
                 invoice_type:$('#invoice_type').val(),
@@ -5091,6 +5094,9 @@ function sanitizeAddress(str) {
                  },
         });
 
+        const encodedAddress = encodeURIComponent($('#client_address1').val());
+
+
         $.ajax({
             type:"post",
             data:{
@@ -5100,7 +5106,7 @@ function sanitizeAddress(str) {
                 client_pn_number:$('#client_pn_number1').val(),
                 client_po_number:$('#client_po_number1').val(),
                 client_manager:$('#client_manager1').val(),
-                client_address: sanitizeAddress($('#client_address1').val()),
+                address_encoded: encodedAddress,
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
                 invoice_type:$('#invoice_type1').val(),
