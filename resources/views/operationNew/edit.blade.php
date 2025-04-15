@@ -5031,7 +5031,7 @@ function sanitizeAddress(str) {
                  },
         });
 
-        const encodedAddress = encodeURIComponent($('#client_address').val());
+        //const encodedAddress = encodeURIComponent($('#client_address').val());
 
        
         $.ajax({
@@ -5043,7 +5043,7 @@ function sanitizeAddress(str) {
                 client_pn_number:$('#client_pn_number').val(),
                 client_po_number:$('#client_po_number').val(),
                 client_manager:$('#client_manager').val(),
-                address_encoded: encodedAddress,
+                client_address: sanitizeAddress($('#client_address').val()),
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
                 invoice_type:$('#invoice_type').val(),
@@ -5094,7 +5094,7 @@ function sanitizeAddress(str) {
                  },
         });
 
-        const encodedAddress = encodeURIComponent($('#client_address1').val());
+        //const encodedAddress = encodeURIComponent($('#client_address1').val());
 
 
         $.ajax({
@@ -5106,7 +5106,7 @@ function sanitizeAddress(str) {
                 client_pn_number:$('#client_pn_number1').val(),
                 client_po_number:$('#client_po_number1').val(),
                 client_manager:$('#client_manager1').val(),
-                address_encoded: encodedAddress,
+                client_address: sanitizeAddress($('#client_address1').val()),
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
                 invoice_type:$('#invoice_type1').val(),
@@ -5610,23 +5610,7 @@ $(document).on('click', '.remove-respondent-type', function () {
 });
 
 
-function sanitizeAddress(str) {
-    return str
-        .replaceAll("/", "[slash]")
-        .replaceAll(",", "[comma]")
-        .replaceAll(".", "[dot]")
-        .replaceAll(":", "[colon]")
-        .replaceAll(";", "[semicolon]")
-        .replaceAll("'", "[quote]")
-        .replaceAll('"', "[doublequote]")
-        .replaceAll("&", "[and]")
-        .replaceAll("#", "[hash]")
-        .replaceAll("%", "[percent]")
-        .replaceAll("?", "[question]")
-        .replaceAll("=", "[equal]")
-        .replaceAll("+", "[plus]")
-        .replaceAll("@", "[at]");
-}
+
 
 </script>
 @endsection
