@@ -5004,6 +5004,25 @@ $("#complete").validate({
     <!-- Account client Request -->
 
 <script>
+
+function sanitizeAddress(str) {
+    return str
+        .replaceAll("/", "[slash]")
+        .replaceAll(",", "[comma]")
+        .replaceAll(".", "[dot]")
+        .replaceAll(":", "[colon]")
+        .replaceAll(";", "[semicolon]")
+        .replaceAll("'", "[quote]")
+        .replaceAll('"', "[doublequote]")
+        .replaceAll("&", "[and]")
+        .replaceAll("#", "[hash]")
+        .replaceAll("%", "[percent]")
+        .replaceAll("?", "[question]")
+        .replaceAll("=", "[equal]")
+        .replaceAll("+", "[plus]")
+        .replaceAll("@", "[at]");
+}
+
       $('#client_Advance_request').click(function(e){
         e.preventDefault();
         $.ajaxSetup({
