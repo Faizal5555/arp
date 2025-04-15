@@ -1338,7 +1338,7 @@ public function fieldchart(Request $req)
            $clientrequest->operation_id=$req->operation_id;
          if (in_array($req->invoice_type, ['advance', 'balance'])) {
         $clientrequest->client_manager = $req->client_manager;
-        $clientrequest->client_address = $this->restoreAddress(urldecode($req->address_encoded));// decoding here
+        $clientrequest->client_address = $this->restoreAddress(urldecode($req->client_address));// decoding here
         $clientrequest->client_po_number = $req->client_po_number;
         $clientrequest->client_pn_number = $req->client_pn_number;
 

@@ -5022,6 +5022,7 @@ $("#complete").validate({
 <script>
 
 function sanitizeAddress(str) {
+    console.log('hi');
     return str
         .replaceAll("/", "[slash]")
         .replaceAll(",", "[comma]")
