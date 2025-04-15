@@ -5021,7 +5021,7 @@ $("#complete").validate({
                 client_pn_number:$('#client_pn_number').val(),
                 client_po_number:$('#client_po_number').val(),
                 client_manager:$('#client_manager').val(),
-                client_address: encodeURIComponent($('#client_address').val()),
+                client_address: sanitizeAddress($('#client_address').val()),
                 amount:$('#client_advance').val(),
                 client_contract:$('#client_contract').val(),
                 invoice_type:$('#invoice_type').val(),
@@ -5081,7 +5081,7 @@ $("#complete").validate({
                 client_pn_number:$('#client_pn_number1').val(),
                 client_po_number:$('#client_po_number1').val(),
                 client_manager:$('#client_manager1').val(),
-                client_address: encodeURIComponent($('#client_address1').val()),
+                client_address: sanitizeAddress($('#client_address1').val()),
                 amount:$('#client_balance').val(),
                 client_contract:$('#clientcontract').val(),
                 invoice_type:$('#invoice_type1').val(),
@@ -5584,6 +5584,24 @@ $(document).on('click', '.remove-respondent-type', function () {
     $(this).closest('.respondent-type-row').remove();
 });
 
+
+function sanitizeAddress(str) {
+    return str
+        .replaceAll("/", "[slash]")
+        .replaceAll(",", "[comma]")
+        .replaceAll(".", "[dot]")
+        .replaceAll(":", "[colon]")
+        .replaceAll(";", "[semicolon]")
+        .replaceAll("'", "[quote]")
+        .replaceAll('"', "[doublequote]")
+        .replaceAll("&", "[and]")
+        .replaceAll("#", "[hash]")
+        .replaceAll("%", "[percent]")
+        .replaceAll("?", "[question]")
+        .replaceAll("=", "[equal]")
+        .replaceAll("+", "[plus]")
+        .replaceAll("@", "[at]");
+}
 
 </script>
 @endsection

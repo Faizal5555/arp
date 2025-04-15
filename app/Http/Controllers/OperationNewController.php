@@ -1285,6 +1285,24 @@ public function fieldchart(Request $req)
 
     // accounts
 
+    private function restoreAddress($str)
+    {
+        return str_replace(
+            [
+                '[slash]', '[comma]', '[dot]', '[colon]', '[semicolon]',
+                '[quote]', '[doublequote]', '[and]', '[hash]', '[percent]',
+                '[question]', '[equal]', '[plus]', '[at]'
+            ],
+            [
+                '/', ',', '.', ':', ';',
+                "'", '"', '&', '#', '%',
+                '?', '=', '+', '@'
+            ],
+            $str
+        );
+    }
+
+
     public function clientrequest(Request $req){
         $oldrfq=Clientrequest::select('rfq')->get()->toArray();
         $oldinvoice_type=Clientrequest::select('invoice_type')->get()->toArray();
@@ -1319,7 +1337,7 @@ public function fieldchart(Request $req)
            $clientrequest->operation_id=$req->operation_id;
          if (in_array($req->invoice_type, ['advance', 'balance'])) {
         $clientrequest->client_manager = $req->client_manager;
-        $clientrequest->client_address = urldecode($req->client_address); // decoding here
+        $clientrequest->client_address = $this->restoreAddress($req->client_address); // decoding here
         $clientrequest->client_po_number = $req->client_po_number;
         $clientrequest->client_pn_number = $req->client_pn_number;
 
