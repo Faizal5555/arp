@@ -441,8 +441,128 @@ input.txtCal.valid {
 
     });
 
-    // single Country Calculation
-    $(document).ready(function() {
+    $(document).on('click',".tab-button",function () {
+            let target = $(this).attr("data-target");
+            console.log('hi');
+            if ($(this).hasClass("active")) {
+                // If already active, deactivate it
+                $(this).removeClass("active").css("background-color", "#6c757d");
+                $(target).addClass("d-none");
+                if(target == "#multiple-country")
+                {
+                    $('#single_form').val(0);
+                }else if(target == "#mulitple-country"){
+                    $('#multiple_form').val(0);
+                }else if(target == "#interview-depth"){
+                    $('#interview_form').val(0);
+                }else if(target == "#online-community"){
+                    $('#online_form').val(0);
+                }
+            } else {
+                // Activate the clicked tab and show its section
+                $(this).addClass("active").css("background-color", "#0047ff");
+                $(target).removeClass("d-none");
+                if(target == "#single-country")
+                {
+                    $('#single_form').val(1);
+                }else if(target == "#mulitple-country"){
+                    $('#multiple_form').val(1);
+                }else if(target == "#interview-depth"){
+                    $('#interview_form').val(1);
+                }else if(target == "#online-community"){
+                    $('#online_form').val(1);
+                }
+
+                
+            }
+            if ($(".tab-button.active").length > 0) {
+                $(".button-container").removeClass("d-none").addClass("d-flex");
+            } else {
+                $(".button-container").addClass("d-none").removeClass("d-flex");
+            }
+        });
+
+        $(document).ready(function() {
+            // Add More Columns to All Rows (with remove button)
+            $('#addMore').click(function() {
+            
+                let totalColumns = $('#costingTable tr:first td').length;
+
+                // Append Remove Button
+                // $('.append-controls').append('<button class="btn btn-danger btn-sm remove-column">-</button>');
+
+                // Append New Column to Each Row
+                $('#costingTable tbody tr').each(function(key, value) {
+                    let btn = ""
+                    let position = "";
+                    let columnLabel = $(this).find("td:first").text().trim(); 
+                    if(key === 0) {
+                        btn = '<button type="button" class="btn btn-danger btn-sm remove-column">x</button>';
+                        position = "relative";
+                    }
+                    //$(this).append(`<td class="${position}"><input type="text" class="form-control">${btn}</td>`);
+                    let newColumn = "";
+
+                    if (columnLabel === "Client") {
+                        // If it's the Client row, append a dropdown
+                        newColumn = `<td class="${position}">
+                            <select class="form-control" name="single_client[]" required>
+                                <option class="" value="">Client</option>
+                                @foreach ($client as $v)
+                                    <option value="{{ $v->client_name }}">{{ $v->client_name }}</option>
+                                @endforeach
+                            </select>
+                            ${btn}
+                        </td>`;
+                    } else {
+                        // Otherwise, append a normal text input
+                        let name = $(this).find("td input").attr("name");
+                        newColumn = `<td class="${position}"><input type="text" name="${name}" class="form-control">${btn}</td>`;
+                    }
+
+                    $(this).append(newColumn);
+                });
+            });
+
+            // Remove Column from All Rows
+            $(document).on('click', '.remove-column', function() {
+                let columnIndex = $('.remove-column').index(this);
+                
+                // Remove corresponding column from all rows
+                $('#costingTable tr').each(function() {
+                    $(this).find('td').eq(columnIndex + 2).remove(); // Adjusting index to match added column
+                });
+
+                // Remove the remove button itself
+                $(this).remove();
+
+            });
+
+            // Add Full Row in Other Fields
+            $(document).on('click', '.add-other', function() {
+                let colCount = $('#costingTable tr:first td').length; // Get total columns
+                let count = $('.remove-other').length + 1;
+                let newRow = `<tr>`;
+                for (let i = 0; i < colCount; i++) {
+                    if (i === 0) {
+                        newRow += `<td class="d-flex"><button type="button" class="btn btn-danger btn-sm remove-other" >x</button> 
+                            <input type="text" class="form-control" name="single_other[${count}][]" placeholder="Other"></td>`;
+                    } else {
+                        newRow += `<td><input type="text" name="single_other[${count}][]" class="form-control"></td>`;
+                    }
+                }
+                newRow += '</tr>';
+                
+                $('#costingTable tbody tr:last').before(newRow);
+                
+            });
+
+            // Remove Specific "Other Fields" Row
+            $(document).on('click', '.remove-other', function() {
+                $(this).closest('tr').remove();
+                $('#costingTable td input').trigger('keyup')
+            });
+
             $(document).on('keyup', '#costingTable td input', function() {
                 let index = $(this).closest("td").index();
                 let table = $(this).closest('table');
@@ -475,10 +595,115 @@ input.txtCal.valid {
                     
                 });
             });
+            
 
+                
+            $('#addMultipleCountryBtn').click(function() {
+                // Get the number of columns in the first row
+                let totalColumns = $('#MultipleCountry tr:first td').length;
+                let length = $('.removeMultipleCountry').length;
 
-       //Multiple Country
+                let i = 0;
+                $('#MultipleCountry tbody tr').each(function(index) {
+                    let removeBtn = "";
+                    let positionClass = "";
+                    
+                
+                    if (index === 0) {
+                        removeBtn = `<button type="button" class="btn btn-danger btn-sm removeMultipleCountry" attr="${length}">x</button>`;
+                        positionClass = "relative";
+                    }
+                    
+                    // Append new columns to each row
+                    if(index <= 3)
+                    {
+                        
+                        let label = $(this).find("td:last .label").html();
+                        label = label.replace(/(<input[^>]+)value="[^"]*"/gi, '$1value=""');
+                        // console.log(label.find('input'))
+                        // let inputField = $(this).find("td:last .label input"); // Select the input field
+                        // let label = inputField.clone().val(''); // Clone the input field and clear its value
+                        // console.log(label);
+                        $(this).append(`<td class="${positionClass} removeMultipleCountry_${length}" colspan="3"><label class="label">${label}</label>${removeBtn}</td>`);
+                    }else{
+                        if(index == 4){
+                            $(this).append(`<td class="static-field removeMultipleCountry_${length}">Sample</td>`);
+                            $(this).append(`<td class="static-field removeMultipleCountry_${length}">CPI</td>`);
+                            $(this).append(`<td class="static-field removeMultipleCountry_${length}">Total</td>`);
+                        }else{
+                            
+                            if(index == ($('#MultipleCountry tbody tr').length - 1))
+                            {
+                                
+                                $(this).append(`<td class="removeMultipleCountry_${length}"></td>`);
+                                $(this).append(`<td class="removeMultipleCountry_${length}"></td>`);
+                                $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" class="form-control" name="multiple_total_cost[]"></td>`);
+                            }else{
+                                let input_name = $(this).find('input').attr('name');
+                                // if(index <= 8)
+                                // {
+                                    $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="${input_name}" class="form-control"></td>`);
+                                    $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="${input_name}" class="form-control"></td>`);
+                                    $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="${input_name}" attr="total" class="form-control"></td>`);
+                                //     i++;
+                                // }else{
+                                //     $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="multiple_other[${index-9}][]" class="form-control"></td>`);
+                                //     $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="multiple_other[${index-9}][]" class="form-control"></td>`);
+                                //     $(this).append(`<td class="removeMultipleCountry_${length}"><input type="text" name="multiple_other[${index-9}][]" attr="total" class="form-control"></td>`);
+                                // }
+                            }
+                        }
+                    }
 
+                    
+                });
+                $('select[name="multiple_client[]"]').last().val('').trigger('change');
+            
+            
+            });
+
+            // Remove Specific Column from All Rows
+            $(document).on('click', '.removeMultipleCountry', function() {
+                let attr = $(this).attr('attr');
+                $('.removeMultipleCountry_'+attr).remove();
+            });
+
+            $(document).on('click', '.multiple_country_other', function() {
+                let currentRow = $('#otherFieldMultipleCountry');
+                let lastRow = $('#MultipleCountry tr:last');
+                
+                // Get the current row
+                let newRow = `<tr>`;
+                currentRow.find('td').each(function(index) {
+                    let className = $(this).attr('class')
+                    let td_length = currentRow.find('td').length;
+                    
+                    var input_name = $('.remove_multiple_country').length + 1;
+                    if (index === 0) {
+                        newRow += `<td class="d-flex ${className ? className : ''}">
+                            <button type="button" class="btn btn-danger btn-sm remove_multiple_country">x</button> 
+                            <input type="text" class="form-control" name="multiple_other[${input_name}][]" placeholder="Other">
+                        </td>`;
+                    } else {
+                        let attr = "";
+                        if((index ) % 3 === 0)
+                        {
+                            attr= "total";
+                        }
+                        newRow += `<td class="${className ? className : ''}"><input type="text" name="multiple_other[${input_name}][]" attr="${attr}" class="form-control"></td>`;
+                    }
+                });
+
+                newRow += `</tr>`;
+
+                lastRow.before(newRow); // Append the new row right below the current row
+            });
+
+            // Remove Specific "Other Fields" Row
+            $(document).on('click', '.remove_multiple_country', function() {
+                $(this).closest('tr').remove();
+                $('#MultipleCountry td input').trigger('keyup')
+            });
             $(document).on('keyup', '#MultipleCountry td input', function() {
                 let totalValues = [];
                 let total_length = $('#MultipleCountry tbody td:has(input[attr="total"])').length;
@@ -507,8 +732,105 @@ input.txtCal.valid {
                     $(this).find('input').val(sum.toFixed(2));
                 })
             });
+    
+   
 
-            // interview in depth calculation
+
+            $('#addInterviewDepthBtn').click(function() {
+                // Get the number of columns in the first row
+                let totalColumns = $('#InterviewDepth tr:first td').length;
+                let length = $('.removeInterviewDepth').length;
+
+                
+                $('#InterviewDepth tbody tr').each(function(index) {
+                    let removeBtn = "";
+                    let positionClass = "";
+
+                
+                    if (index === 0) {
+                        removeBtn = `<type="button" class="btn btn-danger btn-sm removeInterviewDepth" attr="${length}">x</button>`;
+                        positionClass = "relative";
+                        
+                    }
+
+                    // Append new columns to each row
+                    if(index <= 6)
+                    {
+                        
+                        let label = $(this).find("td:last .label").html();
+                        label = label.replace(/(<input[^>]+)value="[^"]*"/gi, '$1value=""');
+                        $(this).append(`<td class="${positionClass} removeInterviewDepth_${length}" colspan="3"><label class="label">${label}</label>${removeBtn}</td>`);
+                    }else{
+                        if(index == 7 ){
+                            $(this).append(`<td class="static-field removeInterviewDepth_${length}">Sample</td>`);
+                            $(this).append(`<td class="static-field removeInterviewDepth_${length}">CPI</td>`);
+                            $(this).append(`<td class="static-field removeInterviewDepth_${length}">Total</td>`);
+                        }else{
+                            let input_name = $(this).find('input').attr('name');
+                            let attr = $(this).find('input:last').attr('attr');
+                            if(index >= ($('#InterviewDepth tbody tr').length - 2))
+                            {
+                                console.log(attr)
+                                $(this).append(`<td class="total-cost removeInterviewDepth_${length}"></td>`);
+                                $(this).append(`<td class="total-cost removeInterviewDepth_${length}"></td>`);
+                                $(this).append(`<td class="total-cost removeInterviewDepth_${length}"><input type="text" class="form-control" name="${input_name}" attr="${attr}"></td>`);
+
+                            }else{
+                                // if(index > 12)
+                                // {
+                                $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="${input_name}"  class="form-control"></td>`);
+                                $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="${input_name}"  class="form-control"></td>`);
+                                $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="${input_name}"  class="form-control" attr="total"></td>`);
+                                // }else{
+                                //     $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="" class="form-control"></td>`);
+                                //     $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="" class="form-control"></td>`);
+                                //     $(this).append(`<td class="removeInterviewDepth_${length}"><input type="text" name="" class="form-control"></td>`);
+                                // }
+                            }
+                    }
+                    }
+                });
+                $('select[name="interview_depth_client[]"]').last().val('').trigger('change');
+            });
+
+            // Remove Specific Column from All Rows
+            $(document).on('click', '.removeInterviewDepth', function() {
+                let attr = $(this).attr('attr');
+                $('.removeInterviewDepth_'+attr).remove();
+            });
+
+            $(document).on('click', '.interview_depth_other', function() {
+                let currentRow = $('#otherFieldsInterview'); // Get the current row
+                let lastTwoRows = $('#InterviewDepth tr').slice(-2);
+                
+                let newRow = `<tr>`;
+                currentRow.find('td').each(function(index) {
+                    let className = $(this).attr('class')
+                    var count = $('.remove_interview_depth').length + 1;
+                    if (index === 0) {
+                        newRow += `<td class="d-flex ${className ? className : ''}">
+                            <button type="button" class="btn btn-danger btn-sm remove_interview_depth">x</button> 
+                            <input type="text" class="form-control" name="interview_depth_other[${count}][]" placeholder="Other">
+                        </td>`;
+                    } else {
+                        let attr = "";
+                        if((index ) % 3 === 0)
+                        {
+                            attr= "total";
+                        }
+                        newRow += `<td class="${className ? className : ''}"><input type="text" class="form-control" name="interview_depth_other[${count}][]" attr="${attr}"></td>`;
+                    }
+                });
+
+                newRow += `</tr>`;
+
+                lastTwoRows.first().before(newRow); // Append the new row right below the current row
+            });
+
+            // Remove Specific "Other Fields" Row
+            $(document).on('click', '.remove_interview_depth', function() {
+                $(this).closest('tr').remove();
+            });
             $(document).on('keyup', '#InterviewDepth td input', function() {
                 let totalValues = [];
                 let total_length = $('#InterviewDepth tbody td:has(input[attr="total"])').length;
@@ -550,11 +872,100 @@ input.txtCal.valid {
                     $(this).find('input').val(total);
                 })
             });
+    
 
-            // online community
+
+            $('#OnlineCommunityBtn').click(function() {
+                // Get the number of columns in the first row
+                let totalColumns = $('#OnlineCommunity tr:first td').length;
+                let length = $('.removeOnlineCommunity').length;
+
+                
+                $('#OnlineCommunity tbody tr').each(function(index) {
+                    let removeBtn = "";
+                    let positionClass = "";
+
+                
+                    if (index === 0) {
+                        removeBtn = `<button type="button" class="btn btn-danger btn-sm removeOnlineCommunity" attr="${length}">x</button>`;
+                        positionClass = "relative";
+                    }
+
+                    // Append new columns to each row
+                    if(index <= 6)
+                    {
+                        
+                        let label = $(this).find("td:last .label").html();
+                        label = label.replace(/(<input[^>]+)value="[^"]*"/gi, '$1value=""');
+                                    // .replace(/(<option[^>]+)value="[^"]*"/gi, '$1value=""');
+                        console.log(label);
+                        $(this).append(`<td class="${positionClass} removeOnlineCommunity_${length}" colspan="3"><label class="label">${label}</label>${removeBtn}</td>`);
+                    }else{
+                        if(index == 7){
+                            $(this).append(`<td class="static-field removeOnlineCommunity_${length}">Sample</td>`);
+                            $(this).append(`<td class="static-field removeOnlineCommunity_${length}">CPI</td>`);
+                            $(this).append(`<td class="static-field removeOnlineCommunity_${length}">Total</td>`);
+                        }else{
+                            let input_name = $(this).find('input').attr('name');
+                            if(index == ($('#OnlineCommunity tbody tr').length - 1))
+                            {
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"></td>`);
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"></td>`);
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"><input type="text" name="${input_name}" class="form-control"></td>`);
+                    
+                            }else{
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"><input type="text" name="${input_name}" class="form-control"></td>`);
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"><input type="text" name="${input_name}" class="form-control"></td>`);
+                                $(this).append(`<td class="removeOnlineCommunity_${length}"><input type="text" name="${input_name}" attr="total" class="form-control"></td>`);
+                            }
+                    }
+                    }
+                });
+                $('select[name="online_community_client[]"]').last().val('').trigger('change');
+            });
+
+            // Remove Specific Column from All Rows
+            $(document).on('click', '.removeOnlineCommunity', function() {
+                let attr = $(this).attr('attr');
+                $('.removeOnlineCommunity_'+attr).remove();
+            });
+
+            $(document).on('click', '.online_community_other', function() {
+                let currentRow = $('#otherFieldsOnline');
+                let lastRow = $('#OnlineCommunity tr:last'); // Get the current row
+                let count = $('.remove_online_community').length + 1;
+                let newRow = `<tr>`;
+                let td_length = currentRow.find('td').length;
+                
+                currentRow.find('td').each(function(index) {
+                    let className = $(this).attr('class')
+                    if (index === 0) {
+                        newRow += `<td class="d-flex ${className ? className : ''}">
+                            <button type="button" class="btn btn-danger btn-sm remove_online_community">x</button> 
+                            <input type="text" class="form-control" name="online_community_other[${count}][]" placeholder="Other">
+                        </td>`;
+                    } else {
+                        let attr = "";
+                        if((index ) % 3 === 0)
+                        {
+                            attr= "total";
+                        }
+
+                        newRow += `<td class="${className ? className : ''}"><input type="text" class="form-control" name="online_community_other[${count}][]" attr="${attr}"></td>`;
+                    }
+                });
+
+                newRow += `</tr>`;
+
+                lastRow.before(newRow); // Append the new row right below the current row
+            });
+
+            // Remove Specific "Other Fields" Row
+            $(document).on('click', '.remove_online_community', function() {
+                $(this).closest('tr').remove();
+            });
 
             $(document).on('keyup', '#OnlineCommunity td input', function() {
-                console.log("hello");
                 let totalValues = [];
                 let total_length = $('#OnlineCommunity tbody td:has(input[attr="total"])').length;
                 let overall_total_length = $('#OnlineCommunity tbody td:has(input[name="online_community_total_cost[]"])').length;
@@ -564,8 +975,7 @@ input.txtCal.valid {
                     if(!isNaN(cpi) && !isNaN(sample))
                     {
                         let total = (cpi * sample).toFixed(2); // Ensure two decimal places
-                        $(this).find('input').val((cpi*sample).toFixed(2));
-                        console.log(cpi*sample)
+                         $(this).find('input').val((cpi*sample).toFixed(2));
                         totalValues.push(cpi*sample);
                     }else{
                         $(this).find('input').val("");
@@ -584,7 +994,6 @@ input.txtCal.valid {
                 })
             });
         });
-
 </script>
 <div class="container-fluid" >
     <div class=" row" id="wonproject-id">
@@ -928,96 +1337,197 @@ input.txtCal.valid {
          
                 
                 
-                   
+                    
                    <div class="card-body" id="edit-rfq">
                     <div class="row">
                         <form id="rfq" class="flex-wrap form col-md-12 d-flex update"
                             enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="id"  value="{{$newrfq && $newrfq->id ? $newrfq->id  : ''}}">
+                            <input type="hidden" name="id"
+                                value="{{ $newrfq && $newrfq->id ? $newrfq->id : '' }}">
                             <input id="bidrfqCount" type="hidden" value="1" name="bidrfqCount">
                             <input type="hidden" name="single_form"   value="{{isset($newrfq) && isset($newrfq->single) ? 1 : 0}}" id="single_form">
-                                <input type="hidden" name="multiple_form"   value="{{isset($newrfq) && isset($newrfq->multiple) ? 1 : 0}}"id="multiple_form">
-                                <input type="hidden" name="interview_form"  value="{{isset($newrfq) && isset($newrfq->interview) ? 1 : 0}}" id="interview_form">
-                                <input type="hidden" name="online_form"  value="{{isset($newrfq) && isset($newrfq->online) ? 1 : 0}}" id="online_form">
-                             <div class="col-md-6">
-                                 <div class="form-group row">
-                                     <label class="col-lg-3 col-form-label font-weight-semibold">RFQ No <span
-                                             class="text-danger">*</span></label>
-                                     <div class="col-lg-9">
-                                         <input name="rfq_no" value="{{ $newrfq->rfq_no}}" readonly="readonly"
-                                              type="text" class="form-control" placeholder="{{$newrfq->rfq_no}}">
-                                     </div>
-                                 </div>
-                             </div> 
-                             
-                             <div class="col-md-6">
-                                 <div class="form-group row">
-                                     <label class="col-lg-3 col-form-label font-weight-semibold">Date<span
-                                             class="text-danger">*</span></label>
-                                     <div class="col-lg-9">
-                                         <input name="date" value="{{$newrfq && $newrfq->date ? $newrfq->date : ''}}"
-                                             type="date" class="form-control" placeholder="Date">
-                                     </div>
-                                 </div>
-                             </div>
-                             <div class="col-md-6">
-                                 <div class="form-group row">
-                              <label class="col-lg-3 col-form-label font-weight-semibold">Industry<span
-                                      class="text-danger">*</span></label>
-                              <div class="col-lg-9">
-                                  <!-- <input name="industry" value="{{$newrfq && $newrfq->industry ? $newrfq->industry : ''}}"
-                                      type="text" class="form-control" placeholder="Industry"> -->
-                                  <select class="form-control label-gray-3" name="industry" placeholder="Select Industry">
-                                <option value="Manufacturing Industry" {{$newrfq && $newrfq->industry =='Manufacturing Industry' ? 'selected' : '' }}>Manufacturing Industry</option>                                      
-                                <option value="Production Industry" {{$newrfq && $newrfq->industry =='Production Industry' ? 'selected' : '' }}>Production Industry</option>
-                                <option value="Food Industry" {{$newrfq && $newrfq->industry =='Food Industry' ? 'selected' : '' }} >Food Industry</option>
-                                <option value="Agricultural Industry" {{$newrfq && $newrfq->industry =='Agricultural Industry' ? 'selected' : '' }}>Agricultural Industry</option>
-                                <option value="Technology Industry" {{$newrfq && $newrfq->industry =='Technology Industry' ? 'selected' : '' }}>Technology Industry</option>
-                                <option value="Construction Industry" {{$newrfq && $newrfq->industry =='Construction Industry' ? 'selected' : '' }}>Construction Industry</option>
-                                <option value="Factory Industry" {{$newrfq && $newrfq->industry =='Factory Industry' ? 'selected' : '' }}>Factory Industry</option>
-                                <option value="Mining Industry" {{$newrfq && $newrfq->industry =='Mining Industry' ? 'selected' : '' }}>Mining Industry</option>
-                                <option value="Finance Industry" {{$newrfq && $newrfq->industry =='Finance Industry' ? 'selected' : '' }}>Finance Industry</option>
-                                <option value="Retail Industry" {{$newrfq && $newrfq->industry =='Retail Industry' ? 'selected' : '' }}>Retail Industry</option>
-                                <option value="Engineering Industry" {{$newrfq && $newrfq->industry =='Engineering Industry' ? 'selected' : '' }}>Engineering Industry</option>
-                                <option value="Marketing Industry" {{$newrfq && $newrfq->industry =='Marketing Industry' ? 'selected' : '' }}>Marketing Industry</option>
-                                <option value="Education Industry" {{$newrfq && $newrfq->industry =='Education Industry' ? 'selected' : '' }}>Education Industry</option>
-                                <option value="Transport Industry" {{$newrfq && $newrfq->industry =='Transport Industry' ? 'selected' : '' }}>Transport Industry</option>
-                                <option value="Chemical Industry" {{$newrfq && $newrfq->industry =='Chemical Industry' ? 'selected' : '' }}>Chemical Industry</option>
-                                <option value="Healthcare Industry" {{$newrfq && $newrfq->industry =='Healthcare Industry' ? 'selected' : '' }}>Healthcare Industry</option>
-                                <option value="Hospitality Industry" {{$newrfq && $newrfq->industry =='Hospitality Industry' ? 'selected' : '' }}>Hospitality Industry</option>
-                                <option value="Energy Industry" {{$newrfq && $newrfq->industry =='Energy Industry' ? 'selected' : '' }}>Energy Industry</option>
-                                <option value="Science Industry" {{$newrfq && $newrfq->industry =='Science Industry' ? 'selected' : '' }}>Science Industry</option>
-                                <option value="Waste Industry" {{$newrfq && $newrfq->industry =='Waste Industry' ? 'selected' : '' }}>Waste Industry</option>
-                                <option value="Chemistry Industry" {{$newrfq && $newrfq->industry =='Chemistry Industry' ? 'selected' : '' }}>Chemistry Industry</option>
-                                <option value="Teritiary Sector Industry" {{$newrfq && $newrfq->industry =='Teritiary Sector Industry' ? 'selected' : '' }}>Teritiary Sector Industry</option>
-                                <option value="Real Estate Industry" {{$newrfq && $newrfq->industry =='Real Estate Industry' ? 'selected' : '' }}>Real Estate Industry</option>
-                                <option value="Financial Services Industry"{{$newrfq && $newrfq->industry =='Financial Services Industry' ? 'selected' : '' }}>Financial Services Industry</option>
-                                <option value="Telecommunications Industry" {{$newrfq && $newrfq->industry =='Telecommunications Industry' ? 'selected' : '' }}>Telecommunications Industry</option>
-                                <option value="Distribution Industry" {{$newrfq && $newrfq->industry =='Distribution Industry' ? 'selected' : '' }}>Distribution Industry</option>
-                                <option value="Medical Device Industry" {{$newrfq && $newrfq->industry =='Medical Device Industry' ? 'selected' : '' }}>Medical Device Industry</option>
-                                <option value="Biotechnology Industry" {{$newrfq && $newrfq->industry =='Biotechnology Industry' ? 'selected' : '' }}>Biotechnology Industry</option>
-                                <option value="Aviation Industry" {{$newrfq && $newrfq->industry =='Aviation Industry' ? 'selected' : '' }}>Aviation Industry</option>
-                                <option value="Insurance Industry" {{$newrfq && $newrfq->industry =='Insurance Industry' ? 'selected' : '' }}>Insurance Industry</option>
-                                <option value="Trade Industry" {{$newrfq && $newrfq->industry =='Trade Industry' ? 'selected' : '' }}>Trade Industry</option>
-                                <option value="Stock Market Industry" {{$newrfq && $newrfq->industry =='Stock Market Industry' ? 'selected' : '' }}>Stock Market Industry</option>
-                                <option value="Electronics Industry" {{$newrfq && $newrfq->industry =='Electronics Industry' ? 'selected' : '' }}>Electronics Industry</option>
-                                <option value="Textile Industry" {{$newrfq && $newrfq->industry =='Textile Industry' ? 'selected' : '' }}>Textile Industry</option>
-                                <option value="Computers and Information Technology Industry" {{$newrfq && $newrfq->industry =='Computers and Information Technology Industry' ? 'selected' : '' }}>Computers and Information Technology Industry</option>
-                                <option value="Market Research Industry" {{$newrfq && $newrfq->industry =='Market Research Industry' ? 'selected' : '' }}>Market Research Industry</option>
-                                <option value="Machine Industry" {{$newrfq && $newrfq->industry =='Machine Industry' ? 'selected' : '' }}>Machine Industry</option>
-                                <option value="Recycling Industry" {{$newrfq && $newrfq->industry =='Recycling Industry' ? 'selected' : '' }}>Recycling Industry</option>
-                                <option value="Information and Communication Technology Industry" {{$newrfq && $newrfq->industry =='Information and Communication Technology Industry' ? 'selected' : '' }}>Information and Communication Technology Industry</option>
-                                <option value="E- Commerce Industry" {{$newrfq && $newrfq->industry =='E- Commerce Industry' ? 'selected' : '' }}>E- Commerce Industry</option>
-                                <option value="Research Industry" {{$newrfq && $newrfq->industry =='Research Industry' ? 'selected' : '' }}>Research Industry</option>
-                                <option value="Rail Transport Industry" {{$newrfq && $newrfq->industry =='Rail Transport Industry' ? 'selected' : '' }}>Rail Transport Industry</option>
-                                <option value="Food Processing Industry" {{$newrfq && $newrfq->industry =='Food Processing Industry' ? 'selected' : '' }}>Food Processing Industry</option>
-                                <option value="Small Business Industry" {{$newrfq && $newrfq->industry =='Small Business Industry' ? 'selected' : '' }}>Small Business Industry</option>
-                                <option value="Wholesale Industry" {{$newrfq && $newrfq->industry =='Wholesale Industry' ? 'selected' : '' }}>Wholesale Industry</option>
-                                <option value="Pulp and Paper Industry" {{$newrfq && $newrfq->industry =='Pulp and Paper Industry' ? 'selected' : '' }}>Pulp and Paper Industry</option>
-                                <option value="Vehicle Industry" {{$newrfq && $newrfq->industry =='Vehicle Industry' ? 'selected' : '' }}>Vehicle Industry</option>
-                                <option value="Steel Industry" {{$newrfq && $newrfq->industry =='Steel Industry' ? 'selected' : '' }}>Steel Industry</option>
-                                <option value="Renewable Energy Industry" {{$newrfq && $newrfq->industry =='Renewable Energy Industry' ? 'selected' : '' }}>Renewable Energy Industry</option>
+                            <input type="hidden" name="multiple_form"   value="{{isset($newrfq) && isset($newrfq->multiple) ? 1 : 0}}"id="multiple_form">
+                            <input type="hidden" name="interview_form"  value="{{isset($newrfq) && isset($newrfq->interview) ? 1 : 0}}" id="interview_form">
+                            <input type="hidden" name="online_form"  value="{{isset($newrfq) && isset($newrfq->online) ? 1 : 0}}" id="online_form">
+
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">RFQ No <span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input name="rfq_no" value="{{ $newrfq->rfq_no }}" readonly="readonly"
+                                            type="text" class="form-control" placeholder="{{ $newrfq->rfq_no }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Date<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input name="date"
+                                            value="{{ $newrfq && $newrfq->date ? $newrfq->date : '' }}" type="date"
+                                            class="form-control" placeholder="Date">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Industry<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+                                        <!-- <input name="industry" value="{{ $newrfq && $newrfq->industry ? $newrfq->industry : '' }}"
+                                              type="text" class="form-control" placeholder="Industry"> -->
+                                        <select class="form-control label-gray-3" name="industry"
+                                            placeholder="Select Industry">
+                                            <option value="Manufacturing Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Manufacturing Industry' ? 'selected' : '' }}>
+                                                Manufacturing Industry</option>
+                                            <option value="Production Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Production Industry' ? 'selected' : '' }}>
+                                                Production Industry</option>
+                                            <option value="Food Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Food Industry' ? 'selected' : '' }}>
+                                                Food Industry</option>
+                                            <option value="Agricultural Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Agricultural Industry' ? 'selected' : '' }}>
+                                                Agricultural Industry</option>
+                                            <option value="Technology Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Technology Industry' ? 'selected' : '' }}>
+                                                Technology Industry</option>
+                                            <option value="Construction Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Construction Industry' ? 'selected' : '' }}>
+                                                Construction Industry</option>
+                                            <option value="Factory Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Factory Industry' ? 'selected' : '' }}>
+                                                Factory Industry</option>
+                                            <option value="Mining Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Mining Industry' ? 'selected' : '' }}>
+                                                Mining Industry</option>
+                                            <option value="Finance Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Finance Industry' ? 'selected' : '' }}>
+                                                Finance Industry</option>
+                                            <option value="Retail Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Retail Industry' ? 'selected' : '' }}>
+                                                Retail Industry</option>
+                                            <option value="Engineering Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Engineering Industry' ? 'selected' : '' }}>
+                                                Engineering Industry</option>
+                                            <option value="Marketing Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Marketing Industry' ? 'selected' : '' }}>
+                                                Marketing Industry</option>
+                                            <option value="Education Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Education Industry' ? 'selected' : '' }}>
+                                                Education Industry</option>
+                                            <option value="Transport Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Transport Industry' ? 'selected' : '' }}>
+                                                Transport Industry</option>
+                                            <option value="Chemical Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Chemical Industry' ? 'selected' : '' }}>
+                                                Chemical Industry</option>
+                                            <option value="Healthcare Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Healthcare Industry' ? 'selected' : '' }}>
+                                                Healthcare Industry</option>
+                                            <option value="Hospitality Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Hospitality Industry' ? 'selected' : '' }}>
+                                                Hospitality Industry</option>
+                                            <option value="Energy Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Energy Industry' ? 'selected' : '' }}>
+                                                Energy Industry</option>
+                                            <option value="Science Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Science Industry' ? 'selected' : '' }}>
+                                                Science Industry</option>
+                                            <option value="Waste Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Waste Industry' ? 'selected' : '' }}>
+                                                Waste Industry</option>
+                                            <option value="Chemistry Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Chemistry Industry' ? 'selected' : '' }}>
+                                                Chemistry Industry</option>
+                                            <option value="Teritiary Sector Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Teritiary Sector Industry' ? 'selected' : '' }}>
+                                                Teritiary Sector Industry</option>
+                                            <option value="Real Estate Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Real Estate Industry' ? 'selected' : '' }}>
+                                                Real Estate Industry</option>
+                                            <option
+                                                value="Financial Services Industry"{{ $newrfq && $newrfq->industry == 'Financial Services Industry' ? 'selected' : '' }}>
+                                                Financial Services Industry</option>
+                                            <option value="Telecommunications Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Telecommunications Industry' ? 'selected' : '' }}>
+                                                Telecommunications Industry</option>
+                                            <option value="Distribution Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Distribution Industry' ? 'selected' : '' }}>
+                                                Distribution Industry</option>
+                                            <option value="Medical Device Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Medical Device Industry' ? 'selected' : '' }}>
+                                                Medical Device Industry</option>
+                                            <option value="Biotechnology Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Biotechnology Industry' ? 'selected' : '' }}>
+                                                Biotechnology Industry</option>
+                                            <option value="Aviation Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Aviation Industry' ? 'selected' : '' }}>
+                                                Aviation Industry</option>
+                                            <option value="Insurance Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Insurance Industry' ? 'selected' : '' }}>
+                                                Insurance Industry</option>
+                                            <option value="Trade Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Trade Industry' ? 'selected' : '' }}>
+                                                Trade Industry</option>
+                                            <option value="Stock Market Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Stock Market Industry' ? 'selected' : '' }}>
+                                                Stock Market Industry</option>
+                                            <option value="Electronics Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Electronics Industry' ? 'selected' : '' }}>
+                                                Electronics Industry</option>
+                                            <option value="Textile Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Textile Industry' ? 'selected' : '' }}>
+                                                Textile Industry</option>
+                                            <option value="Computers and Information Technology Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Computers and Information Technology Industry' ? 'selected' : '' }}>
+                                                Computers and Information Technology Industry</option>
+                                            <option value="Market Research Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Market Research Industry' ? 'selected' : '' }}>
+                                                Market Research Industry</option>
+                                            <option value="Machine Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Machine Industry' ? 'selected' : '' }}>
+                                                Machine Industry</option>
+                                            <option value="Recycling Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Recycling Industry' ? 'selected' : '' }}>
+                                                Recycling Industry</option>
+                                            <option value="Information and Communication Technology Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Information and Communication Technology Industry' ? 'selected' : '' }}>
+                                                Information and Communication Technology Industry</option>
+                                            <option value="E- Commerce Industry"
+                                                {{ $newrfq && $newrfq->industry == 'E- Commerce Industry' ? 'selected' : '' }}>
+                                                E- Commerce Industry</option>
+                                            <option value="Research Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Research Industry' ? 'selected' : '' }}>
+                                                Research Industry</option>
+                                            <option value="Rail Transport Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Rail Transport Industry' ? 'selected' : '' }}>
+                                                Rail Transport Industry</option>
+                                            <option value="Food Processing Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Food Processing Industry' ? 'selected' : '' }}>
+                                                Food Processing Industry</option>
+                                            <option value="Small Business Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Small Business Industry' ? 'selected' : '' }}>
+                                                Small Business Industry</option>
+                                            <option value="Wholesale Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Wholesale Industry' ? 'selected' : '' }}>
+                                                Wholesale Industry</option>
+                                            <option value="Pulp and Paper Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Pulp and Paper Industry' ? 'selected' : '' }}>
+                                                Pulp and Paper Industry</option>
+                                            <option value="Vehicle Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Vehicle Industry' ? 'selected' : '' }}>
+                                                Vehicle Industry</option>
+                                            <option value="Steel Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Steel Industry' ? 'selected' : '' }}>
+                                                Steel Industry</option>
+                                            <option value="Renewable Energy Industry"
+                                                {{ $newrfq && $newrfq->industry == 'Renewable Energy Industry' ? 'selected' : '' }}>
+                                                Renewable Energy Industry</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1027,14 +1537,37 @@ input.txtCal.valid {
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Follow Up Date<span
                                             class="text-danger">*</span></label>
                                     <div class="col-lg-9">
-                                       
-                                        <input name="follow_up_date" value="{{$newrfq && $newrfq->follow_up_date ? $newrfq->follow_up_date : ''}}" 
+
+                                        <input name="follow_up_date"
+                                            value="{{ $newrfq && $newrfq->follow_up_date ? $newrfq->follow_up_date : '' }}"
                                             type="date" class="form-control" placeholder="Follow Up date">
                                     </div>
                                 </div>
                             </div>
-                         
-                            
+                            {{-- <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Choose Currency<span
+                                            class="text-danger">*</span></label>
+                                    <div class="col-lg-9">
+
+                                        <select class="form-control label-gray-3" id="currency" name="currency">
+                                            <option
+                                                value="₹"{{ $bidrfq && $bidrfq->currency == '₹' ? 'selected' : '' }}>
+                                                INR</option>
+                                            <option value="$"
+                                                {{ $bidrfq && $bidrfq->currency == '$' ? 'selected' : '' }}>USD
+                                            </option>
+                                            <option
+                                                value="€"{{ $bidrfq && $bidrfq->currency == '€' ? 'selected' : '' }}>
+                                                Euro</option>
+                                            <option value="£"
+                                                {{ $bidrfq && $bidrfq->currency == '£' ? 'selected' : '' }}>Pound
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div> --}}
+                             
                             <div class="col-md-6">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Choose Company
@@ -1042,7 +1575,7 @@ input.txtCal.valid {
                                     <div class="col-lg-9">
 
                                         <select class="form-control label-gray-3" id="company_name"
-                                            name="company_name" >
+                                            name="company_name">
                                             <option
                                                 value="Asia Research Partners"{{ $newrfq && $newrfq->company_name == 'Asia Research Partners' ? 'selected' : '' }}>
                                                 Asia Research Partners</option>
@@ -1057,93 +1590,151 @@ input.txtCal.valid {
                                     </div>
                                 </div>
                             </div>
+                            
 
-                            <div class="container mt-5">
-                                <div class="tab-container">
-                                    @if(isset($newrfq) && isset($newrfq->single))
-                                        <button class="tab-button active" type="button" data-target="#single-country">
-                                            CATI / CAPI / Online Research Single Country
-                                        </button>
-                                    @endif
-                                
-                                    @if(isset($newrfq) && isset($newrfq->multiple))
-                                        <button class="tab-button active" type="button" data-target="#mulitple-country">
-                                            CATI / CAPI / Online Research Multiple Countries
-                                        </button>
-                                    @endif
-                                
-                                    @if(isset($newrfq) && isset($newrfq->interview))
-                                        <button class="tab-button active" type="button" data-target="#interview-depth">
-                                            In-Depth Interviews / Focus Groups
-                                        </button>
-                                    @endif
-                                
-                                    @if(isset($newrfq) && isset($newrfq->online))
-                                        <button class="tab-button active" type="button" data-target="#online-community">
-                                            Online Community - Costing Sheet
-                                        </button>
-                                    @endif
-                                </div>
-                                <div class="{{ isset($newrfq) && isset($newrfq->single) ? '' : 'd-none' }}" id="single-country">
-                                    <?php
-                                    if(isset($newrfq) && isset($newrfq->single)){
-                                        $single_methodology = json_decode($newrfq->single->single_methodology);
-                                        $single_currency = json_decode($newrfq->single->single_currency);
-                                        $single_loi = json_decode($newrfq->single->single_loi);
-                                        $single_country = json_decode($newrfq->single->single_country);
-                                        $single_client = json_decode($newrfq->single->single_client);
-                                        $single_sample = json_decode($newrfq->single->single_sample);
-                                        $single_fieldwork = json_decode($newrfq->single->single_fieldwork);
-                                        $single_other = json_decode($newrfq->single->single_other);
-                                        $single_total_cost = json_decode($newrfq->single->single_total_cost);
-                                    }   
-                                    ?>
-                                    <h5>CATI / CAPI / Online Research Single Country</h5>
-                                
-                                    @if(isset($newrfq) && isset($newrfq->single))
-                                    <div class="table-container mt-2">
-                                        <table class="" id="costingTable">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="static-field">Methodology</td>
-                                                    @if(count($single_methodology) > 0)
-                                                    @foreach($single_methodology as $key => $methodology)
+                            <div class="col-md-6">
+                            </div>
+
+                            
+                            
+                            
+                            <div class="w-100">
+                                <div class="container mt-5">
+                                    {{-- <div class="tab-container">
+                                        @if(isset($newrfq) && isset($newrfq->single))
+                                            <button class="tab-button active" type="button" data-target="#single-country">
+                                                CATI / CAPI / Online Research Single Country
+                                            </button>
+                                        @endif
+                                    
+                                        @if(isset($newrfq) && isset($newrfq->multiple))
+                                            <button class="tab-button active" type="button" data-target="#mulitple-country">
+                                                CATI / CAPI / Online Research Multiple Countries
+                                            </button>
+                                        @endif
+                                    
+                                        @if(isset($newrfq) && isset($newrfq->interview))
+                                            <button class="tab-button active" type="button" data-target="#interview-depth">
+                                                In-Depth Interviews / Focus Groups
+                                            </button>
+                                        @endif
+                                    
+                                        @if(isset($newrfq) && isset($newrfq->online))
+                                            <button class="tab-button active" type="button" data-target="#online-community">
+                                                Online Community - Costing Sheet
+                                            </button>
+                                        @endif
+                                    </div> --}}
+
+
+
+                            <div class="tab-container">
+                                <button class="tab-button {{ isset($newrfq) && isset($newrfq->single) ? 'active' : 'inactive' }}" type="button" data-target="#single-country">CATI / CAPI / Online Research Single Country</button>
+                                <button class="tab-button {{ isset($newrfq) && isset($newrfq->multiple) ? 'active' : 'inactive' }}" type="button" data-target="#mulitple-country">CATI / CAPI / Online Research Multiple Countries</button>
+                                <button class="tab-button {{ isset($newrfq) && isset($newrfq->interview) ? 'active' : 'inactive' }}" type="button" data-target="#interview-depth">In-Depth Interviews / Focus Groups</button>
+                                <button class="tab-button {{ isset($newrfq) && isset($newrfq->online) ? 'active' : 'inactive' }}" type="button" data-target="#online-community">Online Community - Costing Sheet</button>
+                            </div>
+                                    <div class="{{ isset($newrfq) && isset($newrfq->single) ? '' : 'd-none' }}" id="single-country">
+                                        <?php
+                                        $single_methodology = [];
+                                        $single_currency = [];
+                                        $single_loi = [];
+                                        $single_country = [];
+                                        $single_client = [];
+                                        $single_sample = [];
+                                        $single_fieldwork = [];
+                                        $single_other = [];
+                                        $single_total_cost = [];
+                                        if(isset($newrfq) && isset($newrfq->single)){
+                                            $single_methodology = json_decode($newrfq->single->single_methodology);
+                                            $single_currency = json_decode($newrfq->single->single_currency);
+                                            $single_loi = json_decode($newrfq->single->single_loi);
+                                            $single_country = json_decode($newrfq->single->single_country);
+                                            $single_client = json_decode($newrfq->single->single_client);
+                                            $single_sample = json_decode($newrfq->single->single_sample);
+                                            $single_fieldwork = json_decode($newrfq->single->single_fieldwork);
+                                            $single_other = json_decode($newrfq->single->single_other);
+                                            $single_total_cost = json_decode($newrfq->single->single_total_cost);
+                                        }   
+                                        ?>
+                                        <h5>CATI / CAPI / Online Research Single Country</h5>
+                                    
+                                        <div class="append-controls">
+                                            <button type="button" class="btn btn-success btn-sm" id="addMore">Add More</button>
+                                        </div>
+                                        {{-- @if(isset($newrfq) && isset($newrfq->single)) --}}
+                                        <div class="table-container mt-2">
+                                            <table class="" id="costingTable">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="static-field">Methodology</td>
+                                                        @if(count($single_methodology) > 0)
+                                                        @foreach($single_methodology as $key => $methodology)
+                                                            <td class="relative ">
+                                                            @if($key > 0)
+                                                                <button type="button" class="btn btn-danger btn-sm remove-column" attr="{{$key - 1}}">x</button>
+                                                            @endif
+                                                            <input type="text" class="form-control" name="single_methodology[]" value="{{$methodology}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="relative ">
+                                                        <input type="text" class="form-control" name="single_methodology[]" value=""></td>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">Currency</td>
+                                                        @if(count($single_currency) > 0)
+                                                        @foreach($single_currency as $currency)
+                                                            <td class=""><input type="text" class="form-control" name="single_currency[]"value="{{$currency}}" ></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class=""><input type="text" class="form-control" name="single_currency[]"value="" ></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">LOI</td>
+                                                        @if(count($single_loi) > 0)
+                                                        @foreach($single_loi as $loi)
+                                                            <td><input type="text" class="form-control" name="single_loi[]" value="{{$loi}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_loi[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                        <td class="static-field ">Country</td>
+                                                        @if(count($single_country) > 0)
+                                                        @foreach($single_country as $country)
+                                                            <td><input type="text" class="form-control" name="single_country[]" value="{{$country}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_country[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                    <td class="static-field ">Client</td>
+                                                    @if(count($single_client) > 0)
+                                                    @foreach($single_client as $value)
                                                         <td>
-                                                        <input type="text" class="form-control" name="single_methodology[]" value="{{$methodology}}">
-                                                    </td>
+                                                            <select class="form-control"
+                                                                name="single_client[]">
+                                                                <option class=""
+                                                                    value="">Client</option>
+                                                                @if (count($client) > 0)
+                                                                    @foreach ($client as $v)
+                                                                        <option
+                                                                            value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}>
+                                                                            {{ $v->client_name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </td>
                                                     @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field remove-other_{{$key - 1}}">Currency</td>
-                                                    @if(count($single_currency) > 0)
-                                                    @foreach($single_currency as $currency)
-                                                        <td><input type="text" class="form-control" name="single_currency[]"value="{{$currency}}" ></td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field remove-other_{{$key - 1}}">LOI</td>
-                                                    @if(count($single_loi) > 0)
-                                                    @foreach($single_loi as $loi)
-                                                        <td><input type="text" class="form-control" name="single_loi[]" value="{{$loi}}"></td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                
-                                                <tr>
-                                                    <td class="static-field remove-other_{{$key - 1}}">Country</td>
-                                                    @if(count($single_country) > 0)
-                                                    @foreach($single_country as $country)
-                                                        <td><input type="text" class="form-control" name="single_country[]" value="{{$country}}"></td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                
-                                                <tr>
-                                                <td class="static-field remove-other_{{$key - 1}}">Client</td>
-                                                @if(count($single_client) > 0)
-                                                @foreach($single_client as $value)
+                                                    @else
                                                     <td>
                                                         <select class="form-control"
                                                             name="single_client[]">
@@ -1152,171 +1743,280 @@ input.txtCal.valid {
                                                             @if (count($client) > 0)
                                                                 @foreach ($client as $v)
                                                                     <option
-                                                                        value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}>
+                                                                        value="{{ $v->client_name }}">
                                                                         {{ $v->client_name }}
                                                                     </option>
                                                                 @endforeach
                                                             @endif
                                                         </select>
                                                     </td>
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                
-                                                <tr>
-                                                <td class="static-field remove-other_{{$key - 1}}">Sample</td>
-                                                @if(count($single_sample) > 0)
-                                                @foreach($single_sample as $sample)
-                                                    <td><input type="text" class="form-control" name="single_sample[]" value="{{$sample}}"></td>
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field remove-other_{{$key - 1}}">Fieldwork CPI</td>
-                                                    @if(count($single_fieldwork) > 0)
-                                                    @foreach($single_fieldwork as $fieldwork)
-                                                        <td><input type="text" class="form-control" name="single_fieldwork[]" value="{{$fieldwork}}">
-                                                    @endforeach
                                                     @endif
-                                                    </td>
-                                                </tr>
-                                                
-                                                @if(count($single_other) > 0)
-                                                @foreach($single_other as $k => $value)
-                                                <tr id="otherFields">
-                                                @if(count($value) > 0)
-                                                @foreach($value as $key => $other)
-                                                    @if($key % 3 === 0)
-                                                    <td class="d-flex">
-                                                        
-                                                        <button type="button" class="d-none btn btn-sm  {{$k == 0 ? 'add-other btn-light' : 'remove-other btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
-                                                        <input type="text" class="form-control" placeholder="Others" name="single_other[{{$k}}][]" value="{{$other}}">
-                                                    </td>
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                    <td class="static-field ">Sample</td>
+                                                    @if(count($single_sample) > 0)
+                                                    @foreach($single_sample as $sample)
+                                                        <td><input type="text" class="form-control" name="single_sample[]" value="{{$sample}}"></td>
+                                                    @endforeach
                                                     @else
-                                                    <td><input type="text" class="form-control" name="single_other[{{$k}}][]" value="{{$other}}"></td>
+                                                    <td><input type="text" class="form-control" name="single_sample[]" value=""></td>
                                                     @endif
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                                <tr>
-                                                    <td>Total Cost</td>
-                                                    @if(count($single_total_cost) > 0)
-                                                    @foreach($single_total_cost as $total_cost)
-                                                        <td><input type="text" class="form-control" name="single_total_cost[]" value="{{$total_cost}}"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">Fieldwork CPI</td>
+                                                        @if(count($single_fieldwork) > 0)
+                                                        @foreach($single_fieldwork as $fieldwork)
+                                                            <td><input type="text" class="form-control" name="single_fieldwork[]" value="{{$fieldwork}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_fieldwork[]" value=""></td>
+                                                        @endif
+                                                        
+                                                    </tr>
+                                                    
+                                                    @if(count($single_other) > 0)
+                                                    @foreach($single_other as $k => $value)
+                                                    <tr id="otherFields">
+                                                    @if(count($value) > 0)
+                                                    @foreach($value as $key => $other)
+                                                        @if($key % 3 === 0)
+                                                        <td class="d-flex">
+                                                            
+                                                            <button type="button" class="btn btn-sm  {{$k == 0 ? 'add-other btn-light' : 'remove-other btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
+                                                            <input type="text" class="form-control" placeholder="Others" name="single_other[{{$k}}][]" value="{{$other}}">
+                                                        </td>
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_other[{{$k}}][]" value="{{$other}}"></td>
+                                                        @endif
                                                     @endforeach
                                                     @endif
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="container">
-
-                                <div class="{{ isset($newrfq) && isset($newrfq->multiple) ? '' : 'd-none' }}" id="mulitple-country">
-                                    <h5>CATI / CAPI / Online Research Multiple Country</h5>
-                                    <?php
-                                    if(isset($newrfq) && isset($newrfq->multiple)){
-                                        $multiple_methodology = json_decode($newrfq->multiple->multiple_methodology);
-                                        $multiple_currency = json_decode($newrfq->multiple->multiple_currency);
-                                        $multiple_loi = json_decode($newrfq->multiple->multiple_loi);
-                                        $multiple_client = json_decode($newrfq->multiple->multiple_client);
-                                        $multiple_countries = json_decode($newrfq->multiple->multiple_countries);
-                                        $multiple_other = json_decode($newrfq->multiple->multiple_other);
-                                        $multiple_total_cost = json_decode($newrfq->multiple->multiple_total_cost);
-                                    }   
-                                    ?>
-                                    <div class="tab-container d-none">
-                                        <button type="button" class="btn btn-success btn-sm" id="addMultipleCountryBtn">Add More</button>
-                                    </div>
-                                     @if(isset($newrfq) && isset($newrfq->multiple))
-                                    <div class="table-container mt-2">
-                                        <table class="" id="MultipleCountry">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="static-field">Methodology</td>
-                                                    @if(count($multiple_methodology) > 0)
-                                                        @foreach($multiple_methodology as $key => $methodology)
-                                                            <td class="editable-field"  colspan="3">
-                                                            <label class="mb-0 label">
-                                                            <input type="text" class="form-control" name="multiple_methodology[]" value="{{$methodology}}" placeholder="Online">
-                                                            </label>
-                                                        @endforeach
+                                                    </tr>
+                                                    @endforeach
+                                                    @else
+                                                    <tr id="otherFields">
+                                                        <td class="d-flex">
+                                                            <button type="button" class="btn btn-sm add-other btn-light">+</button> 
+                                                            <input type="text" class="form-control" placeholder="Others" name="single_other[0][]">
+                                                        </td>
+                                                        <td><input type="text" class="form-control" placeholder="" name="single_other[0][]"></td>
+                                                    </tr>
                                                     @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                <td class="static-field relative ">Currency</td>
-                                                 @if(count($multiple_currency) > 0)
-                                                     @foreach($multiple_currency as $key => $currency)
+                                                    <tr>
+                                                        <td>Total Cost</td>
+                                                        @if(count($single_total_cost) > 0)
+                                                        @foreach($single_total_cost as $total_cost)
+                                                            <td><input type="text" class="form-control" name="single_total_cost[]" value="{{$total_cost}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control" name="single_total_cost[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {{-- @endif --}}
+                                    </div>
+                                </div>
+
+
+                                <div class="container mt-5">
+
+                                    <div class="{{ isset($newrfq) && isset($newrfq->multiple) ? '' : 'd-none' }}" id="mulitple-country">
+                                        <h5>CATI / CAPI / Online Research Multiple Country</h5>
+                                        <?php
+                                        $multiple_methodology = [];
+                                        $multiple_currency = [];
+                                        $multiple_loi = [];
+                                        $multiple_client = [];
+                                        $multiple_countries = [];
+                                        $multiple_other = [];
+                                        $multiple_total_cost = [];
+                                        if(isset($newrfq) && isset($newrfq->multiple)){
+                                            $multiple_methodology = json_decode($newrfq->multiple->multiple_methodology);
+                                            $multiple_currency = json_decode($newrfq->multiple->multiple_currency);
+                                            $multiple_loi = json_decode($newrfq->multiple->multiple_loi);
+                                            $multiple_client = json_decode($newrfq->multiple->multiple_client);
+                                            $multiple_countries = json_decode($newrfq->multiple->multiple_countries);
+                                            $multiple_other = json_decode($newrfq->multiple->multiple_other);
+                                            $multiple_total_cost = json_decode($newrfq->multiple->multiple_total_cost);
+                                        }   
+                                        ?>
+                                        <div class="tab-container">
+                                            <button type="button" class="btn btn-success btn-sm" id="addMultipleCountryBtn">Add More</button>
+                                        </div>
+                                         {{-- @if(isset($newrfq) && isset($newrfq->multiple)) --}}
+                                        <div class="table-container mt-2">
+                                            <table class="" id="MultipleCountry">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="static-field">Methodology</td>
+                                                        @if(count($multiple_methodology) > 0)
+                                                            @foreach($multiple_methodology as $key => $methodology)
+                                                                <td class="editable-field relative removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                                                @if($key > 0)
+                                                                    <button type="button" class="btn btn-danger btn-sm removeMultipleCountry" attr="{{$key - 1}}">x</button>
+                                                               @endif
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control" name="multiple_methodology[]" value="{{$methodology}}" placeholder="Online">
+                                                                </label>
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field relative"  colspan="3">
+                                                        <label class="mb-0 label">
+                                                        <input type="text" class="form-control" name="multiple_methodology[]" value="" placeholder="Online">
+                                                        </label>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                    <td class="static-field relative ">Currency</td>
+                                                    @if(count($multiple_currency) > 0)
+                                                        @foreach($multiple_currency as $key => $currency)
                                                         <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
                                                         <label class="mb-0 label">
                                                         <input type="text" class="form-control" name="multiple_currency[]" value="{{$currency}}" placeholder="currency">
                                                         </label>
-                                                     @endforeach
-                                                 @endif
                                                     </td>
-                                                </tr>
-                                                <tr>
-                                                <td class="static-field relative ">LOI</td>
-                                                  @if(count($multiple_loi) > 0)
-                                                   @foreach($multiple_loi as $key => $loi)
-                                                    <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
-                                                        <label class="mb-0 label">
-                                                        <input type="text" class="form-control" name="multiple_loi[]" value="{{$loi}}" placeholder="mins">
-                                                        </label>
-                                                    @endforeach
-                                                   @endif
-                                                  </td>
-                                                </tr>
-                                                <tr>
-                                                <td class="static-field relative ">Client</td>
-                                                @if(count($multiple_client) > 0)
-                                                  @foreach($multiple_client as $key => $value)
-                                                    <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
-                                                        <label class="mb-0 label"> 
-                                                        <select class="form-control label-gray-3" name="multiple_client[]">
-                                                            <option class="label-gray-3" value="">Client</option>
-                                                            @foreach ($client as $v)
-                                                                <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}> 
-                                                                {{ $v->client_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        </label>
+                                                        @endforeach
+                                                    @else
+                                                    <td class="editable-field relative"  colspan="3">
+                                                    <label class="mb-0 label">
+                                                    <input type="text" class="form-control" name="multiple_currency[]" value="" placeholder="currency">
+                                                    </label>
                                                     </td>
-                                                    @endforeach
-                                                @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field relative ">Countries</td>
-                                                    @if(count($multiple_countries) > 0)
-                                                    @foreach($multiple_countries as $key => $multiple)
-                                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">Sample</td>
-                                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">CPI</td>
-                                                    <td class="static-field removeMultipleCountry_{{$key - 1}}">Total</td>
-                                                    @endforeach
                                                     @endif
-                                                </tr>
-                                                @if(count($multiple_countries) > 0)
-                                                @foreach ($multiple_countries as $k => $countries)
+                                                    </tr>
                                                     <tr>
-                                                    <?php 
+                                                    <td class="static-field relative ">LOI</td>
+                                                    @if(count($multiple_loi) > 0)
+                                                       @foreach($multiple_loi as $key => $loi)
+                                                        <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control" name="multiple_loi[]" value="{{$loi}}" placeholder="mins">
+                                                            </label>
+                                                        </td>
+                                                        @endforeach
+                                                    @else
+                                                    <td class="editable-field relative"  colspan="3">
+                                                    <label class="mb-0 label">
+                                                    <input type="text" class="form-control" name="multiple_loi[]" value="" placeholder="mins">
+                                                    </label>
+                                                    </td>
+                                                    @endif
+                                                    </tr>
+                                                    <tr>
+                                                    <td class="static-field relative ">Client</td>
+                                                    @if(count($multiple_client) > 0)
+                                                      @foreach($multiple_client as $key => $value)
+                                                        <td class="editable-field removeMultipleCountry_{{$key - 1}}"  colspan="3">
+                                                            <label class="mb-0 label"> 
+                                                            <select class="form-control label-gray-3" name="multiple_client[]">
+                                                                <option class="label-gray-3" value="">Client</option>
+                                                                @foreach ($client as $v)
+                                                                    <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}> 
+                                                                    {{ $v->client_name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            </label>
+                                                        </td>
+                                                        @endforeach
+                                                    @else
+                                                    <td class="editable-field relative"  colspan="3">
+                                                    <label class="mb-0 label"> 
+                                                    <select class="form-control label-gray-3" name="multiple_client[]">
+                                                        <option class="label-gray-3" value="">Client</option>
+                                                        @foreach ($client as $v)
+                                                            <option value="{{ $v->client_name }}"> 
+                                                            {{ $v->client_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    </label>
+                                                    </td>
+                                                    @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field relative ">Countries</td>
+                                                        @if(count($multiple_countries) > 0)
+                                                        @foreach($multiple_countries as $key => $multiple)
+                                                        <td class="static-field removeMultipleCountry_{{$key - 1}}">Sample</td>
+                                                        <td class="static-field removeMultipleCountry_{{$key - 1}}">CPI</td>
+                                                        <td class="static-field removeMultipleCountry_{{$key - 1}}">Total</td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="static-field relative ">Sample</td>
+                                                        <td class="static-field relative ">CPI</td>
+                                                        <td class="static-field relative ">Total</td>
+                                                        @endif
+                                                    </tr>
+                                                    @if(count($multiple_countries) > 0)
+                                                    @foreach ($multiple_countries as $k => $countries)
+                                                        <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        @if(count($countries) > 0)
+                                                        @foreach ($countries as $key => $country)
+                                                            <?php 
+                                                            if($key == 4)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_countries[{{$k}}][]" value="{{$country}}" attr="{{($key) % 3 === 0 && $key > 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if($key % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        
+                                                        @endif
+                                                        </tr>
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[0][]" placeholder="Country"></td>
+                                                        <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
+                                                        <td><input type="text" class="form-control" name="multiple_countries[0][]" value=""></td>
+                                                        <td><input type="text" class="form-control" name="multiple_countries[0][]" attr="total" value=""></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="editable-field"><input type="text" class="form-control" name="multiple_countries[1][]" placeholder="Country"></td>
+                                                        <td><input type="text" class="form-control sample"  name="multiple_countries[1][]"></td>
+                                                        <td><input type="text" class="form-control cpi"  name="multiple_countries[1][]"></td>
+                                                        <td><input type="text" class="form-control cpi" attr="total"  name="multiple_countries[1][]"></td>
+                                                    </tr>
+                                                    @endif
+                                                    @if(count($multiple_other) > 0)
+                                                    @foreach($multiple_other as $k => $value)
+                                                     <?php 
                                                         $i = "";
                                                     ?>
-                                                    @if(count($countries) > 0)
-                                                    @foreach ($countries as $key => $country)
+                                                    <tr id="otherFieldMultipleCountry">
+                                                    @if(count($value) > 0)
+                                                    @foreach($value as $key => $other)
                                                         <?php 
                                                         if($key == 4)
                                                         {
                                                             $i = 0;
                                                         }
                                                         ?>
-                                                        <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_countries[{{$k}}][]" value="{{$country}}" attr="{{($key) % 3 === 0 && $key > 0 ? 'total' : ''}}"></td>
+                                                        @if($key % 3 === 0 && $key == 0)
+                                                        <td class="d-flex removeMultipleCountry_{{$i}}">
+                                                            
+                                                            <button type="button" class="btn btn-sm  {{$k == 0 ? 'multiple_country_other btn-light' : 'remove_multiple_country btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
+                                                            <input type="text" class="form-control" placeholder="Others" name="multiple_other[{{$k}}][]" value="{{$other}}">
+                                                        </td>
+                                                        @elseif($key % 3 === 0)
+                                                        <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
+                                                        @else
+                                                        <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_other[{{$k}}][]" value="{{$other}}"></td>
+                                                        @endif
                                                         <?php
                                                         if($key % 3 === 0 && $key > 3)
                                                         {
@@ -1326,654 +2026,827 @@ input.txtCal.valid {
                                                     @endforeach
                                                     @endif
                                                     </tr>
-                                                @endforeach
-                                                @endif
-                                                @if(count($multiple_other) > 0)
-                                                @foreach($multiple_other as $k => $value)
-                                                 <?php 
-                                                    $i = "";
-                                                ?>
-                                                <tr id="otherFieldMultipleCountry">
-                                                @if(count($value) > 0)
-                                                @foreach($value as $key => $other)
-                                                    <?php 
-                                                    if($key == 4)
-                                                    {
-                                                        $i = 0;
-                                                    }
-                                                    ?>
-                                                    @if($key % 3 === 0 && $key == 0)
-                                                    <td class="d-flex removeMultipleCountry_{{$i}}">
-                                                        
-                                                        <button type="button" class="d-none btn btn-sm  {{$k == 0 ? 'multiple_country_other btn-light' : 'remove_multiple_country btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
-                                                        <input type="text" class="form-control" placeholder="Others" name="multiple_other[{{$k}}][]" value="{{$other}}">
-                                                    </td>
-                                                    @elseif($key % 3 === 0)
-                                                    <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
-                                                    @else
-                                                    <td class="removeMultipleCountry_{{$i}}"><input type="text" class="form-control" name="multiple_other[{{$k}}][]" value="{{$other}}"></td>
-                                                    @endif
-                                                    <?php
-                                                    if($key % 3 === 0 && $key > 3)
-                                                    {
-                                                        $i++;
-                                                    }
-                                                    ?>
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                                <tr>
-                                                    <td class="total-cost relative ">Total project Cost</td>
-                                                    @if(count($multiple_total_cost) > 0)
-                                                    @foreach ($multiple_total_cost as $key => $value)
-                                                    <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
-                                                    <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
-                                                    <td class="removeMultipleCountry_{{$key - 1}}"><input type="text" class="form-control " name="multiple_total_cost[]" value="{{$value}}"></td>
                                                     @endforeach
+                                                    @else
+                                                    <tr id="otherFieldMultipleCountry">
+                                                        <td class="d-flex"><button type="button" class="btn btn-sm btn-light multiple_country_other">+</button> <input type="text" name="multiple_other[0][]" class="form-control" placeholder="Others"></td>
+                                                        <td><input type="text" class="form-control" name="multiple_other[0][]"></td>
+                                                        <td><input type="text" class="form-control" name="multiple_other[0][]"></td>
+                                                        <td> <input type="text" class="form-control" name="multiple_other[0][]" attr="total"></td>
+                                                    </tr>
                                                     @endif
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                    <tr>
+                                                        <td class="total-cost relative ">Total project Cost</td>
+                                                        @if(count($multiple_total_cost) > 0)
+                                                        @foreach ($multiple_total_cost as $key => $value)
+                                                        <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
+                                                        <td class="total-cost removeMultipleCountry_{{$key - 1}}"></td>
+                                                        <td class="removeMultipleCountry_{{$key - 1}}"><input type="text" class="form-control " name="multiple_total_cost[]" value="{{$value}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td><input type="text" class="form-control" name="multiple_total_cost[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {{-- @endif --}}
                                     </div>
-                                    @endif
                                 </div>
-                            </div>
 
-                              
 
-                            <div class="container">
+                                <div class="container mt-5">
 
-                                <div class="{{ isset($newrfq) && isset($newrfq->interview) ? '' : 'd-none' }}" id="interview-depth">
-                                    <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Central Location Tests Costing Sheet</h5>
-                                    <?php
-                                    if(isset($newrfq) && isset($newrfq->interview)){
-                                        $interview_depth_methodology = json_decode($newrfq->interview->interview_depth_methodology);
-                                        $interview_depth_currency = json_decode($newrfq->interview->interview_depth_currency);
-                                        $interview_depth_loi = json_decode($newrfq->interview->interview_depth_loi);
-                                        $interview_depth_client = json_decode($newrfq->interview->interview_depth_client);
-                                        $interview_depth_no_fgd = json_decode($newrfq->interview->interview_depth_no_fgd);
-                                        $interview_depth_sample_fgd = json_decode($newrfq->interview->interview_depth_sample_fgd);
-                                        $interview_depth_countries = json_decode($newrfq->interview->interview_depth_countries);
-                                        $interview_depth_requirements = json_decode($newrfq->interview->interview_depth_requirements);
-                                        $interview_depth_incentives = json_decode($newrfq->interview->interview_depth_incentives);
-                                        $interview_depth_moderation = json_decode($newrfq->interview->interview_depth_moderation);
-                                        $interview_depth_transcripts = json_decode($newrfq->interview->interview_depth_transcripts);
-                                        $interview_depth_project_management = json_decode($newrfq->interview->interview_depth_project_management);
-                                        $interview_depth_other = json_decode($newrfq->interview->interview_depth_other);
-                                        $interview_depth_total_cost_1 = json_decode($newrfq->interview->interview_depth_total_cost_1);
-                                        $interview_depth_total_cost_2 = json_decode($newrfq->interview->interview_depth_total_cost_2);
-                                    }   
-                                    ?>
-                                    @if(isset($newrfq) && isset($newrfq->interview))
-                                    <div class="tab-container">
-                                        <button type="button" class="btn btn-success btn-sm" id="addInterviewDepthBtn">Add More</button>
-                                    </div>
+                                    <div class="{{ isset($newrfq) && isset($newrfq->interview) ? '' : 'd-none' }}" id="interview-depth">
+                                        <h5>In-Depth Interviews /Focus Groups Costing Sheet/ Central Location Tests Costing Sheet</h5>
+                                        <?php
+                                        $interview_depth_methodology = [];
+                                        $interview_depth_currency = [];
+                                        $interview_depth_loi = [];
+                                        $interview_depth_client = [];
+                                        $interview_depth_no_fgd = [];
+                                        $interview_depth_sample_fgd = [];
+                                        $interview_depth_countries = [];
+                                        $interview_depth_requirements = [];
+                                        $interview_depth_incentives = [];
+                                        $interview_depth_moderation = [];
+                                        $interview_depth_transcripts = [];
+                                        $interview_depth_project_management = [];
+                                        $interview_depth_other = [];
+                                        $interview_depth_total_cost_1 = [];
+                                        $interview_depth_total_cost_2 = [];
+                                        if(isset($newrfq) && isset($newrfq->interview)){
+                                            $interview_depth_methodology = json_decode($newrfq->interview->interview_depth_methodology);
+                                            $interview_depth_currency = json_decode($newrfq->interview->interview_depth_currency);
+                                            $interview_depth_loi = json_decode($newrfq->interview->interview_depth_loi);
+                                            $interview_depth_client = json_decode($newrfq->interview->interview_depth_client);
+                                            $interview_depth_no_fgd = json_decode($newrfq->interview->interview_depth_no_fgd);
+                                            $interview_depth_sample_fgd = json_decode($newrfq->interview->interview_depth_sample_fgd);
+                                            $interview_depth_countries = json_decode($newrfq->interview->interview_depth_countries);
+                                            $interview_depth_requirements = json_decode($newrfq->interview->interview_depth_requirements);
+                                            $interview_depth_incentives = json_decode($newrfq->interview->interview_depth_incentives);
+                                            $interview_depth_moderation = json_decode($newrfq->interview->interview_depth_moderation);
+                                            $interview_depth_transcripts = json_decode($newrfq->interview->interview_depth_transcripts);
+                                            $interview_depth_project_management = json_decode($newrfq->interview->interview_depth_project_management);
+                                            $interview_depth_other = json_decode($newrfq->interview->interview_depth_other);
+                                            $interview_depth_total_cost_1 = json_decode($newrfq->interview->interview_depth_total_cost_1);
+                                            $interview_depth_total_cost_2 = json_decode($newrfq->interview->interview_depth_total_cost_2);
+                                        }   
+                                        ?>
+                                        {{-- @if(isset($newrfq) && isset($newrfq->interview)) --}}
+                                        <div class="tab-container">
+                                            <button type="button" class="btn btn-success btn-sm" id="addInterviewDepthBtn">Add More</button>
+                                        </div>
 
-                                    <div class="table-container mt-2">
-                                        <table class="" id="InterviewDepth">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="static-field">Methodology</td>
-                                                    @if(count($interview_depth_methodology) > 0)
-                                                        @foreach($interview_depth_methodology as $key => $methodology)
-                                                            <td class="editable-field"  colspan="3">
-                                                                <label class="mb-0 label">
-                                                                <input type="text" class="form-control" name="interview_depth_methodology[]" value="{{$methodology}}" placeholder="Online FGDs">
-                                                                </label>
+                                        <div class="table-container mt-2">
+                                            <table class="" id="InterviewDepth">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="static-field">Methodology</td>
+                                                        @if(count($interview_depth_methodology) > 0)
+                                                            @foreach($interview_depth_methodology as $key => $methodology)
+                                                                <td class="editable-field relative removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                    @if($key > 0)
+                                                                    <button type="button" class="btn btn-danger btn-sm removeInterviewDepth" attr="{{$key - 1}}">x</button>
+                                                                    @endif
+                                                                    <label class="mb-0 label">
+                                                                    <input type="text" class="form-control" name="interview_depth_methodology[]" value="{{$methodology}}" placeholder="Online FGDs">
+                                                                    </label>
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control" name="interview_depth_methodology[]" value="" placeholder="Online FGDs">
+                                                            </label>
+                                                        </td>
+                                                        @endif
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">Currency</td>
+                                                        @if(count($interview_depth_currency) > 0)
+                                                            @foreach($interview_depth_currency as $key => $currency)
+                                                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                    <label class="mb-0 label">
+                                                                    <input type="text" class="form-control" name="interview_depth_currency[]" value="{{$currency}}"  placeholder="currency">
+                                                                    </label>
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control" name="interview_depth_currency[]" value=""  placeholder="currency">
+                                                            </label>
+                                                        </td>
+                                                        @endif
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">LOI</td>
+                                                        @if(count($interview_depth_loi) > 0)
+                                                            @foreach($interview_depth_loi as $key => $loi)
+                                                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                    <label class="mb-0 label">
+                                                                    <input type="text" class="form-control sample" name="interview_depth_loi[]" value="{{$loi}}"  placeholder="mins">
+                                                                    </label>
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="interview_depth_loi[]" value=""  placeholder="mins">
+                                                            </label>
                                                             </td>
-                                                        @endforeach
-                                                    @endif
-                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">Currency</td>
-                                                    @if(count($interview_depth_currency) > 0)
-                                                        @foreach($interview_depth_currency as $key => $currency)
-                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
-                                                                <label class="mb-0 label">
-                                                                <input type="text" class="form-control" name="interview_depth_currency[]" value="{{$currency}}"  placeholder="currency">
+                                                        @endif
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">Client</td>
+                                                        @if(count($interview_depth_client) > 0)
+                                                            @foreach($interview_depth_client as $key => $value)
+                                                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label"> 
+                                                                    <select class="form-control label-gray-3" name="interview_depth_client[]">
+                                                                    <option class="label-gray-3" value="">Client</option>
+                                                                    @foreach ($client as $v)
+                                                                        <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}>{{ $v->client_name }}</option>
+                                                                    @endforeach
+                                                                    </select>
                                                                 </label>
-                                                            </td>
-                                                        @endforeach
-                                                    @endif
-                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">LOI</td>
-                                                    @if(count($interview_depth_loi) > 0)
-                                                        @foreach($interview_depth_loi as $key => $loi)
-                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
-                                                                <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" name="interview_depth_loi[]" value="{{$loi}}"  placeholder="mins">
-                                                                </label>
-                                                            </td>
-                                                        @endforeach
-                                                    @endif
-                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">Client</td>
-                                                    @if(count($interview_depth_client) > 0)
-                                                        @foreach($interview_depth_client as $key => $value)
-                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
                                                             <label class="mb-0 label"> 
                                                                 <select class="form-control label-gray-3" name="interview_depth_client[]">
                                                                 <option class="label-gray-3" value="">Client</option>
                                                                 @foreach ($client as $v)
-                                                                    <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}>{{ $v->client_name }}</option>
+                                                                    <option value="{{ $v->client_name }}">{{ $v->client_name }}</option>
                                                                 @endforeach
                                                                 </select>
                                                             </label>
-                                                            </td>
-                                                        @endforeach
-                                                    @endif
-                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">No of FGDs/IDI</td>
-                                                    @if(count($interview_depth_no_fgd) > 0)
-                                                        @foreach($interview_depth_no_fgd as $key => $fgd)
-                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
-                                                                <label class="mb-0 label">
-                                                                <input type="text" class="form-control sample" name="interview_depth_fgd[]" value="{{$fgd}}"  placeholder="value">
-                                                                </label>
-                                                            </td>
-                                                        @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">Samples per FGD/IDI</td>
-                                                    @if(count($interview_depth_sample_fgd) > 0)
-                                                        @foreach($interview_depth_sample_fgd as $key => $fgd)
-                                                        <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                        </td>
+                                                        @endif
+                                                        
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">No of FGDs/IDI</td>
+                                                        @if(count($interview_depth_no_fgd) > 0)
+                                                            @foreach($interview_depth_no_fgd as $key => $fgd)
+                                                                <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                    <label class="mb-0 label">
+                                                                    <input type="text" class="form-control sample" name="interview_depth_fgd[]" value="{{$fgd}}"  placeholder="value">
+                                                                    </label>
+                                                                </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
                                                             <label class="mb-0 label">
-                                                            <input type="text" class="form-control sample" name="interview_depth_sample_fgd[]" value="{{$fgd}}"  placeholder="value">
+                                                            <input type="text" class="form-control sample" name="interview_depth_fgd[]" value=""  placeholder="value">
                                                             </label>
                                                         </td>
-                                                        @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field">Country</td>
-                                                    @if(count($interview_depth_countries) > 0)
-                                                        @foreach($interview_depth_countries as $key => $country)
-                                                        <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
-                                                        <label class="mb-0 label">
-                                                        <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="Country">
-                                                        </label>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">Samples per FGD/IDI</td>
+                                                        @if(count($interview_depth_sample_fgd) > 0)
+                                                            @foreach($interview_depth_sample_fgd as $key => $fgd)
+                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control sample" name="interview_depth_sample_fgd[]" value="{{$fgd}}"  placeholder="value">
+                                                                </label>
+                                                            </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="interview_depth_sample_fgd[]" value=""  placeholder="value">
+                                                            </label>
                                                         </td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field">Country</td>
+                                                        @if(count($interview_depth_countries) > 0)
+                                                            @foreach($interview_depth_countries as $key => $country)
+                                                            <td class="editable-field removeInterviewDepth_{{$key - 1}}"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" value="{{$country}}" name="interview_depth_countries[]"  placeholder="Country">
+                                                            </label>
+                                                            </td>
+                                                            @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" value="" name="interview_depth_countries[]"  placeholder="Country">
+                                                            </label>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field"></td>
+                                                        @if(count($interview_depth_countries) > 0)
+                                                        @foreach($interview_depth_countries as $key => $country)
+                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Sample</td>
+                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">CPI</td>
+                                                            <td class="static-field removeInterviewDepth_{{$key - 1}}">Total</td>
                                                         @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field"></td>
-                                                    @if(count($interview_depth_countries) > 0)
-                                                    @foreach($interview_depth_countries as $key => $country)
-                                                        <td class="static-field removeInterviewDepth_{{$key - 1}}">Sample</td>
-                                                        <td class="static-field removeInterviewDepth_{{$key - 1}}">CPI</td>
-                                                        <td class="static-field removeInterviewDepth_{{$key - 1}}">Total</td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
+                                                        @else
+                                                        <td class="static-field">Sample</td>
+                                                        <td class="static-field">CPI</td>
+                                                        <td class="static-field">Total</td>
+                                                        @endif
+                                                    </tr>
 
-                                                <tr>
-                                                    <td class="static-field ">Recruitment</td>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    @if(count($interview_depth_requirements) > 0)
-                                                    @foreach($interview_depth_requirements as $key => $value)
+                                                    <tr>
+                                                        <td class="static-field ">Recruitment</td>
                                                         <?php 
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
+                                                            $i = "";
                                                         ?>
-                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control  sample" name="interview_depth_requirement[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Incentives</td>
-                                                    @if(count($interview_depth_incentives) > 0)
-                                                    @foreach($interview_depth_incentives as $key => $value)
-                                                        <?php
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
-                                                        ?>
-                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_incentives[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Moderation</td>
-                                                    @if(count($interview_depth_moderation) > 0)
-                                                    @foreach($interview_depth_moderation as $key => $value)
-                                                    <?php 
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
-                                                        ?>
-                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_moderation[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Transcripts</td>
-                                                    @if(count($interview_depth_transcripts) > 0)
-                                                    @foreach($interview_depth_transcripts as $key => $value)
-                                                    <?php 
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
-                                                        ?>
-                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_transcripts[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field removeInterviewDepth_{{$key - 1}}">Project Management</td>
-                                                    @if(count($interview_depth_project_management) > 0)
-                                                    @foreach($interview_depth_project_management as $key => $value)
-                                                        <?php
+                                                        @if(count($interview_depth_requirements) > 0)
+                                                        @foreach($interview_depth_requirements as $key => $value)
+                                                            <?php 
                                                             if($key == 3)
                                                             {
                                                                 $i = 0;
                                                             }
+                                                            ?>
+                                                            <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control  sample" name="interview_depth_requirement[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_requirement[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_requirement[]" value=""></td>
+                                                        <td><input type="text" class="form-control total" name="interview_depth_requirement[]" attr="total" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
                                                         ?>
-                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_project_management[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                        <td class="static-field ">Incentives</td>
+                                                        @if(count($interview_depth_incentives) > 0)
+                                                        @foreach($interview_depth_incentives as $key => $value)
+                                                            <?php
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_incentives[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_incentives[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_incentives[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_incentives[]" attr="total" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field">Moderation</td>
+                                                        @if(count($interview_depth_moderation) > 0)
+                                                        @foreach($interview_depth_moderation as $key => $value)
+                                                        <?php 
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_moderation[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_moderation[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_moderation[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_moderation[]" attr="total" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field">Transcripts</td>
+                                                        @if(count($interview_depth_transcripts) > 0)
+                                                        @foreach($interview_depth_transcripts as $key => $value)
+                                                        <?php 
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_transcripts[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_transcripts[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_transcripts[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_transcripts[]" attr="total" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                    <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field ">Project Management</td>
+                                                        @if(count($interview_depth_project_management) > 0)
+                                                        @foreach($interview_depth_project_management as $key => $value)
+                                                            <?php
+                                                                if($key == 3)
+                                                                {
+                                                                    $i = 0;
+                                                                }
+                                                            ?>
+                                                            <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control sample" name="interview_depth_project_management[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_project_management[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_project_management[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_project_management[]" attr="total" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    @if(count($interview_depth_other) > 0)
+                                                    @foreach($interview_depth_other as $k => $value)
+                                                    <tr id="otherFieldsInterview">
+                                                    <?php 
+                                                        $i = "";
+                                                    ?>
+                                                    @if(count($value) > 0)
+                                                    @foreach($value as $key => $other)
+                                                        <?php 
+                                                        if($key == 4)
+                                                        {
+                                                            $i = 0;
+                                                        }
+                                                        ?>
+                                                        @if($key % 3 === 0 && $key == 0)
+                                                        <td class="d-flex removeInterviewDepth_{{$i}}">
+                                                            <button type="button" class="btn btn-sm  {{$k == 0 ? 'interview_depth_other btn-light' : 'remove_interview_depth btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
+                                                            <input type="text" class="form-control" placeholder="Others" name="interview_depth_other[{{$k}}][]" value="{{$other}}">
+                                                        </td>
+                                                        @elseif($key % 3 === 0)
+                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control" name="interview_depth_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
+                                                        @else
+                                                        <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control" name="interview_depth_other[{{$k}}][]" value="{{$other}}"></td>
+                                                        @endif
                                                         <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
+                                                        if($key % 3 === 0 && $key > 3)
                                                         {
                                                             $i++;
                                                         }
                                                         ?>
                                                     @endforeach
                                                     @endif
-                                                </tr>
-                                                @if(count($interview_depth_other) > 0)
-                                                @foreach($interview_depth_other as $k => $value)
-                                                <tr id="otherFieldsInterview">
-                                                <?php 
-                                                    $i = "";
-                                                ?>
-                                                @if(count($value) > 0)
-                                                @foreach($value as $key => $other)
-                                                    <?php 
-                                                    if($key == 4)
-                                                    {
-                                                        $i = 0;
-                                                    }
-                                                    ?>
-                                                    @if($key % 3 === 0 && $key == 0)
-                                                    <td class="d-flex removeInterviewDepth_{{$i}}">
-                                                        <button type="button" class="d-none btn btn-sm  {{$k == 0 ? 'interview_depth_other btn-light' : 'remove_interview_depth btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
-                                                        <input type="text" class="form-control" placeholder="Others" name="interview_depth_other[{{$k}}][]" value="{{$other}}">
-                                                    </td>
-                                                    @elseif($key % 3 === 0)
-                                                    <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control" name="interview_depth_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
+                                                    </tr>
+                                                    @endforeach
                                                     @else
-                                                    <td class="removeInterviewDepth_{{$i}}"><input type="text" class="form-control" name="interview_depth_other[{{$k}}][]" value="{{$other}}"></td>
+                                                    <tr id="otherFieldsInterview">
+                                                        <td class="d-flex"><button type="button" class="btn btn-sm btn-light interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_other[0][]"></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_other[0][]"></td>
+                                                        <td> <input type="text" class="form-control cpi" name="interview_depth_other[0][]" attr="total" value=""></td>
+                                                    </tr>
                                                     @endif
-                                                    <?php
-                                                    if($key % 3 === 0 && $key > 3)
-                                                    {
-                                                        $i++;
-                                                    }
-                                                    ?>
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                                {{-- <tr id="otherFieldsInterview">
-                                                    <td class="d-flex"><button type="button" class="btn btn-sm interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
-                                                    <td><input type="text" class="form-control sample" name="interview_depth_other[0][]"></td>
-                                                    <td><input type="text" class="form-control cpi" name="interview_depth_other[0][]"></td>
-                                                    <td> <input type="text" class="form-control cpi" name="interview_depth_other[0][]" attr="total" value=""></td>
-                                                </tr> --}}
-                                                <tr>
-                                                @if(count($interview_depth_total_cost_1) > 0)
-                                                    <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_1[]" value="{{$interview_depth_total_cost_1[0]}}" placeholder="Total cost for 1 FGD"></td>
-                                                    @foreach ($interview_depth_total_cost_1 as $key => $value)
-                                                    @if($key > 0)
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"><input type="text" class="form-control cpi" name="interview_depth_total_cost_1[]" attr="total1" value="{{$value}}"></td>
-                                                    @endif
-                                                    @endforeach
-                                                @endif
-                                                </tr>
-                                                <tr>
-                                                @if(count($interview_depth_total_cost_2) > 0)
-                                                    <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_2[]" value="{{$interview_depth_total_cost_2[0]}}" placeholder="Total cost for 1 FGD"></td>
-                                                    @foreach ($interview_depth_total_cost_2 as $key => $value)
-                                                    @if($key > 0)
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
-                                                    <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value="{{$value}}"></td>
-                                                    
-                                                    @endif
-                                                    @endforeach
-                                                @endif
-                                                    {{-- <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
+                                                    {{-- <tr id="otherFieldsInterview">
+                                                        <td class="d-flex"><button type="button" class="btn btn-sm interview_depth_other">+</button> <input type="text" name="interview_depth_other[0][]" class="form-control" placeholder="Others"></td>
+                                                        <td><input type="text" class="form-control sample" name="interview_depth_other[0][]"></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_other[0][]"></td>
+                                                        <td> <input type="text" class="form-control cpi" name="interview_depth_other[0][]" attr="total" value=""></td>
+                                                    </tr> --}}
+                                                    <tr>
+                                                    @if(count($interview_depth_total_cost_1) > 0)
+                                                        <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_1[]" value="{{$interview_depth_total_cost_1[0]}}" placeholder="Total cost for 1 FGD"></td>
+                                                        @foreach ($interview_depth_total_cost_1 as $key => $value)
+                                                        @if($key > 0)
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"><input type="text" class="form-control cpi" name="interview_depth_total_cost_1[]" attr="total1" value="{{$value}}"></td>
+                                                        @endif
+                                                        @endforeach
+                                                    @else
+                                                    <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_1[]" placeholder="Total cost for 1 FGD"></td>
                                                     <td class="total-cost"></td>
                                                     <td class="total-cost"></td>
-                                                    <td><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value=""></td> --}}
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                    <td class="total-cost"><input type="text" class="form-control cpi" name="interview_depth_total_cost_1[]" attr="total1" value=""></td>
+                                                    @endif
+                                                    </tr>
+                                                    <tr>
+                                                    @if(count($interview_depth_total_cost_2) > 0)
+                                                        <td class="total-cost"><input type="text" class="form-control" name="interview_depth_total_cost_2[]" value="{{$interview_depth_total_cost_2[0]}}" placeholder="Total cost for 1 FGD"></td>
+                                                        @foreach ($interview_depth_total_cost_2 as $key => $value)
+                                                        @if($key > 0)
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"></td>
+                                                        <td class="total-cost removeInterviewDepth_{{$key > 1 ? $key - 2 : ''}}"><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value="{{$value}}"></td>
+                                                        
+                                                        @endif
+                                                        @endforeach
+                                                    @else
+                                                    <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
+                                                    <td class="total-cost"></td>
+                                                    <td class="total-cost"></td>
+                                                    <td><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value=""></td>
+                                                    @endif
+                                                        {{-- <td class="total-cost"><input type="text" class="form-control"  name="interview_depth_total_cost_2[]" placeholder="Total cost for 2 FGDs"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td><input type="text" class="form-control cpi" name="interview_depth_total_cost_2[]" attr="total2" value=""></td> --}}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {{-- @endif --}}
                                     </div>
-                                    @endif
                                 </div>
-                            </div>
-                           
 
 
-                            <div class="container">
 
-                                <div class="{{ isset($newrfq) && isset($newrfq->online) ? '' : 'd-none' }}" id="online-community">
-                                    <h5>Online Community - Costing Sheet</h5>
-                                     <?php
-                                    if(isset($newrfq) && isset($newrfq->online)){
-                                        $online_community_methodology = json_decode($newrfq->online->online_community_methodology);
-                                        $online_community_currency = json_decode($newrfq->online->online_community_currency);
-                                        $online_community_client = json_decode($newrfq->online->online_community_client);
-                                         $online_community_duration = json_decode($newrfq->online->online_community_duration);
-                                        $online_community_loi_screener = json_decode($newrfq->online->online_community_loi_screener);
-                                        $online_community_sample_loi_month = json_decode($newrfq->online->online_community_sample_loi_month);
-                                        $online_community_countries = json_decode($newrfq->online->online_community_countries);
-                                        $online_community_requirements = json_decode($newrfq->online->online_community_requirements);
-                                        $online_community_incentives = json_decode($newrfq->online->online_community_incentives);
-                                        $online_community_pmfree = json_decode($newrfq->online->online_community_pmfree);
-                                        $online_community_project_management = json_decode($newrfq->online->online_community_project_management);
-                                        $online_community_other = json_decode($newrfq->online->online_community_other);
-                                        $online_community_total_cost = json_decode($newrfq->online->online_community_total_cost);
-                                       
-                                    }   
-                                    ?>
-                                    @if(isset($newrfq) && isset($newrfq->online))
-                                   
 
-                                    <div class="table-container mt-2">
-                                        <table class="" id="OnlineCommunity">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="static-field w-25">Methodology</td>
-                                                     @if(count($online_community_methodology) > 0)
-                                                    @foreach($online_community_methodology as $key => $methodology)
+
+                                <div class="container mt-5">
+
+                                    <div class="{{ isset($newrfq) && isset($newrfq->online) ? '' : 'd-none' }}" id="online-community">
+                                        <h5>Online Community - Costing Sheet</h5>
+                                        <?php
+                                        $online_community_methodology = [];
+                                        $online_community_currency = [];
+                                        $online_community_client = [];
+                                        $online_community_duration = [];
+                                        $online_community_loi_screener = [];
+                                        $online_community_sample_loi_month = [];
+                                        $online_community_countries = [];
+                                        $online_community_requirements = [];
+                                        $online_community_incentives = [];
+                                        $online_community_pmfree = [];
+                                        $online_community_project_management = [];
+                                        $online_community_other = [];
+                                        $online_community_total_cost = [];
+                                        if(isset($newrfq) && isset($newrfq->online)){
+                                            $online_community_methodology = json_decode($newrfq->online->online_community_methodology);
+                                            $online_community_currency = json_decode($newrfq->online->online_community_currency);
+                                            $online_community_client = json_decode($newrfq->online->online_community_client);
+                                            $online_community_duration = json_decode($newrfq->online->online_community_duration);
+                                            $online_community_loi_screener = json_decode($newrfq->online->online_community_loi_screener);
+                                            $online_community_sample_loi_month = json_decode($newrfq->online->online_community_sample_loi_month);
+                                            $online_community_countries = json_decode($newrfq->online->online_community_countries);
+                                            $online_community_requirements = json_decode($newrfq->online->online_community_requirements);
+                                            $online_community_incentives = json_decode($newrfq->online->online_community_incentives);
+                                            $online_community_pmfree = json_decode($newrfq->online->online_community_pmfree);
+                                            $online_community_project_management = json_decode($newrfq->online->online_community_project_management);
+                                            $online_community_other = json_decode($newrfq->online->online_community_other);
+                                            $online_community_total_cost = json_decode($newrfq->online->online_community_total_cost);
+                                           
+                                        }   
+                                        ?>
+                                        {{-- @if(isset($newrfq) && isset($newrfq->online)) --}}
+                                        <div class="tab-container">
+                                            <button type="button" class="btn btn-success btn-sm" id="OnlineCommunityBtn">Add More</button>
+                                        </div>
+
+                                        <div class="table-container mt-2">
+                                            <table class="" id="OnlineCommunity">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="static-field w-25">Methodology</td>
+                                                         @if(count($online_community_methodology) > 0)
+                                                        @foreach($online_community_methodology as $key => $methodology)
+                                                            <td class="editable-field relative removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                            @if($key > 0)
+                                                            <button type="button" class="btn btn-danger btn-sm removeOnlineCommunity" attr="{{$key - 1}}">x</button>
+                                                            @endif
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_methodology[]" value="{{$methodology}}"  placeholder="Online Community"></label>
+                                                            </td>
+                                                        @endforeach
+                                                        @else
                                                         <td class="editable-field"  colspan="3">
-                                                        <label class="mb-0 label">
-                                                        <input type="text" class="form-control sample" name="online_community_methodology[]" value="{{$methodology}}"  placeholder="Online Community"></label>
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_methodology[]" value="" placeholder="Online Community"></label>
                                                         </td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field ">Currency</td>
-                                                      @if(count($online_community_currency) > 0)
-                                                    @foreach($online_community_currency as $key => $currency)
-                                                    <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
-                                                    <label class="mb-0 label">
-                                                    <input type="text" class="form-control sample" name="online_community_currency[]" value="{{$currency}}"  placeholder="currency">
-                                                    </label>
-                                                    </td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                <td class="static-field ">Client</td>
-                                                        @if(count($online_community_client) > 0)
-                                                        @foreach($online_community_client as $key => $value)
-                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
-                                                                <label class="mb-0 label"> 
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">Currency</td>
+                                                          @if(count($online_community_currency) > 0)
+                                                        @foreach($online_community_currency as $key => $currency)
+                                                        <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                        <label class="mb-0 label">
+                                                        <input type="text" class="form-control sample" name="online_community_currency[]" value="{{$currency}}"  placeholder="currency">
+                                                        </label>
+                                                        </td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_currency[]" value=""  placeholder="currency">
+                                                            </label>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                    <td class="static-field ">Client</td>
+                                                            @if(count($online_community_client) > 0)
+                                                            @foreach($online_community_client as $key => $value)
+                                                                <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                                    <label class="mb-0 label"> 
+                                                                    <select class="form-control label-gray-3" name="online_community_client[]">
+                                                                        <option class="label-gray-3" value="">Client</option>
+                                                                        @foreach ($client as $v)
+                                                                            <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}> 
+                                                                            {{ $v->client_name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    </label>
+                                                                </td>
+                                                            @endforeach
+                                                            @else
+                                                            <td class="editable-field"  colspan="3">
+                                                                <label class="mb-0 label">
                                                                 <select class="form-control label-gray-3" name="online_community_client[]">
                                                                     <option class="label-gray-3" value="">Client</option>
                                                                     @foreach ($client as $v)
-                                                                        <option value="{{ $v->client_name }}" {{$v->client_name == $value ? 'selected' : ''}}> 
-                                                                        {{ $v->client_name }}
-                                                                        </option>
+                                                                        <option value="{{ $v->client_name }}">{{ $v->client_name }}</option>
                                                                     @endforeach
                                                                 </select>
                                                                 </label>
                                                             </td>
+                                                            @endif
+                                                        
+                    
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">Duration</td>
+                                                        @if(count($online_community_duration) > 0)
+                                                            @foreach($online_community_duration as $key => $duration)
+                                                                <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                                <label class="mb-0 label">
+                                                                <input type="text" class="form-control" name="online_community_duration[]" value="{{$duration}}" placeholder="Year" value="">
+                                                                </label>
+                                                                </td>
                                                             @endforeach
-                                                        @endif
-                                                    
-                
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field ">Duration</td>
-                                                      @if(count($online_community_duration) > 0)
-                                                        @foreach($online_community_duration as $key => $duration)
-                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
                                                             <label class="mb-0 label">
-                                                            <input type="text" class="form-control" name="online_community_duration[]" value="{{$duration}}" placeholder="Year" value="">
+                                                            <input type="text" class="form-control" name="online_community_duration[]"  placeholder="Year" value="">
                                                             </label>
-                                                            </td>
-                                                        @endforeach
-                                                     @endif
+                                                        </td>
+                                                        @endif
 
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field ">LOI</td>
-                                                     @if(count($online_community_loi_screener) > 0)
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">LOI</td>
+                                                        @if(count($online_community_loi_screener) > 0)
                                                         @foreach($online_community_loi_screener as $key => $screener)
-                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                        <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                             <label class="mb-0 label">
                                                             <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value="{{$screener}}"  placeholder="mins">
                                                             </label>
-                                                            </td>
-                                                     @endforeach
-                                                     @endif
+                                                        </td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_loi_screener[]"  value=""  placeholder="mins">
+                                                            </label>
+                                                        </td>
+                                                        @endif
 
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field ">LOI/Month</td>
-                                                       @if(count($online_community_sample_loi_month) > 0)
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">LOI/Month</td>
+                                                        @if(count($online_community_sample_loi_month) > 0)
                                                         @foreach($online_community_sample_loi_month as $key => $sample_loi_month)
-                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                        <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                             <label class="mb-0 label">
                                                             <input type="text" class="form-control sample" name="online_community_loi_month[]" value="{{$sample_loi_month}}"  placeholder="mins">
                                                             </label>
-                                                            </td>
-                                                         @endforeach
-                                                     @endif
+                                                        </td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_loi_month[]" value=""  placeholder="mins">
+                                                            </label>
+                                                        </td>
+                                                        @endif
 
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field ">Country</td>
-                                                       @if(count($online_community_countries) > 0)
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field ">Country</td>
+                                                        @if(count($online_community_countries) > 0)
                                                         @foreach($online_community_countries as $key => $countries)
-                                                            <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
+                                                        <td class="editable-field removeOnlineCommunity_{{$key - 1}}"  colspan="3">
                                                             <label class="mb-0 label">
                                                             <input type="text" class="form-control sample" name="online_community_countries[]" value="{{$countries}}"  placeholder="Country">
                                                             </label>
-                                                            </td>
-                                                         @endforeach
-                                                     @endif
+                                                        </td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="editable-field"  colspan="3">
+                                                            <label class="mb-0 label">
+                                                            <input type="text" class="form-control sample" name="online_community_countries[]" value=""  placeholder="Country">
+                                                            </label>
+                                                        </td>
+                                                        @endif
 
-                                                </tr>
-                                                <tr>
-                                                    <td class="static-field"></td>
-                                                     @if(count($online_community_countries) > 0)
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="static-field"></td>
+                                                        @if(count($online_community_countries) > 0)
                                                         @foreach($online_community_countries as $key=> $online)
-                                                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
-                                                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">CPI</td>
-                                                        <td class="static-field removeOnlineCommunity_{{$key - 1}}">Total</td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
+                                                            <td class="static-field removeOnlineCommunity_{{$key - 1}}">Sample</td>
+                                                            <td class="static-field removeOnlineCommunity_{{$key - 1}}">CPI</td>
+                                                            <td class="static-field removeOnlineCommunity_{{$key - 1}}">Total</td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="static-field">Sample</td>
+                                                        <td class="static-field">CPI</td>
+                                                        <td class="static-field">Total</td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field ">Recruitment</td>
+                                                        @if(count($online_community_requirements) > 0)
+                                                        @foreach($online_community_requirements as $key => $value)
+                                                            <?php 
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample" name="online_community_requirements[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample" name="online_community_requirements[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi"  name="online_community_requirements[]"  value=""></td>
+                                                        <td><input type="text" class="form-control total" attr="total"   name="online_community_requirements[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field ">Incentives</td>
+                                                        @if(count($online_community_incentives) > 0)
+                                                        @foreach($online_community_incentives as $key => $value)
+                                                            <?php 
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample"  name="online_community_incentives[]"  value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample"  name="online_community_incentives[]"  value=""></td>
+                                                        <td><input type="text" class="form-control cpi"  name="online_community_incentives[]"  value=""></td>
+                                                        <td><input type="text" class="form-control cpi" attr="total"   name="online_community_incentives[]"  value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    <tr>
+                                                        <?php 
+                                                            $i = "";
+                                                        ?>
+                                                        <td class="static-field">Project Management</td>
+                                                        @if(count($online_community_pmfree) > 0)
+                                                        @foreach($online_community_pmfree as $key => $value)
+                                                            <?php 
+                                                            if($key == 3)
+                                                            {
+                                                                $i = 0;
+                                                            }
+                                                            ?>
+                                                            <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                            <?php
+                                                            if(($key + 1) % 3 === 0 && $key > 3)
+                                                            {
+                                                                $i++;
+                                                            }
+                                                            ?>
+                                                        @endforeach
+                                                        @else
+                                                        <td><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value=""></td>
+                                                        <td><input type="text" class="form-control cpi"  name="online_community_pmfree[]" value=""></td>
+                                                        <td><input type="text" class="form-control cpi" attr="total"   name="online_community_pmfree[]" value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                    @if(count($online_community_other) > 0)
+                                                    @foreach($online_community_other as $k => $value)
                                                     <?php 
                                                         $i = "";
                                                     ?>
-                                                    <td class="static-field ">Recruitment</td>
-                                                    @if(count($online_community_requirements) > 0)
-                                                    @foreach($online_community_requirements as $key => $value)
+                                                    <tr id="otherFieldsOnline">
+                                                    @if(count($value) > 0)
+                                                    @foreach($value as $key => $other)
                                                         <?php 
-                                                        if($key == 3)
+                                                        if($key == 4)
                                                         {
                                                             $i = 0;
                                                         }
                                                         ?>
-                                                        <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample" name="online_community_requirements[]" value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
+                                                        @if($key % 3 === 0 && $key == 0)
+                                                        <td class="d-flex removeOnlineCommunity_{{$i}}">
+                                                            <button type="button" class="btn btn-sm  {{$k == 0 ? 'online_community_other btn-light' : 'remove_online_community btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
+                                                            <input type="text" class="form-control" placeholder="Others" name="online_community_other[{{$k}}][]" value="{{$other}}">
+                                                        </td>
+                                                        @elseif($key % 3 === 0)
+                                                        <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control" name="online_community_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
+                                                        @else
+                                                        <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control" name="online_community_other[{{$k}}][]" value="{{$other}}"></td>
+                                                        @endif
                                                         <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
+                                                        if($key % 3 === 0 && $key > 3)
                                                         {
                                                             $i++;
                                                         }
                                                         ?>
                                                     @endforeach
                                                     @endif
-                                                </tr>
-                                                <tr>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field ">Incentives</td>
-                                                    @if(count($online_community_incentives) > 0)
-                                                    @foreach($online_community_incentives as $key => $value)
-                                                        <?php 
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
-                                                        ?>
-                                                        <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample"  name="online_community_incentives[]"  value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
+                                                    </tr>
                                                     @endforeach
-                                                    @endif
-                                                </tr>
-                                                <tr>
-                                                    <?php 
-                                                        $i = "";
-                                                    ?>
-                                                    <td class="static-field">Project Management</td>
-                                                    @if(count($online_community_pmfree) > 0)
-                                                    @foreach($online_community_pmfree as $key => $value)
-                                                        <?php 
-                                                        if($key == 3)
-                                                        {
-                                                            $i = 0;
-                                                        }
-                                                        ?>
-                                                        <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control sample"  name="online_community_pmfree[]"  value="{{$value}}" attr="{{($key + 1) % 3 === 0 ? 'total' : ''}}"></td>
-                                                        <?php
-                                                        if(($key + 1) % 3 === 0 && $key > 3)
-                                                        {
-                                                            $i++;
-                                                        }
-                                                        ?>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                                @if(count($online_community_other) > 0)
-                                                @foreach($online_community_other as $k => $value)
-                                                <?php 
-                                                    $i = "";
-                                                ?>
-                                                <tr id="otherFieldsOnline">
-                                                @if(count($value) > 0)
-                                                @foreach($value as $key => $other)
-                                                    <?php 
-                                                    if($key == 4)
-                                                    {
-                                                        $i = 0;
-                                                    }
-                                                    ?>
-                                                    @if($key % 3 === 0 && $key == 0)
-                                                    <td class="d-flex removeOnlineCommunity_{{$i}}">
-                                                        <button type="button" class="d-none btn btn-sm  {{$k == 0 ? 'online_community_other btn-light' : 'remove_online_community btn-danger'}}">{{$k == 0 ? '+' : 'x'}}</button> 
-                                                        <input type="text" class="form-control" placeholder="Others" name="online_community_other[{{$k}}][]" value="{{$other}}">
-                                                    </td>
-                                                    @elseif($key % 3 === 0)
-                                                    <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control" name="online_community_other[{{$k}}][]" attr="total" value="{{$other}}"></td>
                                                     @else
-                                                    <td class="removeOnlineCommunity_{{$i}}"><input type="text" class="form-control" name="online_community_other[{{$k}}][]" value="{{$other}}"></td>
+                                                    <tr id="otherFieldsOnline">
+                                                        <td class="d-flex"><button type="button" class="btn btn-sm btn-light online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
+                                                        <td><input type="text" class="form-control sample"  name="online_community_other[0][]"></td>
+                                                        <td><input type="text" class="form-control cpi" name="online_community_other[0][]"></td>
+                                                        <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
+                                                    </tr>
                                                     @endif
-                                                    <?php
-                                                    if($key % 3 === 0 && $key > 3)
-                                                    {
-                                                        $i++;
-                                                    }
-                                                    ?>
-                                                @endforeach
-                                                @endif
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                                {{-- <tr id="otherFieldsOnline">
-                                                    <td class="d-flex"><button type="button" class="btn btn-sm online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
-                                                    <td><input type="text" class="form-control sample"  name="online_community_other[0][]"></td>
-                                                    <td><input type="text" class="form-control cpi" name="online_community_other[0][]"></td>
-                                                    <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
-                                                </tr> --}}
-                                                <tr>
-                                                    <td class="total-cost">Total Project Cost</td>
-                                                    @if(count($online_community_total_cost) > 0)
-                                                    @foreach ($online_community_total_cost as $key => $value)
-                                                    <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
-                                                    <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
-                                                    <td class="removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"><input type="text" class="form-control" name="online_community_total_cost[]" value="{{$value}}"></td>
-                                                    @endforeach
-                                                    @endif
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                    {{-- <tr id="otherFieldsOnline">
+                                                        <td class="d-flex"><button type="button" class="btn btn-sm online_community_other">+</button> <input type="text" class="form-control"  name="online_community_other[0][]"  placeholder="Others"></td>
+                                                        <td><input type="text" class="form-control sample"  name="online_community_other[0][]"></td>
+                                                        <td><input type="text" class="form-control cpi" name="online_community_other[0][]"></td>
+                                                        <td> <input type="text" class="form-control cpi" attr="total"  name="online_community_other[0][]" value=""></td>
+                                                    </tr> --}}
+                                                    <tr>
+                                                        <td class="total-cost">Total Project Cost</td>
+                                                        @if(count($online_community_total_cost) > 0)
+                                                        @foreach ($online_community_total_cost as $key => $value)
+                                                        <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
+                                                        <td class="total-cost removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"></td>
+                                                        <td class="removeOnlineCommunity_{{$key > 0 ? $key - 1 : ''}}"><input type="text" class="form-control" name="online_community_total_cost[]" value="{{$value}}"></td>
+                                                        @endforeach
+                                                        @else
+                                                        <td class="total-cost"></td>
+                                                        <td class="total-cost"></td>
+                                                        <td><input type="text" class="form-control cpi"  name="online_community_total_cost[]"  value=""></td>
+                                                        @endif
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {{-- @endif --}}
                                     </div>
-                                    @endif
                                 </div>
-                            </div>
-
-
+                            </div>    
+                             
                             <div class="col-md-12 d-flex align-items-center justify-content-center mt-5">
                                 <a href="{{route('bidrfq.index')}}" class=" btn btn-outline-secondary" id="won-rfq-btn1">Back</a>
                                 <button type="submit" id="addRegisterButton"
@@ -1988,7 +2861,7 @@ input.txtCal.valid {
   
              
            
-
+              
 
     
 
@@ -2002,7 +2875,7 @@ input.txtCal.valid {
 </div>
 
       <!-- Modal -->
-                <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                {{-- <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                    <div class="modal-dialog">
                      <div class="modal-content">
                        <div class="modal-header">
@@ -2020,7 +2893,7 @@ input.txtCal.valid {
                      </div>
                    </div>
                  </div>
-             
+              --}}
 
 @endsection
 
@@ -2118,7 +2991,7 @@ input.txtCal.valid {
                     dataType: "json",
                     success: function (data) {
                       if (data.success == 1) {
-                      
+                        window.location.href = "{{ route('wonproject.index') }}";
                         }
                         
                         if(data.success==0){

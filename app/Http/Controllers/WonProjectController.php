@@ -106,7 +106,7 @@ class WonProjectController extends Controller
     {
         // dd('hi');
          $wonproject="";
-         $bidrfq = BidRfq::get();
+         $bidrfq = RfqDetailsTable::get();
          $country = Country::get();
          $client = Client::get();
          $vendor = Vendor::get();
@@ -922,15 +922,20 @@ class WonProjectController extends Controller
         return view('wonproject.operationstatus',compact('operation','country'));
     }
     public function getstatus(Request $req){
-        $wonproject=Wonproject::where('id',$req->id)->first();
-        $operation=OperationNew::where('rfq',$wonproject->rfq_no)->first();
-        if(!$operation){
-            $response_data=["success"=>0,"message"=>"fail"]; 
-        }
-        else{
-            $response_data=["success"=>1,"message"=>"success","rfq"=>$wonproject->rfq_no ];
-        }
-        return response()->json($response_data);
+      $operation = OperationNew::where('rfq', $req->id)->first();
+
+      if (!$operation) {
+          return response()->json([
+              "success" => 0,
+              "message" => "Operation not found"
+          ]);
+      }
+  
+      return response()->json([
+          "success" => 1,
+          "message" => "Success",
+          "rfq" => $operation->rfq
+      ]);
     }
      public function getuser(){
         $user_name=User::where('user_type','sales')->get();
