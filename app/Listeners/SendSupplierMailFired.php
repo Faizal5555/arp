@@ -66,7 +66,7 @@ class SendSupplierMailFired
             // 📨 Send email with or without attachment
             Mail::send('mails.supplier_mail', ['data' => $supplier_details], function ($mail) use ($supplier_details) {
                 $mail->to($supplier_details[0]);
-                $mail->cc('businessresearch@asiaresearchpartners.com');
+                // $mail->cc('businessresearch@asiaresearchpartners.com');
                 $mail->subject('Cost Request For Potential Project');
 
                 if (!empty($supplier_details[2]) && file_exists(public_path($supplier_details[2]))) {

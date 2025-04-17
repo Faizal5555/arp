@@ -142,12 +142,17 @@ button.dt-button.buttons-excel.buttons-html5:hover {
     visibility: hidden;
 }
 
+    .note-editor.note-frame {
+        width: 100% !important;
+    }
+
 </style>
 @section('page_title')
 @section('content')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -155,6 +160,10 @@ button.dt-button.buttons-excel.buttons-html5:hover {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         // Initialize variables for startdate and enddate
@@ -226,6 +235,12 @@ button.dt-button.buttons-excel.buttons-html5:hover {
                                         @if(auth()->user()->user_type == 'admin')
                                         <a href='/adminapp/Supplier/delete/${row.id}' class='mdi mdi-delete'></a>
                                         @endif
+                                          <button class="btn btn-sm btn-primary ml-2 send-email-btn" 
+                                                data-id="${row.id}" 
+                                                data-name="${row.supplier_company}" 
+                                                data-email="${row.supplier_email}">
+                                           send email
+                                        </button>
                                     </div>
                                 </div>`;
                     },
@@ -281,6 +296,77 @@ button.dt-button.buttons-excel.buttons-html5:hover {
             table.draw();    // Redraw the table to show all data
         });
     });
+
+
+    $(document).on('click', '.send-email-btn', function () {
+    const id = $(this).data('id');
+    const name = $(this).data('name');
+    const email = $(this).data('email');
+
+    $('#supplier_id').val(id);
+    $('#supplier_name').val(name);
+    $('#supplier_email').val(email);
+    $('#emailContent').summernote('code', '');
+    $('#attachment').val('');
+
+    $('#emailModal').modal('show');
+});
+
+// Initialize Summernote
+$('#emailContent').summernote({
+            height: 200,
+            placeholder: 'Write your email content here...',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['view', ['codeview']]
+            ]
+        });
+
+// Handle form submit
+$(document).ready(function() {
+$('#supplierEmailForm').on('submit', function (e) {
+    e.preventDefault();
+
+    let formData = new FormData();
+    formData.append('data[0][id]', $('#supplier_id').val());
+    formData.append('data[0][content]', $('#emailContent').summernote('code'));
+
+    const file = $('#attachment')[0].files[0];
+    if (file) {
+        formData.append('data[0][file]', file);
+    }
+
+    $.ajax({
+        url: "{{ route('supplierMail') }}",
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
+            Swal.fire({
+                title: 'Sending...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+        },
+        success: function (response) {
+            Swal.fire({
+                title: 'Success!',
+                text: response.message,
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+            });
+            $('#emailModal').modal('hide');
+        },
+        error: function (xhr) {
+            Swal.fire('Error', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+        }
+    });
+});
+});
 </script>
 
 
@@ -447,6 +533,43 @@ button.dt-button.buttons-excel.buttons-html5:hover {
 </div>
 
 
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form id="supplierEmailForm" enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title">Send Email to Supplier</h5>
+            <button type="button" class="close" data-dismiss="modal">
+             X
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="supplier_id" id="supplier_id">
+            <div class="form-group mt-3">
+              <label>Supplier Name</label>
+              <input type="text" id="supplier_name" class="form-control" readonly>
+            </div>
+            <div class="form-group mt-3">
+              <label>Supplier Email</label>
+              <input type="email" id="supplier_email" class="form-control" readonly>
+            </div>
+            <div class="form-group mt-3">
+              <label>Email Content</label>
+              <textarea id="emailContent" name="emailContent" class="form-control"></textarea>
+            </div>
+            <div class="form-group mt-3">
+              <label>Attachment</label>
+              <input type="file" name="attachment" id="attachment" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Send Email</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
 
 @endsection
 
