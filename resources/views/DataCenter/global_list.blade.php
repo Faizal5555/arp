@@ -123,8 +123,19 @@ initTable('doctor');
 
 // Handle tab click
 $('.tab-btn').click(function () {
+    $('.tab-btn').removeClass('active');
+    $(this).addClass('active');
+
     const userType = $(this).data('user-type');
     initTable(userType);
+
+    if (userType === 'doctor') {
+        $('#filterSpeciality').closest('.form-group').show(); // Show if needed
+        loadDoctorPanelists();
+    } else {
+        $('#filterSpeciality').closest('.form-group').hide(); // Hide speciality for consumers
+        loadConsumerList();
+    }
 });
 
 // Handle country change filter
@@ -135,6 +146,7 @@ $('#country').change(function () {
 });
 
 $(document).ready(function () {
+
     // Use event delegation to handle dynamically created buttons
     $(document).on('click', '.send-email-btn', function () {
         const email = $(this).data('email');
@@ -226,6 +238,38 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    $('#openGlobalEmailModalBtn').on('click', function () {
+    const currentTab = $('.tab-btn.active').data('user-type') || 'doctor';
+
+    // Reset filters in modal (optional)
+    
+
+        $('#panelistList').html('');
+        $('#panelistSection').hide();
+        $('#selectAll').prop('checked', false);
+        $('#emailContent').summernote('code', '');
+
+        // Reset filters in modal (optional)
+        $('#filterCountry').val('');
+        $('#filterSpeciality').val('');
+
+      
+
+
+    // Load appropriate panelists when modal opens
+    if (currentTab === 'doctor') {
+        $('#emailModalLabel').text('Send Email to Panelists');
+        $('#filterSpeciality').closest('.form-group').show();
+        loadDoctorPanelists();
+    } else {
+        $('#emailModalLabel').text('Send Email to Consumers');
+        $('#filterSpeciality').closest('.form-group').hide();
+        loadConsumerList();
+    }
+});
+    
 });
 
 
@@ -276,12 +320,60 @@ $(document).ready(function () {
     }
 
     // Load when filters change
-    $('#filterCountry, #filterSpeciality').on('change', loadDoctorPanelists);
+    $('#filterCountry, #filterSpeciality').on('change', function () {
+    const currentTab = $('.tab-btn.active').data('user-type') || 'doctor';
+
+    if (currentTab === 'doctor') {
+        loadDoctorPanelists();
+    } else {
+        loadConsumerList();
+    }
+    });
 
     // Handle "Select All"
     $('#selectAll').on('change', function () {
         $('.panelist-checkbox').prop('checked', this.checked);
     });
+    
+    
+    function loadConsumerList() {
+    const country = $('#filterCountry').val();
+
+    if (!country) {
+        $('#panelistSection').hide();
+        $('#panelistList').html('');
+        return;
+    }
+
+    $('#panelistSection').show();
+    $('#panelistList').html('<p>Loading...</p>');
+
+    $.ajax({
+        url: "{{ route('get.filtered.consumers') }}", // Create this route in your controller
+        type: "GET",
+        data: { country: country },
+        success: function (data) {
+            let html = '';
+
+            if (data.length > 0) {
+                data.forEach((user, index) => {
+                    html += `<div class="form-check mb-2 d-flex align-items-start">
+                        <input type="checkbox" class="panelist-checkbox mt-2 mr-2" name="recipients[]" value="${user.email}" id="consumer${index}">
+                        <strong>${user.fname} ${user.lname}</strong>
+                    </div>`;
+                });
+            } else {
+                html = '<strong>No consumers found.</strong>';
+            }
+
+            $('#panelistList').html(html);
+        },
+        error: function () {
+            $('#panelistList').html('<p>Error loading consumers.</p>');
+        }
+    });
+}
+
 });
 
 
@@ -298,7 +390,12 @@ $(document).ready(function() {
                 ['view', ['codeview']]
             ]
         });
+     
+        
     });
+
+    
+    
 
     
 

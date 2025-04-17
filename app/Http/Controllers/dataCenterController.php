@@ -3160,4 +3160,15 @@ public function getFilteredDoctors(Request $request)
     return response()->json($panelists);
 }
 
+public function getFilteredConsumers(Request $request)
+{
+    $country = $request->country;
+
+    $consumers = Que:: where('country', $country)
+                    ->select('fname', 'lname', 'email')
+                    ->get();
+
+    return response()->json($consumers);
+}
+
 }
