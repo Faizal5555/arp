@@ -166,40 +166,39 @@ select.form-control {
                 }
             },
           
-          columns: [
+            columns: [
 
               
               
             
-              {data: 'rfq_no', name: 'rfq_no'},
-              {data: 'project_type', name: 'project_type'},
-              {data: 'project_name', name: 'project_name'},
-              {data: 'project_execution', name: 'project_execution'},
-              {data: 'project_start_date', name: 'project_start_date'},
-              {data: 'project_end_date', name: 'project_end_date'},
-              
-              {data: '', 
-                    render: (data,type,row) => {
-                        return `<div class="text-center">
-                                    <div class="list-icons d-flex">
-                                       
-                                        <p class="project_status mt-1 mr-1" data-id=${row.id}><i class="fa-solid fa-eye"></i></p>
-                                        <a href='/adminapp/wonproject/edit/${row.id}' class='mdi mdi-table-edit'></a>
-                                         
-      
-                                         @if(auth()->user()->user_type == 'admin')
-                                            <a href='/adminapp/wonproject/delete/${row.id}'  class='mdi mdi-delete'></a>
-                                           @endif
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }},
-            ],
-             "lengthMenu":[
+{data: 'rfq_no', name: 'rfq_no'},
+{data: 'project_type', name: 'project_type'},
+{data: 'project_name', name: 'project_name'},
+{data: 'project_execution', name: 'project_execution'},
+{data: 'project_start_date', name: 'project_start_date'},
+{data: 'project_end_date', name: 'project_end_date'},
+
+{data: '', 
+      render: (data,type,row) => {
+          return `<div class="text-center">
+                      <div class="list-icons d-flex">
+                         
+                          <p class="project_status mt-1 mr-1" data-id=${row.rfq_no}><i class="fa-solid fa-eye"></i></p>
+                          <a href='/adminapp/wonproject/edit/${row.id}' class='mdi mdi-table-edit'></a>
+                           
+
+                           @if(auth()->user()->user_type == 'admin')
+                              <a href='/adminapp/wonproject/delete/${row.id}'  class='mdi mdi-delete'></a>
+                             @endif
+                          </div>
+                      </div>
+                  </div>`;
+          }},
+                ],
+                "lengthMenu":[
                 [5,10,15,-1],
                 [5,10,15,"All"]
-            ],
-            
+                ],
           
       });
      
