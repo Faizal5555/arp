@@ -102,10 +102,10 @@
                   trigger: 'item',
                   formatter: '{b}: {c}'
               },
-              legend: {
-                  orient: 'horizontal',
-                  data: labels,
-              },
+            //   legend: {
+            //       orient: 'horizontal',
+            //       data: labels,
+            //   },
               series: [
                 {
                     name: 'Doctors',
