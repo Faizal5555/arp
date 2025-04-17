@@ -183,7 +183,7 @@ select.form-control {
           return `<div class="text-center">
                       <div class="list-icons d-flex">
                          
-                          <p class="project_status mt-1 mr-1" data-id=${row.rfq_no}><i class="fa-solid fa-eye"></i></p>
+                          <p class="project_status mt-1 mr-1" data-rfq=${row.rfq_no}><i class="fa-solid fa-eye"></i></p>
                           <a href='/adminapp/wonproject/edit/${row.id}' class='mdi mdi-table-edit'></a>
                            
 
@@ -259,7 +259,7 @@ select.form-control {
                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                  },
         });
-     var id =$(this).attr('data-id');
+     var id =$(this).attr('data-rfq');
      console.log(id)
      $.ajax({
          type: "post",
