@@ -922,7 +922,7 @@ class WonProjectController extends Controller
         return view('wonproject.operationstatus',compact('operation','country'));
     }
     public function getstatus(Request $req){
-      $operation = OperationNew::where('rfq', $req->id)->first();
+      $operation = OperationNew::where('rfq', 'LIKE', trim($req->id))->first();
 
       if (!$operation) {
           return response()->json([
