@@ -329,6 +329,22 @@ $(document).ready(function() {
 $('#supplierEmailForm').on('submit', function (e) {
     e.preventDefault();
 
+    const supplierId = $('#supplier_id').val();
+        const emailContent = $('#emailContent').summernote('code').trim();
+        const plainText = $('<div>').html(emailContent).text().trim(); // Strip HTML to validate actual content
+
+        // ✅ Validation: check if content is empty
+        if (plainText === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Email Content',
+                text: 'Please enter email content before sending.',
+            });
+            $('#emailContent').summernote('focus');
+            return;
+        }
+
+
     let formData = new FormData();
     formData.append('data[0][id]', $('#supplier_id').val());
     formData.append('data[0][content]', $('#emailContent').summernote('code'));

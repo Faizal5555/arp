@@ -183,7 +183,7 @@ select.form-control {
           return `<div class="text-center">
                       <div class="list-icons d-flex">
                          
-                          <p class="project_status mt-1 mr-1" data-rfq="${row.rfq.replace(/"/g, '&quot;')}"><i class="fa-solid fa-eye"></i></p>
+                          <p class="project_status mt-1 mr-1" data-rfq="${row.rfq_no.replace(/"/g, '&quot;')}"><i class="fa-solid fa-eye"></i></p>
                           <a href='/adminapp/wonproject/edit/${row.id}' class='mdi mdi-table-edit'></a>
                            
 
