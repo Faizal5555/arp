@@ -186,7 +186,7 @@
                                  <option value="" disabled selected>Select Speciality</option>
                                  {{$speciality}}
                                  @if(isset($speciality) && count($speciality) > 0)
-                                 @foreach($speciality as $s)
+                                 @foreach($speciality->sortBy('speciality') as $s)
                                  <option value="{{$s->speciality}}">{{$s->speciality}}</option>
                                  @endforeach
                                  @endif

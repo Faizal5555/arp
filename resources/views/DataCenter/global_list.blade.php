@@ -517,7 +517,7 @@ $(document).ready(function() {
                             <label for="filterSpeciality">Speciality</label>
                             <select class="form-control" id="filterSpeciality" name="filterSpeciality">
                                 <option value="">Select Speciality</option>
-                                @foreach($specialities as $speciality)
+                                @foreach($specialities->sortBy('speciality') as $speciality)
                                     <option value="{{ $speciality->speciality }}">{{ $speciality->speciality }}</option>
                                 @endforeach
                             </select>
