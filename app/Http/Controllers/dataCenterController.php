@@ -2062,7 +2062,7 @@ public function userconsumerlistData(Request $request)
         public function globalManagerList(Request $request)
         {
         $specialities = Speciality::all(); // Fetching all specialities
-        $countries = Country::all(); // Fetching all countries
+        $countries = Country::orderBy('name')->get(); // Fetching all countries
         $userType = $request->get('user_type', 'user');
 
         return view('DataCenter.global_list', compact('specialities', 'countries','userType'));

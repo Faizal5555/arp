@@ -430,7 +430,7 @@ $(document).ready(function() {
                         <label>Country</label>
                         <select class="form-control" id="country" name="country">
                             <option value="" selected disabled>Select Country</option>
-                            @foreach($countries as $country)
+                            @foreach($countries->sortBy('name') as $country)
                             <option value="{{ $country->name }}">{{ $country->name }}</option>
                             @endforeach
                         </select>
