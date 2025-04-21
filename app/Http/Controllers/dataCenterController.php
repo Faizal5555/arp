@@ -3148,11 +3148,11 @@ public function getFilteredDoctors(Request $request)
         ->whereNotNull('email');
 
     if ($request->filled('country')) {
-        $query->where('country1', $request->country);
+        $query->whereRaw('LOWER(country1) = ?', [strtolower($request->country)]);
     }
 
     if ($request->filled('speciality')) {
-        $query->where('docterSpeciality', $request->speciality);
+        $query->whereRaw('LOWER(docterSpeciality) = ?', [strtolower($request->speciality)]);
     }
 
     $panelists = $query->get();
@@ -3162,10 +3162,10 @@ public function getFilteredDoctors(Request $request)
 
 public function getFilteredConsumers(Request $request)
 {
-    $country = $request->country;
+    $country = strtolower($request->country);
 
-    $consumers = Que:: where('country', $country)
-                    ->select('fname', 'lname', 'email')
+    $consumers = Que::select('fname', 'lname', 'email')
+                    ->whereRaw('LOWER(country) = ?', [$country])
                     ->get();
 
     return response()->json($consumers);
