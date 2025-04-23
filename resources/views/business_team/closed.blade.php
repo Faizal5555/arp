@@ -92,6 +92,9 @@ label.mb-0.not-expired {
                     <th>Team Members</th>
                     <th>Feasibility Done</th>
                     <th>Others</th>
+                    <th>Target Respondent</th>
+                    <th>Target Countries</th>
+                    <th>End Date</th>
                 </tr>
             </thead>
         </table>
@@ -120,6 +123,9 @@ $(document).ready(function() {
             { data: 'client_name', name: 'client_name' },
             { data: 'team_members', name: 'team_members' },
             { data: 'others', name: 'others' },
+            { data: 'target_respondent', name: 'target_respondent'},
+            { data: 'target_countries', name: 'target_countries'},
+            { data: 'end_date',name:'end_date'},
             {
             data: 'feasibility_done',
             name: 'feasibility_done',

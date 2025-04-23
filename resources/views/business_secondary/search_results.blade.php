@@ -14,7 +14,7 @@ ul.list-inline li {
 <div class="d-flex justify-content-end m-2">
     <form method="GET" action="{{ route('search.export') }}">
         <input type="hidden" name="keyword" value="{{ request('keyword') }}">
-        <input type="hidden" name="client_name" value="{{ request('client_name') }}">
+        {{-- <input type="hidden" name="client_name" value="{{ request('client_name') }}"> --}}
         <input type="hidden" name="industry" value="{{ request('industry') }}">
         <input type="hidden" name="pn_number" value="{{ request('pn_number') }}">
         <button class="btn btn-success" type="submit">
@@ -31,11 +31,11 @@ ul.list-inline li {
                 @php
                     $keyword = request('keyword');
                 @endphp
-               @if(!$keyword)
+               {{-- @if(!$keyword)
                 <h5 class="card-title text-primary mb-2">
                     Client: {{ $research->client_name }}
                 </h5>
-                @endif
+                @endif --}}
 
                 
                 @if($keyword)
@@ -58,12 +58,12 @@ ul.list-inline li {
                         </div>
                     @endif
 
-                    @if(Str::contains(strtolower($research->client_name), strtolower($keyword)))
+                    {{-- @if(Str::contains(strtolower($research->client_name), strtolower($keyword)))
                     <div class="mb-2">
                         <span class="fw-semibold">Client Name:</span> {{ $research->client_name }}
                     </div>
                     @endif
-                    
+                     --}}
 
                     {{-- Show only questions related to the keyword --}}
                     @if($research->questions && count($research->questions))

@@ -43,13 +43,16 @@ class BusinessResearchController extends Controller
         'date' => 'required|date',
         'pn_number' => 'required|string',
         'subject_line' => 'required|string',
-        'client_name' => 'required|string',
+        // 'client_name' => 'required|string',
         'industry' => 'nullable|string',
         'others' => 'nullable|string',
+        'target_respondent' => 'nullable|string',
+        'target_countries' => 'nullable|string',
+        'end_date' => 'nullable|date',
         'users' => 'nullable|array',
         'users.*' => 'exists:users,id',
         'feasibility_done' => 'required|boolean',
-        'attachment.*' => 'nullable|file|max:20480|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a',
+        'attachments.*' => 'nullable|file|max:51200|mimes:jpg,jpeg,png,pdf,docx,doc,xlsx,mp4,mov,avi,mp3,wav,m4a',
 
     ]);
 
@@ -70,6 +73,9 @@ class BusinessResearchController extends Controller
     $businessResearch->client_name = $request->client_name;
     $businessResearch->industry = $request->industry;
     $businessResearch->others = $request->others;
+    $businessResearch->target_respondent = $request->target_respondent;
+    $businessResearch->target_countries = $request->target_countries;
+    $businessResearch->end_date = $request->end_date;
     $businessResearch->feasibility_done = $request->feasibility_done;
     $businessResearch->save();
 
@@ -142,6 +148,9 @@ class BusinessResearchController extends Controller
             'others' => $record->others,
             'team_members' => $record->teamMembers->pluck('user_id'),
             'feasibility_done' => $record->feasibility_done, 
+            'target_respondent' => $record->target_respondent,
+            'target_countries' => $record->target_countries,
+            'end_date' => $record->end_date,
             
             
         ]);
@@ -161,6 +170,9 @@ class BusinessResearchController extends Controller
             'team_members' => 'nullable|array',
             'team_members.*' => 'exists:users,id',
             'feasibility_done' => 'required|boolean',
+            'target_respondent' => 'nullable|string',
+            'target_countries' => 'nullable|string',
+            'end_date' => 'nullable|date',
         ]);
 
         // 2. Find the business research
@@ -175,6 +187,9 @@ class BusinessResearchController extends Controller
             'others' => $request->others,
             'date' => $request->date,
             'feasibility_done' => $request->feasibility_done,
+            'target_respondent' => $request->target_respondent,
+            'target_countries' => $request->target_countries,
+            'end_date' => $request->end_date
         ]);
 
       
@@ -575,9 +590,9 @@ public function secondarySearch(Request $request)
         });
     }
 
-    if ($clientName) {
-        $query->where('client_name', 'LIKE', "%{$clientName}%");
-    }
+    // if ($clientName) {
+    //     $query->where('client_name', 'LIKE', "%{$clientName}%");
+    // }
 
     if ($industry) {
         $query->where('industry', 'LIKE', "%{$industry}%");
@@ -607,14 +622,14 @@ public function exportSearchResults(Request $request)
     $results = BusinessResearch::with(['questions', 'teamMembers.user'])
         ->when($request->filled('keyword'), function ($query) use ($request) {
             $query->where('pn_number', 'like', '%' . $request->keyword . '%') // Ensure pn_number is searched
-                  ->orWhere('client_name', 'like', '%' . $request->keyword . '%')
+                //   ->orWhere('client_name', 'like', '%' . $request->keyword . '%')
                   ->orWhere('industry', 'like', '%' . $request->keyword . '%')
                   ->orWhereHas('questions', function ($q) use ($request) {
                       $q->where('question', 'like', '%' . $request->keyword . '%')
                         ->orWhere('answer', 'like', '%' . $request->keyword . '%');
                   });
         })
-        ->when($request->filled('client_name'), fn($q) => $q->where('client_name', 'like', '%' . $request->client_name . '%'))
+        // ->when($request->filled('client_name'), fn($q) => $q->where('client_name', 'like', '%' . $request->client_name . '%'))
         ->when($request->filled('industry'), fn($q) => $q->where('industry', 'like', '%' . $request->industry . '%'))
         ->when($request->filled('pn_number'), fn($q) => $q->where('pn_number', 'like', '%' . $request->pn_number . '%')) // Make sure pn_number filtering works
         ->get();

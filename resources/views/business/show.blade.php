@@ -75,8 +75,8 @@
                     <input type="text" class="form-control" value="{{ $record->subject_line }}" readonly>
                 </div>
                 <div class="col-md-5 form-group">
-                    <label>Client Name</label>
-                    <input type="text" class="form-control" value="{{ $record->client_name }}" readonly>
+                    <label>End Date</label>
+                    <input type="text" class="form-control" value="{{ $record->end_date }}" readonly>
                 </div>
             </div>
             <div class="row pl-2 d-flex justify-content-center">
@@ -87,6 +87,17 @@
                 <div class="col-md-5 form-group">
                     <label>Others</label>
                     <input type="text" class="form-control" value="{{ $record->others }}" readonly>
+                </div>
+            </div>
+
+            <div class="row pl-2 d-flex justify-content-center">
+                <div class="col-md-5 form-group">
+                    <label>Target Respondent</label>
+                    <input type="text" class="form-control" value="{{ $record->target_respondent }}" readonly>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label>Target Countries</label>
+                    <input type="text" class="form-control" value="{{ $record->target_countries }}" readonly>
                 </div>
             </div>
             <div class="row pl-2 d-flex justify-content-center">
@@ -133,7 +144,10 @@
                         <label class="form-check-label m-0" for="feasibility_no">No</label>
                     </div>
                 </div>
+                
             </div>
+
+            
 
 
            

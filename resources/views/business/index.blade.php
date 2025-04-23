@@ -88,9 +88,12 @@ label.mb-0.not-expired {
                     <th>PN Number</th>
                     <th>Subject Line</th>
                     <th>Industry</th>
-                    <th>Client Name</th>
+                    {{-- <th>Client Name</th> --}}
                     <th>Team Members</th>
                     <th>Others</th>
+                    <th>Target Respondent</th>
+                    <th>Target Countries</th>
+                    <th>End Date</th>
                     <th>Feasibility Done</th>
                     <th>Action</th>
                 </tr>
@@ -199,8 +202,8 @@ label.mb-0.not-expired {
            
             <div class="row pl-2 justify content center">
                 <div class="col-md-6 mb-3">
-                    <label>Client Name</label>
-                    <input type="text" name="client_name" id="edit_client_name" class="form-control">
+                    <label>End Date</label>
+                    <input type="date" name="end_date" id="edit_end_date" class="form-control">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="edit_team_members">Allocated to Team Members</label>
@@ -226,6 +229,17 @@ label.mb-0.not-expired {
                         <option value="1">Yes</option>
                         <option value="0">No</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="row pl-2 justify content center">
+                <div class="col-md-6 mb-3">
+                    <label>Target Respondent</label>
+                    <input type="text" name="target_respondent" id="edit_target_respondent" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="edit_target_countries">Target Countries</label>
+                    <input type="text" name="target_countries" id="edit_target_countries" class="form-control">
                 </div>
             </div>
   
@@ -258,9 +272,12 @@ $(document).ready(function() {
             { data: 'pn_number', name: 'pn_number' },
             { data: 'subject_line', name: 'subject_line' },
             { data: 'industry', name: 'industry' },
-            { data: 'client_name', name: 'client_name' },
+            // { data: 'client_name', name: 'client_name' },
             { data: 'team_members', name: 'team_members' },
             { data: 'others', name: 'others' },
+            { data: 'target_respondent', name: 'target_respondent'},
+            { data: 'target_countries', name: 'target_countries'},
+            { data: 'end_date',name:'end_date'},
             {
             data: 'feasibility_done',
             name: 'feasibility_done',
@@ -316,6 +333,9 @@ $(document).ready(function() {
         $('#edit_others').val(data.others);
         $('#edit_team_members').val(data.team_members).trigger('change');
         $('#edit_feasibility_done').val(data.feasibility_done);
+        $('#edit_target_respondent').val(data.target_respondent);
+        $('#edit_target_countries').val(data.target_countries);
+        $('#edit_end_date').val(data.end_date);
 
         
     });

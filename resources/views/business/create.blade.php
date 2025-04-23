@@ -99,10 +99,15 @@
                     <label for="subject_line">Subject Line</label>
                     <input type="text" name="subject_line" id="subject_line" class="form-control" required>
                 </div>
-                <div class="col-md-5 form-group">
+                {{-- <div class="col-md-5 form-group">
                     <label for="project_launch_date">Client Name</label>
                     <input type="text" name="client_name" id="client_name" class="form-control" required>
+                </div> --}}
+                <div class="col-md-5 form-group">
+                    <label for="target_respondent">Target Respondent</label>
+                    <input type="text" name="target_respondent" id="target_respondent" class="form-control" required>
                 </div>
+
             </div>
             <div class="row pl-2 d-flex justify-content-center">
                
@@ -175,6 +180,17 @@
                 </div>
             </div>
             <div class="row pl-2 d-flex justify-content-center">
+                <div class="col-md-5 form-group">
+                    <label for="subject_line">target_countries</label>
+                    <input type="text" name="target_countries" id="target_countries" class="form-control" required>
+                </div>
+                <div class="col-md-5 form-group">
+                    <label for="target_respondent">End Date</label>
+                    <input type="date" name="end_date" id="end_date" class="form-control" required>
+                </div>
+
+            </div>
+            <div class="row pl-2 d-flex justify-content-center">
                 <div class="col-md-5 form-group mt-3">
                     <label>Upload Attachments</label>
                     <div id="attachment-fields">
@@ -227,6 +243,8 @@
                     </div>
                 </div>
             </div>
+
+          
             
 
 
@@ -284,7 +302,7 @@
             }
         }
         return true;
-    }, "File size must be less than 20MB");
+    }, "File size must be less than 50MB");
 
         $('input[name="users[]"]').on('change', function () {
             let selected = [];
@@ -301,12 +319,15 @@
             date: { required: true },
             pn_number: { required: true },
             subject_line: { required: true },
-            client_name: { required: true },
+            // client_name: { required: true },
             industry: { required: true },
             others: { required: true },
+            target_respondent: { required: true },
+            target_countries: { required: true },
+            end_date: { required: true },
             attachments: {
             required: true,
-            maxFileSize: 20 * 1024 * 1024 // 20MB
+            maxFileSize: 50 * 1024 * 1024
         },
             feasibility_done: { required: true }
         },
@@ -316,7 +337,7 @@
         messages: {
         attachments: {
             required: "Please upload a file",
-            maxFileSize: "File size must be less than 20MB"
+            maxFileSize: "File size must be less than 50MB"
         }
     },
         submitHandler: function (form) {

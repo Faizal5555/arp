@@ -36,10 +36,10 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
                     $rows[] = ['Field' => 'PN Number', 'Value' => $item->pn_number, 'Attachment' => 'N/A'];
                     $matchFound = true;
                 }
-                if (Str::contains(strtolower($item->client_name), strtolower($this->keyword))) {
-                    $rows[] = ['Field' => 'Client Name', 'Value' => $item->client_name, 'Attachment' => 'N/A'];
-                    $matchFound = true;
-                }
+                // if (Str::contains(strtolower($item->client_name), strtolower($this->keyword))) {
+                //     $rows[] = ['Field' => 'Client Name', 'Value' => $item->client_name, 'Attachment' => 'N/A'];
+                //     $matchFound = true;
+                // }
                 if (Str::contains(strtolower($item->industry), strtolower($this->keyword))) {
                     $rows[] = ['Field' => 'Industry', 'Value' => $item->industry, 'Attachment' => 'N/A'];
                     $matchFound = true;
@@ -68,7 +68,6 @@ class SearchedDataExport implements FromArray, WithHeadings, Responsable
             } else {
                 // If no keyword, export everything
                 $rows[] = ['Field' => 'PN Number', 'Value' => $item->pn_number, 'Attachment' => 'N/A'];
-                $rows[] = ['Field' => 'Client Name', 'Value' => $item->client_name, 'Attachment' => 'N/A'];
                 $rows[] = ['Field' => 'Subject Line', 'Value' => $item->subject_line, 'Attachment' => 'N/A'];
                 $rows[] = ['Field' => 'Industry', 'Value' => $item->industry, 'Attachment' => 'N/A'];
                 

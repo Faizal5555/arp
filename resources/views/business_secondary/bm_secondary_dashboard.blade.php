@@ -50,7 +50,7 @@
             </div>
 
             <div class="form-row">
-                <div class="col-md-4">
+                {{-- <div class="col-md-4">
                     <label for="client-name" class="search-label">Client Name</label>
                     <select id="client-name" class="form-control search-input">
                         <option value="">Select Client Name</option>
@@ -58,7 +58,7 @@
                             <option value="{{ $name }}">{{ $name }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="col-md-4">
                     <label for="industry" class="search-label">Industry</label>
                     <select id="industry" class="form-control search-input">
@@ -98,19 +98,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchResults() {
         const keyword = searchInput.value.trim();
-        const client_name = clientDropdown.value.trim();
+        // const client_name = clientDropdown.value.trim();
         const industry = industryDropdown.value.trim();
         const pn_number = pnInput.value.trim();
 
         // Clear the results if all filters are empty
-        if (!keyword && !client_name && !industry && !pn_number) {
+        if (!keyword && !industry && !pn_number) {
             resultsDiv.innerHTML = '';
             return;
         }
 
         const params = new URLSearchParams({
             keyword,
-            client_name,
+            // client_name,
             industry,
             pn_number
         });
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Other filters (dropdowns, etc.)
     pnInput.addEventListener('input', fetchResults);
-    clientDropdown.addEventListener('change', fetchResults);
+    // clientDropdown.addEventListener('change', fetchResults);
     industryDropdown.addEventListener('change', fetchResults);
 });
 
