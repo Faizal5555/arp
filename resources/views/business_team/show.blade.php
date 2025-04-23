@@ -230,33 +230,60 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   $(document).ready(function () {
-    $(document).on('click', '.add-qa-btn', function () {
-    const userId = {{ auth()->id() }};
-    const newRow = `
-        <div class="row qa-row mb-3">
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <textarea class="form-control" name="que[${userId}][]" placeholder="Enter question"></textarea>
-            </div>
-            <div class="col-md-3">
-                <textarea class="form-control" name="ans[${userId}][]" placeholder="Enter answer"></textarea>
-            </div>
-            <div class="col-md-3">
-                <input type="file" class="form-control" name="attachment[${userId}][]">
-            </div>
-            <div class="col-md-1 d-flex align-items-start">
-                <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
-            </div>
-        </div>
-    `;
-    $('#qa-wrapper').append(newRow);
-});
+//    $(document).ready(function () {
+//     $(document).on('click', '.add-qa-btn', function () {
+//     const userId = {{ auth()->id() }};
+//     const newRow = `
+//         <div class="row qa-row mb-3">
+//             <div class="col-md-1"></div>
+//             <div class="col-md-3">
+//                 <textarea class="form-control" name="que[${userId}][]" placeholder="Enter question"></textarea>
+//             </div>
+//             <div class="col-md-3">
+//                 <textarea class="form-control" name="ans[${userId}][]" placeholder="Enter answer"></textarea>
+//             </div>
+//             <div class="col-md-3">
+//                 <input type="file" class="form-control" name="attachment[${userId}][]">
+//             </div>
+//             <div class="col-md-1 d-flex align-items-start">
+//                 <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
+//             </div>
+//         </div>
+//     `;
+//     $('#qa-wrapper').append(newRow);
+// });
 
-        $(document).on('click', '.remove-qa-btn', function () {
-            $(this).closest('.qa-row').remove();
-        });
+//         $(document).on('click', '.remove-qa-btn', function () {
+//             $(this).closest('.qa-row').remove();
+//         });
+//     });
+
+$(document).ready(function () {
+    $(document).on('click', '.add-qa-btn', function () {
+        const newRow = `
+            <div class="row qa-row mb-3">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <textarea class="form-control" name="que[]" placeholder="Enter question"></textarea>
+                </div>
+                <div class="col-md-3">
+                    <textarea class="form-control" name="ans[]" placeholder="Enter answer"></textarea>
+                </div>
+                <div class="col-md-3">
+                    <input type="file" class="form-control" name="attachment[]">
+                </div>
+                <div class="col-md-1 d-flex align-items-start">
+                    <button type="button" class="btn btn-sm btn-danger remove-qa-btn m-2 mt-1">−</button>
+                </div>
+            </div>
+        `;
+        $('#qa-wrapper').append(newRow);
     });
+
+    $(document).on('click', '.remove-qa-btn', function () {
+        $(this).closest('.qa-row').remove();
+    });
+});
 $(document).ready(function () {
 
 $.ajaxSetup({
