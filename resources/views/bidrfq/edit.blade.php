@@ -2815,7 +2815,7 @@
                     <form id="lostupdate" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" id="id"
-                            value="{{ $bidrfq && $bidrfq->id ? $bidrfq->id : '' }}">
+                            value="{{ $newrfq && $newrfq->id ? $newrfq->id : '' }}">
                         <div class="col-md-12">
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label font-weight-semibold">Date<span
