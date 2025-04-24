@@ -138,6 +138,8 @@ input#po_no{
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
 <script>
     const currentUserType = "{{ auth()->user()->user_type }}";
 </script>
@@ -195,7 +197,8 @@ input#po_no{
               'data':function(data){
                 data.startdate=startdate,
                 data.enddate=enddate,
-                data.pno=$('#po_no').val()
+                data.pno=$('#po_no').val();
+                data.status = $('#status').val();
               
               }
               },
@@ -217,15 +220,15 @@ input#po_no{
                 return data === 'hold' ? 'live' : data; 
             }
         },
-        { 
-                data: 'updated_at', 
-                name: 'updated_at',
-                render: function (data, type, row) {
-                    if (!data) return '-';  // Handle null values
-                    let date = new Date(data);
-                    return moment(date).format('DD/MM/YYYY HH:mm A'); // Format in IST time
-                }
-            },
+        {
+            data: 'updated_at',
+            name: 'updated_at',
+            render: function (data, type, row) {
+                if (!data) return '-';  // Handle null values
+                return moment.utc(data).tz('Asia/Kolkata').format('DD/MM/YYYY hh:mm A');
+            }
+        },
+
             {data:'',
             render: (data, type, row) => {
                     let editBtn = `
@@ -260,6 +263,9 @@ input#po_no{
       $(document).on('change','#daterange',function(){
           table.draw();
       });
+      $(document).on('change', '#status', function() {
+        table.draw();
+        });
       
      $('input[name="daterange"]').daterangepicker({
     ranges: {
@@ -310,6 +316,15 @@ input#po_no{
                             <div class="col-md-3">
                             <label>Date</label>
                             <input type="text" class="form-control" name="daterange" id="daterange">
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Status</label>
+                                <select class="form-control" id="status" name="status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="live">Live</option>
+                                    <option value="pause">Pause</option>
+                                </select>
                             </div>
                         </div>
                         

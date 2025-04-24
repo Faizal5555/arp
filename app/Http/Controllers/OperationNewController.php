@@ -150,7 +150,7 @@ class OperationNewController extends Controller
         $data = $request->all();
     
         // Base query: Only fetch 'hold' status records
-        $operation = OperationNew::where('status', 'hold');
+        $operation = OperationNew::whereIn('status', ['hold', 'pause']);
     
         // If the logged-in user is a Project Manager, filter by their ID
         if ($user->user_role === 'project_manager') {
@@ -164,6 +164,13 @@ class OperationNewController extends Controller
         }
         if (isset($data['pno']) && $data['pno'] !== '') {
             $operation->where('project_no', 'LIKE', '%' . $data['pno'] . '%');
+        }
+        if (isset($data['status']) && $data['status'] !== '') {
+            if ($data['status'] === 'live') {
+                $operation->where('status', 'hold'); // 'hold' represents 'live'
+            } else {
+                $operation->where('status', $data['status']); // e.g., 'pause'
+            }
         }
     
         // Handle Ajax requests for Datatables
@@ -190,7 +197,7 @@ class OperationNewController extends Controller
         $data = $request->all();
     
         // Base query: Only fetch 'hold' status records
-        $operation = OperationNew::where('status', 'hold');        
+        $operation = OperationNew::whereIn('status', ['hold', 'pause']);       
     
         // If the logged-in user is a Project Manager, filter by their ID
         if ($user->user_role === 'project_manager') {
@@ -204,6 +211,14 @@ class OperationNewController extends Controller
         }
         if (isset($data['pno']) && $data['pno'] !== '') {
             $operation->where('project_no', 'LIKE', '%' . $data['pno'] . '%');
+        }
+
+        if (isset($data['status']) && $data['status'] !== '') {
+            if ($data['status'] === 'live') {
+                $operation->where('status', 'hold'); // 'hold' represents 'live'
+            } else {
+                $operation->where('status', $data['status']); // e.g., 'pause'
+            }
         }
     
         // Handle Ajax requests for Datatables
