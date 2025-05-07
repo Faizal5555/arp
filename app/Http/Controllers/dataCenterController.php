@@ -2474,7 +2474,7 @@ public function userconsumerlistData(Request $request)
             'pn_number' => 'required',
             'incentive_promised' => 'required',
             'total_incentive_paid' => 'required',
-            'incentive_paid_date' => 'required|date',
+            'incentive_paid_date' => 'required|string',
             'mode_of_payment' => 'required',
             'datacenter_id' => $userType === 'doctor' ? 'required' : 'nullable', // Validate only if HCP
             'que_id' => $userType === 'user' ? 'required' : 'nullable', // Validate only if Consumer
@@ -2565,7 +2565,7 @@ public function userconsumerlistData(Request $request)
                 'pn_number' => 'required',
                 'incentive_promised' => 'required',
                 'total_incentive_paid' => 'required',
-                'incentive_paid_date' => 'required|date',
+                'incentive_paid_date' => 'required|string',
                 'mode_of_payment' => 'required',
                 'datacenter_id' => $request->user_type === 'doctor' ? 'required' : 'nullable',
                 'que_id' => $request->user_type === 'user' ? 'required' : 'nullable',

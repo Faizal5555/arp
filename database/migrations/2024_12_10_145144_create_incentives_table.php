@@ -21,7 +21,7 @@ class CreateIncentivesTable extends Migration
             $table->string('pn_number');
             $table->string('incentive_promised');
             $table->string('total_incentive_paid');
-            $table->date('incentive_paid_date');
+            $table->text('incentive_paid_date');
             $table->string('mode_of_payment');
             $table->timestamps();
 

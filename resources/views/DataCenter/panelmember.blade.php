@@ -3,14 +3,25 @@
 @section('content')
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
 <script>
 
     
 $(document).ready(function () {
+
+    
+flatpickr("#incentive_paid_date", {
+    mode: "multiple",
+    dateFormat: "Y-m-d"
+});
+
 
     let userType = 'doctor'; // Default user type (HCP)
 
@@ -127,7 +138,23 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
     // Handle opening the modal for adding details or viewing saved records
     $(document).on('click', '.send-email-btn', function () {
 
-        $('#incentiveForm')[0].reset();
+        // $('#incentiveForm')[0].reset();
+        let incentiveDatePicker;
+
+    $(function () {
+        incentiveDatePicker = flatpickr("#incentive_paid_date", {
+            mode: "multiple",
+            dateFormat: "Y-m-d"
+        });
+
+        // Optional: clear calendar on modal close
+        $('#incentiveModal').on('hidden.bs.modal', function () {
+            $('#incentiveForm')[0].reset();
+            incentiveDatePicker.clear();
+        });
+    });
+        
+
 
         // Clear any hidden ID and user type
         $('#incentive_id').val('');
@@ -201,6 +228,7 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
 
     // Handle form submission for saving incentive
     $('#incentiveForm').on('submit', function (e) {
+        
         e.preventDefault();
 
         const formData = new FormData(this);
@@ -278,7 +306,26 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
 });
 
 
+
+
+
 $(document).on('click', '.edit-incentive-btn', function () {
+
+    let incentiveDatePicker;
+
+    $(function () {
+        incentiveDatePicker = flatpickr("#incentive_paid_date", {
+            mode: "multiple",
+            dateFormat: "Y-m-d"
+        });
+
+        // Optional: clear calendar on modal close
+        $('#incentiveModal').on('hidden.bs.modal', function () {
+            $('#incentiveForm')[0].reset();
+            incentiveDatePicker.clear();
+        });
+    });
+
     const incentiveId = $(this).data('id');
     const userType = $(this).data('user-type');
     console.log('userType:', userType); 
@@ -294,7 +341,12 @@ $(document).on('click', '.edit-incentive-btn', function () {
             $('#pn_number').val(response.pn_number);
             $('#incentive_promised').val(response.incentive_promised);
             $('#total_incentive_paid').val(response.total_incentive_paid);
-            $('#incentive_paid_date').val(response.incentive_paid_date);
+            const dates = response.incentive_paid_date 
+                ? response.incentive_paid_date.split(',').map(d => d.trim()) 
+                : [];
+
+            incentiveDatePicker.clear();           // clear old dates
+            incentiveDatePicker.setDate(dates);    // set new dates
             $('#mode_of_payment').val(response.mode_of_payment);
             $('#datacenter_id').val(response.datacenter_id);
             $('#que_id').val(response.que_id);
@@ -308,6 +360,7 @@ $(document).on('click', '.edit-incentive-btn', function () {
         }
     });
 });
+
 
 
 </script>
@@ -428,8 +481,8 @@ $(document).on('click', '.edit-incentive-btn', function () {
                         <input type="text" class="form-control" id="total_incentive_paid" name="total_incentive_paid" required>
                     </div>
                     <div class="form-group mt-3">
-                        <label for="incentivePaidDate">Incentive Paid Date</label>
-                        <input type="date" class="form-control" id="incentive_paid_date" name="incentive_paid_date" required>
+                        <label for="incentive_paid_date">Incentive Paid Date</label>
+                        <input type="date" class="form-control" id="incentive_paid_date" name="incentive_paid_date" placeholder="Select multiple dates" required>
                     </div>
                     <div class="form-group mt-3">
                         <label for="modeOfPayment">Mode of Payment</label>
