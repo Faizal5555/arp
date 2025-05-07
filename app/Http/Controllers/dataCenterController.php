@@ -2466,6 +2466,7 @@ public function userconsumerlistData(Request $request)
     public function saveIncentive(Request $request)
     {
         // Determine the user type dynamically (HCP or Consumer)
+
         $userType = $request->input('user_type'); // Pass 'user_type' from the frontend
     
         // Validation
@@ -2501,6 +2502,34 @@ public function userconsumerlistData(Request $request)
     
         return response()->json(['message' => 'Incentive data saved successfully!'], 200); // Success response
     }
+
+
+    public function getIncentive($id, Request $request)
+    {
+        $userType = $request->input('user_type');
+    
+        $query = Incentive::query(); // ✅ this initializes the query builder
+    
+        if ($userType === 'doctor') {
+            $query->where('datacenter_id', $id);
+        } elseif ($userType === 'user') {
+            $query->where('que_id', $id);
+        } else {
+            // fallback if no user_type is passed, try both (optional)
+            $query->where('datacenter_id', $id)
+                  ->orWhere('que_id', $id);
+        }
+    
+        $incentive = $query->first();
+    
+        if (!$incentive) {
+            return response()->json(['error' => 'Incentive not found'], 404);
+        }
+    
+        return response()->json($incentive);
+    }
+    
+    
     
     
         
@@ -2524,6 +2553,42 @@ public function userconsumerlistData(Request $request)
                 return response()->json(['error' => 'Record not found'], 404);
             }
         }
+
+
+        public function updateIncentive(Request $request, $id)
+        {   
+
+            // dd($request->all());
+            $userType = $request->input('user_type');
+
+            $request->validate([
+                'pn_number' => 'required',
+                'incentive_promised' => 'required',
+                'total_incentive_paid' => 'required',
+                'incentive_paid_date' => 'required|date',
+                'mode_of_payment' => 'required',
+                'datacenter_id' => $request->user_type === 'doctor' ? 'required' : 'nullable',
+                'que_id' => $request->user_type === 'user' ? 'required' : 'nullable',
+            ]);
+
+            $incentive = Incentive::find($id);
+            if (!$incentive) {
+                return response()->json(['error' => 'Incentive not found.'], 404);
+            }
+
+            $incentive->user_id = Auth::id();
+            $incentive->datacenter_id = $userType === 'doctor' ? $request->datacenter_id : null;
+            $incentive->que_id = $userType === 'user' ? $request->que_id : null;
+            $incentive->pn_number = $request->pn_number;
+            $incentive->incentive_promised = $request->incentive_promised;
+            $incentive->total_incentive_paid = $request->total_incentive_paid;
+            $incentive->incentive_paid_date = $request->incentive_paid_date;
+            $incentive->mode_of_payment = $request->mode_of_payment;
+            $incentive->save();
+
+            return response()->json(['message' => 'Incentive data updated successfully!']);
+        }
+
 
 
         public function PaymentsView()

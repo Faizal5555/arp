@@ -15,4 +15,9 @@ class datacenternew extends Model
         'PhNumber', 'email', 'whatdsappNumber', 'docterSpeciality', 'totalExperience', 
         'practice', 'licence', 'PatientsMonth','country1','date','social_url',
     ];
+
+    public function incentive()
+    {
+        return $this->hasOne(Incentive::class);
+    }
 }

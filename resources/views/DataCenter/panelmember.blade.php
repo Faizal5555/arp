@@ -89,7 +89,11 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     const buttonText = row.is_saved > 0 ? 'View' : 'Details';
                     const buttonClass = row.is_saved > 0 ? 'btn-success' : 'btn-info';
-                    return `<button class="btn ${buttonClass} send-email-btn" data-datacenter-id="${row.id}" data-que-id="">${buttonText}</button>`;
+
+                    return `
+                        <button class="btn ${buttonClass} send-email-btn" data-que-id="${row.id}" data-datacenter-id="${row.id}">${buttonText}</button>
+                        ${row.is_saved > 0 ? `<button class="btn btn-warning edit-incentive-btn" data-id="${row.id}" data-user-type="${userType}" data-datacenter-id="${row.id}" data-que-id="${row.que_id}">Edit</button>` : ''}
+                    `;
                 }
             }
         ] : [
@@ -106,7 +110,11 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     const buttonText = row.is_saved > 0 ? 'View' : 'Details';
                     const buttonClass = row.is_saved > 0 ? 'btn-success' : 'btn-info';
-                    return `<button class="btn ${buttonClass} send-email-btn" data-que-id="${row.id}" data-datacenter-id="">${buttonText}</button>`;
+
+                    return `
+                        <button class="btn ${buttonClass} send-email-btn" data-que-id="${row.id}" data-datacenter-id="${row.id}">${buttonText}</button>
+                        ${row.is_saved > 0 ? `<button class="btn btn-warning edit-incentive-btn" data-id="${row.id}" data-user-type="${userType}" data-datacenter-id="${row.id}" data-que-id="${row.que_id}">Edit</button>` : ''}
+                    `;
                 }
             }
         ],
@@ -118,9 +126,19 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
 
     // Handle opening the modal for adding details or viewing saved records
     $(document).on('click', '.send-email-btn', function () {
+
+        $('#incentiveForm')[0].reset();
+
+        // Clear any hidden ID and user type
+        $('#incentive_id').val('');
+        $('#user_type').val('');
+        $('#datacenter_id').val('');
+        $('#que_id').val('');
         const button = $(this);
         const datacenterId = button.data('datacenter-id');
+        console.log('datacenterId:', datacenterId); 
         const queId = button.data('que-id');
+        console.log('queId:', queId); 
 
         if (button.text() === "Details") {
             if (userType === 'doctor') {
@@ -186,10 +204,15 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
         e.preventDefault();
 
         const formData = new FormData(this);
+        const incentiveId = $('#incentive_id').val();
+        
         formData.append('user_type', userType);
 
+         const url = incentiveId ? `incentive/update/${incentiveId}` : "{{ route('saveIncentive') }}";
+         const method = incentiveId ? 'POST' : 'POST';
+
         $.ajax({
-            url: "{{ route('saveIncentive') }}",
+            url: url,
             type: "POST",
             data: formData,
             contentType: false,
@@ -198,6 +221,9 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
                 $('.btn-primary').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Saving...');
             },
             success: function (response) {
+                $('.btn-primary')
+                    .prop('disabled', false)
+                    .html('Submit');
                 $('#incentiveModal').modal('hide');
                 Swal.fire({
                     title: 'Success!',
@@ -208,12 +234,36 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
                 $('#incentiveForm')[0].reset();
                 const idField = userType === 'doctor' ? '#datacenter_id' : '#que_id';
                 const id = $(idField).val();
-                $(`button[data-${userType === 'doctor' ? 'datacenter-id' : 'que-id'}="${id}"]`)
-                    .text('View')
+                const incentiveId = response.incentive_id; 
+                const $button = $(`button[data-${userType === 'doctor' ? 'datacenter-id' : 'que-id'}="${targetId}"]`);
+                $button.text('View')
                     .removeClass('btn-info')
                     .addClass('btn-success');
+
+                // ✅ 2. Add/Edit the corresponding "Edit" button
+                let $editBtn = $button.siblings('.edit-incentive-btn');
+
+                if ($editBtn.length > 0) {
+                    // Update existing edit button
+                    $editBtn.attr('data-id', incentiveId);
+                } else {
+                    // Create new edit button
+                    const editBtnHtml = `
+                        <button class="btn btn-warning edit-incentive-btn ms-2"
+                            data-id="${incentiveId}"
+                            data-user-type="${userType}"
+                            data-datacenter-id="${userType === 'doctor' ? targetId : ''}"
+                            data-que-id="${userType === 'user' ? targetId : ''}">
+                            Edit
+                        </button>`;
+
+                    $button.after(editBtnHtml);
+                }
             },
             error: function (xhr) {
+                $('.btn-primary')
+                    .prop('disabled', false)
+                    .html('Submit');
                 Swal.fire({
                     title: 'Error',
                     text: xhr.responseJSON.error || 'An error occurred',
@@ -228,7 +278,36 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
 });
 
 
+$(document).on('click', '.edit-incentive-btn', function () {
+    const incentiveId = $(this).data('id');
+    const userType = $(this).data('user-type');
+    console.log('userType:', userType); 
+    const datacenterId = $(this).data('datacenter-id');
+    console.log('datacenterId:', datacenterId); 
+    const queId = $(this).data('que-id');
+    console.log('queId:', queId); 
 
+    $.ajax({
+        url: `getIncentive/${incentiveId}`,
+        type: "GET",
+        success: function (response) {
+            $('#pn_number').val(response.pn_number);
+            $('#incentive_promised').val(response.incentive_promised);
+            $('#total_incentive_paid').val(response.total_incentive_paid);
+            $('#incentive_paid_date').val(response.incentive_paid_date);
+            $('#mode_of_payment').val(response.mode_of_payment);
+            $('#datacenter_id').val(response.datacenter_id);
+            $('#que_id').val(response.que_id);
+            $('#user_type').val(userType);
+            $('#incentive_id').val(response.id); // Hidden input
+
+            $('#incentiveModal').modal('show');
+        },
+        error: function () {
+            Swal.fire('Error', 'Could not fetch data to edit', 'error');
+        }
+    });
+});
 
 
 </script>
@@ -331,6 +410,10 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
                 </button>
             </div>
             <form id="incentiveForm">
+            <input type="hidden" name="incentive_id" id="incentive_id">
+            <input type="hidden" name="user_id" id="user_type">
+            <input type="hidden" name="datacenter_id" id="datacenter_id">
+            <input type="hidden" name="que_id" id="que_id">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="pnNumber">PN Number</label>
@@ -352,9 +435,9 @@ $("#name, #lastname, #email, #country, #speciality").on("keyup change", function
                         <label for="modeOfPayment">Mode of Payment</label>
                         <input type="text" class="form-control" id="mode_of_payment" name="mode_of_payment" required>
                     </div>
-                    <input type="hidden" id="user_id" name="user_id">
+                    {{-- <input type="hidden" id="user_id" name="user_id">
                     <input type="hidden" id="que_id" name="que_id">
-                    <input type="hidden" id="datacenter_id" name="datacenter_id">
+                    <input type="hidden" id="datacenter_id" name="datacenter_id"> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

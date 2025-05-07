@@ -508,6 +508,9 @@ Route::get('/supplier/supplier_view/{id}', 'App\Http\Controllers\SupplierControl
    Route::get('/fetchIncentiveConsumer/{queId}', 'App\Http\Controllers\dataCenterController@fetchIncentiveConsumer')->name('fetchIncentiveConsumer');
    Route::get('/payment-view', 'App\Http\Controllers\dataCenterController@PaymentsView')->name('PaymentsView');
    Route::get('/fetchPayments', 'App\Http\Controllers\dataCenterController@fetchPayments')->name('fetchPayments');
+   Route::get('/getIncentive/{id}', 'App\Http\Controllers\dataCenterController@getIncentive');
+   Route::post('/incentive/update/{id}', 'App\Http\Controllers\dataCenterController@updateIncentive')->name('incentive.update');
+
    
   
    //user module route 

@@ -56,7 +56,7 @@ class SendSupplierMailFired
             Config::set('mail.mailers.smtp.host', 'smtp.gmail.com');
             Config::set('mail.mailers.smtp.port', 587);
             Config::set('mail.mailers.smtp.username', 'quotesarp@asiaresearchpartners.com');
-            Config::set('mail.mailers.smtp.password', 'swlgxjrkggbcwpck'); // xlxjdqotgsbwyklj Your app password here
+            Config::set('mail.mailers.smtp.password', 'cgnkbqtccbvblocb'); // xlxjdqotgsbwyklj Your app password here
             Config::set('mail.mailers.smtp.encryption', 'tls');
 
             // Also override the "from" address
