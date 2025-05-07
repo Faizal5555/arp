@@ -2614,14 +2614,15 @@ public function userconsumerlistData(Request $request)
                 ->select('que_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
                 ->whereNotNull('que_id');
         
-                if ($fromDate) {
-                    $hcpQuery->where('incentive_paid_date', 'like', '%' . $fromDate . '%');
-                    $consumerQuery->where('incentive_paid_date', 'like', '%' . $fromDate . '%');
-                }
-                if ($toDate) {
-                    $hcpQuery->orWhere('incentive_paid_date', 'like', '%' . $toDate . '%');
-                    $consumerQuery->orWhere('incentive_paid_date', 'like', '%' . $toDate . '%');
-                }
+            if ($fromDate) {
+                $hcpQuery->whereDate('incentive_paid_date', '>=', $fromDate);
+                $consumerQuery->whereDate('incentive_paid_date', '>=', $fromDate);
+            }
+        
+            if ($toDate) {
+                $hcpQuery->whereDate('incentive_paid_date', '<=', $toDate);
+                $consumerQuery->whereDate('incentive_paid_date', '<=', $toDate);
+            }
         
             $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
                 return [
