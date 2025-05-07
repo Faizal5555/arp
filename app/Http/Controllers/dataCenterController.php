@@ -2614,31 +2614,17 @@ public function userconsumerlistData(Request $request)
                 ->select('que_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
                 ->whereNotNull('que_id');
         
-                if ($fromDate) {
-                    $hcpQuery->where(function ($q) use ($fromDate) {
-                        $q->whereDate('incentive_paid_date', '>=', $fromDate)
-                          ->orWhereDate('created_at', '>=', $fromDate)
-                          ->orWhereDate('updated_at', '>=', $fromDate);
+                if ($fromDate && $toDate) {
+                    $hcpQuery->where(function ($q) use ($fromDate, $toDate) {
+                        $q->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate])
+                          ->orWhereBetween(DB::raw('DATE(created_at)'), [$fromDate, $toDate])
+                          ->orWhereBetween(DB::raw('DATE(updated_at)'), [$fromDate, $toDate]);
                     });
                 
-                    $consumerQuery->where(function ($q) use ($fromDate) {
-                        $q->whereDate('incentive_paid_date', '>=', $fromDate)
-                          ->orWhereDate('created_at', '>=', $fromDate)
-                          ->orWhereDate('updated_at', '>=', $fromDate);
-                    });
-                }
-                
-                if ($toDate) {
-                    $hcpQuery->where(function ($q) use ($toDate) {
-                        $q->whereDate('incentive_paid_date', '<=', $toDate)
-                          ->orWhereDate('created_at', '<=', $toDate)
-                          ->orWhereDate('updated_at', '<=', $toDate);
-                    });
-                
-                    $consumerQuery->where(function ($q) use ($toDate) {
-                        $q->whereDate('incentive_paid_date', '<=', $toDate)
-                          ->orWhereDate('created_at', '<=', $toDate)
-                          ->orWhereDate('updated_at', '<=', $toDate);
+                    $consumerQuery->where(function ($q) use ($fromDate, $toDate) {
+                        $q->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate])
+                          ->orWhereBetween(DB::raw('DATE(created_at)'), [$fromDate, $toDate])
+                          ->orWhereBetween(DB::raw('DATE(updated_at)'), [$fromDate, $toDate]);
                     });
                 }
                 
