@@ -2615,17 +2615,8 @@ public function userconsumerlistData(Request $request)
                 ->whereNotNull('que_id');
         
                 if ($fromDate && $toDate) {
-                    $hcpQuery->where(function ($q) use ($fromDate, $toDate) {
-                        $q->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate])
-                          ->orWhereBetween(DB::raw('DATE(created_at)'), [$fromDate, $toDate])
-                          ->orWhereBetween(DB::raw('DATE(updated_at)'), [$fromDate, $toDate]);
-                    });
-                
-                    $consumerQuery->where(function ($q) use ($fromDate, $toDate) {
-                        $q->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate])
-                          ->orWhereBetween(DB::raw('DATE(created_at)'), [$fromDate, $toDate])
-                          ->orWhereBetween(DB::raw('DATE(updated_at)'), [$fromDate, $toDate]);
-                    });
+                    $hcpQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
+                    $consumerQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
                 }
                 
         
