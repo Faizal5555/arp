@@ -4033,164 +4033,81 @@ $(document).on('click','.remove-country',function(){
 
 {{-- project completed script --}}
 <script>
-// $("#complete").validate({
-//     rules:{
-//         // clientadvance:{
-//         //     required: true
-//         // },
-//         clientbalance:{
-//             required: true
-//         },
-//         // vendoradvance:{
-//         //     required: true
-//         // },
-//         // vendorbalance:{
-//         //     required:true
-//         // },
-//         // respondentfile:{
-//         //     required: true
-//         // },
-//         clientinvoicefile:{
-//             required:true
-//         },
-//         // vendorinvoicefile:{
-//         //     required:true
-//         // },
-//         client_confirmation:{
-//             required:true
-//         },
-//         // vendor_confirmation:{
-//         //     required:true
-//         // },
-//     },
-//     errorPlacement: function (error, element) {
-//                 if (element.hasClass("select2-hidden-accessible")) {
-//                     error.insertAfter(element.siblings('span.select2'));
-//                 } else if (element.hasClass("floating-input")) {
-//                     element.closest('.form-floating-label').addClass("error-cont").append(error);
-//                 } else {
-//                     error.insertAfter(element);
-//                 }
-//             },
-
-//             submitHandler: function (form) {
-//                 var data = new FormData(form);
-//                 let projectId = $('#complete input[name="id"]').val();
-
-//                 $.ajax({
-//                     type:"POST",
-//                     url: "{{route('operationNew.addproject')}}",
-//                     data:data,
-//                     headers: {
-//                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//                     },
-//                     processData:false,
-//                     contentType:false,
-//                     dataType: "json",
-//                     success: function(data) {
-//                         if (data.success == 1) {
-//                         if (data.clientbalance === 'Yes') {
-//                             // Show Project Completed Popup
-//                             $("#project_hold").addClass('d-none');
-//                             $("#project_closed").removeClass('d-none');
-//                         } else {
-//                             // Show Project Ongoing/Hold Popup
-//                             $("#project_closed").addClass('d-none');
-//                             $("#project_hold").removeClass('d-none');
-//                         }
-//                         $('#statusbar').modal('show'); // Show modal after setting classes
-//                     } else {
-//                         alert('Fail'); // This appears if `success` is not 1
-//                     }
-//                 }
-
-//                 });
-//             }
-
-// });
-
 $("#complete").validate({
     rules:{
+        // clientadvance:{
+        //     required: true
+        // },
         clientbalance:{
             required: true
         },
+        // vendoradvance:{
+        //     required: true
+        // },
+        // vendorbalance:{
+        //     required:true
+        // },
+        // respondentfile:{
+        //     required: true
+        // },
         clientinvoicefile:{
-            required: true
+            required:true
         },
+        // vendorinvoicefile:{
+        //     required:true
+        // },
         client_confirmation:{
-            required: true
+            required:true
         },
+        // vendor_confirmation:{
+        //     required:true
+        // },
     },
     errorPlacement: function (error, element) {
-        if (element.hasClass("select2-hidden-accessible")) {
-            error.insertAfter(element.siblings('span.select2'));
-        } else if (element.hasClass("floating-input")) {
-            element.closest('.form-floating-label').addClass("error-cont").append(error);
-        } else {
-            error.insertAfter(element);
-        }
-    },
-    submitHandler: function (form) {
-        var data = new FormData(form);
-        let projectId = $('#complete input[name="id"]').val();
-        
-        // ✅ Allowed File Extensions
-        const allowedExtensions = [
-            "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
-            "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
-            "dotm", "xml", "html", "htm", "md", "json", "yaml", 
-            "yml", "wpd", "wps"
-        ];
-        
-        const filesToCheck = [
-            { field: "clientinvoicefile", name: "Client Invoice File" },
-            { field: "client_confirmation", name: "Client Confirmation" },
-            { field: "vendorinvoicefile", name: "Vendor Invoice File" },
-            { field: "vendor_confirmation", name: "Vendor Confirmation" }
-        ];
-        
-        for (const fileCheck of filesToCheck) {
-            const fileInput = form[fileCheck.field];
-            if (fileInput && fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
-                const fileExt = fileName.split('.').pop().toLowerCase();
-                
-                if (!allowedExtensions.includes(fileExt)) {
-                    alert(`${fileCheck.name} must be one of the following file types: ${allowedExtensions.join(', ')}.`);
-                    return false;
-                }
-            }
-        }
-
-        // 🔄 Proceed with AJAX request if extensions are valid
-        $.ajax({
-            type:"POST",
-            url: "{{route('operationNew.addproject')}}",
-            data:data,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            processData:false,
-            contentType:false,
-            dataType: "json",
-            success: function(data) {
-                if (data.success == 1) {
-                    if (data.clientbalance === 'Yes') {
-                        $("#project_hold").addClass('d-none');
-                        $("#project_closed").removeClass('d-none');
-                    } else {
-                        $("#project_closed").addClass('d-none');
-                        $("#project_hold").removeClass('d-none');
-                    }
-                    $('#statusbar').modal('show'); // Show modal after setting classes
+                if (element.hasClass("select2-hidden-accessible")) {
+                    error.insertAfter(element.siblings('span.select2'));
+                } else if (element.hasClass("floating-input")) {
+                    element.closest('.form-floating-label').addClass("error-cont").append(error);
                 } else {
-                    alert('Fail');
+                    error.insertAfter(element);
                 }
-            }
-        });
-    }
-});
+            },
 
+            submitHandler: function (form) {
+                var data = new FormData(form);
+                let projectId = $('#complete input[name="id"]').val();
+
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('operationNew.addproject')}}",
+                    data:data,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    processData:false,
+                    contentType:false,
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.success == 1) {
+                        if (data.clientbalance === 'Yes') {
+                            // Show Project Completed Popup
+                            $("#project_hold").addClass('d-none');
+                            $("#project_closed").removeClass('d-none');
+                        } else {
+                            // Show Project Ongoing/Hold Popup
+                            $("#project_closed").addClass('d-none');
+                            $("#project_hold").removeClass('d-none');
+                        }
+                        $('#statusbar').modal('show'); // Show modal after setting classes
+                    } else {
+                        alert('Fail'); // This appears if `success` is not 1
+                    }
+                }
+
+                });
+            }
+
+});
 </script>
 {{-- project completed script --}}
 
