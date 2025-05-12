@@ -2605,19 +2605,28 @@ public function userconsumerlistData(Request $request)
         
             $fromDate = $request->from_date;
             $toDate = $request->to_date;
-        
+
+            if ($fromDate && $toDate) {
+                // Convert to Y-m-d format if needed
+                $fromDate = \Carbon\Carbon::parse($fromDate)->format('Y-m-d');
+                $toDate = \Carbon\Carbon::parse($toDate)->format('Y-m-d');
+            }
+
+            // Fetch HCP data
             $hcpQuery = Incentive::with('datacenternews:id,firstname,country1,docterSpeciality,email')
                 ->select('datacenter_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
                 ->whereNotNull('datacenter_id');
-        
+
+            // Fetch Consumer data
             $consumerQuery = Incentive::with('ques:id,fname,country,email')
                 ->select('que_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
                 ->whereNotNull('que_id');
-        
-                if ($fromDate && $toDate) {
-                    $hcpQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
-                    $consumerQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
-                }
+
+            // Apply date filter
+            if ($fromDate && $toDate) {
+                $hcpQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
+                $consumerQuery->whereBetween(DB::raw('DATE(incentive_paid_date)'), [$fromDate, $toDate]);
+            }
                 
         
             $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
