@@ -2623,16 +2623,11 @@ public function userconsumerlistData(Request $request)
                 ->whereNotNull('que_id');
 
             // Apply date filter
-           if ($fromDate && $toDate) {
-               $hcpQuery->where(function ($query) use ($fromDate, $toDate) {
-                    $query->where('incentive_paid_date', 'LIKE', "%$fromDate%")
-                        ->orWhere('incentive_paid_date', 'LIKE', "%$toDate%");
-                });
+                if ($fromDate && $toDate) {
+            $hcpQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
+            $consumerQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
+        }
                         
-                $consumerQuery->whereDate('incentive_paid_date', '>=', $fromDate)
-                            ->whereDate('incentive_paid_date', '<=', $toDate);
-            }
-                
         
             $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
                 return [
