@@ -308,13 +308,14 @@ class DashboardController extends Controller
         }
         elseif($user->user_type == ('business_manager')){
             $countries =Country::get();
-            $totalProjects = BusinessResearch::count();
+            $totalProjects = BusinessResearch::where('status', 'next')->count();
             $industryFilter = request('industry');
             $from = request('from_date') ?? Carbon::now()->subDays(30)->toDateString();
             $to = request('to_date') ?? Carbon::now()->toDateString();
         
             // Base query with filters
             $baseQuery = BusinessResearch::query()
+                ->where('status', 'next') 
                 ->whereBetween('created_at', [$from, $to]);
         
             if ($industryFilter) {
@@ -328,6 +329,7 @@ class DashboardController extends Controller
         
             // Industry-wise Project Count (for pie chart – ignore industry filter here to show full distribution)
             $industryProjects = BusinessResearch::select('industry', DB::raw('count(*) as total'))
+                ->where('status', 'next')
                 ->groupBy('industry')
                 ->get();
         

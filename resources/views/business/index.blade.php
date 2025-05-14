@@ -105,7 +105,7 @@ label.mb-0.not-expired {
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-      <form id="editForm" method="POST">
+      <form id="editForm" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal-content">
           <div class="modal-header">
@@ -380,13 +380,15 @@ $(document).on('submit', '#editForm', function (e) {
     e.preventDefault();
 
     var id = $('#edit_id').val(); // Get the ID of the record
-    var formData = $(this).serialize();
+     var formData = new FormData(this);
     
 
     $.ajax({
         url: `update/${id}`, 
         type: 'POST',
         data: formData,
+        processData: false,  // Important: Prevent jQuery from processing the data
+        contentType: false,  // Important: Allow multipart/form-data
         success: function (response) {
             $('#editModal').modal('hide');
             $('#businessTable').DataTable().ajax.reload();

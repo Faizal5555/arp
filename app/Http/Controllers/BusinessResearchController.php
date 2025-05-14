@@ -163,7 +163,9 @@ class BusinessResearchController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    {   
+
+      
         // 1. Validate request
         $request->validate([
             'industry' => 'required|string',
@@ -220,9 +222,11 @@ class BusinessResearchController extends Controller
             ]);
         }
 
-        $removeAttachments = $request->input('remove_attachments', []);
+       $removeAttachments = $request->input('remove_attachments', []);
         $existingAttachments = $request->input('existing_attachments', []);
-        $finalAttachments = array_diff($existingAttachments, $removeAttachments);
+        
+        // Start with existing attachments and remove any that should be deleted
+        $finalAttachments = array_diff($existingAttachments, $removeAttachments);  // Merge old and new attachments
 
         // Delete removed files from storage (optional)
         foreach ($removeAttachments as $path) {
@@ -231,7 +235,7 @@ class BusinessResearchController extends Controller
             }
         }
 
-        // Handle new uploads
+        // Handle new uploads (add them to the final list of attachments)
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 $filename = time() . '_' . $file->getClientOriginalName();
@@ -240,9 +244,11 @@ class BusinessResearchController extends Controller
             }
         }
 
-        // Update record
-        $businessResearch->attachments = implode(',', $finalAttachments);
-        $businessResearch->save();
+    // 4. Update the record with the new attachment paths
+    $businessResearch->attachments = implode(',', $finalAttachments);
+    $businessResearch->save();
+
+
        
         return response()->json(['success' => true, 'message' => 'Project updated successfully.']);
     }
@@ -684,25 +690,41 @@ public function filter(Request $request)
         $query->where('industry', $request->industry);
     }
 
+    // Filter for 'next' status for total projects
+    $query->where('status', 'next');
+
+    // Get the count of distinct clients for 'next' status projects
     $clientCount = (clone $query)->distinct('client_name')->count('client_name');
-    $projectCount = (clone $query)->count(); // now filtered
-    $closedProjectCount = (clone $query)->where('status', 'Closed')->count();
+    
+    // Count for total 'next' status projects
+    $projectCount = (clone $query)->count();
+
+    // Count for 'closed' status projects – use a separate query to not interfere with 'next' filter
+    $closedProjectCount = BusinessResearch::query()
+        ->where('status', 'Closed')
+        ->whereBetween('created_at', [
+            $request->start_date . ' 00:00:00',
+            $request->end_date . ' 23:59:59'
+        ])
+        ->count();
+
+    // Count of business team members
     $teamMembersCount = User::where('user_type', 'business_team_member')->count();
 
-    // Optional: Industry-wise chart
+    // Industry-wise project data (ignoring 'next' filter for full distribution)
     $industryData = BusinessResearch::select('industry', DB::raw('count(*) as total'))
         ->groupBy('industry')
         ->get();
 
+    // Return the response as JSON
     return response()->json([
         'clientCount' => $clientCount,
-        'projectCount' => $projectCount,
+        'projectCount' => $projectCount,  // Count of 'next' status projects
         'teamMembersCount' => $teamMembersCount,
-        'closedProjectsCount' => $closedProjectCount,
+        'closedProjectsCount' => $closedProjectCount,  // Correctly count 'Closed' projects
         'industryData' => $industryData
     ]);
 }
-
 
 
 public function generateSampleFile()

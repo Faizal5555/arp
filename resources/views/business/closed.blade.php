@@ -102,6 +102,170 @@ label.mb-0.not-expired {
     </div>
 </div>
 
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <form id="editForm" method="POST">
+        @csrf
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Business Research</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Add your input fields here -->
+            <input type="hidden" name="id" id="edit_id">
+            
+            <div class="row pl-2 justify content center">
+                <div class="col-md-6 mb-3">
+                    <label>Date</label>
+                    <input type="date" name="date" id="edit_date" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>PN Number</label>
+                    <input type="text" name="pn_number" id="edit_pn_number" class="form-control">
+                  </div>
+            </div>
+  
+           
+            <div class="row pl-2 justify content center">
+                
+                <div class="col-md-6 mb-3">
+                    <label for="edit_industry_select">Industry</label>
+                     <select class="form-control" id="edit_industry_select" name="industry">
+                        <option class="" value="" disabled selected>Select
+                            Industry
+                        </option>
+                        <option value="Manufacturing Industry">Manufacturing Industry</option>
+                        <option value="Production Industry">Production Industry</option>
+                        <option value="Food Industry">Food Industry</option>
+                        <option value="Agricultural Industry">Agricultural Industry</option>
+                        <option value="Technology Industry">Technology Industry</option>
+                        <option value="Construction Industry">Construction Industry</option>
+                        <option value="Factory Industry">Factory Industry</option>
+                        <option value="Mining Industry">Mining Industry</option>
+                        <option value="Finance Industry">Finance Industry</option>
+                        <option value="Retail Industry">Retail Industry</option>
+                        <option value="Engineering Industry">Engineering Industry</option>
+                        <option value="Marketing Industry">Marketing Industry</option>
+                        <option value="Education Industry">Education Industry</option>
+                        <option value="Transport Industry">Transport Industry</option>
+                        <option value="Chemical Industry">Chemical Industry</option>
+                        <option value="Healthcare Industry">Healthcare Industry</option>
+                        <option value="Hospitality Industry">Hospitality Industry</option>
+                        <option value="Energy Industry">Energy Industry</option>
+                        <option value="Science Industry">Science Industry</option>
+                        <option value="Waste Industry">Waste Industry</option>
+                        <option value="Chemistry Industry">Chemistry Industry</option>
+                        <option value="Teritiary Sector Industry">Teritiary Sector Industry</option>
+                        <option value="Real Estate Industry">Real Estate Industry</option>
+                        <option value="Financial Services Industry">Financial Services Industry
+                        </option>
+                        <option value="Telecommunications Industry">Telecommunications Industry
+                        </option>
+                        <option value="Distribution Industry">Distribution Industry</option>
+                        <option value="Medical Device Industry">Medical Device Industry</option>
+                        <option value="Biotechnology Industry">Biotechnology Industry</option>
+                        <option value="Aviation Industry">Aviation Industry</option>
+                        <option value="Insurance Industry">Insurance Industry</option>
+                        <option value="Trade Industry">Trade Industry</option>
+                        <option value="Stock Market Industry">Stock Market Industry</option>
+                        <option value="Electronics Industry">Electronics Industry</option>
+                        <option value="Textile Industry">Textile Industry</option>
+                        <option value="Computers and Information Technology Industry">Computers and
+                            Information Technology Industry</option>
+                        <option value="Market Research Industry">Market Research Industry</option>
+                        <option value="Machine Industry">Machine Industry</option>
+                        <option value="Recycling Industry">Recycling Industry</option>
+                        <option value="Information and Communication Technology Industry">
+                            Information and Communication Technology Industry</option>
+                        <option value="E- Commerce Industry">E- Commerce Industry</option>
+                        <option value="Research Industry">Research Industry</option>
+                        <option value="Rail Transport Industry">Rail Transport Industry</option>
+                        <option value="Food Processing Industry">Food Processing Industry</option>
+                        <option value="Small Business Industry">Small Business Industry</option>
+                        <option value="Wholesale Industry">Wholesale Industry</option>
+                        <option value="Pulp and Paper Industry">Pulp and Paper Industry</option>
+                        <option value="Vehicle Industry">Vehicle Industry</option>
+                        <option value="Steel Industry">Steel Industry</option>
+                        <option value="Renewable Energy Industry">Renewable Energy Industry</option>
+                     </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Subject Line</label>
+                    <input type="text" name="subject_line" id="edit_subject_line" class="form-control">
+                </div>
+            </div>
+  
+           
+            <div class="row pl-2 justify content center">
+                <div class="col-md-6 mb-3">
+                    <label>End Date</label>
+                    <input type="date" name="end_date" id="edit_end_date" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="edit_team_members">Allocated to Team Members</label>
+                    <select name="team_members[]" id="edit_team_members" class="form-control" multiple>
+                       
+                        @foreach($team_members as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+  
+          
+            <div class="row pl-2 justify content center">
+                <div class="col-md-6 mb-3">
+                <label>Others</label>
+                <textarea name="others" id="edit_others" class="form-control"></textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="edit_feasibility_done">Feasibility Done</label>
+                    <select name="feasibility_done" id="edit_feasibility_done" class="form-control">
+                        <option value="" disabled selected>Select Status</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row pl-2 justify content center">
+                <div class="col-md-6 mb-3">
+                    <label>Target Respondent</label>
+                    <input type="text" name="target_respondent" id="edit_target_respondent" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="edit_target_countries">Target Countries</label>
+                    <input type="text" name="target_countries" id="edit_target_countries" class="form-control">
+                </div>
+            </div>
+
+                    <div class="form-group">
+                    <label>Upload Attachments</label>
+                    <div id="attachmentContainer">
+                        <!-- Existing files will be appended here via JS -->
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <input type="file" name="attachments[]" class="form-control">
+                        <div class="input-group-append">
+                            <button class="btn btn-success add-attachment" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
+  
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- DataTables JS and jQuery should already be included in your layout -->
@@ -123,17 +287,18 @@ $(document).ready(function() {
             { data: 'industry', name: 'industry' },
             // { data: 'client_name', name: 'client_name' },
             { data: 'team_members', name: 'team_members' },
-            { data: 'others', name: 'others' },
-            { data: 'target_respondent', name: 'target_respondent'},
-            { data: 'target_countries', name: 'target_countries'},
-            { data: 'end_date',name:'end_date'},
-            {
+             {
             data: 'feasibility_done',
             name: 'feasibility_done',
             render: function (data, type, row) {
             return data == 1 ? 'Yes' : 'No';
             }
             },
+            { data: 'others', name: 'others' },
+            { data: 'target_respondent', name: 'target_respondent'},
+            { data: 'target_countries', name: 'target_countries'},
+            { data: 'end_date',name:'end_date'},
+           
              {
             data: 'id',
             name: 'action',
@@ -145,6 +310,10 @@ $(document).ready(function() {
                       <a href="${viewUrl}" class="btn btn-sm" title="View">
                             <i class="fas fa-eye"></i>
                         </a>
+                        <button class="btn btn-sm edit-button" data-id="${data}">
+                             <i class="fas fa-edit"></i>
+                        </button>
+                        
 
                 `;
             }
@@ -153,4 +322,127 @@ $(document).ready(function() {
         ]
     });
 });
+
+  $(document).on('click', '.edit-button', function () {
+    var id = $(this).data('id');
+
+    // Use route helper - replace :id with actual ID
+    var editUrl = "{{ route('businessresearch.edit', ':id') }}".replace(':id', id);
+
+    $.get(editUrl, function (data) {
+        // Show modal
+        $('#editModal').modal('show');
+
+        // Populate form fields
+        $('#edit_id').val(data.id);
+        $('#edit_date').val(data.date);
+        $('#edit_pn_number').val(data.pn_number);
+        $('#edit_subject_line').val(data.subject_line);
+        $('#edit_industry_select').val(data.industry);
+        $('#edit_client_name').val(data.client_name);
+        $('#edit_others').val(data.others);
+        $('#edit_team_members').val(data.team_members).trigger('change');
+        $('#edit_feasibility_done').val(data.feasibility_done);
+        $('#edit_target_respondent').val(data.target_respondent);
+        $('#edit_target_countries').val(data.target_countries);
+        $('#edit_end_date').val(data.end_date);
+
+        $('#attachmentContainer').empty(); // Clear old rows
+
+        data.attachments.forEach(function (path) {
+            let fileName = path.split('/').pop();
+            let html = `
+                <div class="input-group mb-2 existing-attachment">
+                     <a href="{{ asset('adminapp/storage') }}/${path}" target="_blank" class="form-control bg-light d-flex align-items-center" style="text-decoration: none;" download>
+                            ${fileName}
+                        </a>
+                    <input type="hidden" name="existing_attachments[]" value="${path}">
+                    <div class="input-group-append">
+                        <button class="btn btn-danger remove-existing-attachment" type="button" data-path="${path}">-</button>
+                    </div>
+                </div>`;
+            $('#attachmentContainer').append(html);
+        });
+
+        
+    });
+});
+
+
+
+
+
+$(document).on('submit', '#editForm', function (e) {
+    e.preventDefault();
+
+    var id = $('#edit_id').val(); // Get the ID of the record
+    var formData = new FormData(this);
+    
+
+    $.ajax({
+        url: `update/${id}`, 
+        type: 'POST',
+        data: formData,
+        processData: false,  // Important: Prevent jQuery from processing the data
+        contentType: false,  // Important: Allow multipart/form-data
+        success: function (response) {
+            $('#editModal').modal('hide');
+            $('#businessTable').DataTable().ajax.reload();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated!',
+                text: response.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+        },
+        error: function (xhr) {
+            let errors = xhr.responseJSON.errors;
+            let errorMsg = 'Something went wrong!';
+            if (errors) {
+                errorMsg = Object.values(errors).join('\n');
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMsg
+            });
+        }
+    });
+});
+
+
+$(document).ready(function () {
+    $('#edit_team_members').select2({
+        placeholder: "Select Team Members",
+        width: '100%'
+    });
+});
+
+$(document).on('click', '.add-attachment', function () {
+    const html = `
+        <div class="input-group mb-2">
+            <input type="file" name="attachments[]" class="form-control">
+            <div class="input-group-append">
+                <button class="btn btn-danger remove-attachment" type="button">-</button>
+            </div>
+        </div>`;
+    $('#attachmentContainer').append(html);
+});
+
+$(document).on('click', '.remove-attachment', function () {
+    $(this).closest('.input-group').remove();
+});
+
+
+$(document).on('click', '.remove-existing-attachment', function () {
+    const removedPath = $(this).data('path');
+    $(this).closest('.existing-attachment').remove();
+
+    // Add a hidden input to track removed attachments
+    $('#editForm').append(`<input type="hidden" name="remove_attachments[]" value="${removedPath}">`);
+});
+
 </script>
