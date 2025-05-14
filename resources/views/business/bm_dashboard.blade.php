@@ -171,7 +171,7 @@
 
 
 <script>
-let start_1 = moment().subtract(29, 'days'); // Default: last 30 days
+let start_1 = moment().subtract(365, 'days'); // Default: last 30 days
 let end_1 = moment();
 
 $(function () {
