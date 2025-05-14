@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\NamedRange;
+use Illuminate\Support\Facades\Storage;
 
 
 class BusinessResearchController extends Controller
@@ -138,6 +139,9 @@ class BusinessResearchController extends Controller
     public function edit($id)
     {
         $record = BusinessResearch::with('teamMembers')->findOrFail($id);
+
+         $attachments = $record->attachments ? explode(',', $record->attachments) : [];
+
         return response()->json([
             'id' => $record->id,
             'date' => $record->date,
@@ -151,6 +155,7 @@ class BusinessResearchController extends Controller
             'target_respondent' => $record->target_respondent,
             'target_countries' => $record->target_countries,
             'end_date' => $record->end_date,
+             'attachments' => $attachments
             
             
         ]);
@@ -214,6 +219,30 @@ class BusinessResearchController extends Controller
                 'user_id' => $userId,
             ]);
         }
+
+        $removeAttachments = $request->input('remove_attachments', []);
+        $existingAttachments = $request->input('existing_attachments', []);
+        $finalAttachments = array_diff($existingAttachments, $removeAttachments);
+
+        // Delete removed files from storage (optional)
+        foreach ($removeAttachments as $path) {
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        // Handle new uploads
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('attachments', $filename, 'public');
+                $finalAttachments[] = $path;
+            }
+        }
+
+        // Update record
+        $businessResearch->attachments = implode(',', $finalAttachments);
+        $businessResearch->save();
        
         return response()->json(['success' => true, 'message' => 'Project updated successfully.']);
     }

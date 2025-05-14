@@ -95,6 +95,7 @@ label.mb-0.not-expired {
                     <th>Target Respondent</th>
                     <th>Target Countries</th>
                     <th>End Date</th>
+                    <th>action</th>
                 </tr>
             </thead>
         </table>
@@ -133,6 +134,21 @@ $(document).ready(function() {
             return data == 1 ? 'Yes' : 'No';
             }
             },
+             {
+            data: 'id',
+            name: 'action',
+            orderable: false,
+            searchable: false,
+            render: function (data, type, row, meta) {
+                var viewUrl = "{{ route('businessresearch.project', ':id') }}".replace(':id', data);
+                return `
+                      <a href="${viewUrl}" class="btn btn-sm" title="View">
+                            <i class="fas fa-eye"></i>
+                        </a>
+
+                `;
+            }
+        }
            
         ]
     });

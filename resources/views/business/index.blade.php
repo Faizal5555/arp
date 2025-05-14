@@ -242,6 +242,20 @@ label.mb-0.not-expired {
                     <input type="text" name="target_countries" id="edit_target_countries" class="form-control">
                 </div>
             </div>
+
+                    <div class="form-group">
+                    <label>Upload Attachments</label>
+                    <div id="attachmentContainer">
+                        <!-- Existing files will be appended here via JS -->
+                    </div>
+
+                    <div class="input-group mb-2">
+                        <input type="file" name="attachments[]" class="form-control">
+                        <div class="input-group-append">
+                            <button class="btn btn-success add-attachment" type="button">+</button>
+                        </div>
+                    </div>
+                </div>
   
           </div>
           <div class="modal-footer">
@@ -336,6 +350,23 @@ $(document).ready(function() {
         $('#edit_target_respondent').val(data.target_respondent);
         $('#edit_target_countries').val(data.target_countries);
         $('#edit_end_date').val(data.end_date);
+
+        $('#attachmentContainer').empty(); // Clear old rows
+
+        data.attachments.forEach(function (path) {
+            let fileName = path.split('/').pop();
+            let html = `
+                <div class="input-group mb-2 existing-attachment">
+                     <a href="{{ asset('adminapp/storage') }}/${path}" target="_blank" class="form-control bg-light d-flex align-items-center" style="text-decoration: none;" download>
+                            ${fileName}
+                        </a>
+                    <input type="hidden" name="existing_attachments[]" value="${path}">
+                    <div class="input-group-append">
+                        <button class="btn btn-danger remove-existing-attachment" type="button" data-path="${path}">-</button>
+                    </div>
+                </div>`;
+            $('#attachmentContainer').append(html);
+        });
 
         
     });
@@ -459,6 +490,30 @@ $(document).ready(function () {
         placeholder: "Select Team Members",
         width: '100%'
     });
+});
+
+$(document).on('click', '.add-attachment', function () {
+    const html = `
+        <div class="input-group mb-2">
+            <input type="file" name="attachments[]" class="form-control">
+            <div class="input-group-append">
+                <button class="btn btn-danger remove-attachment" type="button">-</button>
+            </div>
+        </div>`;
+    $('#attachmentContainer').append(html);
+});
+
+$(document).on('click', '.remove-attachment', function () {
+    $(this).closest('.input-group').remove();
+});
+
+
+$(document).on('click', '.remove-existing-attachment', function () {
+    const removedPath = $(this).data('path');
+    $(this).closest('.existing-attachment').remove();
+
+    // Add a hidden input to track removed attachments
+    $('#editForm').append(`<input type="hidden" name="remove_attachments[]" value="${removedPath}">`);
 });
 
 
