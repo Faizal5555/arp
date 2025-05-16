@@ -2623,14 +2623,10 @@ public function userconsumerlistData(Request $request)
                 ->whereNotNull('que_id');
 
             // Apply date filter
-             if ($fromDate && $toDate) {
-    // Convert d-m-Y to Y-m-d explicitly
-            $fromDate = \Carbon\Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
-            $toDate = \Carbon\Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
-
-            $hcpQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
-            $consumerQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
-        }
+            if ($fromDate && $toDate) {
+        $hcpQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
+        $consumerQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
+    }
                         
         
             $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
