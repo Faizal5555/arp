@@ -42,7 +42,7 @@ class SendClientInvoiceMailListener
         Config::set('mail.mailers.smtp.host', 'smtp.gmail.com');
         Config::set('mail.mailers.smtp.port', 587);
         Config::set('mail.mailers.smtp.username', 'accounts@asiaresearchpartners.com');
-        Config::set('mail.mailers.smtp.password', 'vdqbhastegpevraw'); // App password
+        Config::set('mail.mailers.smtp.password', 'dilkrgsutejkdcej'); // App password
         Config::set('mail.mailers.smtp.encryption', 'tls');
 
         // Also override the "from" address
