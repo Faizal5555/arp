@@ -2597,71 +2597,84 @@ public function userconsumerlistData(Request $request)
         }
 
         public function fetchPayments(Request $request)
-        {
-            $request->validate([
-                'from_date' => 'nullable|date',
-                'to_date' => 'nullable|date',
-            ]);
-        
-            $fromDate = $request->from_date;
-            $toDate = $request->to_date;
+{
+    $request->validate([
+        'from_date' => 'nullable|date',
+        'to_date' => 'nullable|date',
+    ]);
 
-            if ($fromDate && $toDate) {
-                // Convert to Y-m-d format if needed
-                $fromDate = \Carbon\Carbon::parse($fromDate)->format('Y-m-d');
-                $toDate = \Carbon\Carbon::parse($toDate)->format('Y-m-d');
-            }
+    $fromDate = $request->from_date;
+    $toDate = $request->to_date;
 
-            // Fetch HCP data
-            $hcpQuery = Incentive::with('datacenternews:id,firstname,country1,docterSpeciality,email')
-                ->select('datacenter_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
-                ->whereNotNull('datacenter_id');
-
-            // Fetch Consumer data
-            $consumerQuery = Incentive::with('ques:id,fname,country,email')
-                ->select('que_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
-                ->whereNotNull('que_id');
-
-            // Apply date filter
-            if ($fromDate && $toDate) {
-        $hcpQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
-        $consumerQuery->whereBetween('incentive_paid_date', [$fromDate, $toDate]);
+    if ($fromDate && $toDate) {
+        $fromDate = \Carbon\Carbon::parse($fromDate);
+        $toDate = \Carbon\Carbon::parse($toDate);
     }
-                        
-        
-            $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
-                return [
-                    'name' => optional($hcp->datacenternews)->firstname ?? '',
-                    'country' => optional($hcp->datacenternews)->country1 ?? '',
-                    'speciality' => optional($hcp->datacenternews)->docterSpeciality ?? '-',
-                    'email' => optional($hcp->datacenternews)->email ?? '',
-                    'pn_number' => $hcp->pn_number,
-                    'incentive_promised' => $hcp->incentive_promised,
-                    'total_incentive_paid' => $hcp->total_incentive_paid,
-                    'incentive_paid_date' => $hcp->incentive_paid_date,
-                    'mode_of_payment' => $hcp->mode_of_payment,
-                ];
-            });
-        
-            $consumerRecords = $consumerQuery->get()->map(function ($consumer) {
-                return [
-                    'name' => optional($consumer->ques)->fname ?? '',
-                    'country' => optional($consumer->ques)->country ?? '',
-                    'speciality' => '-', // Consumers don't have a speciality
-                    'email' => optional($consumer->ques)->email ?? '',
-                    'pn_number' => $consumer->pn_number,
-                    'incentive_promised' => $consumer->incentive_promised,
-                    'total_incentive_paid' => $consumer->total_incentive_paid,
-                    'incentive_paid_date' => $consumer->incentive_paid_date,
-                    'mode_of_payment' => $consumer->mode_of_payment,
-                ];
-            });
-        
-            // Convert to collections and merge
-            $combinedRecords = collect($hcpRecords)->merge(collect($consumerRecords));
-        
-            return response()->json($combinedRecords, 200);
+
+    // Fetch HCP data
+    $hcpQuery = Incentive::with('datacenternews:id,firstname,country1,docterSpeciality,email')
+        ->select('datacenter_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
+        ->whereNotNull('datacenter_id');
+
+    // Fetch Consumer data
+    $consumerQuery = Incentive::with('ques:id,fname,country,email')
+        ->select('que_id', 'pn_number', 'incentive_promised', 'total_incentive_paid', 'incentive_paid_date', 'mode_of_payment')
+        ->whereNotNull('que_id');
+
+    // ✅ Apply date filtering using LIKE (because dates are stored as CSV strings)
+    if ($fromDate && $toDate) {
+        $dates = [];
+        while ($fromDate->lte($toDate)) {
+            $dates[] = $fromDate->format('Y-m-d');
+            $fromDate->addDay();
         }
+
+        $hcpQuery->where(function ($query) use ($dates) {
+            foreach ($dates as $date) {
+                $query->orWhere('incentive_paid_date', 'LIKE', "%$date%");
+            }
+        });
+
+        $consumerQuery->where(function ($query) use ($dates) {
+            foreach ($dates as $date) {
+                $query->orWhere('incentive_paid_date', 'LIKE', "%$date%");
+            }
+        });
+    }
+
+    $hcpRecords = $hcpQuery->get()->map(function ($hcp) {
+        return [
+            'name' => optional($hcp->datacenternews)->firstname ?? '',
+            'country' => optional($hcp->datacenternews)->country1 ?? '',
+            'speciality' => optional($hcp->datacenternews)->docterSpeciality ?? '-',
+            'email' => optional($hcp->datacenternews)->email ?? '',
+            'pn_number' => $hcp->pn_number,
+            'incentive_promised' => $hcp->incentive_promised,
+            'total_incentive_paid' => $hcp->total_incentive_paid,
+            'incentive_paid_date' => $hcp->incentive_paid_date,
+            'mode_of_payment' => $hcp->mode_of_payment,
+        ];
+    });
+
+    $consumerRecords = $consumerQuery->get()->map(function ($consumer) {
+        return [
+            'name' => optional($consumer->ques)->fname ?? '',
+            'country' => optional($consumer->ques)->country ?? '',
+            'speciality' => '-', // Consumers don't have a speciality
+            'email' => optional($consumer->ques)->email ?? '',
+            'pn_number' => $consumer->pn_number,
+            'incentive_promised' => $consumer->incentive_promised,
+            'total_incentive_paid' => $consumer->total_incentive_paid,
+            'incentive_paid_date' => $consumer->incentive_paid_date,
+            'mode_of_payment' => $consumer->mode_of_payment,
+        ];
+    });
+
+    $combinedRecords = collect($hcpRecords)->merge(collect($consumerRecords));
+
+    return response()->json($combinedRecords, 200);
+}
+
         
 
 
