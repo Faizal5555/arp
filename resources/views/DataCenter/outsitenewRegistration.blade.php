@@ -156,9 +156,19 @@
                         <div class="col-lg-9 form-group">
                             <select class="form-control border border-secondary label-gray-3" name="country" id="country">
                                 <option class="label-gray-3" value="">Select Country<i class="fas fa-globe-asia"></i></option>
-                                @if(count($country_loop_1) > 0)
+                                {{-- @if(count($country_loop_1) > 0)
                                                 @foreach($country_loop_1 as $v)
                                             <option value="{{$v->name}}">{{$v->name}}</option>
+                                                @endforeach
+                                                @endif --}}
+                                                  @if(isset($country_loop_1) > 0)
+                                                @foreach($country_loop_1 as $v)
+                                                @php
+                                                    $excluded = ['USA', 'UK', 'United Arab Emirates','United States of America'];
+                                                @endphp
+                                                @if(!in_array($v->name, $excluded))
+                                                    <option value="{{ $v->name }}">{{ $v->name }}</option>
+                                                @endif
                                                 @endforeach
                                                 @endif
                             </select>
@@ -280,15 +290,10 @@
                                 
                                  <select  name="docterSpeciality"  class="form-control" id="docterSpecility" style="width:100%; outline:1px solid #646161 !important;">
                                  <option value="" disabled selected>Select Speciality</option>
-                                 @if(count($speciality)>0)
+                                @if(count($speciality)>0)
                                  @foreach($speciality->sortBy('speciality') as $s)
-                                  @php
-                                    $excluded = ['USA', 'UK', 'United Arab Emirates','United States of America'];
-                                @endphp
-                                @if(!in_array($v->name, $excluded))
-                                    <option value="{{ $v->name }}">{{ $v->name }}</option>
-                                @endif
-                                @endforeach
+                                 <option value="{{$s->speciality}}">{{$s->speciality}}</option>
+                                 @endforeach
                                  @endif
                                   
                                  </select>
