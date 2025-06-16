@@ -282,8 +282,13 @@
                                  <option value="" disabled selected>Select Speciality</option>
                                  @if(count($speciality)>0)
                                  @foreach($speciality->sortBy('speciality') as $s)
-                                 <option value="{{$s->speciality}}">{{$s->speciality}}</option>
-                             @endforeach
+                                  @php
+                                    $excluded = ['USA', 'UK', 'United Arab Emirates','United States of America'];
+                                @endphp
+                                @if(!in_array($v->name, $excluded))
+                                    <option value="{{ $v->name }}">{{ $v->name }}</option>
+                                @endif
+                                @endforeach
                                  @endif
                                   
                                  </select>

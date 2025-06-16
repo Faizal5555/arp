@@ -61,7 +61,12 @@
                                 <option class="label-gray-3" value="">Select Country<i class="fas fa-globe-asia"></i></option>
                                                @if(isset($country) && count($country) > 0)
                                                 @foreach($country as $v)
-                                            <option value="{{$v->name}}">{{$v->name}}</option>
+                                             @php
+                                                    $excluded = ['USA', 'UK', 'United Arab Emirates','United States of America'];
+                                                @endphp
+                                                @if(!in_array($v->name, $excluded))
+                                                    <option value="{{ $v->name }}">{{ $v->name }}</option>
+                                                @endif
                                                 @endforeach
                                                 @endif
                             </select>
