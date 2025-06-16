@@ -1060,8 +1060,10 @@ $(document).ready(function() {
         let row = table.find("tr");
         let rowLength = row.length;
         var sum = 0;
-        let sample = 1;
+        let sample = 0;
+        let cpi = 0;
         row.each(function(key){
+            // console.log(key, $(this).children('td').eq(index).find('input').val());
             if(key == 5)
             {
                 let val = parseFloat($(this).children('td').eq(index).find('input').val());
@@ -1070,7 +1072,15 @@ $(document).ready(function() {
                    sample = val;
                 }
             }
-            if(key > 5 && key < (rowLength - 1))
+            if(key == 6)
+            {
+                let val = parseFloat($(this).children('td').eq(index).find('input').val());
+                if(!isNaN(val))
+                {
+                   cpi = val;
+                }
+            }
+            if(key > 6 && key < (rowLength - 1))
             {
                 let val = parseFloat($(this).children('td').eq(index).find('input').val());
                 if(!isNaN(val))
@@ -1080,7 +1090,7 @@ $(document).ready(function() {
             }
             if(key == (rowLength - 1))
             {   
-                let total = (sum * sample).toFixed(2); 
+                let total = (sum + (cpi * sample)).toFixed(2); 
                 $(this).children('td').eq(index).find('input').val(total);
             }
             
