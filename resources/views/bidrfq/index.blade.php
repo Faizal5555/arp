@@ -205,7 +205,7 @@ svg.svg-inline--fa.fa-eye {
                
                 'data': function(data){
                    data.rfq_no=$('#rfq_no').val();
-                   data.client_id = $('#client_id').val() || null; 
+                   data.client_name = $('#client_id').val() || null;   
                      data.industry=$('#industry').val();
                      data.startdate=$('#start').val();
                      data.enddate=$('#end').val();
@@ -247,18 +247,19 @@ svg.svg-inline--fa.fa-eye {
                         return [value]; 
                     }
                     // Extract and clean client names from relationships
-                    if (row.single && row.single.single_client) clients.push(...cleanClientData(row.single.single_client));
-                    if (row.multiple && row.multiple.multiple_client) clients.push(...cleanClientData(row.multiple.multiple_client));
+                   if (row.single && row.single.single_client)      clients.push(...cleanClientData(row.single.single_client));
+                    if (row.multiple && row.multiple.multiple_client)clients.push(...cleanClientData(row.multiple.multiple_client));
                     if (row.interview && row.interview.interview_depth_client) clients.push(...cleanClientData(row.interview.interview_depth_client));
-                    if (row.online && row.online.online_community_client) clients.push(...cleanClientData(row.online.online_community_client));
+                    if (row.online && row.online.online_community_client)      clients.push(...cleanClientData(row.online.online_community_client));
 
-                    // Return formatted client names (no brackets or extra characters)
+                    clients = [...new Set(clients)];   // <-- remove duplicates such as repeated "URP"
                     return clients.length ? clients.join(', ') : 'No Clients';
+
                 }
             },
             {data:'company_name'  ,name:'company_name'},
              {data:'date'  ,name:'date'},
-             {data:'industry',name:'industry'},
+            //  {data:'industry',name:'industry'},
             //  {data:'country'  ,name:'country'},
             //  {data:'sample_size'  ,name:'sample_size'},
             //  {data: 'setup_cost', name: 'setup_cost'},
@@ -345,7 +346,7 @@ svg.svg-inline--fa.fa-eye {
                 <!-- <div class="card-title">vendor List</div> -->
                 <div class="card-header header-elements-inline">
                     <a class="ml-2 card-title">RFQ List</a>
-                    <a href="{{route('bidrfq.create')}}" class="ml-2 btn btn-primary">Add</a>
+                    <a href="{{route('newrfq.index')}}" class="ml-2 btn btn-primary">Add</a>
                 </div>
                  <div class="card-body">
                     <div class="row">
@@ -381,6 +382,7 @@ svg.svg-inline--fa.fa-eye {
                                       
                                             <select class="form-control label-gray-3" name="industry" id="industry" placeholder="Select Industry">
                                                 <option class="label-gray-3" value=""disabled selected>Select Industry</option>
+                                                <option>Gen-Pop</option>
                                                 <option>Manufacturing Industry</option>
                                                 <option>Production Industry</option>
                                                 <option>Food Industry</option>
@@ -482,7 +484,7 @@ svg.svg-inline--fa.fa-eye {
                                         <th>Client Name</th>
                                         <th>Company Name</th>
                                         <th>Date</th>
-                                        <th>Industry</th>
+                                        {{-- <th>Industry</th> --}}
                                         <!--<th>Country Name</th>-->
                                         <!--<th>Sample Size</th>-->
                                         <!--<th>Setup Cost</th>-->

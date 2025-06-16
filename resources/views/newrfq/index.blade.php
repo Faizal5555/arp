@@ -299,6 +299,7 @@
                                             <option class="" value="" disabled selected>Select
                                                 Industry
                                             </option>
+                                            <option value="Gen-pop">Gen-Pop</option>
                                             <option value="Manufacturing Industry">Manufacturing Industry</option>
                                             <option value="Production Industry">Production Industry</option>
                                             <option value="Food Industry">Food Industry</option>

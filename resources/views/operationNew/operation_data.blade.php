@@ -192,6 +192,9 @@
                             type="text" class="form-control" placeholder="Industry"> -->
                     <select class="form-control label-gray-3" name="industry"
                         placeholder="Select Industry">
+                          <option value="Gen-Pop"
+                            {{ $newrfq && $newrfq->industry == 'Gen-Pop' ? 'selected' : '' }}>
+                            Gen-Pop</option>
                         <option value="Manufacturing Industry"
                             {{ $newrfq && $newrfq->industry == 'Manufacturing Industry' ? 'selected' : '' }}>
                             Manufacturing Industry</option>

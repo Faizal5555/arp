@@ -50,17 +50,14 @@ class BidRfqController extends Controller
             
 
         }
-        if (!empty($data['client_name'])) {
-            $bidRfq->where(function ($query) use ($data) {
-                $query->orWhereHas('singleClient', function ($q) use ($data) {
-                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%'); 
-                })->orWhereHas('multipleClient', function ($q) use ($data) {
-                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
-                })->orWhereHas('interviewDepthClient', function ($q) use ($data) {
-                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
-                })->orWhereHas('onlineCommunityClient', function ($q) use ($data) {
-                    $q->where('client_name', 'like', '%' . $data['client_name'] . '%');
-                });
+      if (!empty($data['client_name'])) {                 // same key JS just sent
+            $client = $data['client_name'];
+
+            $bidRfq->where(function ($query) use ($client) {
+                $query->whereHas('single',    fn ($q) => $q->where('single_client',           'like', "%$client%"))
+                    ->orWhereHas('multiple',  fn ($q) => $q->where('multiple_client',         'like', "%$client%"))
+                    ->orWhereHas('interview', fn ($q) => $q->where('interview_depth_client', 'like', "%$client%"))
+                    ->orWhereHas('online',    fn ($q) => $q->where('online_community_client','like', "%$client%"));
             });
         }
          if(isset($data['startdate']) && $data['startdate']!='' && ($data['enddate']) && $data['enddate']!=''){

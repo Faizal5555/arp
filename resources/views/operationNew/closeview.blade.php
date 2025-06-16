@@ -423,6 +423,7 @@ input.form-control {
                     <!-- <input name="industry" value="{{$newrfq && $newrfq->industry ? $newrfq->industry : ''}}"
                         type="text" class="form-control" placeholder="Industry"> -->
                     <select class="form-control label-gray-3" name="industry" placeholder="Select Industry" disabled>
+                    <option value="Gen-Pop" {{$newrfq && $newrfq->industry =='Gen-Pop' ? 'selected' : '' }}>Gen-Pop</option> 
                     <option value="Manufacturing Industry" {{$newrfq && $newrfq->industry =='Manufacturing Industry' ? 'selected' : '' }}>Manufacturing Industry</option>                                      
                     <option value="Production Industry" {{$newrfq && $newrfq->industry =='Production Industry' ? 'selected' : '' }}>Production Industry</option>
                     <option value="Food Industry" {{$newrfq && $newrfq->industry =='Food Industry' ? 'selected' : '' }} >Food Industry</option>
