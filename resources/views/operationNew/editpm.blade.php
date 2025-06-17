@@ -2856,6 +2856,7 @@ input.form-control {
                 <div  id="main_div" class="col-md-9 ">
         <form id="complete" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="id"  id="id" value="{{$operation && $operation->id ? $operation->id : ''}}">
                     <div class="form-group row">
                          <label class="col-lg-6 col-form-label font-weight-semibold">Client Advance Invoice Raised <span class="text-danger"></span></label>
                          <div class="col-lg-6">
@@ -2944,8 +2945,8 @@ input.form-control {
                     <div class="form-group row">
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Project Data File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
-                            <input name="clientinvoicefile" value=""
-                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
+                            <input name="clientinvoicefile[]" value=""
+                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file" multiple>
                           
                         </div>
                     </div>
@@ -4095,6 +4096,37 @@ $("#complete").validate({
 
             submitHandler: function (form) {
                 var data = new FormData(form);
+                 let projectId = $('#complete input[name="id"]').val();
+        
+        // ✅ Allowed File Extensions
+                const allowedExtensions = [
+                    "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
+                    "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
+                    "dotm", "xml", "html", "htm", "md", "json", "yaml", 
+                    "yml", "wpd", "wps","zip"
+                ];
+                
+                const filesToCheck = [
+                        { field: "clientinvoicefile[]", id: "clientinvoicefile", name: "Client Invoice File" },
+                        { field: "client_confirmation", id: "client_confirmation", name: "Client Confirmation" },
+                        { field: "vendorinvoicefile", id: "vendorinvoicefile", name: "Vendor Invoice File" },
+                        { field: "vendor_confirmation", id: "vendor_confirmation", name: "Vendor Confirmation" }
+                    ];
+
+                
+                for (const fileCheck of filesToCheck) {
+                    const fileInput = document.getElementById(fileCheck.id);
+                    if (fileInput && fileInput.files.length > 0) {
+                        for (let i = 0; i < fileInput.files.length; i++) {
+                            const fileName = fileInput.files[i].name;
+                            const fileExt = fileName.split('.').pop().toLowerCase();
+                            if (!allowedExtensions.includes(fileExt)) {
+                                alert(`${fileCheck.name} file "${fileName}" must be one of: ${allowedExtensions.join(', ')}`);
+                                return false;
+                            }
+                        }
+                    }
+                }
                
 
                 $.ajax({

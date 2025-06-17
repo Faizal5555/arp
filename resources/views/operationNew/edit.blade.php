@@ -2924,8 +2924,8 @@ input.form-control {
                     <div class="form-group row">
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Project Data File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
-                            <input name="clientinvoicefile" value=""
-                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
+                            <input name="clientinvoicefile[]" value=""
+                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file" multiple>
                           
                         </div>
                     </div>
@@ -4140,25 +4140,27 @@ $("#complete").validate({
             "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
             "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
             "dotm", "xml", "html", "htm", "md", "json", "yaml", 
-            "yml", "wpd", "wps"
+            "yml", "wpd", "wps","zip"
         ];
         
         const filesToCheck = [
-            { field: "clientinvoicefile", name: "Client Invoice File" },
-            { field: "client_confirmation", name: "Client Confirmation" },
-            { field: "vendorinvoicefile", name: "Vendor Invoice File" },
-            { field: "vendor_confirmation", name: "Vendor Confirmation" }
-        ];
+                { field: "clientinvoicefile[]", id: "clientinvoicefile", name: "Client Invoice File" },
+                { field: "client_confirmation", id: "client_confirmation", name: "Client Confirmation" },
+                { field: "vendorinvoicefile", id: "vendorinvoicefile", name: "Vendor Invoice File" },
+                { field: "vendor_confirmation", id: "vendor_confirmation", name: "Vendor Confirmation" }
+            ];
+
         
         for (const fileCheck of filesToCheck) {
-            const fileInput = form[fileCheck.field];
+            const fileInput = document.getElementById(fileCheck.id);
             if (fileInput && fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
-                const fileExt = fileName.split('.').pop().toLowerCase();
-                
-                if (!allowedExtensions.includes(fileExt)) {
-                    alert(`${fileCheck.name} must be one of the following file types: ${allowedExtensions.join(', ')}.`);
-                    return false;
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const fileName = fileInput.files[i].name;
+                    const fileExt = fileName.split('.').pop().toLowerCase();
+                    if (!allowedExtensions.includes(fileExt)) {
+                        alert(`${fileCheck.name} file "${fileName}" must be one of: ${allowedExtensions.join(', ')}`);
+                        return false;
+                    }
                 }
             }
         }

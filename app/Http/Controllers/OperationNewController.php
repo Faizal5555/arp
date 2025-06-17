@@ -745,8 +745,8 @@ class OperationNewController extends Controller
     }
 
   public function addproject(Request $req){
+    //dd($req->all());
 
-    
         $validator=Validator::make($req->all(),[
         //    'clientadvance'=>'required',
            'clientbalance'=>'required',
@@ -754,6 +754,7 @@ class OperationNewController extends Controller
         //    'vendorbalance'=>'required',
         //    'respondentfile'=>'required',
            'clientinvoicefile'=>'required',
+           'clientinvoicefile.*' => 'mimes:pdf,doc,docx,xls,xlsx,csv,txt,rtf,odt,ods,ppt,pptx,docm,dotx,dotm,xml,html,htm,md,json,yaml,yml,wpd,wps,zip',
         //    'vendorinvoicefile'=>'required',
            'client_confirmation'=>'required',
         //    'vendor_confirmation'=>'required',
@@ -775,12 +776,15 @@ class OperationNewController extends Controller
           $file->move('global_assets/respondentfile', $filename);
           $procompleted->respondentfile = 'global_assets/respondentfile/' . $filename;
         }
-        if($req->hasfile('clientinvoicefile')){
-            $file=$req->file('clientinvoicefile');
-            $extension = $file->getClientOriginalExtension();
-            $filename =time().'.'.$extension;
-            $file->move('global_assets/clientinvoicefile', $filename);
-            $procompleted->clientinvoicefile = 'global_assets/clientinvoicefile/' . $filename;
+       if ($req->hasfile('clientinvoicefile')) {
+            $paths = [];
+            foreach ($req->file('clientinvoicefile') as $file) {
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() . '_' . uniqid() . '.' . $extension;
+                $file->move('global_assets/clientinvoicefile', $filename);
+                $paths[] = 'global_assets/clientinvoicefile/' . $filename;
+            }
+            $procompleted->clientinvoicefile = json_encode($paths); // Store as JSON
         }
         if($req->hasfile('vendorinvoicefile')){
             $file=$req->file('vendorinvoicefile');
@@ -2075,7 +2079,7 @@ public function fieldchart(Request $req)
                 'data' => $data,
                 'files' => [
                     'respondentfile' => $data->respondentfile ?? null,
-                    'clientinvoicefile' => $data->clientinvoicefile ?? null,
+                    'clientinvoicefile' => json_decode($data->clientinvoicefile, true) ?? [], 
                     'vendorinvoicefile' => $data->vendorinvoicefile ?? null,
                     'client_confirmation' => $data->client_confirmation ?? null,
                     'vendor_confirmation' => $data->vendor_confirmation ?? null,

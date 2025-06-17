@@ -2791,8 +2791,8 @@ input.form-control {
                     <div class="form-group row">
                         <label class="col-lg-6 col-form-label font-weight-semibold">Attach Project Data File<span class="text-danger">*</span></label>
                         <div class="col-lg-6">
-                            <input name="clientinvoicefile" value=""
-                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file">
+                            <input name="clientinvoicefile[]" value=""
+                            id="clientinvoicefile" type="file" class="p-1 form-control" placeholder="Attach Client invoice file" multiple>
                           
                         </div>
                     </div>
@@ -4613,12 +4613,14 @@ $("#complete").validate({
         
     })
 
-    $(document).on('click', '.edit-completion-btn', function () {
+$(document).on('click', '.edit-completion-btn', function () {
     const operationId = $(this).data('id');
 
     $.get(`/adminapp/operationNew/procompleted/${operationId}`, function (response) {
         if (response.success) {
             const data = response.data;
+            const files = response.files;
+            const basePath = window.location.origin + "/adminapp/public/";
 
             // Pre-select radio buttons
             $(`input[name="clientadvance"][value="${data.clientadvance}"]`).prop("checked", true);
@@ -4626,35 +4628,39 @@ $("#complete").validate({
             $(`input[name="vendoradvance"][value="${data.vendoradvance}"]`).prop("checked", true);
             $(`input[name="vendorbalance"][value="${data.vendorbalance}"]`).prop("checked", true);
 
-            // Show file links (you can create divs below each file input)
-            const basePath = window.location.origin + "/adminapp/public/";
+            // Remove existing links
+            $('.download-link').remove();
 
-// Remove previous download links to prevent duplicates
-$('.download-link').remove();
+            // Helper: Show multiple links
+            const showFiles = (selector, fileList, label) => {
+                if (!fileList) return;
 
-if (response.files.respondentfile) {
-    $('#respondentfile').after(`<a href="${basePath + response.files.respondentfile}" class="text-info d-block mt-1 download-link" target="_blank">Download Respondent File</a>`);
-}
-if (response.files.clientinvoicefile) {
-    $('#clientinvoicefile').after(`<a href="${basePath + response.files.clientinvoicefile}" class="text-info d-block mt-1 download-link" target="_blank">Download Client Invoice</a>`);
-}
-if (response.files.vendorinvoicefile) {
-    $('#vendorinvoicefile').after(`<a href="${basePath + response.files.vendorinvoicefile}" class="text-info d-block mt-1 download-link" target="_blank">Download Vendor Invoice</a>`);
-}
-if (response.files.client_confirmation) {
-    $('#client_confirmation').after(`<a href="${basePath + response.files.client_confirmation}" class="text-info d-block mt-1 download-link" target="_blank">Download Client Confirmation</a>`);
-}
-if (response.files.vendor_confirmation) {
-    $('#vendor_confirmation').after(`<a href="${basePath + response.files.vendor_confirmation}" class="text-info d-block mt-1 download-link" target="_blank">Download Vendor Confirmation</a>`);
-}
+                const files = Array.isArray(fileList) ? fileList : [fileList];
+                files.forEach((file, i) => {
+                    const display = files.length > 1 ? `${label} ${i + 1}` : label;
+                    $(selector).after(
+                        `<a href="${basePath + file}" class="text-info d-block mt-1 download-link" target="_blank" download>
+                            ${display}
+                        </a>`
+                    );
+                });
+            };
 
-            // Optionally open modal
+            // Render all file links
+            showFiles('#respondentfile', files.respondentfile, 'Download Respondent File');
+            showFiles('#clientinvoicefile', files.clientinvoicefile, 'Download Client Invoice');
+            showFiles('#vendorinvoicefile', files.vendorinvoicefile, 'Download Vendor Invoice');
+            showFiles('#client_confirmation', files.client_confirmation, 'Download Client Confirmation');
+            showFiles('#vendor_confirmation', files.vendor_confirmation, 'Download Vendor Confirmation');
+
+            // Open modal
             $('#exampleModalCentercompleted').modal('show');
         } else {
             alert('No data found');
         }
     });
 });
+
 
 
 
