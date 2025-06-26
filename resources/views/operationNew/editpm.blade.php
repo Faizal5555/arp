@@ -4063,128 +4063,128 @@ $(document).on('click','.remove-country',function(){
 
 {{-- project completed script --}}
 <script>
-$("#complete").validate({
-    rules:{
-        // clientadvance:{
-        //     required: true
-        // },
-        clientbalance:{
-            required: true
-        },
-        // vendoradvance:{
-        //     required: true
-        // },
-        // vendorbalance:{
-        //     required:true
-        // },
-        // respondentfile:{
-        //     required: true
-        // },
-        clientinvoicefile:{
-            required:true
-        },
-        // vendorinvoicefile:{
-        //     required:true
-        // },
-        client_confirmation:{
-            required:true
-        },
-        // vendor_confirmation:{
-        //     required:true
-        // },
-    },
-    errorPlacement: function (error, element) {
-                if (element.hasClass("select2-hidden-accessible")) {
-                    error.insertAfter(element.siblings('span.select2'));
-                } else if (element.hasClass("floating-input")) {
-                    element.closest('.form-floating-label').addClass("error-cont").append(error);
-                } else {
-                    error.insertAfter(element);
-                }
+    $("#complete").validate({
+        rules:{
+            // clientadvance:{
+            //     required: true
+            // },
+            clientbalance:{
+                required: true
             },
+            // vendoradvance:{
+            //     required: true
+            // },
+            // vendorbalance:{
+            //     required:true
+            // },
+            // respondentfile:{
+            //     required: true
+            // },
+            clientinvoicefile:{
+                required:true
+            },
+            // vendorinvoicefile:{
+            //     required:true
+            // },
+            client_confirmation:{
+                required:true
+            },
+            // vendor_confirmation:{
+            //     required:true
+            // },
+        },
+        errorPlacement: function (error, element) {
+                    if (element.hasClass("select2-hidden-accessible")) {
+                        error.insertAfter(element.siblings('span.select2'));
+                    } else if (element.hasClass("floating-input")) {
+                        element.closest('.form-floating-label').addClass("error-cont").append(error);
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
 
-            submitHandler: function (form) {
-                var data = new FormData(form);
-                 let projectId = $('#complete input[name="id"]').val();
-        
-        // ✅ Allowed File Extensions
-                const allowedExtensions = [
-                        "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
-                        "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
-                        "dotm", "xml", "html", "htm", "md", "json", "yaml", 
-                        "yml", "wpd", "wps", "zip",
-                        "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"
-                ];
-                
-                const filesToCheck = [
-                        { field: "clientinvoicefile[]", id: "clientinvoicefile", name: "Client Invoice File" },
-                        { field: "client_confirmation", id: "client_confirmation", name: "Client Confirmation" },
-                        { field: "vendorinvoicefile", id: "vendorinvoicefile", name: "Vendor Invoice File" },
-                        { field: "vendor_confirmation", id: "vendor_confirmation", name: "Vendor Confirmation" }
+                submitHandler: function (form) {
+                    var data = new FormData(form);
+                    let projectId = $('#complete input[name="id"]').val();
+            
+            // ✅ Allowed File Extensions
+                    const allowedExtensions = [
+                            "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
+                            "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
+                            "dotm", "xml", "html", "htm", "md", "json", "yaml", 
+                            "yml", "wpd", "wps", "zip",
+                            "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"
                     ];
+                    
+                    const filesToCheck = [
+                            { field: "clientinvoicefile[]", id: "clientinvoicefile", name: "Client Invoice File" },
+                            { field: "client_confirmation", id: "client_confirmation", name: "Client Confirmation" },
+                            { field: "vendorinvoicefile", id: "vendorinvoicefile", name: "Vendor Invoice File" },
+                            { field: "vendor_confirmation", id: "vendor_confirmation", name: "Vendor Confirmation" }
+                        ];
 
+                    
+                    for (const fileCheck of filesToCheck) {
+                        const fileInput = document.getElementById(fileCheck.id);
+                        if (fileInput && fileInput.files.length > 0) {
+                            for (let i = 0; i < fileInput.files.length; i++) {
+                                const fileName = fileInput.files[i].name;
+                                const fileExt = fileName.split('.').pop().toLowerCase();
+                                if (!allowedExtensions.includes(fileExt)) {
+                                    alert(`${fileCheck.name} file "${fileName}" must be one of: ${allowedExtensions.join(', ')}`);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
                 
-                for (const fileCheck of filesToCheck) {
-                    const fileInput = document.getElementById(fileCheck.id);
-                    if (fileInput && fileInput.files.length > 0) {
-                        for (let i = 0; i < fileInput.files.length; i++) {
-                            const fileName = fileInput.files[i].name;
-                            const fileExt = fileName.split('.').pop().toLowerCase();
-                            if (!allowedExtensions.includes(fileExt)) {
-                                alert(`${fileCheck.name} file "${fileName}" must be one of: ${allowedExtensions.join(', ')}`);
-                                return false;
-                            }
-                        }
-                    }
-                }
-               
 
-                    $.ajax({
-                    type: "POST",
-                    url: "{{route('operationNew.addproject')}}",
-                    data: data,
-                    xhr: function () {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function (evt) {
-                            if (evt.lengthComputable) {
-                                $('#uploadProgressContainer').show();
-                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                                $('#uploadProgressBar').css('width', percentComplete + '%');
-                                $('#uploadProgressBar').text(percentComplete + '%');
-                            }
-                        }, false);
-                        return xhr;
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function (data) {
-                        $('#uploadProgressContainer').hide(); // hide after completion
-                        if (data.success == 1) {
-                            if (data.clientbalance === 'Yes') {
-                                $("#project_hold").addClass('d-none');
-                                $("#project_closed").removeClass('d-none');
+                        $.ajax({
+                        type: "POST",
+                        url: "{{route('operationNew.addproject')}}",
+                        data: data,
+                        xhr: function () {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function (evt) {
+                                if (evt.lengthComputable) {
+                                    $('#uploadProgressContainer').show();
+                                    var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                    $('#uploadProgressBar').css('width', percentComplete + '%');
+                                    $('#uploadProgressBar').text(percentComplete + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (data) {
+                            $('#uploadProgressContainer').hide(); // hide after completion
+                            if (data.success == 1) {
+                                if (data.clientbalance === 'Yes') {
+                                    $("#project_hold").addClass('d-none');
+                                    $("#project_closed").removeClass('d-none');
+                                } else {
+                                    $("#project_closed").addClass('d-none');
+                                    $("#project_hold").removeClass('d-none');
+                                }
+                                $('#statusbar').modal('show');
                             } else {
-                                $("#project_closed").addClass('d-none');
-                                $("#project_hold").removeClass('d-none');
+                                alert('Fail');
                             }
-                            $('#statusbar').modal('show');
-                        } else {
-                            alert('Fail');
+                        },
+                        error: function () {
+                            $('#uploadProgressContainer').hide();
+                            alert("Upload failed. Please try again.");
                         }
-                    },
-                    error: function () {
-                        $('#uploadProgressContainer').hide();
-                        alert("Upload failed. Please try again.");
-                    }
-                });
+                    });
 
-            }
+                }
 
-});
+    });
 </script>
 {{-- project completed script --}}
 
