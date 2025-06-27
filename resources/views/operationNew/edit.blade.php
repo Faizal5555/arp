@@ -2961,6 +2961,15 @@ input.form-control {
                      <div class="col-md-12 d-flex justify-content-end">
                          <button type="submit" class="btn btn-primary">Submit</button>
                      </div>
+
+
+                      <div id="uploadProgressContainer" style="display:none;">
+                        <label>Upload Progress:</label>
+                        <div class="progress">
+                            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                role="progressbar" style="width: 0%;">0%</div>
+                        </div>
+                      </div>
                  </div>
        </form>
             </div>
@@ -4137,10 +4146,11 @@ $("#complete").validate({
         
         // ✅ Allowed File Extensions
         const allowedExtensions = [
-            "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
-            "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
-            "dotm", "xml", "html", "htm", "md", "json", "yaml", 
-            "yml", "wpd", "wps","zip"
+                            "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", 
+                            "rtf", "odt", "ods", "ppt", "pptx", "docm", "dotx", 
+                            "dotm", "xml", "html", "htm", "md", "json", "yaml", 
+                            "yml", "wpd", "wps", "zip",
+                            "jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"
         ];
         
         const filesToCheck = [
@@ -4166,31 +4176,48 @@ $("#complete").validate({
         }
 
         // 🔄 Proceed with AJAX request if extensions are valid
-        $.ajax({
-            type:"POST",
-            url: "{{route('operationNew.addproject')}}",
-            data:data,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            processData:false,
-            contentType:false,
-            dataType: "json",
-            success: function(data) {
-                if (data.success == 1) {
-                    if (data.clientbalance === 'Yes') {
-                        $("#project_hold").addClass('d-none');
-                        $("#project_closed").removeClass('d-none');
-                    } else {
-                        $("#project_closed").addClass('d-none');
-                        $("#project_hold").removeClass('d-none');
-                    }
-                    $('#statusbar').modal('show'); // Show modal after setting classes
-                } else {
-                    alert('Fail');
-                }
-            }
-        });
+                         $.ajax({
+                        type: "POST",
+                        url: "{{route('operationNew.addproject')}}",
+                        data: data,
+                        xhr: function () {
+                            var xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function (evt) {
+                                if (evt.lengthComputable) {
+                                    $('#uploadProgressContainer').show();
+                                    var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                    $('#uploadProgressBar').css('width', percentComplete + '%');
+                                    $('#uploadProgressBar').text(percentComplete + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (data) {
+                            $('#uploadProgressContainer').hide(); // hide after completion
+                            if (data.success == 1) {
+                                if (data.clientbalance === 'Yes') {
+                                    $("#project_hold").addClass('d-none');
+                                    $("#project_closed").removeClass('d-none');
+                                } else {
+                                    $("#project_closed").addClass('d-none');
+                                    $("#project_hold").removeClass('d-none');
+                                }
+                                $('#statusbar').modal('show');
+                            } else {
+                                alert('Fail');
+                            }
+                        },
+                        error: function () {
+                            $('#uploadProgressContainer').hide();
+                            alert("Upload failed. Please try again.");
+                        }
+                    });
     }
 });
 
