@@ -754,7 +754,13 @@ class OperationNewController extends Controller
         //    'vendorbalance'=>'required',
         //    'respondentfile'=>'required',
            'clientinvoicefile'=>'required',
-           'clientinvoicefile.*' => 'file|max:262144|mimes:pdf,doc,docx,xls,xlsx,csv,txt,rtf,odt,ods,ppt,pptx,docm,dotx,dotm,xml,html,htm,md,json,yaml,yml,wpd,wps,zip,jpg,jpeg,png,gif,bmp,webp,svg',
+            'clientinvoicefile.*' => [
+            'file',
+            'max:262144',
+            'mimes:pdf,doc,docx,xls,xlsx,csv,txt,rtf,odt,ods,ppt,pptx,docm,dotx,dotm,xml,html,htm,md,json,yaml,yml,wpd,wps,zip,jpg,jpeg,png,gif,bmp,webp,svg',
+            'mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv,application/rtf,application/zip,application/octet-stream,image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml'
+        ],
+
         //    'vendorinvoicefile'=>'required',
            'client_confirmation'=>'required',
         //    'vendor_confirmation'=>'required',
