@@ -747,24 +747,75 @@ class OperationNewController extends Controller
   public function addproject(Request $req){
     //dd($req->all());
 
-        $validator=Validator::make($req->all(),[
-        //    'clientadvance'=>'required',
-           'clientbalance'=>'required',
-        //    'vendoradvance'=>'required',
-        //    'vendorbalance'=>'required',
-        //    'respondentfile'=>'required',
-           'clientinvoicefile'=>'required',
-            'clientinvoicefile.*' => [
-            'file',
-            'max:262144',
-            'mimes:pdf,doc,docx,xls,xlsx,csv,txt,rtf,odt,ods,ppt,pptx,docm,dotx,dotm,xml,html,htm,md,json,yaml,yml,wpd,wps,zip,jpg,jpeg,png,gif,bmp,webp,svg',
-            'mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv,application/rtf,application/zip,application/octet-stream,image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml'
-        ],
+        // $validator=Validator::make($req->all(),[
+        // //    'clientadvance'=>'required',
+        //    'clientbalance'=>'required',
+        // //    'vendoradvance'=>'required',
+        // //    'vendorbalance'=>'required',
+        // //    'respondentfile'=>'required',
+        //    'clientinvoicefile'=>'required',
+        //     'clientinvoicefile.*' => [
+        //     'file',
+        //     'max:262144',
+        //     'mimes:pdf,doc,docx,xls,xlsx,csv,txt,rtf,odt,ods,ppt,pptx,docm,dotx,dotm,xml,html,htm,md,json,yaml,yml,wpd,wps,zip,jpg,jpeg,png,gif,bmp,webp,svg',
+        //     'mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv,application/rtf,application/zip,application/octet-stream,image/jpeg,image/png,image/gif,image/bmp,image/webp,image/svg+xml'
+        // ],
 
-        //    'vendorinvoicefile'=>'required',
-           'client_confirmation'=>'required',
-        //    'vendor_confirmation'=>'required',
+        // //    'vendorinvoicefile'=>'required',
+        //    'client_confirmation'=>'required',
+        // //    'vendor_confirmation'=>'required',
+        // ]);
+        $validator = Validator::make($req->all(), [
+            'clientbalance' => 'required',
+            'clientinvoicefile' => 'required',
+            'clientinvoicefile.*' => [
+                'file',
+                'max:262144', // max 256MB
+                function ($attribute, $value, $fail) {
+                    $allowedExtensions = [
+                        'pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt',
+                        'rtf', 'odt', 'ods', 'ppt', 'pptx', 'docm', 'dotx',
+                        'dotm', 'xml', 'html', 'htm', 'md', 'json', 'yaml',
+                        'yml', 'wpd', 'wps', 'zip', 'jpg', 'jpeg', 'png',
+                        'gif', 'bmp', 'webp', 'svg'
+                    ];
+
+                    $allowedMimes = [
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/vnd.ms-powerpoint',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                        'text/plain',
+                        'text/csv',
+                        'application/rtf',
+                        'application/zip',
+                        'application/octet-stream', // catch-all for docx/doc over 100MB
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/bmp',
+                        'image/webp',
+                        'image/svg+xml'
+                    ];
+
+                    $ext = $value->getClientOriginalExtension();
+                    $mime = $value->getMimeType();
+
+                    if (!in_array(strtolower($ext), $allowedExtensions)) {
+                        return $fail("The {$attribute} file extension .{$ext} is not allowed.");
+                    }
+
+                    if (!in_array($mime, $allowedMimes)) {
+                        return $fail("The {$attribute} MIME type ({$mime}) is not allowed.");
+                    }
+                }
+            ],
+            'client_confirmation' => 'required',
         ]);
+
         if(!$validator->fails()){
         $procompleted = Procompleted::where('operation_id', $req->id)->first() ?? new Procompleted();
         $procompleted->operation_id = $req->id;
